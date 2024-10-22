@@ -5,6 +5,7 @@ package com.nhnacademy.bookstore.shipment.entity;
  * @author : 이유현
  * @date : 2024-10-22
  */
+import com.nhnacademy.bookstore.orderset.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,13 +39,17 @@ public class Shipment {
     @Column(name = "tracking_number", length = 255, nullable = false)
     private String trackingNumber;
 
-    @Column(name = "carrier_id", nullable = false)
-    private Long carrierId;
+    @ManyToOne
+    @JoinColumn(name = "carrier_id", nullable = false)
+    private Carrier carrier;
 
-    @Column(name = "shipment_policy_id", nullable = false)
-    private Long shipmentPolicyId;
+    @ManyToOne
+    @JoinColumn(name = "shipment_policy_id", nullable = false)
+    private ShipmentPolicy shipmentPolicy;
 
-    @Column(name = "order_id", nullable = false)
-    private Long orderId;
+
+    @OneToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
 }
 

@@ -5,6 +5,7 @@ package com.nhnacademy.bookstore.refund.entity;
  * @author : 이유현
  * @date : 2024-10-22
  */
+import com.nhnacademy.bookstore.orderset.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,11 +23,13 @@ public class RefundHistory {
     @Column(name = "refund_history_id", nullable = false)
     private Long refundHistoryId;
 
-    @Column(name = "order_id", nullable = false)
-    private Long orderId;
+    @OneToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
 
-    @Column(name = "refund_policy_id", nullable = false)
-    private Long refundPolicyId;
+    @ManyToOne
+    @JoinColumn(name = "refund_policy_id", nullable = false)
+    private RefundPolicy refundPolicy;
 
     @Column(name = "save_point", nullable = false)
     private Long savePoint = 0L;
