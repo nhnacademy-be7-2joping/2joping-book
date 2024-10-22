@@ -1,7 +1,7 @@
-package com.nhnacademy.bookstore.bookcategory.entity;
+package com.nhnacademy.bookstore.book_tag.entity;
 
 import com.nhnacademy.bookstore.book.entity.Book;
-import com.nhnacademy.bookstore.category.entity.Category;
+import com.nhnacademy.bookstore.tag.entity.Tag;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,19 +11,20 @@ import lombok.Setter;
 import java.io.Serializable;
 
 /**
- * 도서 카테고리 Entity
+ * 도서 태그 Entity
  *
  * @author : 양준하
  * @date : 2024-10-22
  */
+
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "bookcategory")
-public class BookCategory {
+@Table(name = "booktag")
+public class BookTag {
     @EmbeddedId
-    private BookCategoryId id;
+    private BookTagId id;
 
     @ManyToOne
     @MapsId("bookId")
@@ -31,17 +32,18 @@ public class BookCategory {
     private Book book;
 
     @ManyToOne
-    @MapsId("categoryId")
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @MapsId("tagId")
+    @JoinColumn(name = "tag_id", nullable = false)
+    private Tag tag;
 
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     @Embeddable
-    public static class BookCategoryId implements Serializable {
+    public static class BookTagId implements Serializable {
         private Long bookId;
-        private Long categoryId;
+        private Long tagId;
     }
 }
+
