@@ -34,7 +34,6 @@ public class Member extends Customer {
     @Column(nullable = false)
     private LocalDate joinDate;
 
-    @Column(nullable = false)
     private LocalDate lastLoginDate;
 
     private boolean isPaycoLogin;
