@@ -10,7 +10,7 @@ package com.nhnacademy.bookstore.orderset.order.entity;
 
 
 import com.nhnacademy.bookstore.coupon.entity.Coupon;
-import com.nhnacademy.bookstore.customer.entity.Customer;
+import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
