@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstore.bookset.pulisher;
+package com.nhnacademy.bookstore.bookset.contributor.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,22 +6,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 출판사 Entity
+ * 도서 기여자 역할 Entity
  *
  * @author : 양준하
  * @date : 2024-10-22
  */
 
-
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "publisher")
-public class Publisher {
+@Table(name = "contributor_role")
+
+public class ContributorRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long publisherId;
+    private Long contributorRoleId;
 
     @Column(nullable = false, length = 50)
     private String name;
