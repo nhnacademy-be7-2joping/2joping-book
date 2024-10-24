@@ -1,13 +1,9 @@
 package com.nhnacademy.bookstore.bookset.book.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
-
-import lombok.NoArgsConstructor;
 
 /**
  * 도서 Response DTO
@@ -16,6 +12,7 @@ import lombok.NoArgsConstructor;
  * @date : 2024-10-23
  */
 
+@Setter
 @Getter
 @Builder
 @NoArgsConstructor

@@ -1,8 +1,6 @@
 package com.nhnacademy.bookstore.bookset.book.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,7 +12,9 @@ import java.util.List;
  * @date : 2024-10-23
  */
 
+@Setter
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookCreateRequestDto {
