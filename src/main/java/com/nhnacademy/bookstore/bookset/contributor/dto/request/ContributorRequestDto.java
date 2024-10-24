@@ -4,6 +4,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+/**
+ * 도서 기여자 request dto
+ *
+ * @author : 양준하
+ * @date : 2024-10-24
+ */
+
 @Setter
 @Getter
 @Builder

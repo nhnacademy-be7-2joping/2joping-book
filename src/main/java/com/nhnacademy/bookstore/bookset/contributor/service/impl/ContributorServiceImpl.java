@@ -15,6 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+/**
+ * 도서 기여자 Service
+ *
+ * @author : 양준하
+ * @date : 2024-10-24
+ */
+
 @Service
 @RequiredArgsConstructor
 public class ContributorServiceImpl implements ContributorService {

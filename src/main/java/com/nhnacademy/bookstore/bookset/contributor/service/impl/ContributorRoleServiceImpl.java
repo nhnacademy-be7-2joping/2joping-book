@@ -10,6 +10,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 도서 기여자 역할 Service
+ *
+ * @author : 양준하
+ * @date : 2024-10-24
+ */
+
 @Service
 @RequiredArgsConstructor
 public class ContributorRoleServiceImpl implements ContributorRoleService {

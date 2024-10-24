@@ -10,6 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 도서 기여자 역할 Controller
+ *
+ * @author : 양준하
+ * @date : 2024-10-24
+ */
+
 @Validated
 @RestController
 @RequestMapping("/bookstore/contributors/role")
