@@ -5,6 +5,7 @@ import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorRole
 import com.nhnacademy.bookstore.bookset.contributor.service.ContributorRoleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class ContributorRoleController {
     @PostMapping
     public ResponseEntity<ContributorRoleResponseDto> createContributorRole(@RequestBody @Valid ContributorRoleRequestDto dto) {
         ContributorRoleResponseDto createdRole = contributorRoleService.createContributorRole(dto);
-        return ResponseEntity.ok(createdRole);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdRole);
     }
 
     @GetMapping("/{contributorRoleId}")

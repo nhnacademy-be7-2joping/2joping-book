@@ -5,6 +5,7 @@ import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResp
 import com.nhnacademy.bookstore.bookset.contributor.service.ContributorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class ContributorController {
     @PostMapping
     public ResponseEntity<ContributorResponseDto> createContributor(@RequestBody @Valid ContributorRequestDto dto) {
         ContributorResponseDto createdContributor = contributorService.createContributor(dto);
-        return ResponseEntity.ok(createdContributor);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdContributor);
     }
 
     @GetMapping("/{contributorId}")
