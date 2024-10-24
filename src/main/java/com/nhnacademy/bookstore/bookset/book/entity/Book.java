@@ -63,6 +63,6 @@ public class Book {
     private int views;
 
     @Column(nullable = false, columnDefinition = "INT default 0")
-    private int like;
+    private int likes;
 
 }
