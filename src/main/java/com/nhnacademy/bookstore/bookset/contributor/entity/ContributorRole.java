@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 도서 기여자 역할 Entity
@@ -12,12 +13,12 @@ import lombok.NoArgsConstructor;
  * @date : 2024-10-22
  */
 
-@Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 @Table(name = "contributor_role")
-
 public class ContributorRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

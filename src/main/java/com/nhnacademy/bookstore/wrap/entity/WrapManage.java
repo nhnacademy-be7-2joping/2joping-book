@@ -27,7 +27,7 @@ public class WrapManage {
     private Long wrapManageId;
 
     @ManyToOne
-    @JoinColumn(name = "package_id", nullable = false)
+    @JoinColumn(name = "wrap_id", nullable = false)
     private Wrap wrap;
 
     @ManyToOne
