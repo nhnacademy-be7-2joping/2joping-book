@@ -56,8 +56,8 @@ public class Book {
     @Column(nullable = false)
     private boolean isActive;
 
-    @Column(nullable = false, columnDefinition = "BIGINT default 0")
-    private Long remainQuantity;
+    @Column(nullable = false, columnDefinition = "INT default 0")
+    private int remainQuantity;
 
     @Column(nullable = false, columnDefinition = "INT default 0")
     private int views;
