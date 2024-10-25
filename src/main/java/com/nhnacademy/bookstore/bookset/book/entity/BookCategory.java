@@ -1,6 +1,6 @@
-package com.nhnacademy.bookstore.bookset.category.entity;
+package com.nhnacademy.bookstore.bookset.book.entity;
 
-import com.nhnacademy.bookstore.bookset.book.entity.Book;
+import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
