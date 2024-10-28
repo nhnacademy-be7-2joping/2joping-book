@@ -13,9 +13,6 @@ import java.util.List;
 
 public interface PublisherService {
 
-//
-//    //출판사 생성 필요한지 고민해보기 (등록만 있어도 되는건가?)
-//    PublisherCreateResponseDto createPublisher(PublisherRequestDto requestDto);
 
     //출판사 등록
     PublisherCreateResponseDto registerPublisher(PublisherRequestDto requestDto);

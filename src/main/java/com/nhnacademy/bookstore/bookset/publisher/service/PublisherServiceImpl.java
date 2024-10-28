@@ -29,12 +29,10 @@ public class PublisherServiceImpl implements PublisherService{
 
     private final PublisherRepository publisherRepository;
 
-//    //직접 등록하는 경우
-//    public PublisherCreateResponseDto createPublisher(PublisherRequestDto publisherRequestDto) {
-//        Publisher publisher = new Publisher(publisherRequestDto.getName()); // id, Dto.getName()을 파라미터로 받아야하는지?
-////        return publisherRepository.save(publisher);
-//        return null;
-//    }
+    private Publisher findPublisherById(Long id) {
+        return publisherRepository.findById(id)
+                .orElseThrow(() -> new PublisherNotFoundException("출판사를 찾을 수 없습니다."));
+    }
 
     /**
      * 출판사 정보를 등록하는 메서드
@@ -63,8 +61,7 @@ public class PublisherServiceImpl implements PublisherService{
     @Override
     @Transactional(readOnly = true)
     public PublisherResponseDto getPublisherById(Long id) {
-        Publisher publisher = publisherRepository.findById(id)
-                .orElseThrow(() -> new PublisherNotFoundException("출판사를 찾을 수 없습니다."));
+        Publisher publisher = findPublisherById(id);
         return new PublisherResponseDto(publisher.getPublisherId(), publisher.getName());
     }
 
@@ -91,11 +88,9 @@ public class PublisherServiceImpl implements PublisherService{
      */
     @Override
     public void deletePublisher(Long id) {
-        Publisher publisher = publisherRepository.findById(id)
-                .orElseThrow(() -> new PublisherNotFoundException("출판사를 찾을 수 없습니다. ID: " + id));
+        Publisher publisher = findPublisherById(id);
         publisherRepository.delete(publisher);
     }
-
 
     /**
      * 특정 출판사를 수정하는 메서드
@@ -104,15 +99,11 @@ public class PublisherServiceImpl implements PublisherService{
      */
     @Override
     public PublisherResponseDto updatePublisher(Long id, PublisherRequestDto publisherRequestDto) {
-        Publisher publisher = publisherRepository.findById(id)
-                .orElseThrow(() -> new PublisherNotFoundException("출판사를 찾을 수 없습니다."));
-
+        Publisher publisher = findPublisherById(id);
         publisher.update(publisherRequestDto.getName());
-
         Publisher updatedPublisher = publisherRepository.save(publisher);
-
         return new PublisherResponseDto(updatedPublisher.getPublisherId(), updatedPublisher.getName());
-
     }
 }
+
 
