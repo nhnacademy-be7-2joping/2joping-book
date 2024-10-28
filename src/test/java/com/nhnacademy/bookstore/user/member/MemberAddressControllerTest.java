@@ -20,6 +20,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
+/**
+ * 회원 주소 컨트롤러 테스트
+ *
+ * @author Luha
+ * @since 1.0
+ */
 @ExtendWith(MockitoExtension.class)
 public class MemberAddressControllerTest {
     @InjectMocks
@@ -28,6 +34,10 @@ public class MemberAddressControllerTest {
     @Mock
     private MemberAddressService memberAddressService;
 
+    /**
+     * 테스트: 주소 추가 성공 시 응답 검증
+     * 예상 결과: 200 OK 응답 코드와 함께, 추가된 주소 정보를 포함한 리스트 반환
+     */
     @Test
     public void testAddMemberAddress_Success() {
         // given
@@ -46,6 +56,10 @@ public class MemberAddressControllerTest {
         assertEquals("12345", response.getBody().get(0).getPostalCode());
     }
 
+    /**
+     * 테스트: 특정 회원의 모든 주소 조회 성공 시 응답 검증
+     * 예상 결과: 200 OK 응답 코드와 함께, 조회된 주소 정보를 포함한 리스트 반환
+     */
     @Test
     public void testGetAllMemberAddress_Success() {
 //        // given
@@ -62,6 +76,10 @@ public class MemberAddressControllerTest {
 //        assertEquals("도로명 주소", response.getBody().get(0).getRoadAddress());
     }
 
+    /**
+     * 테스트: 주소 추가 시 주소 개수 제한 예외 발생 확인
+     * 예상 결과: AddressLimitToTenException 발생
+     */
     @Test
     public void testAddMemberAddress_AddressLimitExceededException() {
         // given

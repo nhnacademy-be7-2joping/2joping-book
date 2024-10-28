@@ -17,4 +17,6 @@ import lombok.NoArgsConstructor;
 public class PublisherRequestDto {
     @NotBlank // notnull empty blank
     private String name;
+
+
 }
