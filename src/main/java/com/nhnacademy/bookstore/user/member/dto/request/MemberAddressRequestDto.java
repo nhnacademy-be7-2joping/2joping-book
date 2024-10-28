@@ -16,20 +16,20 @@ public class MemberAddressRequestDto {
 
     @NotBlank(message = "우편번호는 필수 입력사항입니다.")
     @Pattern(regexp = "\\d{5}", message = "우편번호는 5자리 숫자여야 합니다.")
-    private String postal_code;
+    private String postalCode;
 
     @NotBlank(message = "도로명 주소는 필수 입력사항입니다.")
     @Size(max = 100, message = "도로명 주소는 최대 100자까지 입력 가능합니다.")
-    private String road_address;
+    private String roadAddress;
 
     @Size(max = 100, message = "상세 주소는 최대 100자까지 입력 가능합니다.")
-    private String detail_address;
+    private String detailAddress;
 
     @Size(max = 50, message = "주소 별칭은 최대 50자까지 입력 가능합니다.")
-    private String address_alias;
+    private String addressAlias;
 
     @NotNull(message = "기본 주소 설정 여부는 필수 입력사항입니다.")
-    private boolean isDefaultAddress;
+    private boolean defaultAddress;
 
     @NotBlank(message = "수신인 정보는 필수 입력사항입니다.")
     @Size(max = 20, message = "수신인 이름은 최대 20자까지 입력 가능합니다.")
