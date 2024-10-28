@@ -6,15 +6,17 @@ package com.nhnacademy.bookstore.wrap.entity;
  * @date : 2024-10-22
  */
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "wrap")
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "wrap")
 public class Wrap {
 
     @Id

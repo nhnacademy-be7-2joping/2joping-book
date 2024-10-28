@@ -63,14 +63,14 @@ public class ContributorController {
         return ResponseEntity.ok(updatedContributor);
     }
 
-    @Operation(summary = "Delete a contributor", description = "특정 기여자를 삭제합니다.")
+    @Operation(summary = "Deactivate a contributor", description = "특정 기여자를 비활성화(약삭제)합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "기여자 삭제 성공"),
+            @ApiResponse(responseCode = "200", description = "기여자 비활성화 성공"),
             @ApiResponse(responseCode = "404", description = "기여자를 찾을 수 없음"),
     })
-    @DeleteMapping("/{contributorId}")
-    public ResponseEntity<Void> deleteContributor(@PathVariable Long contributorId) {
-        contributorService.deleteContributorById(contributorId);
-        return ResponseEntity.noContent().build();
+    @PutMapping("/{contributorId}")
+    public ResponseEntity<Void> deactivateContributor(@PathVariable Long contributorId) {
+        contributorService.deactivateContributor(contributorId);
+        return ResponseEntity.ok().build();
     }
 }

@@ -6,17 +6,19 @@ package com.nhnacademy.bookstore.shipment.entity;
  * @date : 2024-10-22
  */
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "shipment_policy")
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "shipment_policy")
 public class ShipmentPolicy {
 
     @Id
