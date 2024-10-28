@@ -68,7 +68,7 @@ public class ContributorController {
             @ApiResponse(responseCode = "200", description = "기여자 비활성화 성공"),
             @ApiResponse(responseCode = "404", description = "기여자를 찾을 수 없음"),
     })
-    @PutMapping("/{contributorId}")
+    @PutMapping("/{contributorId}/deactivate")
     public ResponseEntity<Void> deactivateContributor(@PathVariable Long contributorId) {
         contributorService.deactivateContributor(contributorId);
         return ResponseEntity.ok().build();
