@@ -29,4 +29,7 @@ public class Wrap {
 
     @Column(name = "wrap_price", nullable = false)
     private int wrapPrice;
+
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive;
 }

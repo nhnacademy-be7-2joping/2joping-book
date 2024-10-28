@@ -42,4 +42,7 @@ public class ShipmentPolicy {
 
     @Column(name = "shipping_fee", nullable = false)
     private int shippingFee;
+
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive;
 }
