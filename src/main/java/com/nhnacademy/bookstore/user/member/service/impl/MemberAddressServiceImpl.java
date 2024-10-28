@@ -54,9 +54,17 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 
         //주소 저장
         memberAddressRepositroy.save(address);
+        //변경 후 주소 조회
+        List<MemberAddress> memberAddresses = memberAddressRepositroy.findByMember_Id(customerId);
 
+        //dto 변환
+        List<MemberAddressResponseDto> memberAddressResponse = new ArrayList<>();
+
+        for (MemberAddress memberAddress : memberAddresses) {
+            memberAddressResponse.add(MemberAddressMapper.INSTANCE.toResponseDto(memberAddress));
+        }
         //주소 조회
-        return getMemberAddresses(customerId);
+        return memberAddressResponse;
     }
 
     @Override
