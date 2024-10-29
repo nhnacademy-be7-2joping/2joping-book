@@ -24,4 +24,12 @@ public class Tag {
 
     @Column(nullable = false, length = 25)
     private String name;
+
+    public Tag(String name) {
+        this.name = name;
+    } // 생성자 추가
+
+    public void updateTag(String newName) {
+        this.name = newName;
+    } //수정 추가
 }
