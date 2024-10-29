@@ -55,7 +55,7 @@ class MemberServiceImplTest {
     void setUp() {
         memberCreateRequestDto = new MemberCreateRequestDto(
                 "testuser", "Test@1234", "이한빈", "010-1234-5678",
-                "dlgksqls7218@naver.com", "루하", Gender.MEN, LocalDate.of(1996, 6, 23)
+                "dlgksqls7218@naver.com", "루하", Gender.M, LocalDate.of(1996, 6, 23)
         );
     }
 
