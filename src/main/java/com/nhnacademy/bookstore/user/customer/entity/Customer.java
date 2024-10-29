@@ -26,4 +26,10 @@ public class Customer {
 
     @Column(nullable = false, length = 50, unique = true)
     private String email;
+
+    public void initializeCustomerFields(String name, String phone, String email) {
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+    }
 }

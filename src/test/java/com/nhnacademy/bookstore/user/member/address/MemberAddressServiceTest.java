@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstore.user.member;
+package com.nhnacademy.bookstore.user.member.address;
 
 import com.nhnacademy.bookstore.common.error.exception.user.address.AddressLimitToTenException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
@@ -9,12 +9,10 @@ import com.nhnacademy.bookstore.user.member.entity.MemberAddress;
 import com.nhnacademy.bookstore.user.member.repository.MemberAddressRepositroy;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.member.service.impl.MemberAddressServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 

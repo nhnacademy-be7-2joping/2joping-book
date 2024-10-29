@@ -26,5 +26,5 @@ public class Category {
     private Category subCategory;
 
     @Column(nullable = false, length = 50, unique = true)
-    private String categoryName;
+    private String name;
 }

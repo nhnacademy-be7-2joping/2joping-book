@@ -20,7 +20,7 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "booktag")
+@Table(name = "book_tag")
 public class BookTag {
     @EmbeddedId
     private BookTagId id;
