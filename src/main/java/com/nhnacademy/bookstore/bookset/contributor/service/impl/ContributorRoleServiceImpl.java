@@ -37,7 +37,7 @@ public class ContributorRoleServiceImpl implements ContributorRoleService {
     @Transactional(readOnly = true)
     public ContributorRoleResponseDto getContributorRole(Long contributorRoleId) {
         ContributorRole contributorRole = contributorRoleRepository.findById(contributorRoleId)
-                .orElseThrow(() -> new ContributorRoleNotFoundException());
+                .orElseThrow(ContributorRoleNotFoundException::new);
 
         return new ContributorRoleResponseDto(contributorRole.getContributorRoleId(), contributorRole.getName());
     }
@@ -47,7 +47,7 @@ public class ContributorRoleServiceImpl implements ContributorRoleService {
     @Transactional
     public ContributorRoleResponseDto updateContributorRole(Long contributorRoleId, ContributorRoleRequestDto dto) {
         ContributorRole contributorRole = contributorRoleRepository.findById(contributorRoleId)
-                .orElseThrow(() -> new ContributorRoleNotFoundException());
+                .orElseThrow(ContributorRoleNotFoundException::new);
 
         contributorRole.setName(dto.getRoleName());
         ContributorRole updatedRole = contributorRoleRepository.save(contributorRole);

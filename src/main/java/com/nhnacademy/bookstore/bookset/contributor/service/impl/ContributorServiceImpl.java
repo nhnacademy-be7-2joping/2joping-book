@@ -13,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 /**
  * 도서 기여자 Service
  *
@@ -33,14 +31,16 @@ public class ContributorServiceImpl implements ContributorService {
     @Transactional
     public ContributorResponseDto createContributor(ContributorRequestDto dto) {
         ContributorRole contributorRole = contributorRoleRepository.findById(dto.getContributorRoleId())
-                .orElseThrow(() -> new ContributorRoleNotFoundException());
+                .orElseThrow(ContributorRoleNotFoundException::new);
 
         Contributor contributor = new Contributor(null, contributorRole, dto.getContributorName(), true);
         Contributor savedContributor = contributorRepository.save(contributor);
 
-        return new ContributorResponseDto(savedContributor.getContributorId(),
+        return new ContributorResponseDto(
+                savedContributor.getContributorId(),
                 savedContributor.getContributorRole().getContributorRoleId(),
-                savedContributor.getName());
+                savedContributor.getName()
+        );
     }
 
     // 기여자 id로 읽기
@@ -48,13 +48,13 @@ public class ContributorServiceImpl implements ContributorService {
     @Transactional(readOnly = true)
     public ContributorResponseDto getContributor(Long contributorId) {
         Contributor contributor = contributorRepository.findById(contributorId)
-                .orElseThrow(() -> new ContributorNotFoundException());
+                .orElseThrow(ContributorNotFoundException::new);
 
-        return ContributorResponseDto.builder()
-                .contributorId(contributor.getContributorId())
-                .contributorRoleId(contributor.getContributorRole().getContributorRoleId())
-                .name(contributor.getName())
-                .build();
+        return new ContributorResponseDto(
+                contributor.getContributorId(),
+                contributor.getContributorRole().getContributorRoleId(),
+                contributor.getName()
+        );
     }
 
     // 기여자 수정
@@ -62,24 +62,21 @@ public class ContributorServiceImpl implements ContributorService {
     @Transactional
     public ContributorResponseDto updateContributor(Long contributorId, ContributorRequestDto dto) {
         Contributor contributor = contributorRepository.findById(contributorId)
-                .orElseThrow(() -> new ContributorNotFoundException());
+                .orElseThrow(ContributorNotFoundException::new);
 
-        Optional<ContributorRole> roleOptional = contributorRoleRepository.findById(dto.getContributorRoleId());
-
-        if (roleOptional.isEmpty()) {
-            throw new ContributorRoleNotFoundException();
-        }
+        ContributorRole contributorRole = contributorRoleRepository.findById(dto.getContributorRoleId())
+                .orElseThrow(ContributorRoleNotFoundException::new);
 
         contributor.setName(dto.getContributorName());
-        contributor.setContributorRole(roleOptional.get());
+        contributor.setContributorRole(contributorRole);
 
         Contributor updatedContributor = contributorRepository.save(contributor);
 
-        return ContributorResponseDto.builder()
-                .contributorId(updatedContributor.getContributorId())
-                .contributorRoleId(updatedContributor.getContributorRole().getContributorRoleId())
-                .name(updatedContributor.getName())
-                .build();
+        return new ContributorResponseDto(
+                updatedContributor.getContributorId(),
+                updatedContributor.getContributorRole().getContributorRoleId(),
+                updatedContributor.getName()
+        );
     }
 
     // 기여자 비활성화
@@ -87,9 +84,9 @@ public class ContributorServiceImpl implements ContributorService {
     @Transactional
     public void deactivateContributor(Long contributorId) {
         Contributor contributor = contributorRepository.findById(contributorId)
-                .orElseThrow(() -> new ContributorNotFoundException());
+                .orElseThrow(ContributorNotFoundException::new);
         contributor.setIsActive(false);
         contributorRepository.save(contributor);
     }
-
 }
+

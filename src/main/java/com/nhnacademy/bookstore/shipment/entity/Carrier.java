@@ -34,7 +34,4 @@ public class Carrier {
 
     @Column(name = "website_url", length = 255)
     private String websiteUrl;
-
-    @Column(name = "tracking_url", length = 255, nullable = false)
-    private String trackingUrl;
 }

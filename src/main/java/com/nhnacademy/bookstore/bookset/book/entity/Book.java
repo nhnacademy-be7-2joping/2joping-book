@@ -33,9 +33,6 @@ public class Book {
     private String title;
 
     @Column(columnDefinition = "TEXT")
-    private String tableOfContent;
-
-    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(nullable = false)

@@ -24,8 +24,8 @@ public class Wrap {
     @Column(name = "wrap_id", nullable = false)
     private Long wrapId;
 
-    @Column(name = "wrap_name", length = 32, nullable = false)
-    private String wrapName;
+    @Column(name = "name", length = 32, nullable = false)
+    private String name;
 
     @Column(name = "wrap_price", nullable = false)
     private int wrapPrice;

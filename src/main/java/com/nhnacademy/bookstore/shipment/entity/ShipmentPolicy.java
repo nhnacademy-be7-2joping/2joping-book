@@ -22,17 +22,18 @@ import java.math.BigDecimal;
 public class ShipmentPolicy {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "shipment_policy_id", nullable = false)
     private Long shipmentPolicyId;
 
-    @Column(name = "policy_name", length = 255, nullable = false, unique = true)
-    private String policyName;
+    @Column(name = "name", length = 255, nullable = false, unique = true)
+    private String name;
 
-    @Column(name = "min_order_amount", precision = 10, scale = 2, nullable = false)
-    private BigDecimal minOrderAmount;
+    @Column(name = "min_order_amount", nullable = false)
+    private Integer minOrderAmount;
 
     @Column(name = "is_member_only", nullable = false)
-    private boolean isMemberOnly;
+    private Boolean isMemberOnly;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
@@ -41,8 +42,8 @@ public class ShipmentPolicy {
     private LocalDateTime updatedAt;
 
     @Column(name = "shipping_fee", nullable = false)
-    private int shippingFee;
+    private Integer shippingFee;
 
     @Column(name = "is_active", nullable = false)
-    private boolean isActive;
+    private Boolean isActive;
 }
