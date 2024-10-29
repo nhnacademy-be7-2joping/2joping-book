@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstore.user.member;
+package com.nhnacademy.bookstore.user.member.address;
 
 import com.nhnacademy.bookstore.common.error.exception.user.address.AddressLimitToTenException;
 import com.nhnacademy.bookstore.user.member.controller.MemberAddressController;
