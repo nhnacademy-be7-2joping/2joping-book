@@ -45,14 +45,14 @@ public class TagController {
 
     @Operation(summary = "get a tag", description = "특정 태그를 조회합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "태그 조회 성공"),
+            @ApiResponse(responseCode = "200", description = "태그 조회 성공"),
             @ApiResponse(responseCode = "404", description = "태그를 찾을 수 없음"),
     })
 
     @GetMapping("/{tagId}")
-    public ResponseEntity<TagResponseDto> getTag(@PathVariable @Valid TagRequestDto dto) {
-        TagResponseDto createdTag = tagService.createTag(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdTag);
+    public ResponseEntity<TagResponseDto> getTag(@PathVariable Long tagId) {
+        TagResponseDto tag = tagService.getTag(tagId);
+        return ResponseEntity.ok(tag);
     }
 
     @Operation(summary = "get all tags", description = "모든 태그를 조회합니다.")
