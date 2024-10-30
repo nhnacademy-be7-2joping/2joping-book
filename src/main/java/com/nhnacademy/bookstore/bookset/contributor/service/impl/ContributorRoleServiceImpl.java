@@ -3,7 +3,7 @@ package com.nhnacademy.bookstore.bookset.contributor.service.impl;
 import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRoleRequestDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorRoleResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.entity.ContributorRole;
-import com.nhnacademy.bookstore.bookset.contributor.exception.NotFoundContributorRoleException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
 import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorRoleRepository;
 import com.nhnacademy.bookstore.bookset.contributor.service.ContributorRoleService;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class ContributorRoleServiceImpl implements ContributorRoleService {
     @Transactional(readOnly = true)
     public ContributorRoleResponseDto getContributorRole(Long contributorRoleId) {
         ContributorRole contributorRole = contributorRoleRepository.findById(contributorRoleId)
-                .orElseThrow(() -> new NotFoundContributorRoleException());
+                .orElseThrow(ContributorRoleNotFoundException::new);
 
         return new ContributorRoleResponseDto(contributorRole.getContributorRoleId(), contributorRole.getName());
     }
@@ -47,7 +47,7 @@ public class ContributorRoleServiceImpl implements ContributorRoleService {
     @Transactional
     public ContributorRoleResponseDto updateContributorRole(Long contributorRoleId, ContributorRoleRequestDto dto) {
         ContributorRole contributorRole = contributorRoleRepository.findById(contributorRoleId)
-                .orElseThrow(() -> new NotFoundContributorRoleException());
+                .orElseThrow(ContributorRoleNotFoundException::new);
 
         contributorRole.setName(dto.getRoleName());
         ContributorRole updatedRole = contributorRoleRepository.save(contributorRole);
@@ -60,7 +60,7 @@ public class ContributorRoleServiceImpl implements ContributorRoleService {
     @Transactional
     public void deleteContributorRole(Long contributorRoleId) {
         if (!contributorRoleRepository.existsById(contributorRoleId)) {
-            throw new NotFoundContributorRoleException();
+            throw new ContributorRoleNotFoundException();
         }
         contributorRoleRepository.deleteById(contributorRoleId);
     }
