@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.bookset.category.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 /**
@@ -19,6 +20,7 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Positive
     private Long categoryId;
 
     @ManyToOne(fetch = FetchType.LAZY)
