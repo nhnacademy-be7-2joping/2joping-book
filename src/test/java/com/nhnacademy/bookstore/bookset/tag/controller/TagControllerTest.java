@@ -48,7 +48,7 @@ public class TagControllerTest {
         //ID가 1이고 이름이 New Tag인 태그가 생성되었다고 알려주는 것
         given(tagService.createTag(ArgumentMatchers.any(TagRequestDto.class))).willReturn(responseDto); //서비스 계층의 동작을 가짜로 정의
 
-        // when & then (체이닝)
+        // when & then
         mockMvc.perform(post("/bookstore/tag") //post 동작
                         .contentType(MediaType.APPLICATION_JSON) //json형식으로/ 얘네는 서버로 전송할 요청 본문이 있을때만 필요함.
                         .content("{\"name\": \"Tag1\"}"))
