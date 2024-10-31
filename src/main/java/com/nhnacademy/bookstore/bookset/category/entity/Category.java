@@ -1,9 +1,7 @@
 package com.nhnacademy.bookstore.bookset.category.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * 카테고리 Entity
@@ -11,20 +9,31 @@ import lombok.NoArgsConstructor;
  * @author : 양준하
  * @date : 2024-10-22
  */
-@Entity
 @Getter
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "category")
+@EqualsAndHashCode
 public class Category {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
 
-    @ManyToOne
-    @JoinColumn(name = "subcategory_id")
-    private Category subCategory;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subcategory_id", nullable = true)
+    private Category subcategory;
 
     @Column(nullable = false, length = 50, unique = true)
-    private String categoryName;
+    private String name;
+
+    @Builder
+    private Category(
+            Category subcategory,
+            String name
+    ) {
+        this.subcategory = subcategory;
+        this.name = name;
+    }
 }
