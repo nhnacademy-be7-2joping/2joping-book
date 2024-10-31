@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.bookset.tag.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ import lombok.NoArgsConstructor;
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Positive
     private Long tagId;
 
     @Column(nullable = false, length = 25)
@@ -27,9 +29,9 @@ public class Tag {
 
     public Tag(String name) {
         this.name = name;
-    } // 생성자 추가
+    }
 
     public void updateTag(String newName) {
         this.name = newName;
-    } //수정 추가
+    }
 }

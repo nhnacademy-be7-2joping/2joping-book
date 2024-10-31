@@ -43,14 +43,11 @@ public class TagControllerTest {
 
     @Test
     public void createTag_SuccessResponse() throws Exception {
-        // given
-        TagResponseDto responseDto = new TagResponseDto(1L, "Tag1"); // 서버가 태그를 만들고 나서 응답으로 돌려줄 데이터
-        //ID가 1이고 이름이 New Tag인 태그가 생성되었다고 알려주는 것
-        given(tagService.createTag(ArgumentMatchers.any(TagRequestDto.class))).willReturn(responseDto); //서비스 계층의 동작을 가짜로 정의
+        TagResponseDto responseDto = new TagResponseDto(1L, "Tag1");
+        given(tagService.createTag(ArgumentMatchers.any(TagRequestDto.class))).willReturn(responseDto);
 
-        // when & then
-        mockMvc.perform(post("/bookstore/tag") //post 동작
-                        .contentType(MediaType.APPLICATION_JSON) //json형식으로/ 얘네는 서버로 전송할 요청 본문이 있을때만 필요함.
+        mockMvc.perform(post("/bookstore/tag")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"Tag1\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.tagId").value(1L))
@@ -61,7 +58,7 @@ public class TagControllerTest {
     public void getTag_SuccessResponse() throws Exception {
 
         TagResponseDto responseDto = new TagResponseDto(2L, "ReadTag");
-        given(tagService.getTag(2L)).willReturn(responseDto); // given을 하면 will return을 해주겠따
+        given(tagService.getTag(2L)).willReturn(responseDto);
 
         mockMvc.perform(get("/bookstore/tag/{tagId}", 2L))
                 .andExpect(status().isOk())
@@ -72,12 +69,10 @@ public class TagControllerTest {
 
     @Test
     public void getAllTags_ShouldReturnTags() throws Exception {
-        // given
         TagResponseDto tag1 = new TagResponseDto(1L, "Tag1");
         TagResponseDto tag2 = new TagResponseDto(2L, "Tag2");
         given(tagService.getAllTags()).willReturn(List.of(tag1, tag2));
 
-        // when & then
         mockMvc.perform(get("/bookstore/tag/allTags"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].tagId").value(1L))
@@ -89,10 +84,10 @@ public class TagControllerTest {
     @Test
     public void updateTag_SuccessResponse() throws Exception {
 
-        TagRequestDto requestDto = new TagRequestDto("UpdatedTag"); // 클라이언트가 서버로 보내는 수정 요청 데이터
-        TagResponseDto responseDto = new TagResponseDto(3L, "UpdatedTag"); // update 된 이후의 결과
+        TagRequestDto requestDto = new TagRequestDto("UpdatedTag");
+        TagResponseDto responseDto = new TagResponseDto(3L, "UpdatedTag");
 
-        given(tagService.updateTag(ArgumentMatchers.eq(3L), ArgumentMatchers.any(TagRequestDto.class))).willReturn(responseDto); // updatetag가 request dto를 받고 수정된 결과로 responsedto를 반환
+        given(tagService.updateTag(ArgumentMatchers.eq(3L), ArgumentMatchers.any(TagRequestDto.class))).willReturn(responseDto);
 
         mockMvc.perform(put("/bookstore/tag/{tagId}", 3L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -104,7 +99,6 @@ public class TagControllerTest {
 
     @Test
     public void deleteTag_SuccessResponse() throws Exception {
-        //given
         doNothing().when(tagService).deleteById(4L);
 
         mockMvc.perform(delete("/bookstore/tag/{tagId}", 4L))

@@ -1,15 +1,11 @@
 package com.nhnacademy.bookstore.bookset.tag.dto;
-import lombok.*;
+
+import jakarta.validation.constraints.Positive;
 
 /**
  * 태그 정보를 반환하는 DTO
  */
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class TagResponseDto {
-    private Long tagId;
-    private String name;
-}
+public record TagResponseDto(
+        @Positive Long tagId,
+        String name
+) {}

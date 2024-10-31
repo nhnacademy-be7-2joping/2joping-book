@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +51,7 @@ public class TagController {
     })
 
     @GetMapping("/{tagId}")
-    public ResponseEntity<TagResponseDto> getTag(@PathVariable Long tagId) {
+    public ResponseEntity<TagResponseDto> getTag(@PathVariable @Positive Long tagId) {
         TagResponseDto tag = tagService.getTag(tagId);
         return ResponseEntity.ok(tag);
     }
@@ -75,7 +76,7 @@ public class TagController {
     })
 
     @PutMapping("/{tagId}")
-    public ResponseEntity<TagResponseDto> updateTag(@PathVariable Long tagId, @RequestBody @Valid TagRequestDto dto) {
+    public ResponseEntity<TagResponseDto> updateTag(@PathVariable @Positive Long tagId, @RequestBody @Valid TagRequestDto dto) {
         TagResponseDto updatedTag = tagService.updateTag(tagId, dto);
         return ResponseEntity.ok(updatedTag);
     }
@@ -89,7 +90,7 @@ public class TagController {
     })
 
     @DeleteMapping("/{tagId}")
-    public ResponseEntity<Void> deleteTag(@PathVariable Long tagId) {
+    public ResponseEntity<Void> deleteTag(@PathVariable @Positive Long tagId) {
         tagService.deleteById(tagId);
         return ResponseEntity.noContent().build();
     }
