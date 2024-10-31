@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.bookset.book.dto.response;
 
+import com.nhnacademy.bookstore.bookset.publisher.entity.Publisher;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -18,22 +19,21 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookResponseDto {
+    private Long bookId;
+    private Publisher publisher;
     private String title;
-    private boolean isActive;
     private String description;
     private LocalDate publishedDate;
     private String isbn;
     private int retailPrice;
     private int sellingPrice;
     private boolean giftWrappable;
+    private boolean isActive;
     private int remainQuantity;
-    private String publisherName;
-    private String author;
     private int views;
     private int likes;
 //    private List<ContributorResponseDto> contributorList;
 //    private List<CategoryResponseDto> categoryList;
 //    private List<TagResponseDto> tagList;
-    private List<String> thumbnails;
-    private String detail;
+    private String thumbnail;
 }

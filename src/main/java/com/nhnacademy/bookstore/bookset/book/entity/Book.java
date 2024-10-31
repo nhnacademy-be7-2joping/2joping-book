@@ -2,6 +2,7 @@ package com.nhnacademy.bookstore.bookset.book.entity;
 
 import com.nhnacademy.bookstore.bookset.publisher.entity.Publisher;
 import jakarta.persistence.*;
+//import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,9 +34,6 @@ public class Book {
     private String title;
 
     @Column(columnDefinition = "TEXT")
-    private String tableOfContent;
-
-    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(nullable = false)
@@ -65,4 +63,6 @@ public class Book {
     @Column(nullable = false, columnDefinition = "INT default 0")
     private int likes;
 
+//    @Column(length = 500) //얘를 추가해야하나?
+//    private String thumbnail;
 }

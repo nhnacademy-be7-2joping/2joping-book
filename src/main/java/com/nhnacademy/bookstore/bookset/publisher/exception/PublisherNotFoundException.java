@@ -1,6 +1,8 @@
 package com.nhnacademy.bookstore.bookset.publisher.exception;
 
-public class PublisherNotFoundException extends RuntimeException {
+import com.nhnacademy.bookstore.common.error.exception.base.NotFoundException;
+
+public class PublisherNotFoundException extends NotFoundException {
     public PublisherNotFoundException(String message) {
         super(message);
     }

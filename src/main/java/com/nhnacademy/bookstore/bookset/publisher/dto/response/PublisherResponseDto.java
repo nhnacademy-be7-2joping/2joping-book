@@ -10,7 +10,6 @@ import lombok.Getter;
  * @date : 2024.10.23
  */
 
-
 @Getter
 @AllArgsConstructor
 public class PublisherResponseDto {
