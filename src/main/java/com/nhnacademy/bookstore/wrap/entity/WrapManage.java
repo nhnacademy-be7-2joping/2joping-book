@@ -8,17 +8,20 @@ package com.nhnacademy.bookstore.wrap.entity;
  */
 import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "wrap_manage", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"wrap_id", "order_detail_id"})
 })
-@Getter
-@Setter
-@NoArgsConstructor
 public class WrapManage {
 
     @Id
@@ -27,7 +30,7 @@ public class WrapManage {
     private Long wrapManageId;
 
     @ManyToOne
-    @JoinColumn(name = "package_id", nullable = false)
+    @JoinColumn(name = "wrap_id", nullable = false)
     private Wrap wrap;
 
     @ManyToOne

@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstore.bookset.pulisher;
+package com.nhnacademy.bookstore.bookset.publisher.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,4 +25,14 @@ public class Publisher {
 
     @Column(nullable = false, length = 50)
     private String name;
+
+    // 생성자 추가 (이유현)
+    public Publisher(String name){
+        this.name = name;
+    }
+    //update 메서드 추가 (이유현)
+    public void update(String name) {
+        this.name = name;
+    }
+
 }

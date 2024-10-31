@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstore.bookset.book.entity;
 
-import com.nhnacademy.bookstore.bookset.pulisher.Publisher;
+import com.nhnacademy.bookstore.bookset.publisher.entity.Publisher;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,9 +33,6 @@ public class Book {
     private String title;
 
     @Column(columnDefinition = "TEXT")
-    private String tableOfContent;
-
-    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(nullable = false)
@@ -56,8 +53,8 @@ public class Book {
     @Column(nullable = false)
     private boolean isActive;
 
-    @Column(nullable = false, columnDefinition = "BIGINT default 0")
-    private Long remainQuantity;
+    @Column(nullable = false, columnDefinition = "INT default 0")
+    private int remainQuantity;
 
     @Column(nullable = false, columnDefinition = "INT default 0")
     private int views;

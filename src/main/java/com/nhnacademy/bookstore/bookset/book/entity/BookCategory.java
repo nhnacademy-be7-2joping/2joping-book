@@ -1,6 +1,6 @@
-package com.nhnacademy.bookstore.bookset.category.entity;
+package com.nhnacademy.bookstore.bookset.book.entity;
 
-import com.nhnacademy.bookstore.bookset.book.entity.Book;
+import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +19,7 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "bookcategory")
+@Table(name = "book_category")
 public class BookCategory {
     @EmbeddedId
     private BookCategoryId id;

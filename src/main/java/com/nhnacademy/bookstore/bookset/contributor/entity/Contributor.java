@@ -10,14 +10,16 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "contributor")
+@Table(name = "contributor", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"contributor_role_id", "name"})
+})
 public class Contributor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,4 +31,7 @@ public class Contributor {
 
     @Column(nullable = false, length = 30)
     private String name;
+
+    @Column(nullable = false)
+    private Boolean isActive = true;
 }

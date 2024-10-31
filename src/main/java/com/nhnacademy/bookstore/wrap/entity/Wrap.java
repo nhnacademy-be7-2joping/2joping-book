@@ -6,15 +6,17 @@ package com.nhnacademy.bookstore.wrap.entity;
  * @date : 2024-10-22
  */
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "wrap")
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "wrap")
 public class Wrap {
 
     @Id
@@ -22,9 +24,12 @@ public class Wrap {
     @Column(name = "wrap_id", nullable = false)
     private Long wrapId;
 
-    @Column(name = "wrap_name", length = 32, nullable = false)
-    private String wrapName;
+    @Column(name = "name", length = 32, nullable = false)
+    private String name;
 
     @Column(name = "wrap_price", nullable = false)
     private int wrapPrice;
+
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive;
 }
