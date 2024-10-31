@@ -6,31 +6,34 @@ package com.nhnacademy.bookstore.shipment.entity;
  * @date : 2024-10-22
  */
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "shipment_policy")
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "shipment_policy")
 public class ShipmentPolicy {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "shipment_policy_id", nullable = false)
     private Long shipmentPolicyId;
 
-    @Column(name = "policy_name", length = 255, nullable = false, unique = true)
-    private String policyName;
+    @Column(name = "name", length = 255, nullable = false, unique = true)
+    private String name;
 
-    @Column(name = "min_order_amount", precision = 10, scale = 2, nullable = false)
-    private BigDecimal minOrderAmount;
+    @Column(name = "min_order_amount", nullable = false)
+    private Integer minOrderAmount;
 
     @Column(name = "is_member_only", nullable = false)
-    private boolean isMemberOnly;
+    private Boolean isMemberOnly;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
@@ -39,5 +42,8 @@ public class ShipmentPolicy {
     private LocalDateTime updatedAt;
 
     @Column(name = "shipping_fee", nullable = false)
-    private int shippingFee;
+    private Integer shippingFee;
+
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
 }
