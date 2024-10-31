@@ -4,6 +4,7 @@ import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorReque
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.entity.Contributor;
 import com.nhnacademy.bookstore.bookset.contributor.entity.ContributorRole;
+import com.nhnacademy.bookstore.bookset.contributor.mapper.ContributorMapper;
 import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorRepository;
 import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorRoleRepository;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorNotFoundException;
@@ -30,6 +31,9 @@ class ContributorServiceImplTest {
     @Mock
     private ContributorRoleRepository contributorRoleRepository;
 
+    @Mock
+    private ContributorMapper contributorMapper;
+
     @InjectMocks
     private ContributorServiceImpl contributorService;
 
@@ -38,14 +42,15 @@ class ContributorServiceImplTest {
     void createContributor() {
         // given
         ContributorRole contributorRole = new ContributorRole(1L, "작가");
-        ContributorRequestDto requestDto = new ContributorRequestDto();
-        requestDto.setContributorRoleId(1L);
-        requestDto.setContributorName("삼조핑");
+        ContributorRequestDto requestDto = new ContributorRequestDto("삼조핑", 1L);
+        Contributor savedContributor = new Contributor();
 
-        Contributor savedContributor = new Contributor(1L, contributorRole, "삼조핑", true);
+        savedContributor.toEntity(requestDto, contributorRole);
 
         when(contributorRoleRepository.findById(1L)).thenReturn(Optional.of(contributorRole));
         when(contributorRepository.save(any(Contributor.class))).thenReturn(savedContributor);
+        when(contributorMapper.toContributorResponseDto(any(Contributor.class)))
+                .thenReturn(new ContributorResponseDto(1L, 1L, "삼조핑"));
 
         // when
         ContributorResponseDto responseDto = contributorService.createContributor(requestDto);
@@ -61,9 +66,7 @@ class ContributorServiceImplTest {
     @DisplayName("기여자 역할이 없는 경우 예외 발생 테스트")
     void createContributorRoleNotFound() {
         // given
-        ContributorRequestDto requestDto = new ContributorRequestDto();
-        requestDto.setContributorRoleId(1L);
-        requestDto.setContributorName("삼조핑");
+        ContributorRequestDto requestDto = new ContributorRequestDto("삼조핑", 1L);
 
         when(contributorRoleRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -76,9 +79,12 @@ class ContributorServiceImplTest {
     void getContributor() {
         // given
         ContributorRole contributorRole = new ContributorRole(1L, "작가");
-        Contributor contributor = new Contributor(1L, contributorRole, "삼조핑", true);
+        Contributor contributor = new Contributor();
+        contributor.toEntity(new ContributorRequestDto("삼조핑", 1L), contributorRole);
 
         when(contributorRepository.findById(1L)).thenReturn(Optional.of(contributor));
+        when(contributorMapper.toContributorResponseDto(any(Contributor.class)))
+                .thenReturn(new ContributorResponseDto(1L, 1L, "삼조핑"));
 
         // when
         ContributorResponseDto responseDto = contributorService.getContributor(1L);
@@ -105,15 +111,15 @@ class ContributorServiceImplTest {
     void updateContributor() {
         // given
         ContributorRole newRole = new ContributorRole(2L, "Editor");
-        Contributor contributor = new Contributor(1L, new ContributorRole(1L, "작가"), "삼조핑", true);
-        ContributorRequestDto requestDto = new ContributorRequestDto();
-        requestDto.setContributorName("이조핑");
-        requestDto.setContributorRoleId(2L);
+        Contributor contributor = new Contributor();
+        contributor.toEntity(new ContributorRequestDto("삼조핑", 1L), new ContributorRole(1L, "작가"));
+        ContributorRequestDto requestDto = new ContributorRequestDto("이조핑", 2L);
 
         when(contributorRepository.findById(1L)).thenReturn(Optional.of(contributor));
         when(contributorRoleRepository.findById(2L)).thenReturn(Optional.of(newRole));
-        when(contributorRepository.save(any(Contributor.class)))
-                .thenReturn(new Contributor(1L, newRole, "이조핑", true));
+        when(contributorRepository.save(any(Contributor.class))).thenReturn(contributor);
+        when(contributorMapper.toContributorResponseDto(any(Contributor.class)))
+                .thenReturn(new ContributorResponseDto(1L, 2L, "이조핑"));
 
         // when
         ContributorResponseDto responseDto = contributorService.updateContributor(1L, requestDto);
@@ -129,10 +135,9 @@ class ContributorServiceImplTest {
     @DisplayName("기여자 수정 시 역할을 찾지 못하는 경우 예외 발생 테스트")
     void updateContributorRoleNotFound() {
         // given
-        Contributor contributor = new Contributor(1L, new ContributorRole(1L, "작가"), "삼조핑", true);
-        ContributorRequestDto requestDto = new ContributorRequestDto();
-        requestDto.setContributorName("이조핑");
-        requestDto.setContributorRoleId(2L);
+        Contributor contributor = new Contributor();
+        contributor.toEntity(new ContributorRequestDto("삼조핑", 1L), new ContributorRole(1L, "작가"));
+        ContributorRequestDto requestDto = new ContributorRequestDto("이조핑", 2L);
 
         when(contributorRepository.findById(1L)).thenReturn(Optional.of(contributor));
         when(contributorRoleRepository.findById(2L)).thenReturn(Optional.empty());
@@ -145,11 +150,11 @@ class ContributorServiceImplTest {
     @DisplayName("기여자 비활성화 테스트")
     void deactivateContributor() {
         // given
-        Contributor contributor = new Contributor(1L, new ContributorRole(1L, "작가"), "삼조핑", true);
+        Contributor contributor = new Contributor();
+        contributor.toEntity(new ContributorRequestDto("삼조핑", 1L), new ContributorRole(1L, "작가"));
 
         when(contributorRepository.findById(1L)).thenReturn(Optional.of(contributor));
-        when(contributorRepository.save(any(Contributor.class)))
-                .thenReturn(new Contributor(1L, contributor.getContributorRole(), "삼조핑", false));
+        when(contributorRepository.save(any(Contributor.class))).thenReturn(contributor);
 
         // when
         contributorService.deactivateContributor(1L);

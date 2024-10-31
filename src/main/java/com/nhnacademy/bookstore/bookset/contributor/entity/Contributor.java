@@ -1,19 +1,19 @@
 package com.nhnacademy.bookstore.bookset.contributor.entity;
 
+import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRequestDto;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 /**
  * 도서 기여자 Entity
  *
  * @author : 양준하
  * @date : 2024-10-22
  */
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -26,12 +26,22 @@ public class Contributor {
     private Long contributorId;
 
     @ManyToOne
-    @JoinColumn(name = "contributor_role_id", nullable = false)
+    @JoinColumn(name = "contributor_role_id")
     private ContributorRole contributorRole;
 
-    @Column(nullable = false, length = 30)
+    @Column(length = 30)
     private String name;
 
-    @Column(nullable = false)
+    @Column
     private Boolean isActive = true;
+
+    public void deactivate() {
+        this.isActive = false;
+    }
+
+    public void toEntity(ContributorRequestDto requestDto, ContributorRole contributorRole) {
+        this.contributorRole = contributorRole;
+        this.name = requestDto.getContributorName();
+        this.isActive = true;
+    }
 }

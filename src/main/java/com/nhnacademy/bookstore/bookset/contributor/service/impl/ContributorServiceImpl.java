@@ -4,6 +4,7 @@ import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorReque
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.entity.Contributor;
 import com.nhnacademy.bookstore.bookset.contributor.entity.ContributorRole;
+import com.nhnacademy.bookstore.bookset.contributor.mapper.ContributorMapper;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
 import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorRepository;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ContributorServiceImpl implements ContributorService {
     private final ContributorRepository contributorRepository;
     private final ContributorRoleRepository contributorRoleRepository;
+    private final ContributorMapper contributorMapper;
 
     // 기여자 생성
     @Override
@@ -33,14 +35,11 @@ public class ContributorServiceImpl implements ContributorService {
         ContributorRole contributorRole = contributorRoleRepository.findById(dto.getContributorRoleId())
                 .orElseThrow(ContributorRoleNotFoundException::new);
 
-        Contributor contributor = new Contributor(null, contributorRole, dto.getContributorName(), true);
-        Contributor savedContributor = contributorRepository.save(contributor);
+        Contributor contributor = new Contributor();
+        contributor.toEntity(dto, contributorRole);
 
-        return new ContributorResponseDto(
-                savedContributor.getContributorId(),
-                savedContributor.getContributorRole().getContributorRoleId(),
-                savedContributor.getName()
-        );
+        Contributor savedContributor = contributorRepository.save(contributor);
+        return contributorMapper.toContributorResponseDto(savedContributor);
     }
 
     // 기여자 id로 읽기
@@ -50,11 +49,7 @@ public class ContributorServiceImpl implements ContributorService {
         Contributor contributor = contributorRepository.findById(contributorId)
                 .orElseThrow(ContributorNotFoundException::new);
 
-        return new ContributorResponseDto(
-                contributor.getContributorId(),
-                contributor.getContributorRole().getContributorRoleId(),
-                contributor.getName()
-        );
+        return contributorMapper.toContributorResponseDto(contributor);
     }
 
     // 기여자 수정
@@ -67,16 +62,10 @@ public class ContributorServiceImpl implements ContributorService {
         ContributorRole contributorRole = contributorRoleRepository.findById(dto.getContributorRoleId())
                 .orElseThrow(ContributorRoleNotFoundException::new);
 
-        contributor.setName(dto.getContributorName());
-        contributor.setContributorRole(contributorRole);
-
+        contributor.toEntity(dto, contributorRole);
         Contributor updatedContributor = contributorRepository.save(contributor);
 
-        return new ContributorResponseDto(
-                updatedContributor.getContributorId(),
-                updatedContributor.getContributorRole().getContributorRoleId(),
-                updatedContributor.getName()
-        );
+        return contributorMapper.toContributorResponseDto(updatedContributor);
     }
 
     // 기여자 비활성화
@@ -85,8 +74,7 @@ public class ContributorServiceImpl implements ContributorService {
     public void deactivateContributor(Long contributorId) {
         Contributor contributor = contributorRepository.findById(contributorId)
                 .orElseThrow(ContributorNotFoundException::new);
-        contributor.setIsActive(false);
+        contributor.deactivate();
         contributorRepository.save(contributor);
     }
 }
-

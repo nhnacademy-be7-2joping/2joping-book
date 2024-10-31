@@ -3,6 +3,7 @@ package com.nhnacademy.bookstore.bookset.contributor.service.impl;
 import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRoleRequestDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorRoleResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.entity.ContributorRole;
+import com.nhnacademy.bookstore.bookset.contributor.mapper.ContributorMapper;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
 import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorRoleRepository;
 import com.nhnacademy.bookstore.bookset.contributor.service.ContributorRoleService;
@@ -21,17 +22,19 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ContributorRoleServiceImpl implements ContributorRoleService {
     private final ContributorRoleRepository contributorRoleRepository;
+    private final ContributorMapper contributorMapper;
 
     // 기여자 역할 생성
     @Override
     @Transactional
     public ContributorRoleResponseDto createContributorRole(ContributorRoleRequestDto dto) {
-        ContributorRole contributorRole = new ContributorRole(null, dto.getRoleName());
-        ContributorRole savedRole = contributorRoleRepository.save(contributorRole);
+        ContributorRole contributorRole = new ContributorRole();
+        contributorRole.toEntity(dto);
 
-        return new ContributorRoleResponseDto(savedRole.getContributorRoleId(), savedRole.getName());
+        ContributorRole savedRole = contributorRoleRepository.save(contributorRole);
+        return contributorMapper.toContributorRoleResponseDto(savedRole);
     }
-    
+
     // 기여자 역할 id로 읽기
     @Override
     @Transactional(readOnly = true)
@@ -39,7 +42,7 @@ public class ContributorRoleServiceImpl implements ContributorRoleService {
         ContributorRole contributorRole = contributorRoleRepository.findById(contributorRoleId)
                 .orElseThrow(ContributorRoleNotFoundException::new);
 
-        return new ContributorRoleResponseDto(contributorRole.getContributorRoleId(), contributorRole.getName());
+        return contributorMapper.toContributorRoleResponseDto(contributorRole);
     }
 
     // 기여자 역할 수정
@@ -49,10 +52,10 @@ public class ContributorRoleServiceImpl implements ContributorRoleService {
         ContributorRole contributorRole = contributorRoleRepository.findById(contributorRoleId)
                 .orElseThrow(ContributorRoleNotFoundException::new);
 
-        contributorRole.setName(dto.getRoleName());
+        contributorRole.toEntity(dto);
         ContributorRole updatedRole = contributorRoleRepository.save(contributorRole);
 
-        return new ContributorRoleResponseDto(updatedRole.getContributorRoleId(), updatedRole.getName());
+        return contributorMapper.toContributorRoleResponseDto(updatedRole);
     }
 
     // 기여자 역할 삭제
