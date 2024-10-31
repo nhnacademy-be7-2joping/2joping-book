@@ -38,4 +38,12 @@ public class Category {
         this.subcategory = subcategory;
         this.name = name;
     }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateSubcategory(Category subcategory) {
+        this.subcategory = subcategory;
+    }
 }

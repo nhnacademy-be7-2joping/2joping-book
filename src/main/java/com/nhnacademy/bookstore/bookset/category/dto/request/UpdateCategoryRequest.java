@@ -4,7 +4,7 @@ import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 
-public record CreateCategoryRequest(
+public record UpdateCategoryRequest(
 
         @Nullable
         Category subcategory,
