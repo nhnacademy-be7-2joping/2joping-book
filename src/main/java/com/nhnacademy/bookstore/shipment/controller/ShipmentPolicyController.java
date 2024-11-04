@@ -80,4 +80,15 @@ public class ShipmentPolicyController {
         shipmentPolicyService.deactivateShipmentPolicy(shipmentPolicyId);
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "activate a shipment policy", description = "특정 배송 정책을 활성화 합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "배송 정책 활성화 성공"),
+            @ApiResponse(responseCode = "404", description = "배송 정책을 찾을 수 없음")
+    })
+    @PutMapping("/{shipmentPolicyId}/activate")
+    public ResponseEntity<Void> activateShipmentPolicy(@PathVariable Long shipmentPolicyId) {
+        shipmentPolicyService.activateShipmentPolicy(shipmentPolicyId);
+        return ResponseEntity.ok().build();
+    }
 }

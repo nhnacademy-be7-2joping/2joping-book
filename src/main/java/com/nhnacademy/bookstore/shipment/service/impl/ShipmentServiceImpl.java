@@ -7,6 +7,7 @@ import com.nhnacademy.bookstore.common.error.exception.shipment.ShipmentPolicyNo
 import com.nhnacademy.bookstore.shipment.dto.request.ShipmentRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.response.ShipmentResponseDto;
 import com.nhnacademy.bookstore.shipment.entity.Shipment;
+import com.nhnacademy.bookstore.shipment.mapper.ShipmentMapper;
 import com.nhnacademy.bookstore.shipment.repository.ShipmentRepository;
 import com.nhnacademy.bookstore.shipment.service.ShipmentService;
 import com.nhnacademy.bookstore.shipment.entity.Carrier;
@@ -31,15 +32,16 @@ public class ShipmentServiceImpl implements ShipmentService {
     private final CarrierRepository carrierRepository;
     private final ShipmentPolicyRepository shipmentPolicyRepository;
     private final OrderRepository orderRepository;
+    private final ShipmentMapper shipmentMapper;
 
     @Override
     @Transactional
     public ShipmentResponseDto createShipment(ShipmentRequestDto requestDto) {
-        Carrier carrier = carrierRepository.findById(requestDto.getCarrierId())
+        Carrier carrier = carrierRepository.findById(requestDto.carrierId())
                 .orElseThrow(CarrierNotFoundException::new);
-        ShipmentPolicy shipmentPolicy = shipmentPolicyRepository.findById(requestDto.getShipmentPolicyId())
+        ShipmentPolicy shipmentPolicy = shipmentPolicyRepository.findById(requestDto.shipmentPolicyId())
                 .orElseThrow(ShipmentPolicyNotFoundException::new);
-        Order order = orderRepository.findById(requestDto.getOrderId())
+        Order order = orderRepository.findById(requestDto.orderId())
                 .orElseThrow(OrderNotFoundException::new);
 
         Shipment shipment = new Shipment(
@@ -47,14 +49,14 @@ public class ShipmentServiceImpl implements ShipmentService {
                 carrier,
                 shipmentPolicy,
                 order,
-                requestDto.getRequirement(),
-                requestDto.getShippingDate(),
-                requestDto.getDeliveryDate(),
-                requestDto.getTrackingNumber()
+                requestDto.requirement(),
+                requestDto.shippingDate(),
+                requestDto.deliveryDate(),
+                requestDto.trackingNumber()
         );
 
         Shipment savedShipment = shipmentRepository.save(shipment);
-        return mapToResponseDto(savedShipment);
+        return shipmentMapper.toShipmentResponseDto(savedShipment);
     }
 
     @Override
@@ -62,7 +64,7 @@ public class ShipmentServiceImpl implements ShipmentService {
     public ShipmentResponseDto getShipment(Long shipmentId) {
         Shipment shipment = shipmentRepository.findById(shipmentId)
                 .orElseThrow(ShipmentNotFoundException::new);
-        return mapToResponseDto(shipment);
+        return shipmentMapper.toShipmentResponseDto(shipment);
     }
 
     @Override
@@ -70,7 +72,7 @@ public class ShipmentServiceImpl implements ShipmentService {
     public List<ShipmentResponseDto> getAllShipments() {
         return shipmentRepository.findAll()
                 .stream()
-                .map(this::mapToResponseDto)
+                .map(shipmentMapper::toShipmentResponseDto)
                 .collect(Collectors.toList());
     }
 
@@ -80,7 +82,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         LocalDateTime now = LocalDateTime.now();
         return shipmentRepository.findAll().stream()
                 .filter(shipment -> shipment.getDeliveryDate() != null && shipment.getDeliveryDate().isBefore(now))
-                .map(this::mapToResponseDto)
+                .map(shipmentMapper::toShipmentResponseDto)
                 .collect(Collectors.toList());
     }
 
@@ -90,24 +92,25 @@ public class ShipmentServiceImpl implements ShipmentService {
         LocalDateTime now = LocalDateTime.now();
         return shipmentRepository.findAll().stream()
                 .filter(shipment -> shipment.getDeliveryDate() == null || shipment.getDeliveryDate().isAfter(now))
-                .map(this::mapToResponseDto)
+                .map(shipmentMapper::toShipmentResponseDto)
                 .collect(Collectors.toList());
     }
-
 
     @Override
     @Transactional
     public ShipmentResponseDto updateShipment(Long shipmentId, ShipmentRequestDto requestDto) {
         Shipment shipment = shipmentRepository.findById(shipmentId)
                 .orElseThrow(ShipmentNotFoundException::new);
+        Carrier carrier = carrierRepository.findById(requestDto.carrierId())
+                .orElseThrow(CarrierNotFoundException::new);
+        ShipmentPolicy shipmentPolicy = shipmentPolicyRepository.findById(requestDto.shipmentPolicyId())
+                .orElseThrow(ShipmentPolicyNotFoundException::new);
+        Order order = orderRepository.findById(requestDto.orderId())
+                .orElseThrow(OrderNotFoundException::new);
 
-        shipment.setRequirement(requestDto.getRequirement());
-        shipment.setShippingDate(requestDto.getShippingDate());
-        shipment.setDeliveryDate(requestDto.getDeliveryDate());
-        shipment.setTrackingNumber(requestDto.getTrackingNumber());
-
+        shipment.toEntity(requestDto, carrier, shipmentPolicy, order);
         Shipment updatedShipment = shipmentRepository.save(shipment);
-        return mapToResponseDto(updatedShipment);
+        return shipmentMapper.toShipmentResponseDto(updatedShipment);
     }
 
     @Override
@@ -116,18 +119,5 @@ public class ShipmentServiceImpl implements ShipmentService {
         Shipment shipment = shipmentRepository.findById(shipmentId)
                 .orElseThrow(ShipmentNotFoundException::new);
         shipmentRepository.delete(shipment);
-    }
-
-    private ShipmentResponseDto mapToResponseDto(Shipment shipment) {
-        return new ShipmentResponseDto(
-                shipment.getShipmentId(),
-                shipment.getCarrier().getCarrierId(),
-                shipment.getShipmentPolicy().getShipmentPolicyId(),
-                shipment.getOrder().getOrderId(),
-                shipment.getRequirement(),
-                shipment.getShippingDate(),
-                shipment.getDeliveryDate(),
-                shipment.getTrackingNumber()
-        );
     }
 }

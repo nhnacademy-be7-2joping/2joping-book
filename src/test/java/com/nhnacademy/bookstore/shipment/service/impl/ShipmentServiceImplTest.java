@@ -6,6 +6,7 @@ import com.nhnacademy.bookstore.shipment.entity.Shipment;
 import com.nhnacademy.bookstore.shipment.entity.Carrier;
 import com.nhnacademy.bookstore.shipment.entity.ShipmentPolicy;
 import com.nhnacademy.bookstore.orderset.order.entity.Order;
+import com.nhnacademy.bookstore.shipment.mapper.ShipmentMapper;
 import com.nhnacademy.bookstore.shipment.repository.ShipmentRepository;
 import com.nhnacademy.bookstore.shipment.repository.CarrierRepository;
 import com.nhnacademy.bookstore.shipment.repository.ShipmentPolicyRepository;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.TestPropertySource;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@TestPropertySource(properties = "keymanager.url=http://localhost:8084")
 class ShipmentServiceImplTest {
 
     @Mock
@@ -40,6 +43,9 @@ class ShipmentServiceImplTest {
     @Mock
     private OrderRepository orderRepository;
 
+    @Mock
+    private ShipmentMapper shipmentMapper;
+
     @InjectMocks
     private ShipmentServiceImpl shipmentService;
 
@@ -52,18 +58,20 @@ class ShipmentServiceImplTest {
         ShipmentPolicy policy = new ShipmentPolicy(1L, "정책 이름", 10000, true, null, null, 5000, true);
         Order order = new Order();
         Shipment savedShipment = new Shipment(1L, carrier, policy, order, "빠른 배송 요청", LocalDateTime.now(), LocalDateTime.now().plusDays(2), "12345");
+        ShipmentResponseDto responseDto = new ShipmentResponseDto(1L, 1L, 1L, 1L, "빠른 배송 요청", LocalDateTime.now(), LocalDateTime.now().plusDays(2), "12345");
 
-        when(carrierRepository.findById(requestDto.getCarrierId())).thenReturn(Optional.of(carrier));
-        when(shipmentPolicyRepository.findById(requestDto.getShipmentPolicyId())).thenReturn(Optional.of(policy));
-        when(orderRepository.findById(requestDto.getOrderId())).thenReturn(Optional.of(order));
+        when(carrierRepository.findById(requestDto.carrierId())).thenReturn(Optional.of(carrier));
+        when(shipmentPolicyRepository.findById(requestDto.shipmentPolicyId())).thenReturn(Optional.of(policy));
+        when(orderRepository.findById(requestDto.orderId())).thenReturn(Optional.of(order));
         when(shipmentRepository.save(any(Shipment.class))).thenReturn(savedShipment);
+        when(shipmentMapper.toShipmentResponseDto(savedShipment)).thenReturn(responseDto);
 
         // when
-        ShipmentResponseDto responseDto = shipmentService.createShipment(requestDto);
+        ShipmentResponseDto result = shipmentService.createShipment(requestDto);
 
         // then
-        assertEquals("12345", responseDto.getTrackingNumber());
-        assertEquals(1L, responseDto.getCarrierId());
+        assertEquals("12345", result.trackingNumber());
+        assertEquals(1L, result.carrierId());
     }
 
     @Test
@@ -74,14 +82,17 @@ class ShipmentServiceImplTest {
         ShipmentPolicy policy = new ShipmentPolicy(1L, "정책 이름", 10000, true, null, null, 5000, true);
         Order order = new Order();
         Shipment shipment = new Shipment(1L, carrier, policy, order, "빠른 배송 요청", LocalDateTime.now(), LocalDateTime.now().plusDays(2), "12345");
+        ShipmentResponseDto responseDto = new ShipmentResponseDto(1L, 1L, 1L, 1L, "빠른 배송 요청", LocalDateTime.now(), LocalDateTime.now().plusDays(2), "12345");
+
         when(shipmentRepository.findById(1L)).thenReturn(Optional.of(shipment));
+        when(shipmentMapper.toShipmentResponseDto(shipment)).thenReturn(responseDto);
 
         // when
-        ShipmentResponseDto responseDto = shipmentService.getShipment(1L);
+        ShipmentResponseDto result = shipmentService.getShipment(1L);
 
         // then
-        assertEquals(1L, responseDto.getShipmentId());
-        assertEquals("12345", responseDto.getTrackingNumber());
+        assertEquals(1L, result.shipmentId());
+        assertEquals("12345", result.trackingNumber());
     }
 
     @Test
@@ -93,14 +104,19 @@ class ShipmentServiceImplTest {
         Order order = new Order();
         Shipment shipment1 = new Shipment(1L, carrier, policy, order, "빠른 배송 요청", LocalDateTime.now(), LocalDateTime.now().plusDays(2), "12345");
         Shipment shipment2 = new Shipment(2L, carrier, policy, order, "일반 배송 요청", LocalDateTime.now(), LocalDateTime.now().plusDays(3), "67890");
+        ShipmentResponseDto responseDto1 = new ShipmentResponseDto(1L, 1L, 1L, 1L, "빠른 배송 요청", LocalDateTime.now(), LocalDateTime.now().plusDays(2), "12345");
+        ShipmentResponseDto responseDto2 = new ShipmentResponseDto(2L, 1L, 1L, 1L, "일반 배송 요청", LocalDateTime.now(), LocalDateTime.now().plusDays(3), "67890");
+
         when(shipmentRepository.findAll()).thenReturn(List.of(shipment1, shipment2));
+        when(shipmentMapper.toShipmentResponseDto(shipment1)).thenReturn(responseDto1);
+        when(shipmentMapper.toShipmentResponseDto(shipment2)).thenReturn(responseDto2);
 
         // when
         List<ShipmentResponseDto> responseList = shipmentService.getAllShipments();
 
         // then
         assertEquals(2, responseList.size());
-        assertEquals("12345", responseList.get(0).getTrackingNumber());
+        assertEquals("12345", responseList.get(0).trackingNumber());
     }
 
     @Test
@@ -112,14 +128,17 @@ class ShipmentServiceImplTest {
         ShipmentPolicy policy = new ShipmentPolicy(1L, "정책 이름", 10000, true, null, null, 5000, true);
         Order order = new Order();
         Shipment shipment = new Shipment(1L, carrier, policy, order, "빠른 배송 요청", now.minusDays(3), now.minusDays(1), "12345");
+        ShipmentResponseDto responseDto = new ShipmentResponseDto(1L, 1L, 1L, 1L, "빠른 배송 요청", now.minusDays(3), now.minusDays(1), "12345");
+
         when(shipmentRepository.findAll()).thenReturn(List.of(shipment));
+        when(shipmentMapper.toShipmentResponseDto(shipment)).thenReturn(responseDto);
 
         // when
         List<ShipmentResponseDto> completedShipments = shipmentService.getCompletedShipments();
 
         // then
         assertEquals(1, completedShipments.size());
-        assertEquals("12345", completedShipments.get(0).getTrackingNumber());
+        assertEquals("12345", completedShipments.get(0).trackingNumber());
     }
 
     @Test
@@ -131,14 +150,17 @@ class ShipmentServiceImplTest {
         ShipmentPolicy policy = new ShipmentPolicy(1L, "정책 이름", 10000, true, null, null, 5000, true);
         Order order = new Order();
         Shipment shipment = new Shipment(1L, carrier, policy, order, "일반 배송 요청", now.plusDays(1), now.plusDays(3), "67890");
+        ShipmentResponseDto responseDto = new ShipmentResponseDto(1L, 1L, 1L, 1L, "일반 배송 요청", now.plusDays(1), now.plusDays(3), "67890");
+
         when(shipmentRepository.findAll()).thenReturn(List.of(shipment));
+        when(shipmentMapper.toShipmentResponseDto(shipment)).thenReturn(responseDto);
 
         // when
         List<ShipmentResponseDto> pendingShipments = shipmentService.getPendingShipments();
 
         // then
         assertEquals(1, pendingShipments.size());
-        assertEquals("67890", pendingShipments.get(0).getTrackingNumber());
+        assertEquals("67890", pendingShipments.get(0).trackingNumber());
     }
 
     @Test
@@ -150,16 +172,22 @@ class ShipmentServiceImplTest {
         ShipmentPolicy policy = new ShipmentPolicy(1L, "정책 이름", 10000, true, null, null, 5000, true);
         Order order = new Order();
         Shipment existingShipment = new Shipment(1L, carrier, policy, order, "빠른 배송 요청", LocalDateTime.now(), LocalDateTime.now().plusDays(2), "12345");
+        ShipmentResponseDto responseDto = new ShipmentResponseDto(1L, 1L, 1L, 1L, "업데이트된 요청", LocalDateTime.now(), LocalDateTime.now().plusDays(2), "12345");
+
+        when(carrierRepository.findById(1L)).thenReturn(Optional.of(carrier));
+        when(shipmentPolicyRepository.findById(1L)).thenReturn(Optional.of(policy));
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
 
         when(shipmentRepository.findById(1L)).thenReturn(Optional.of(existingShipment));
         when(shipmentRepository.save(any(Shipment.class))).thenReturn(existingShipment);
+        when(shipmentMapper.toShipmentResponseDto(existingShipment)).thenReturn(responseDto);
 
         // when
-        ShipmentResponseDto responseDto = shipmentService.updateShipment(1L, requestDto);
+        ShipmentResponseDto result = shipmentService.updateShipment(1L, requestDto);
 
         // then
-        assertEquals("업데이트된 요청", responseDto.getRequirement());
-        assertEquals("12345", responseDto.getTrackingNumber());
+        assertEquals("업데이트된 요청", result.requirement());
+        assertEquals("12345", result.trackingNumber());
     }
 
     @Test

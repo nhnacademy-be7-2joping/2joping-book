@@ -4,6 +4,7 @@ import com.nhnacademy.bookstore.common.error.exception.shipment.ShipmentPolicyNo
 import com.nhnacademy.bookstore.shipment.dto.request.ShipmentPolicyRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.response.ShipmentPolicyResponseDto;
 import com.nhnacademy.bookstore.shipment.entity.ShipmentPolicy;
+import com.nhnacademy.bookstore.shipment.mapper.ShipmentMapper;
 import com.nhnacademy.bookstore.shipment.repository.ShipmentPolicyRepository;
 import com.nhnacademy.bookstore.shipment.service.ShipmentPolicyService;
 import lombok.RequiredArgsConstructor;
@@ -19,23 +20,24 @@ import java.util.stream.Collectors;
 public class ShipmentPolicyServiceImpl implements ShipmentPolicyService {
 
     private final ShipmentPolicyRepository shipmentPolicyRepository;
+    private final ShipmentMapper shipmentMapper;
 
     @Override
     @Transactional
     public ShipmentPolicyResponseDto createShipmentPolicy(ShipmentPolicyRequestDto requestDto) {
         ShipmentPolicy shipmentPolicy = new ShipmentPolicy(
                 null,
-                requestDto.getName(),
-                requestDto.getMinOrderAmount(),
-                requestDto.getIsMemberOnly(),
+                requestDto.name(),
+                requestDto.minOrderAmount(),
+                requestDto.isMemberOnly(),
                 LocalDateTime.now(),
                 null,
-                requestDto.getShippingFee(),
+                requestDto.shippingFee(),
                 true
         );
 
         ShipmentPolicy savedPolicy = shipmentPolicyRepository.save(shipmentPolicy);
-        return mapToResponseDto(savedPolicy);
+        return shipmentMapper.toShipmentPolicyResponseDto(savedPolicy);
     }
 
     @Override
@@ -43,7 +45,7 @@ public class ShipmentPolicyServiceImpl implements ShipmentPolicyService {
     public List<ShipmentPolicyResponseDto> getAllShipmentPolicies() {
         return shipmentPolicyRepository.findByIsActiveTrue()
                 .stream()
-                .map(this::mapToResponseDto)
+                .map(shipmentMapper::toShipmentPolicyResponseDto)
                 .collect(Collectors.toList());
     }
 
@@ -52,7 +54,7 @@ public class ShipmentPolicyServiceImpl implements ShipmentPolicyService {
     public ShipmentPolicyResponseDto getShipmentPolicy(Long shipmentPolicyId) {
         ShipmentPolicy policy = shipmentPolicyRepository.findById(shipmentPolicyId)
                 .orElseThrow(ShipmentPolicyNotFoundException::new);
-        return mapToResponseDto(policy);
+        return shipmentMapper.toShipmentPolicyResponseDto(policy);
     }
 
     @Override
@@ -60,14 +62,9 @@ public class ShipmentPolicyServiceImpl implements ShipmentPolicyService {
     public ShipmentPolicyResponseDto updateShipmentPolicy(Long shipmentPolicyId, ShipmentPolicyRequestDto requestDto) {
         ShipmentPolicy policy = shipmentPolicyRepository.findById(shipmentPolicyId)
                 .orElseThrow(ShipmentPolicyNotFoundException::new);
-        policy.setName(requestDto.getName());
-        policy.setMinOrderAmount(requestDto.getMinOrderAmount());
-        policy.setIsMemberOnly(requestDto.getIsMemberOnly());
-        policy.setShippingFee(requestDto.getShippingFee());
-        policy.setUpdatedAt(LocalDateTime.now());
-
+        policy.toEntity(requestDto);
         ShipmentPolicy updatedPolicy = shipmentPolicyRepository.save(policy);
-        return mapToResponseDto(updatedPolicy);
+        return shipmentMapper.toShipmentPolicyResponseDto(updatedPolicy);
     }
 
     @Override
@@ -75,21 +72,16 @@ public class ShipmentPolicyServiceImpl implements ShipmentPolicyService {
     public void deactivateShipmentPolicy(Long shipmentPolicyId) {
         ShipmentPolicy policy = shipmentPolicyRepository.findById(shipmentPolicyId)
                 .orElseThrow(ShipmentPolicyNotFoundException::new);
-        policy.setIsActive(false);
-        policy.setUpdatedAt(LocalDateTime.now());
+        policy.deactivate();
         shipmentPolicyRepository.save(policy);
     }
 
-    private ShipmentPolicyResponseDto mapToResponseDto(ShipmentPolicy shipmentPolicy) {
-        return new ShipmentPolicyResponseDto(
-                shipmentPolicy.getShipmentPolicyId(),
-                shipmentPolicy.getName(),
-                shipmentPolicy.getMinOrderAmount(),
-                shipmentPolicy.getIsMemberOnly(),
-                shipmentPolicy.getShippingFee(),
-                shipmentPolicy.getIsActive(),
-                shipmentPolicy.getCreatedAt(),
-                shipmentPolicy.getUpdatedAt()
-        );
+    @Override
+    @Transactional
+    public void activateShipmentPolicy(Long shipmentPolicyId) {
+        ShipmentPolicy policy = shipmentPolicyRepository.findById(shipmentPolicyId)
+                .orElseThrow(ShipmentPolicyNotFoundException::new);
+        policy.activate();
+        shipmentPolicyRepository.save(policy);
     }
 }

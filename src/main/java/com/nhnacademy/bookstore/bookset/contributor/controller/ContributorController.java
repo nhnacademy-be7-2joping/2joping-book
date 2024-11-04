@@ -112,7 +112,7 @@ public class ContributorController {
      * @return HTTP 200 상태의 빈 ResponseEntity
      * @throws ContributorNotFoundException 도서 기여자를 찾을 수 없는 경우 응답 코드 404 NOT_FOUND 반환합니다.
      */
-    @Operation(summary = "Deactivate a contributor", description = "특정 도서 기여자를 활성화 합니다.")
+    @Operation(summary = "activate a contributor", description = "특정 도서 기여자를 활성화 합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "도서 기여자 활성화 성공"),
             @ApiResponse(responseCode = "404", description = "도서 기여자를 찾을 수 없음")

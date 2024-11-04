@@ -3,6 +3,7 @@ package com.nhnacademy.bookstore.shipment.service.impl;
 import com.nhnacademy.bookstore.shipment.dto.request.CarrierRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.response.CarrierResponseDto;
 import com.nhnacademy.bookstore.shipment.entity.Carrier;
+import com.nhnacademy.bookstore.shipment.mapper.ShipmentMapper;
 import com.nhnacademy.bookstore.shipment.repository.CarrierRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,9 @@ class CarrierServiceImplTest {
     @Mock
     private CarrierRepository carrierRepository;
 
+    @Mock
+    private ShipmentMapper shipmentMapper;
+
     @InjectMocks
     private CarrierServiceImpl carrierService;
 
@@ -33,15 +37,18 @@ class CarrierServiceImplTest {
         // given
         CarrierRequestDto requestDto = new CarrierRequestDto("핑핑배송", "010-1234-5678", "test@example.com", "https://example.com");
         Carrier savedCarrier = new Carrier(1L, "핑핑배송", "010-1234-5678", "test@example.com", "https://example.com");
+        CarrierResponseDto expectedResponse = new CarrierResponseDto(1L, "핑핑배송", "010-1234-5678", "test@example.com", "https://example.com");
+
         when(carrierRepository.save(any(Carrier.class))).thenReturn(savedCarrier);
+        when(shipmentMapper.toCarrierResponseDto(savedCarrier)).thenReturn(expectedResponse);
 
         // when
         CarrierResponseDto responseDto = carrierService.createCarrier(requestDto);
 
         // then
         assertNotNull(responseDto);
-        assertEquals(1L, responseDto.getCarrierId());
-        assertEquals("핑핑배송", responseDto.getName());
+        assertEquals(1L, responseDto.carrierId());
+        assertEquals("핑핑배송", responseDto.name());
     }
 
     @Test
@@ -49,15 +56,18 @@ class CarrierServiceImplTest {
     void getCarrier() {
         // given
         Carrier carrier = new Carrier(1L, "핑핑배송", "010-1234-5678", "test@example.com", "https://example.com");
+        CarrierResponseDto expectedResponse = new CarrierResponseDto(1L, "핑핑배송", "010-1234-5678", "test@example.com", "https://example.com");
+
         when(carrierRepository.findById(1L)).thenReturn(Optional.of(carrier));
+        when(shipmentMapper.toCarrierResponseDto(carrier)).thenReturn(expectedResponse);
 
         // when
         CarrierResponseDto responseDto = carrierService.getCarrier(1L);
 
         // then
         assertNotNull(responseDto);
-        assertEquals(1L, responseDto.getCarrierId());
-        assertEquals("핑핑배송", responseDto.getName());
+        assertEquals(1L, responseDto.carrierId());
+        assertEquals("핑핑배송", responseDto.name());
     }
 
     @Test
@@ -66,7 +76,12 @@ class CarrierServiceImplTest {
         // given
         Carrier carrier1 = new Carrier(1L, "핑핑배송", "010-1234-5678", "test1@example.com", "https://example1.com");
         Carrier carrier2 = new Carrier(2L, "대한배송", "010-5678-1234", "test2@example.com", "https://example2.com");
+        CarrierResponseDto responseDto1 = new CarrierResponseDto(1L, "핑핑배송", "010-1234-5678", "test1@example.com", "https://example1.com");
+        CarrierResponseDto responseDto2 = new CarrierResponseDto(2L, "대한배송", "010-5678-1234", "test2@example.com", "https://example2.com");
+
         when(carrierRepository.findAll()).thenReturn(List.of(carrier1, carrier2));
+        when(shipmentMapper.toCarrierResponseDto(carrier1)).thenReturn(responseDto1);
+        when(shipmentMapper.toCarrierResponseDto(carrier2)).thenReturn(responseDto2);
 
         // when
         List<CarrierResponseDto> carriers = carrierService.getAllCarriers();
@@ -74,8 +89,8 @@ class CarrierServiceImplTest {
         // then
         assertNotNull(carriers);
         assertEquals(2, carriers.size());
-        assertEquals("핑핑배송", carriers.get(0).getName());
-        assertEquals("대한배송", carriers.get(1).getName());
+        assertEquals("핑핑배송", carriers.get(0).name());
+        assertEquals("대한배송", carriers.get(1).name());
     }
 
     @Test
@@ -84,16 +99,20 @@ class CarrierServiceImplTest {
         // given
         CarrierRequestDto requestDto = new CarrierRequestDto("이조핑배송", "010-5678-1234", "update@example.com", "https://updated.com");
         Carrier existingCarrier = new Carrier(1L, "핑핑배송", "010-1234-5678", "test@example.com", "https://example.com");
+        Carrier updatedCarrier = new Carrier(1L, "이조핑배송", "010-5678-1234", "update@example.com", "https://updated.com");
+        CarrierResponseDto expectedResponse = new CarrierResponseDto(1L, "이조핑배송", "010-5678-1234", "update@example.com", "https://updated.com");
+
         when(carrierRepository.findById(1L)).thenReturn(Optional.of(existingCarrier));
-        when(carrierRepository.save(any(Carrier.class))).thenReturn(new Carrier(1L, "이조핑배송", "010-5678-1234", "update@example.com", "https://updated.com"));
+        when(carrierRepository.save(any(Carrier.class))).thenReturn(updatedCarrier);
+        when(shipmentMapper.toCarrierResponseDto(updatedCarrier)).thenReturn(expectedResponse);
 
         // when
         CarrierResponseDto responseDto = carrierService.updateCarrier(1L, requestDto);
 
         // then
         assertNotNull(responseDto);
-        assertEquals(1L, responseDto.getCarrierId());
-        assertEquals("이조핑배송", responseDto.getName());
+        assertEquals(1L, responseDto.carrierId());
+        assertEquals("이조핑배송", responseDto.name());
     }
 
     @Test
