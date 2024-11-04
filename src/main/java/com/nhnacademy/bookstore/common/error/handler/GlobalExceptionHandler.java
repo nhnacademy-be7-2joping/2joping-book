@@ -38,7 +38,7 @@ public class GlobalExceptionHandler implements BaseExceptionHandler{
         }
 
         ErrorResponseDto errorResponse = new ErrorResponseDto(
-                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST,
                 "VALIDATION_FAILED",
                 errors.toString()  // 상세한 오류 메시지
         );

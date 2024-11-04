@@ -34,4 +34,3 @@ build/
 
 ### etc
 http/
-src/main/resources/application-dev-mysql.yml
