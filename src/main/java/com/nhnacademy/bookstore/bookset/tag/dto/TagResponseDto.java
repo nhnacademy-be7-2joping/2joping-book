@@ -6,6 +6,6 @@ import jakarta.validation.constraints.Positive;
  * 태그 정보를 반환하는 DTO
  */
 public record TagResponseDto(
-        @Positive Long tagId,
+        Long tagId,
         String name
 ) {}
