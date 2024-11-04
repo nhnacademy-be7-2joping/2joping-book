@@ -2,7 +2,9 @@ package com.nhnacademy.bookstore.bookset.category.service.Impl;
 
 import com.nhnacademy.bookstore.bookset.category.dto.request.CreateCategoryRequest;
 import com.nhnacademy.bookstore.bookset.category.dto.request.UpdateCategoryRequest;
+import com.nhnacademy.bookstore.bookset.category.dto.response.GetAllCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.dto.response.GetCategoryResponse;
+import com.nhnacademy.bookstore.bookset.category.dto.response.UpdateCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import com.nhnacademy.bookstore.bookset.category.repository.CategoryRepository;
 import com.nhnacademy.bookstore.bookset.category.service.CategoryService;
@@ -49,19 +51,14 @@ public class CategoryServiceImpl implements CategoryService {
         );
     }
 
+    // TODO: GetAllCategoryResponse 구현
     @Override
-    public List<GetCategoryResponse> getAllCategories() {
-        return categoryRepository.findAllByOrderByNameAsc().stream()
-                .map(category -> new GetCategoryResponse(
-                        category.getCategoryId(),
-                        category.getName(),
-                        category.getSubcategory() != null ? category.getSubcategory().getCategoryId() : null
-                ))
-                .toList();
+    public List<GetAllCategoryResponse> getAllCategories() {
+        return null;
     }
 
     @Override
-    public void updateCategory(Long categoryId, UpdateCategoryRequest request) {
+    public UpdateCategoryResponse updateCategory(Long categoryId, UpdateCategoryRequest request) {
         Category category = categoryRepository.findByCategoryId(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다."));
 
@@ -75,10 +72,13 @@ public class CategoryServiceImpl implements CategoryService {
         if (request.categoryName() != null) {
             category.updateName(request.categoryName());
         }
+
+        UpdateCategoryResponse response = UpdateCategoryResponse.from(category);
+        return  response;
     }
 
     @Override
-    public void deleteCategory(Long categoryId) {
+    public Long deleteCategory(Long categoryId) {
         Category category = categoryRepository.findByCategoryId(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다."));
 
@@ -87,6 +87,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         categoryRepository.delete(category);
+        return category.getCategoryId();
     }
 
     private void validateCategoryDepth(Category parent) {
