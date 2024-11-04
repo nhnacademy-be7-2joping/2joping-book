@@ -29,6 +29,6 @@ public class ContributorRole {
     private String name;
 
     public void toEntity(ContributorRoleRequestDto requestDto){
-        this.name = requestDto.getRoleName();
+        this.name = requestDto.roleName();
     }
 }

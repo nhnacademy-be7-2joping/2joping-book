@@ -9,6 +9,7 @@ import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorReposi
 import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorRoleRepository;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorIsDeactivateException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -38,14 +39,12 @@ class ContributorServiceImplTest {
     private ContributorServiceImpl contributorService;
 
     @Test
-    @DisplayName("기여자 생성 테스트")
+    @DisplayName("도서 기여자 생성 테스트")
     void createContributor() {
         // given
         ContributorRole contributorRole = new ContributorRole(1L, "작가");
         ContributorRequestDto requestDto = new ContributorRequestDto("삼조핑", 1L);
-        Contributor savedContributor = new Contributor();
-
-        savedContributor.toEntity(requestDto, contributorRole);
+        Contributor savedContributor = new Contributor(null, contributorRole, "삼조핑", true);
 
         when(contributorRoleRepository.findById(1L)).thenReturn(Optional.of(contributorRole));
         when(contributorRepository.save(any(Contributor.class))).thenReturn(savedContributor);
@@ -57,13 +56,13 @@ class ContributorServiceImplTest {
 
         // then
         assertNotNull(responseDto);
-        assertEquals(1L, responseDto.getContributorId());
-        assertEquals(1L, responseDto.getContributorRoleId());
-        assertEquals("삼조핑", responseDto.getName());
+        assertEquals(1L, responseDto.contributorId());
+        assertEquals(1L, responseDto.contributorRoleId());
+        assertEquals("삼조핑", responseDto.name());
     }
 
     @Test
-    @DisplayName("기여자 역할이 없는 경우 예외 발생 테스트")
+    @DisplayName("도서 기여자 역할이 없는 경우 예외 발생 테스트")
     void createContributorRoleNotFound() {
         // given
         ContributorRequestDto requestDto = new ContributorRequestDto("삼조핑", 1L);
@@ -75,12 +74,11 @@ class ContributorServiceImplTest {
     }
 
     @Test
-    @DisplayName("기여자 조회 테스트")
+    @DisplayName("도서 기여자 조회 테스트")
     void getContributor() {
         // given
         ContributorRole contributorRole = new ContributorRole(1L, "작가");
-        Contributor contributor = new Contributor();
-        contributor.toEntity(new ContributorRequestDto("삼조핑", 1L), contributorRole);
+        Contributor contributor = new Contributor(1L, contributorRole, "삼조핑", true);
 
         when(contributorRepository.findById(1L)).thenReturn(Optional.of(contributor));
         when(contributorMapper.toContributorResponseDto(any(Contributor.class)))
@@ -91,13 +89,13 @@ class ContributorServiceImplTest {
 
         // then
         assertNotNull(responseDto);
-        assertEquals(1L, responseDto.getContributorId());
-        assertEquals(1L, responseDto.getContributorRoleId());
-        assertEquals("삼조핑", responseDto.getName());
+        assertEquals(1L, responseDto.contributorId());
+        assertEquals(1L, responseDto.contributorRoleId());
+        assertEquals("삼조핑", responseDto.name());
     }
 
     @Test
-    @DisplayName("존재하지 않는 기여자 조회시 예외 발생 테스트")
+    @DisplayName("존재하지 않는 도서 기여자 조회 시 예외 발생 테스트")
     void getContributorNotFound() {
         // given
         when(contributorRepository.findById(1L)).thenReturn(Optional.empty());
@@ -107,12 +105,11 @@ class ContributorServiceImplTest {
     }
 
     @Test
-    @DisplayName("기여자 수정 테스트")
+    @DisplayName("도서 기여자 수정 테스트")
     void updateContributor() {
         // given
         ContributorRole newRole = new ContributorRole(2L, "Editor");
-        Contributor contributor = new Contributor();
-        contributor.toEntity(new ContributorRequestDto("삼조핑", 1L), new ContributorRole(1L, "작가"));
+        Contributor contributor = new Contributor(1L, new ContributorRole(1L, "작가"), "삼조핑", true);
         ContributorRequestDto requestDto = new ContributorRequestDto("이조핑", 2L);
 
         when(contributorRepository.findById(1L)).thenReturn(Optional.of(contributor));
@@ -126,17 +123,16 @@ class ContributorServiceImplTest {
 
         // then
         assertNotNull(responseDto);
-        assertEquals(1L, responseDto.getContributorId());
-        assertEquals(2L, responseDto.getContributorRoleId());
-        assertEquals("이조핑", responseDto.getName());
+        assertEquals(1L, responseDto.contributorId());
+        assertEquals(2L, responseDto.contributorRoleId());
+        assertEquals("이조핑", responseDto.name());
     }
 
     @Test
-    @DisplayName("기여자 수정 시 역할을 찾지 못하는 경우 예외 발생 테스트")
+    @DisplayName("도서 기여자 수정 시 역할을 찾지 못하는 경우 예외 발생 테스트")
     void updateContributorRoleNotFound() {
         // given
-        Contributor contributor = new Contributor();
-        contributor.toEntity(new ContributorRequestDto("삼조핑", 1L), new ContributorRole(1L, "작가"));
+        Contributor contributor = new Contributor(1L, new ContributorRole(1L, "작가"), "삼조핑", true);
         ContributorRequestDto requestDto = new ContributorRequestDto("이조핑", 2L);
 
         when(contributorRepository.findById(1L)).thenReturn(Optional.of(contributor));
@@ -147,11 +143,10 @@ class ContributorServiceImplTest {
     }
 
     @Test
-    @DisplayName("기여자 비활성화 테스트")
+    @DisplayName("도서 기여자 비활성화 테스트")
     void deactivateContributor() {
         // given
-        Contributor contributor = new Contributor();
-        contributor.toEntity(new ContributorRequestDto("삼조핑", 1L), new ContributorRole(1L, "작가"));
+        Contributor contributor = new Contributor(1L, new ContributorRole(1L, "작가"), "삼조핑", true);
 
         when(contributorRepository.findById(1L)).thenReturn(Optional.of(contributor));
         when(contributorRepository.save(any(Contributor.class))).thenReturn(contributor);
@@ -165,12 +160,44 @@ class ContributorServiceImplTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 기여자 비활성화 시 예외 발생 테스트")
+    @DisplayName("존재하지 않는 도서 기여자 비활성화 시 예외 발생 테스트")
     void deactivateContributorNotFound() {
         // given
         when(contributorRepository.findById(1L)).thenReturn(Optional.empty());
 
         // when & then
         assertThrows(ContributorNotFoundException.class, () -> contributorService.deactivateContributor(1L));
+    }
+
+    @Test
+    @DisplayName("비활성화된 도서 기여자 수정 시 예외 발생 테스트")
+    void updateDeactivatedContributor() {
+        // given
+        ContributorRole contributorRole = new ContributorRole(1L, "작가");
+        Contributor deactivatedContributor = new Contributor(1L, contributorRole, "삼조핑", false);
+        ContributorRequestDto requestDto = new ContributorRequestDto("이조핑", 1L);
+
+        when(contributorRepository.findById(1L)).thenReturn(Optional.of(deactivatedContributor));
+        when(contributorRoleRepository.findById(1L)).thenReturn(Optional.of(contributorRole));
+
+        // when & then
+        assertThrows(ContributorIsDeactivateException.class, () -> contributorService.updateContributor(1L, requestDto));
+    }
+
+    @Test
+    @DisplayName("도서 기여자 활성화 테스트")
+    void activateContributor() {
+        // given
+        Contributor contributor = new Contributor(1L, new ContributorRole(1L, "작가"), "삼조핑", false);
+
+        when(contributorRepository.findById(1L)).thenReturn(Optional.of(contributor));
+        when(contributorRepository.save(any(Contributor.class))).thenReturn(contributor);
+
+        // when
+        contributorService.activateContributor(1L);
+
+        // then
+        assertTrue(contributor.getIsActive());
+        verify(contributorRepository, times(1)).save(contributor);
     }
 }

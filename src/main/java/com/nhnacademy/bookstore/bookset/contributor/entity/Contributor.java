@@ -39,9 +39,13 @@ public class Contributor {
         this.isActive = false;
     }
 
+    public void activate() {
+        this.isActive = true;
+    }
+
     public void toEntity(ContributorRequestDto requestDto, ContributorRole contributorRole) {
         this.contributorRole = contributorRole;
-        this.name = requestDto.getContributorName();
+        this.name = requestDto.contributorName();
         this.isActive = true;
     }
 }

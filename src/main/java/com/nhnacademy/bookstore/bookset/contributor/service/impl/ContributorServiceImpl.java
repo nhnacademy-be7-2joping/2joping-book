@@ -5,6 +5,7 @@ import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResp
 import com.nhnacademy.bookstore.bookset.contributor.entity.Contributor;
 import com.nhnacademy.bookstore.bookset.contributor.entity.ContributorRole;
 import com.nhnacademy.bookstore.bookset.contributor.mapper.ContributorMapper;
+import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorIsDeactivateException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
 import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorRepository;
@@ -28,21 +29,32 @@ public class ContributorServiceImpl implements ContributorService {
     private final ContributorRoleRepository contributorRoleRepository;
     private final ContributorMapper contributorMapper;
 
-    // 기여자 생성
+    /**
+     * 새로운 기여자를 생성하는 메서드입니다.
+     *
+     * @param dto 생성할 기여자 정보가 담긴 ContributorRequestDto
+     * @return 생성된 기여자의 정보를 담은 ContributorResponseDto
+     * @throws ContributorRoleNotFoundException 기여자 역할이 존재하지 않을 경우 발생
+     */
     @Override
     @Transactional
     public ContributorResponseDto createContributor(ContributorRequestDto dto) {
-        ContributorRole contributorRole = contributorRoleRepository.findById(dto.getContributorRoleId())
+        ContributorRole contributorRole = contributorRoleRepository.findById(dto.contributorRoleId())
                 .orElseThrow(ContributorRoleNotFoundException::new);
 
-        Contributor contributor = new Contributor();
-        contributor.toEntity(dto, contributorRole);
+        Contributor contributor = new Contributor(null, contributorRole, dto.contributorName(), true);
 
         Contributor savedContributor = contributorRepository.save(contributor);
         return contributorMapper.toContributorResponseDto(savedContributor);
     }
 
-    // 기여자 id로 읽기
+    /**
+     * 기여자 ID로 기여자 정보를 조회하는 메서드입니다.
+     *
+     * @param contributorId 조회할 기여자의 ID
+     * @return 조회된 기여자의 정보를 담은 ContributorResponseDto
+     * @throws ContributorNotFoundException 기여자를 찾을 수 없을 경우 발생
+     */
     @Override
     @Transactional(readOnly = true)
     public ContributorResponseDto getContributor(Long contributorId) {
@@ -52,15 +64,28 @@ public class ContributorServiceImpl implements ContributorService {
         return contributorMapper.toContributorResponseDto(contributor);
     }
 
-    // 기여자 수정
+    /**
+     * 특정 ID의 기여자 정보를 수정하는 메서드입니다.
+     *
+     * @param contributorId 수정할 기여자의 ID
+     * @param dto 수정할 기여자 정보가 담긴 ContributorRequestDto
+     * @return 수정된 기여자의 정보를 담은 ContributorResponseDto
+     * @throws ContributorNotFoundException 기여자를 찾을 수 없을 경우 발생
+     * @throws ContributorRoleNotFoundException 기여자 역할을 찾을 수 없을 경우 발생
+     * @throws ContributorIsDeactivateException 기여자가 비활성화 상태인 경우 발생
+     */
     @Override
     @Transactional
     public ContributorResponseDto updateContributor(Long contributorId, ContributorRequestDto dto) {
         Contributor contributor = contributorRepository.findById(contributorId)
                 .orElseThrow(ContributorNotFoundException::new);
 
-        ContributorRole contributorRole = contributorRoleRepository.findById(dto.getContributorRoleId())
+        ContributorRole contributorRole = contributorRoleRepository.findById(dto.contributorRoleId())
                 .orElseThrow(ContributorRoleNotFoundException::new);
+
+        if (!contributor.getIsActive()) {
+            throw new ContributorIsDeactivateException();
+        }
 
         contributor.toEntity(dto, contributorRole);
         Contributor updatedContributor = contributorRepository.save(contributor);
@@ -68,13 +93,34 @@ public class ContributorServiceImpl implements ContributorService {
         return contributorMapper.toContributorResponseDto(updatedContributor);
     }
 
-    // 기여자 비활성화
+    /**
+     * 특정 ID의 기여자를 비활성화하는 메서드입니다.
+     *
+     * @param contributorId 비활성화할 기여자의 ID
+     * @throws ContributorNotFoundException 기여자를 찾을 수 없을 경우 발생
+     */
     @Override
     @Transactional
     public void deactivateContributor(Long contributorId) {
         Contributor contributor = contributorRepository.findById(contributorId)
                 .orElseThrow(ContributorNotFoundException::new);
         contributor.deactivate();
+        contributorRepository.save(contributor);
+    }
+
+    /**
+     * 특정 ID의 비활성화된 기여자를 활성화하는 메서드입니다.
+     *
+     * @param contributorId 활성화할 기여자의 ID
+     * @throws ContributorNotFoundException 기여자를 찾을 수 없을 경우 발생
+     * @throws ContributorIsDeactivateException 기여자가 이미 활성화 상태일 경우 발생
+     */
+    @Override
+    @Transactional
+    public void activateContributor(Long contributorId) {
+        Contributor contributor = contributorRepository.findById(contributorId)
+                .orElseThrow(ContributorNotFoundException::new);
+        contributor.activate();
         contributorRepository.save(contributor);
     }
 }
