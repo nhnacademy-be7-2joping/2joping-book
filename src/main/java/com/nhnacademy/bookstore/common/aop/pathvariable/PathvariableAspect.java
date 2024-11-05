@@ -66,13 +66,13 @@ public class PathvariableAspect {
     private <T> void checkValue(T value) {
         if (value instanceof Long) {
             long pathVarValue = (Long) value;
-            if (pathVarValue < 0) {
-                throw new InvalidPathVariableException("음수 값은 허용되지 않습니다.");
+            if (pathVarValue <= 0) {
+                throw new InvalidPathVariableException("0 또는 음수 값은 허용되지 않습니다.");
             }
         } else if (value instanceof Integer) {
             int pathVarValue = (Integer) value;
-            if (pathVarValue < 0) {
-                throw new InvalidPathVariableException("음수 값은 허용되지 않습니다.");
+            if (pathVarValue <= 0) {
+                throw new InvalidPathVariableException("0 또는 음수 값은 허용되지 않습니다.");
             }
         }
     }
