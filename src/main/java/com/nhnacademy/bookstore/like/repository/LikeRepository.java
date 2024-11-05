@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface LikeRepository extends JpaRepository<Like, Long> {
     @Query("SELECT bl FROM Like bl WHERE bl.book.bookId = :bookId AND bl.member.id = :customerId")
-    Optional<Like> findBookLike(String customerId, Long bookId); // customerid는 customer에서 string이라서 여기서 수정,String -> Long으로 수정
+    Optional<Like> findBookLike(Long customerId, Long bookId);
 
     @Query("SELECT count(*) FROM Like bl WHERE bl.book.bookId = :bookId")
     Long getMemberLikesNum(Long bookId);

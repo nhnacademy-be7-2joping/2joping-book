@@ -37,17 +37,16 @@ public class Like {
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
-    private Member member; //좋아요를 누른 회원 // 이거 아직 customer가 구현이안돼서 member사용
+    private Member member;
 
     @ManyToOne
-    @Column(name = "book_id", nullable = false)
-    private Book book; // 좋아요 대상인 책
+    @JoinColumn(name = "book_id", nullable = false)
+    private Book book;
 
-
-    // 생성자 추가 (선택 사항)
     public Like(Member member, Book book) {
         this.member = member;
         this.book = book;
     }
+
 }
 

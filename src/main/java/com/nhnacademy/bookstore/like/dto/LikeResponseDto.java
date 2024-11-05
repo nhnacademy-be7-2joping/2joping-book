@@ -7,7 +7,5 @@ public record LikeResponseDto(
         Long likeId,
         Long bookId,
         Long memberId,
-        Long likeCount //이거 꼭 필요할까?
+        Long likeCount
 ) {}
-
-//맞는지 모르겠다...

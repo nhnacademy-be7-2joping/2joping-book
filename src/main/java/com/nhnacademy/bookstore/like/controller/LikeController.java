@@ -39,15 +39,15 @@ public class LikeController {
      * @return LikeResponseDto
      */
 
-    @Operation(summary = "좋아요 설정/최소", description = "해당 책에 좋아요를 설정하거나 취소합니다.")
+    @Operation(summary = "좋아요 설정/취소", description = "해당 책에 좋아요를 설정하거나 취소합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "좋아요 설정/취소 성공"),
             @ApiResponse(responseCode = "404", description = "회원 또는 책을 찾을 수 없음")
     })
-    @PostMapping
-    // responseEntity<LikeResponseDto> 이 뜻은 responsedto객체를 responseentity에 담아 반환
-    public ResponseEntity<LikeResponseDto> setBookLike(@RequestBody @Valid LikeRequestDto request) { // 여기서 request는 어느 request? post요청이 likerequestdto로 전달됨
-        LikeResponseDto responseDto = likeService.setBookLike(request); // likeservice의 setbooklike 호출
+
+    @PostMapping("/{bookId}")
+    public ResponseEntity<LikeResponseDto> setBookLike(@RequestBody @Valid LikeRequestDto request) {
+        LikeResponseDto responseDto = likeService.setBookLike(request);
         return ResponseEntity.ok(responseDto);
     }
 

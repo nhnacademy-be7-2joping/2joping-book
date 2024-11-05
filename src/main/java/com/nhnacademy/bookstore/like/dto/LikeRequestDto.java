@@ -7,11 +7,10 @@ import jakarta.validation.constraints.Positive;
  */
     public record LikeRequestDto (
 
-            // 여기서 positive는 검사 안해도 되는지?
-            // 작업을 요청할때 필요한 최소한의 정보만
-
+            @Positive
             Long memberId,
 
+            @Positive
             Long bookId
     ) {}
 
