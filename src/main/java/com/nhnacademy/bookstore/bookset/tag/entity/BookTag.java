@@ -36,7 +36,6 @@ public class BookTag {
     private Tag tag;
 
     @Getter
-    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     @Embeddable
