@@ -3,7 +3,7 @@ package com.nhnacademy.bookstore.bookset.contributor.service.impl;
 import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRoleRequestDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorRoleResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.entity.ContributorRole;
-import com.nhnacademy.bookstore.bookset.contributor.mapper.ContributorMapper;
+import com.nhnacademy.bookstore.bookset.contributor.mapper.ContributorRoleMapper;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
 import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorRoleRepository;
 import com.nhnacademy.bookstore.bookset.contributor.service.ContributorRoleService;
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ContributorRoleServiceImpl implements ContributorRoleService {
     private final ContributorRoleRepository contributorRoleRepository;
-    private final ContributorMapper contributorMapper;
+    private final ContributorRoleMapper contributorRoleMapper;
 
     /**
      * 도서 기여자 역할을 생성하는 메서드입니다.
@@ -37,7 +37,7 @@ public class ContributorRoleServiceImpl implements ContributorRoleService {
         contributorRole.toEntity(dto);
 
         ContributorRole savedRole = contributorRoleRepository.save(contributorRole);
-        return contributorMapper.toContributorRoleResponseDto(savedRole);
+        return contributorRoleMapper.toContributorRoleResponseDto(savedRole);
     }
 
     /**
@@ -53,7 +53,7 @@ public class ContributorRoleServiceImpl implements ContributorRoleService {
         ContributorRole contributorRole = contributorRoleRepository.findById(contributorRoleId)
                 .orElseThrow(ContributorRoleNotFoundException::new);
 
-        return contributorMapper.toContributorRoleResponseDto(contributorRole);
+        return contributorRoleMapper.toContributorRoleResponseDto(contributorRole);
     }
 
     /**
@@ -73,7 +73,7 @@ public class ContributorRoleServiceImpl implements ContributorRoleService {
         contributorRole.toEntity(dto);
         ContributorRole updatedRole = contributorRoleRepository.save(contributorRole);
 
-        return contributorMapper.toContributorRoleResponseDto(updatedRole);
+        return contributorRoleMapper.toContributorRoleResponseDto(updatedRole);
     }
 
     /**

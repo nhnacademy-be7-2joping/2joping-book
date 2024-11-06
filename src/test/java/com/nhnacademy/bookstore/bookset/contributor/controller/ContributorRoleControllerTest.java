@@ -49,7 +49,7 @@ class ContributorRoleControllerTest {
                 // then
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.contributorRoleId").value(1L))
-                .andExpect(jsonPath("$.roleName").value("지은이"));
+                .andExpect(jsonPath("$.name").value("지은이"));
     }
 
     @Test
@@ -66,7 +66,7 @@ class ContributorRoleControllerTest {
                 // then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.contributorRoleId").value(1L))
-                .andExpect(jsonPath("$.roleName").value("지은이"));
+                .andExpect(jsonPath("$.name").value("지은이"));
     }
 
     @Test
@@ -86,7 +86,7 @@ class ContributorRoleControllerTest {
                 // then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.contributorRoleId").value(1L))
-                .andExpect(jsonPath("$.roleName").value("옮긴이"));
+                .andExpect(jsonPath("$.name").value("옮긴이"));
     }
 
     @Test

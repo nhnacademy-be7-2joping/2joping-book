@@ -3,7 +3,7 @@ package com.nhnacademy.bookstore.shipment.service.impl;
 import com.nhnacademy.bookstore.common.error.exception.shipment.CarrierNotFoundException;
 import com.nhnacademy.bookstore.shipment.dto.request.CarrierRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.response.CarrierResponseDto;
-import com.nhnacademy.bookstore.shipment.mapper.ShipmentMapper;
+import com.nhnacademy.bookstore.shipment.mapper.CarrierMapper;
 import com.nhnacademy.bookstore.shipment.entity.Carrier;
 import com.nhnacademy.bookstore.shipment.repository.CarrierRepository;
 import com.nhnacademy.bookstore.shipment.service.CarrierService;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class CarrierServiceImpl implements CarrierService {
 
     private final CarrierRepository carrierRepository;
-    private final ShipmentMapper shipmentMapper;
+    private final CarrierMapper carrierMapper;
 
     @Override
     @Transactional
@@ -33,7 +33,7 @@ public class CarrierServiceImpl implements CarrierService {
         );
 
         Carrier savedCarrier = carrierRepository.save(carrier);
-        return shipmentMapper.toCarrierResponseDto(savedCarrier);
+        return carrierMapper.toCarrierResponseDto(savedCarrier);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class CarrierServiceImpl implements CarrierService {
     public CarrierResponseDto getCarrier(Long carrierId) {
         Carrier carrier = carrierRepository.findById(carrierId)
                 .orElseThrow(CarrierNotFoundException::new);
-        return shipmentMapper.toCarrierResponseDto(carrier);
+        return carrierMapper.toCarrierResponseDto(carrier);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class CarrierServiceImpl implements CarrierService {
     public List<CarrierResponseDto> getAllCarriers() {
         List<Carrier> carriers = carrierRepository.findAll();
         return carriers.stream()
-                .map(shipmentMapper::toCarrierResponseDto)
+                .map(carrierMapper::toCarrierResponseDto)
                 .collect(Collectors.toList());
 //        return carrierRepository.findAllCarriers();
     }
@@ -61,7 +61,7 @@ public class CarrierServiceImpl implements CarrierService {
                 .orElseThrow(CarrierNotFoundException::new);
         carrier.toEntity(requestDto);
         Carrier updatedCarrier = carrierRepository.save(carrier);
-        return shipmentMapper.toCarrierResponseDto(updatedCarrier);
+        return carrierMapper.toCarrierResponseDto(updatedCarrier);
     }
 
     @Override

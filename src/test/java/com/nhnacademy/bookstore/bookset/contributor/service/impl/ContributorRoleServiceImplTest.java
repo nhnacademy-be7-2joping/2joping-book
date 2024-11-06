@@ -4,6 +4,7 @@ import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRoleR
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorRoleResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.entity.ContributorRole;
 import com.nhnacademy.bookstore.bookset.contributor.mapper.ContributorMapper;
+import com.nhnacademy.bookstore.bookset.contributor.mapper.ContributorRoleMapper;
 import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorRoleRepository;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
 import org.junit.jupiter.api.DisplayName;
@@ -28,6 +29,10 @@ class ContributorRoleServiceImplTest {
     @Mock
     private ContributorMapper contributorMapper;
 
+    @Mock
+    private ContributorRoleMapper contributorRoleMapper;
+
+
     @InjectMocks
     private ContributorRoleServiceImpl contributorRoleService;
 
@@ -40,7 +45,7 @@ class ContributorRoleServiceImplTest {
         ContributorRoleResponseDto responseDto = new ContributorRoleResponseDto(1L, "지은이");
 
         when(contributorRoleRepository.save(any(ContributorRole.class))).thenReturn(savedRole);
-        when(contributorMapper.toContributorRoleResponseDto(savedRole)).thenReturn(responseDto);
+        when(contributorRoleMapper.toContributorRoleResponseDto(savedRole)).thenReturn(responseDto);
 
         // when
         ContributorRoleResponseDto result = contributorRoleService.createContributorRole(requestDto);
@@ -48,7 +53,7 @@ class ContributorRoleServiceImplTest {
         // then
         assertNotNull(result);
         assertEquals(1L, result.contributorRoleId());
-        assertEquals("지은이", result.roleName());
+        assertEquals("지은이", result.name());
     }
 
     @Test
@@ -59,7 +64,7 @@ class ContributorRoleServiceImplTest {
         ContributorRoleResponseDto responseDto = new ContributorRoleResponseDto(1L, "지은이");
 
         when(contributorRoleRepository.findById(1L)).thenReturn(Optional.of(contributorRole));
-        when(contributorMapper.toContributorRoleResponseDto(contributorRole)).thenReturn(responseDto);
+        when(contributorRoleMapper.toContributorRoleResponseDto(contributorRole)).thenReturn(responseDto);
 
         // when
         ContributorRoleResponseDto result = contributorRoleService.getContributorRole(1L);
@@ -67,7 +72,7 @@ class ContributorRoleServiceImplTest {
         // then
         assertNotNull(result);
         assertEquals(1L, result.contributorRoleId());
-        assertEquals("지은이", result.roleName());
+        assertEquals("지은이", result.name());
     }
 
     @Test
@@ -91,7 +96,7 @@ class ContributorRoleServiceImplTest {
 
         when(contributorRoleRepository.findById(1L)).thenReturn(Optional.of(existingRole));
         when(contributorRoleRepository.save(any(ContributorRole.class))).thenReturn(updatedRole);
-        when(contributorMapper.toContributorRoleResponseDto(updatedRole)).thenReturn(responseDto);
+        when(contributorRoleMapper.toContributorRoleResponseDto(updatedRole)).thenReturn(responseDto);
 
         // when
         ContributorRoleResponseDto result = contributorRoleService.updateContributorRole(1L, requestDto);
@@ -99,7 +104,7 @@ class ContributorRoleServiceImplTest {
         // then
         assertNotNull(result);
         assertEquals(1L, result.contributorRoleId());
-        assertEquals("옮긴이", result.roleName());
+        assertEquals("옮긴이", result.name());
     }
 
     @Test

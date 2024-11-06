@@ -3,7 +3,7 @@ package com.nhnacademy.bookstore.shipment.service.impl;
 import com.nhnacademy.bookstore.shipment.dto.request.ShipmentPolicyRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.response.ShipmentPolicyResponseDto;
 import com.nhnacademy.bookstore.shipment.entity.ShipmentPolicy;
-import com.nhnacademy.bookstore.shipment.mapper.ShipmentMapper;
+import com.nhnacademy.bookstore.shipment.mapper.ShipmentPolicyMapper;
 import com.nhnacademy.bookstore.shipment.repository.ShipmentPolicyRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ class ShipmentPolicyServiceImplTest {
     private ShipmentPolicyRepository shipmentPolicyRepository;
 
     @Mock
-    private ShipmentMapper shipmentMapper;
+    private ShipmentPolicyMapper shipmentPolicyMapper;
 
     @InjectMocks
     private ShipmentPolicyServiceImpl shipmentPolicyService;
@@ -41,7 +41,7 @@ class ShipmentPolicyServiceImplTest {
         ShipmentPolicyResponseDto responseDto = new ShipmentPolicyResponseDto(1L, "정책 이름", 10000, true, 5000, true, null, null);
 
         when(shipmentPolicyRepository.save(any(ShipmentPolicy.class))).thenReturn(savedPolicy);
-        when(shipmentMapper.toShipmentPolicyResponseDto(savedPolicy)).thenReturn(responseDto); // Mapper 사용
+        when(shipmentPolicyMapper.toShipmentPolicyResponseDto(savedPolicy)).thenReturn(responseDto); // Mapper 사용
 
         // when
         ShipmentPolicyResponseDto result = shipmentPolicyService.createShipmentPolicy(requestDto);
@@ -60,7 +60,7 @@ class ShipmentPolicyServiceImplTest {
         ShipmentPolicyResponseDto responseDto = new ShipmentPolicyResponseDto(1L, "정책 이름", 10000, true, 5000, true, null, null);
 
         when(shipmentPolicyRepository.findById(1L)).thenReturn(Optional.of(policy));
-        when(shipmentMapper.toShipmentPolicyResponseDto(policy)).thenReturn(responseDto);
+        when(shipmentPolicyMapper.toShipmentPolicyResponseDto(policy)).thenReturn(responseDto);
 
         // when
         ShipmentPolicyResponseDto result = shipmentPolicyService.getShipmentPolicy(1L);
@@ -82,7 +82,7 @@ class ShipmentPolicyServiceImplTest {
 
         when(shipmentPolicyRepository.findById(1L)).thenReturn(Optional.of(existingPolicy));
         when(shipmentPolicyRepository.save(any(ShipmentPolicy.class))).thenReturn(updatedPolicy);
-        when(shipmentMapper.toShipmentPolicyResponseDto(updatedPolicy)).thenReturn(responseDto);
+        when(shipmentPolicyMapper.toShipmentPolicyResponseDto(updatedPolicy)).thenReturn(responseDto);
 
         // when
         ShipmentPolicyResponseDto result = shipmentPolicyService.updateShipmentPolicy(1L, requestDto);

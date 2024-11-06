@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.bookset.contributor.service.impl;
 
+import com.netflix.discovery.converters.Auto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRequestDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.entity.Contributor;
@@ -12,6 +13,7 @@ import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorReposi
 import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorRoleRepository;
 import com.nhnacademy.bookstore.bookset.contributor.service.ContributorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

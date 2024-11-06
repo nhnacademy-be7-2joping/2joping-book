@@ -8,5 +8,5 @@ package com.nhnacademy.bookstore.bookset.contributor.dto.response;
  */
 public record ContributorRoleResponseDto(
         Long contributorRoleId,
-        String roleName
+        String name
 ) {}

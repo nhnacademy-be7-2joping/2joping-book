@@ -3,7 +3,7 @@ package com.nhnacademy.bookstore.shipment.service.impl;
 import com.nhnacademy.bookstore.shipment.dto.request.CarrierRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.response.CarrierResponseDto;
 import com.nhnacademy.bookstore.shipment.entity.Carrier;
-import com.nhnacademy.bookstore.shipment.mapper.ShipmentMapper;
+import com.nhnacademy.bookstore.shipment.mapper.CarrierMapper;
 import com.nhnacademy.bookstore.shipment.repository.CarrierRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ class CarrierServiceImplTest {
     private CarrierRepository carrierRepository;
 
     @Mock
-    private ShipmentMapper shipmentMapper;
+    private CarrierMapper carrierMapper;
 
     @InjectMocks
     private CarrierServiceImpl carrierService;
@@ -40,7 +40,7 @@ class CarrierServiceImplTest {
         CarrierResponseDto expectedResponse = new CarrierResponseDto(1L, "핑핑배송", "010-1234-5678", "test@example.com", "https://example.com");
 
         when(carrierRepository.save(any(Carrier.class))).thenReturn(savedCarrier);
-        when(shipmentMapper.toCarrierResponseDto(savedCarrier)).thenReturn(expectedResponse);
+        when(carrierMapper.toCarrierResponseDto(savedCarrier)).thenReturn(expectedResponse);
 
         // when
         CarrierResponseDto responseDto = carrierService.createCarrier(requestDto);
@@ -59,7 +59,7 @@ class CarrierServiceImplTest {
         CarrierResponseDto expectedResponse = new CarrierResponseDto(1L, "핑핑배송", "010-1234-5678", "test@example.com", "https://example.com");
 
         when(carrierRepository.findById(1L)).thenReturn(Optional.of(carrier));
-        when(shipmentMapper.toCarrierResponseDto(carrier)).thenReturn(expectedResponse);
+        when(carrierMapper.toCarrierResponseDto(carrier)).thenReturn(expectedResponse);
 
         // when
         CarrierResponseDto responseDto = carrierService.getCarrier(1L);
@@ -80,8 +80,8 @@ class CarrierServiceImplTest {
         CarrierResponseDto responseDto2 = new CarrierResponseDto(2L, "대한배송", "010-5678-1234", "test2@example.com", "https://example2.com");
 
         when(carrierRepository.findAll()).thenReturn(List.of(carrier1, carrier2));
-        when(shipmentMapper.toCarrierResponseDto(carrier1)).thenReturn(responseDto1);
-        when(shipmentMapper.toCarrierResponseDto(carrier2)).thenReturn(responseDto2);
+        when(carrierMapper.toCarrierResponseDto(carrier1)).thenReturn(responseDto1);
+        when(carrierMapper.toCarrierResponseDto(carrier2)).thenReturn(responseDto2);
 
         // when
         List<CarrierResponseDto> carriers = carrierService.getAllCarriers();
@@ -104,7 +104,7 @@ class CarrierServiceImplTest {
 
         when(carrierRepository.findById(1L)).thenReturn(Optional.of(existingCarrier));
         when(carrierRepository.save(any(Carrier.class))).thenReturn(updatedCarrier);
-        when(shipmentMapper.toCarrierResponseDto(updatedCarrier)).thenReturn(expectedResponse);
+        when(carrierMapper.toCarrierResponseDto(updatedCarrier)).thenReturn(expectedResponse);
 
         // when
         CarrierResponseDto responseDto = carrierService.updateCarrier(1L, requestDto);

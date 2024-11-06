@@ -4,7 +4,7 @@ import com.nhnacademy.bookstore.common.error.exception.shipment.ShipmentPolicyNo
 import com.nhnacademy.bookstore.shipment.dto.request.ShipmentPolicyRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.response.ShipmentPolicyResponseDto;
 import com.nhnacademy.bookstore.shipment.entity.ShipmentPolicy;
-import com.nhnacademy.bookstore.shipment.mapper.ShipmentMapper;
+import com.nhnacademy.bookstore.shipment.mapper.ShipmentPolicyMapper;
 import com.nhnacademy.bookstore.shipment.repository.ShipmentPolicyRepository;
 import com.nhnacademy.bookstore.shipment.service.ShipmentPolicyService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.List;
 public class ShipmentPolicyServiceImpl implements ShipmentPolicyService {
 
     private final ShipmentPolicyRepository shipmentPolicyRepository;
-    private final ShipmentMapper shipmentMapper;
+    private final ShipmentPolicyMapper shipmentPolicyMapper;
 
     @Override
     @Transactional
@@ -36,7 +36,7 @@ public class ShipmentPolicyServiceImpl implements ShipmentPolicyService {
         );
 
         ShipmentPolicy savedPolicy = shipmentPolicyRepository.save(shipmentPolicy);
-        return shipmentMapper.toShipmentPolicyResponseDto(savedPolicy);
+        return shipmentPolicyMapper.toShipmentPolicyResponseDto(savedPolicy);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ShipmentPolicyServiceImpl implements ShipmentPolicyService {
     public ShipmentPolicyResponseDto getShipmentPolicy(Long shipmentPolicyId) {
         ShipmentPolicy policy = shipmentPolicyRepository.findById(shipmentPolicyId)
                 .orElseThrow(ShipmentPolicyNotFoundException::new);
-        return shipmentMapper.toShipmentPolicyResponseDto(policy);
+        return shipmentPolicyMapper.toShipmentPolicyResponseDto(policy);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ShipmentPolicyServiceImpl implements ShipmentPolicyService {
                 .orElseThrow(ShipmentPolicyNotFoundException::new);
         policy.toEntity(requestDto);
         ShipmentPolicy updatedPolicy = shipmentPolicyRepository.save(policy);
-        return shipmentMapper.toShipmentPolicyResponseDto(updatedPolicy);
+        return shipmentPolicyMapper.toShipmentPolicyResponseDto(updatedPolicy);
     }
 
     @Override
