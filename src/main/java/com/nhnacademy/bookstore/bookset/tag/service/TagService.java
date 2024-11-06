@@ -10,6 +10,7 @@ import java.util.List;
 @Service
 public interface TagService {
     TagResponseDto createTag(TagRequestDto dto);
+    TagResponseDto assignedTagToBook(Long tagId, Long bookId);
     TagResponseDto getTag(Long tagId);
     List<TagResponseDto> getAllTags();
     TagResponseDto updateTag(Long tagId, TagRequestDto dto);

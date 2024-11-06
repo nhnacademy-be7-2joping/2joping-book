@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -17,6 +18,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -24,6 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TagController.class)
+@TestPropertySource(properties = "keymanager.url=http://localhost:8084")
 public class TagControllerTest {
 
     @Autowired
@@ -41,18 +44,34 @@ public class TagControllerTest {
                 .build();
     }
 
+
     @Test
     public void createTag_SuccessResponse() throws Exception {
-        TagResponseDto responseDto = new TagResponseDto(1L, "Tag1");
-        given(tagService.createTag(ArgumentMatchers.any(TagRequestDto.class))).willReturn(responseDto);
 
+        TagRequestDto requestDto = new TagRequestDto("NewTag");
         mockMvc.perform(post("/bookstore/tag")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\": \"Tag1\"}"))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.tagId").value(1L))
-                .andExpect(jsonPath("$.name").value("Tag1"));
+                        .content("{\"name\":\"NewTag\"}"))
+                .andExpect(status().isCreated());
     }
+
+    @Test
+    public void assignTagToBook_SuccessResponse() throws Exception {
+        TagResponseDto responseDto = new TagResponseDto(1L, "Sample Tag");
+        given(tagService.assignedTagToBook(ArgumentMatchers.eq(1L), ArgumentMatchers.eq(1L)))
+                .willReturn(responseDto);
+
+        mockMvc.perform(post("/bookstore/tag/assign")
+                        .param("tagId", "1")
+                        .param("bookId", "1")
+                        .contentType(MediaType.APPLICATION_JSON))
+
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.tagId").value(1L))
+                .andExpect(jsonPath("$.name").value("Sample Tag"));
+    }
+
+
 
     @Test
     public void getTag_SuccessResponse() throws Exception {
@@ -66,6 +85,8 @@ public class TagControllerTest {
                 .andExpect(jsonPath("$.name").value("ReadTag"));
 
     }
+
+
 
     @Test
     public void getAllTags_ShouldReturnTags() throws Exception {
@@ -87,7 +108,7 @@ public class TagControllerTest {
         TagRequestDto requestDto = new TagRequestDto("UpdatedTag");
         TagResponseDto responseDto = new TagResponseDto(3L, "UpdatedTag");
 
-        given(tagService.updateTag(ArgumentMatchers.eq(3L), ArgumentMatchers.any(TagRequestDto.class))).willReturn(responseDto);
+        given(tagService.updateTag(ArgumentMatchers.eq(3L), any(TagRequestDto.class))).willReturn(responseDto);
 
         mockMvc.perform(put("/bookstore/tag/{tagId}", 3L)
                         .contentType(MediaType.APPLICATION_JSON)
