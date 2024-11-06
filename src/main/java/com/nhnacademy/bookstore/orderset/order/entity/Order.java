@@ -14,8 +14,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -27,7 +30,7 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id",nullable = false)
+    @Column(name = "order_id", nullable = false)
     private Long orderId;
 
     /*@ManyToOne
@@ -45,6 +48,9 @@ public class Order {
     @Column(name = "order_date", nullable = false)
     private LocalDateTime orderDate;
 
+    @Column(name = "desired_delivery_date")
+    private LocalDate desiredDeliveryDate;
+
     @Column(name = "receiver", length = 20, nullable = false)
     private String receiver;
 
@@ -58,12 +64,14 @@ public class Order {
     private String detailAddress;
 
     @Column(name = "point_usage", nullable = false)
+    @ColumnDefault("0")
     private int pointUsage = 0;
 
     @Column(name = "shipping_fee", nullable = false)
     private int shippingFee;
 
     @Column(name = "coupon_sale_price", nullable = false)
+    @ColumnDefault("0")
     private int couponSalePrice = 0;
 
     @Column(name = "total_price", nullable = false)
