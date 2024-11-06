@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,11 +42,9 @@ public class ShipmentPolicyServiceImpl implements ShipmentPolicyService {
     @Override
     @Transactional(readOnly = true)
     public List<ShipmentPolicyResponseDto> getAllShipmentPolicies() {
-        return shipmentPolicyRepository.findByIsActiveTrue()
-                .stream()
-                .map(shipmentMapper::toShipmentPolicyResponseDto)
-                .collect(Collectors.toList());
+        return shipmentPolicyRepository.findActiveShipmentPolicies();
     }
+
 
     @Override
     @Transactional(readOnly = true)

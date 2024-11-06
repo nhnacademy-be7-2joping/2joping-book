@@ -129,14 +129,10 @@ class ShipmentPolicyServiceImplTest {
     @DisplayName("모든 활성화된 배송 정책 조회 테스트")
     void getAllShipmentPolicies() {
         // given
-        ShipmentPolicy policy1 = new ShipmentPolicy(1L, "정책 1", 10000, true, null, null, 5000, true);
-        ShipmentPolicy policy2 = new ShipmentPolicy(2L, "정책 2", 5000, false, null, null, 3000, true);
         ShipmentPolicyResponseDto responseDto1 = new ShipmentPolicyResponseDto(1L, "정책 1", 10000, true, 5000, true, null, null);
         ShipmentPolicyResponseDto responseDto2 = new ShipmentPolicyResponseDto(2L, "정책 2", 5000, false, 3000, true, null, null);
 
-        when(shipmentPolicyRepository.findByIsActiveTrue()).thenReturn(List.of(policy1, policy2));
-        when(shipmentMapper.toShipmentPolicyResponseDto(policy1)).thenReturn(responseDto1);
-        when(shipmentMapper.toShipmentPolicyResponseDto(policy2)).thenReturn(responseDto2);
+        when(shipmentPolicyRepository.findActiveShipmentPolicies()).thenReturn(List.of(responseDto1, responseDto2));
 
         // when
         List<ShipmentPolicyResponseDto> responseList = shipmentPolicyService.getAllShipmentPolicies();

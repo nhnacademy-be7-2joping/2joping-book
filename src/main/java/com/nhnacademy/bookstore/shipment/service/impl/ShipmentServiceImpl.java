@@ -70,31 +70,23 @@ public class ShipmentServiceImpl implements ShipmentService {
     @Override
     @Transactional(readOnly = true)
     public List<ShipmentResponseDto> getAllShipments() {
-        return shipmentRepository.findAll()
-                .stream()
-                .map(shipmentMapper::toShipmentResponseDto)
-                .collect(Collectors.toList());
+        return shipmentRepository.findAllShipmentDtos();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ShipmentResponseDto> getCompletedShipments() {
         LocalDateTime now = LocalDateTime.now();
-        return shipmentRepository.findAll().stream()
-                .filter(shipment -> shipment.getDeliveryDate() != null && shipment.getDeliveryDate().isBefore(now))
-                .map(shipmentMapper::toShipmentResponseDto)
-                .collect(Collectors.toList());
+        return shipmentRepository.findCompletedShipmentDtos(now);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ShipmentResponseDto> getPendingShipments() {
         LocalDateTime now = LocalDateTime.now();
-        return shipmentRepository.findAll().stream()
-                .filter(shipment -> shipment.getDeliveryDate() == null || shipment.getDeliveryDate().isAfter(now))
-                .map(shipmentMapper::toShipmentResponseDto)
-                .collect(Collectors.toList());
+        return shipmentRepository.findPendingShipmentDtos(now);
     }
+
 
     @Override
     @Transactional
