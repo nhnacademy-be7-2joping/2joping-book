@@ -27,7 +27,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(LikeController.class)
-@TestPropertySource(properties = "keymanager.url=http://localhost:8084")
 class LikeControllerTest {
 
     @Autowired
