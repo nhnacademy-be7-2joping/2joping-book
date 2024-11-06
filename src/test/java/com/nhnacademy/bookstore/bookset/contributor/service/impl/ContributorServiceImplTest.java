@@ -94,6 +94,21 @@ class ContributorServiceImplTest {
         assertEquals("삼조핑", responseDto.name());
     }
 
+
+    @Test
+    @DisplayName("비활성화된 도서 기여자 조회 테스트")
+    void getDeactivatedContributor() {
+        // given
+        ContributorRole contributorRole = new ContributorRole(1L, "작가");
+        Contributor deactivatedContributor = new Contributor(1L, contributorRole, "삼조핑", false);
+
+        when(contributorRepository.findById(1L)).thenReturn(Optional.of(deactivatedContributor));
+
+        // when & then
+        assertThrows(ContributorIsDeactivateException.class, () -> contributorService.getContributor(1L));
+    }
+
+
     @Test
     @DisplayName("존재하지 않는 도서 기여자 조회 시 예외 발생 테스트")
     void getContributorNotFound() {

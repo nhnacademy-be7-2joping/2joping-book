@@ -1,6 +1,5 @@
 package com.nhnacademy.bookstore.bookset.contributor.service.impl;
 
-import com.netflix.discovery.converters.Auto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRequestDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.entity.Contributor;
@@ -13,7 +12,6 @@ import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorReposi
 import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorRoleRepository;
 import com.nhnacademy.bookstore.bookset.contributor.service.ContributorService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,12 +54,17 @@ public class ContributorServiceImpl implements ContributorService {
      * @param contributorId 조회할 기여자의 ID
      * @return 조회된 기여자의 정보를 담은 ContributorResponseDto
      * @throws ContributorNotFoundException 기여자를 찾을 수 없을 경우 발생
+     * @throws ContributorIsDeactivateException 기여자가 비활성화 상태인 경우 발생
      */
     @Override
     @Transactional(readOnly = true)
     public ContributorResponseDto getContributor(Long contributorId) {
         Contributor contributor = contributorRepository.findById(contributorId)
                 .orElseThrow(ContributorNotFoundException::new);
+
+        if (!contributor.getIsActive()) {
+            throw new ContributorIsDeactivateException();
+        }
 
         return contributorMapper.toContributorResponseDto(contributor);
     }

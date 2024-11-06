@@ -54,6 +54,7 @@ public class ContributorController {
      * @param contributorId 조회할 도서 기여자의 ID
      * @return 조회된 도서 기여자의 정보를 포함한 ResponseEntity
      * @throws ContributorNotFoundException 도서 기여자를 찾을 수 없는 경우 응답 코드 404 NOT_FOUND 반환합니다.
+     * @throws ContributorIsDeactivateException 비활성화된 도서 기여자를 조회하려 할 때 응답 코드 400 BAD_REQUEST 반환합니다.
      */
     @Operation(summary = "Get a contributor", description = "특정 도서 기여자의 정보를 조회합니다.")
     @ApiResponses({
