@@ -1,8 +1,8 @@
 package com.nhnacademy.bookstore.bookset.category.controller;
 
-import com.nhnacademy.bookstore.bookset.category.dto.request.CreateCategoryRequest;
+import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryCreateRequest;
 import com.nhnacademy.bookstore.bookset.category.dto.request.UpdateCategoryRequest;
-import com.nhnacademy.bookstore.bookset.category.dto.response.GetAllCategoryResponse;
+import com.nhnacademy.bookstore.bookset.category.dto.response.GetAllCategoriesResponse;
 import com.nhnacademy.bookstore.bookset.category.dto.response.GetCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.dto.response.UpdateCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.service.CategoryService;
@@ -21,7 +21,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping("/categories")
-    public ResponseEntity<Void> createCategory(@RequestBody CreateCategoryRequest request) {
+    public ResponseEntity<Void> createCategory(@RequestBody CategoryCreateRequest request) {
         Long categoryId = categoryService.createCategory(request);
         return ResponseEntity.created(URI.create("/" + categoryId)).build();
     }
@@ -33,8 +33,8 @@ public class CategoryController {
     }
 
     @GetMapping("/categories")
-    public ResponseEntity<List<GetAllCategoryResponse>> getAllCategories() {
-        List<GetAllCategoryResponse> response = categoryService.getAllCategories();
+    public ResponseEntity<List<GetAllCategoriesResponse>> getAllCategories() {
+        List<GetAllCategoriesResponse> response = categoryService.getAllCategories();
         return ResponseEntity.ok(response);
     }
 
