@@ -24,18 +24,18 @@ public class Category {
     private Long categoryId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "subcategory_id")
-    private Category subcategory;
+    @JoinColumn(name = "parent_category_id")
+    private Category parentCategory;
 
     @Column(nullable = false, length = 50, unique = true)
     private String name;
 
     @Builder
     private Category(
-            Category subcategory,
+            Category parentCategory,
             String name
     ) {
-        this.subcategory = subcategory;
+        this.parentCategory = parentCategory;
         this.name = name;
     }
 
@@ -43,7 +43,7 @@ public class Category {
         this.name = name;
     }
 
-    public void updateSubcategory(Category subcategory) {
-        this.subcategory = subcategory;
+    public void updateSubcategory(Category parentCategory) {
+        this.parentCategory = parentCategory;
     }
 }
