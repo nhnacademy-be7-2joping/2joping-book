@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -23,6 +24,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ShipmentController.class)
+@TestPropertySource(properties = "keymanager.url=http://localhost:8084")
 class ShipmentControllerTest {
 
     @Autowired
@@ -74,7 +76,7 @@ class ShipmentControllerTest {
     }
 
     @Test
-    @DisplayName("특정 배송 조회 테스트")
+    @DisplayName("배송 조회 테스트")
     void getShipment() throws Exception {
         // given
         ShipmentResponseDto responseDto = new ShipmentResponseDto(1L, 1L, 1L, 1L, "빠른 배송 요청", LocalDateTime.now(), LocalDateTime.now().plusDays(2), "12345");
@@ -108,6 +110,23 @@ class ShipmentControllerTest {
     }
 
     @Test
+    @DisplayName("배송 미완료된 정보 조회 테스트")
+    void getPendingShipments() throws Exception {
+        // given
+        ShipmentResponseDto pendingShipment = new ShipmentResponseDto(1L, 1L, 1L, 1L, "빠른 배송 요청", LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2), "12345");
+
+        Mockito.when(shipmentService.getPendingShipments()).thenReturn(Collections.singletonList(pendingShipment));
+
+        // when
+        mockMvc.perform(MockMvcRequestBuilders.get("/bookstore/shipments/pending")
+                        .accept(MediaType.APPLICATION_JSON))
+                // then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].shipmentId").value(1L))
+                .andExpect(jsonPath("$[0].trackingNumber").value("12345"));
+    }
+
+    @Test
     @DisplayName("배송 수정 테스트")
     void updateShipment() throws Exception {
         // given
@@ -124,5 +143,18 @@ class ShipmentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.shipmentId").value(1L))
                 .andExpect(jsonPath("$.requirement").value("경비실에 맞겨주세요"));
+    }
+
+    @Test
+    @DisplayName("배송 삭제 테스트")
+    void deleteShipment() throws Exception {
+        // given
+        Mockito.doNothing().when(shipmentService).deleteShipment(1L);
+
+        // when
+        mockMvc.perform(MockMvcRequestBuilders.delete("/bookstore/shipments/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                // then
+                .andExpect(status().isOk());
     }
 }

@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.user.member.controller;
 
+import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
 import com.nhnacademy.bookstore.common.error.exception.user.address.AddressLimitToTenException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberAddressRequestDto;
@@ -45,8 +46,12 @@ public class MemberAddressController {
     @Operation(summary = "새 주소 추가", description = "특정 회원의 새 주소를 추가합니다. 주소는 최대 10개까지 저장할 수 있습니다.")
     @PostMapping("/{memberId}/address")
     public ResponseEntity<List<MemberAddressResponseDto>> addMemberAddress(
-            @Parameter(description = "회원 ID", required = true) @PathVariable long memberId,
-            @Parameter(description = "회원 주소 정보", required = true) @Valid @RequestBody MemberAddressRequestDto requestDto) {
+            @Parameter(description = "회원 ID", required = true)
+            @PathVariable
+            @ValidPathVariable long memberId,
+            @Parameter(description = "회원 주소 정보", required = true)
+            @Valid
+            @RequestBody MemberAddressRequestDto requestDto) {
 
         List<MemberAddressResponseDto> addresses = memberAddressService.addMemberAddress(memberId, requestDto);
 
