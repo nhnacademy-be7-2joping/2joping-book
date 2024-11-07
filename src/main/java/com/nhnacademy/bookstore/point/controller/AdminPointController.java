@@ -1,7 +1,7 @@
 package com.nhnacademy.bookstore.point.controller;
 
 import com.nhnacademy.bookstore.point.dto.request.PointTypeDto;
-import com.nhnacademy.bookstore.point.service.PointTypeService;
+import com.nhnacademy.bookstore.point.service.impl.PointTypeServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,17 +10,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/admin/points")
 public class AdminPointController {
 
-    private PointTypeService pointTypeService;
+    private PointTypeServiceImpl pointTypeServiceImpl;
 
     @PostMapping("/types")
     public ResponseEntity<PointTypeDto> createPointType(@RequestBody @Valid PointTypeDto request) {
-        return ResponseEntity.ok(pointTypeService.createPointType(request));
+        return ResponseEntity.ok(pointTypeServiceImpl.createPointType(request));
     }
 
     @PutMapping("/types/{id}")
     public ResponseEntity<PointTypeDto> updatePointType(
             @PathVariable Long id,
             @RequestBody @Valid PointTypeDto request) {
-        return ResponseEntity.ok(pointTypeService.updatePointType(id, request));
+        return ResponseEntity.ok(pointTypeServiceImpl.updatePointType(id, request));
     }
 }
