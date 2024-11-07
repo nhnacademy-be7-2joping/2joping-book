@@ -36,7 +36,6 @@ public class BookController {
 
     /**
      * 전체 도서를 조회하는 controller
-     *
      * @return 전체 도서와 상태 코드를 담은 응답
      */
     @Operation(summary = "전체 도서 조회", description = "등록된 모든 도서를 조회합니다.")
@@ -49,7 +48,7 @@ public class BookController {
 
     /**
      * 카테고리별 도서를 조회하는 controller
-     *
+     * @param categoryId 조회하려는 카테고리 id
      * @return 카테고리로 조회한 도서와 상태 코드를 담은 응답
      */
     @Operation(summary = "카테고리로 도서 조회", description = "카테고리별 도서를 조회합니다.")
@@ -62,7 +61,7 @@ public class BookController {
 
     /**
      * 기여자별 도서를 조회하는 controller
-     *
+     * @param contributorId 조회하려는 기여자 id
      * @return 기여자로 조회한 상태 코드를 담은 응답
      */
     @Operation(summary = "기여자로 도서 조회", description = "기여자별 도서를 조회합니다.")
@@ -75,7 +74,7 @@ public class BookController {
 
     /**
      * 특정 도서의 상세 정보를 조회하는 controller
-     *
+     * @param bookId 조회하려는 도서 id
      * @return 특정 도서와 상태 코드를 담은 응답
      */
     @Operation(summary = "특정 도서 상세 조회", description = "특정 도서의 상세 정보를 조회합니다.")

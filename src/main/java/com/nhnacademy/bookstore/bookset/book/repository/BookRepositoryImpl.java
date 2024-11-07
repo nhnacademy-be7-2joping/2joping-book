@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.bookset.book.repository;
 
+import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
 
 
@@ -9,9 +10,6 @@ import com.nhnacademy.bookstore.bookset.book.entity.QBookCategory;
 import com.nhnacademy.bookstore.bookset.book.entity.QBookContributor;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.impl.JPAQuery;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 public class BookRepositoryImpl extends QuerydslRepositorySupport implements BookRepositoryCustom {
@@ -28,55 +25,19 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         super(Book.class);
     }
 
-    @PersistenceContext
-    private EntityManager entityManager;
-    /**
-     * 기여자로 도서를 조회하는 메서드
-     * @param contributorId 검색하려는 기여자id
-     * @return 기여자별 도서와 상태 코드를 담은 응답
-     */
-//    @Override
-//    public Page<BookSimpleResponseDto> findBooksByContributorId(Pageable pageable,Long contributorId) {
-//        QBook qBook = QBook.book;
-//        QBookContributor qBookContributor = QBookContributor.bookContributor;
-//
-//        // QueryDSL로 쿼리 작성
-//        List<BookSimpleResponseDto> booksDto = from(qBookContributor)
-//                .join(qBookContributor.book, qBook)
-//                .where(qBookContributor.contributor.contributorId.eq(contributorId))
-//                .offset(pageable.getOffset())
-//                .limit(pageable.getPageSize())
-//                .select(Projections.constructor(
-//                        BookSimpleResponseDto.class,
-//                        qBook.bookId,
-//                        Expressions.constant("temp.jpg"), // 썸네일 경로가 임시일 경우
-//                        qBook.title,
-//                        qBook.sellingPrice,
-//                        qBook.publisher,
-//                        qBook.retailPrice,
-//                        qBook.isActive
-//                ))
-//                .fetch();
-//
-//        // 총 데이터 수 계산
-//        long total = from(qBookContributor)
-//                .join(qBookContributor.book, qBook)
-//                .where(qBookContributor.contributor.contributorId.eq(contributorId))
-//                .distinct()
-//                .fetchCount();
-//
-//        // Page 객체로 변환하여 반환
-//        return new PageImpl<>(booksDto, pageable, total);
-//    }
-    @Override
-    public Page<BookSimpleResponseDto> findBooksByContributorId(Pageable pageable, Long contributorId) {
-        QBook qBook = QBook.book;
-        QBookContributor qBookContributor = QBookContributor.bookContributor;
 
-        // 페이징된 데이터를 가져오는 쿼리
-        List<BookSimpleResponseDto> booksDto = from(qBookContributor)
-                .join(qBookContributor.book, qBook)
-                .where(qBookContributor.contributor.contributorId.eq(contributorId))
+    /**
+     * 전체 도서를 페이지 단위로 조회
+     *
+     * @param pageable 페이징 정보를 담고 있는 객체
+     * @return 전체 도서 목록과 페이징 정보를 담은 Page 객체
+     */
+
+    @Override
+    public Page<BookSimpleResponseDto> findAllBooks(Pageable pageable) {
+        QBook qBook = QBook.book;
+
+        List<BookSimpleResponseDto> booksDto = from(qBook)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .select(Projections.constructor(
@@ -91,31 +52,28 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 ))
                 .fetch();
 
-        long total = new JPAQuery<>(entityManager)
-                .from(qBookContributor)
-                .join(qBookContributor.book, qBook)
-                .where(qBookContributor.contributor.contributorId.eq(contributorId))
+        long total = from(qBook)
                 .fetchCount();
 
-        // Page 객체로 반환
         return new PageImpl<>(booksDto, pageable, total);
     }
 
 
     /**
-     * 카테고리로 도서를 조회하는 메서드
-     * @param categoryId 검색하려는 카테고리id
-     * @return 카테고리별 도서와 상태 코드를 담은 응답
+     * 특정 기여자가 참여한 도서를 페이지 단위로 조회
+     *
+     * @param pageable 페이징 정보를 담고 있는 객체
+     * @param contributorId 조회할 기여자의 ID
+     * @return 기여자가 참여한 도서 목록과 페이징 정보를 담은 Page 객체
      */
     @Override
-    public Page<BookSimpleResponseDto> findBooksByCategoryId(Pageable pageable, Long categoryId) {
+    public Page<BookSimpleResponseDto> findBooksByContributorId(Pageable pageable,Long contributorId) {
         QBook qBook = QBook.book;
-        QBookCategory qBookCategory = QBookCategory.bookCategory;
+        QBookContributor qBookContributor = QBookContributor.bookContributor;
 
-        // QueryDSL로 쿼리 작성
-        List<BookSimpleResponseDto> booksDto = from(qBookCategory)
-                .join(qBookCategory.book, qBook)
-                .where(qBookCategory.category.categoryId.eq(categoryId))
+        List<BookSimpleResponseDto> booksDto = from(qBookContributor)
+                .join(qBookContributor.book, qBook)
+                .where(qBookContributor.contributor.contributorId.eq(contributorId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .select(Projections.constructor(
@@ -130,35 +88,88 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 ))
                 .fetch();
 
+        long total = from(qBookContributor)
+                .join(qBookContributor.book, qBook)
+                .where(qBookContributor.contributor.contributorId.eq(contributorId))
+                .distinct()
+                .fetchCount();
 
-        // 총 데이터 수 계산
+        return new PageImpl<>(booksDto, pageable, total);
+    }
+
+
+
+
+    /**
+     * 특정 카테고리에 속하는 도서를 페이지 단위로 조회
+     *
+     * @param pageable 페이징 정보를 담고 있는 객체
+     * @param categoryId 조회할 카테고리의 ID
+     * @return 카테고리별 도서 목록과 페이징 정보를 담은 Page 객체
+     */
+    @Override
+    public Page<BookSimpleResponseDto> findBooksByCategoryId(Pageable pageable, Long categoryId) {
+        QBook qBook = QBook.book;
+        QBookCategory qBookCategory = QBookCategory.bookCategory;
+
+        List<BookSimpleResponseDto> booksDto = from(qBookCategory)
+                .join(qBookCategory.book, qBook)
+                .where(qBookCategory.category.categoryId.eq(categoryId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .select(Projections.constructor(
+                        BookSimpleResponseDto.class,
+                        qBook.bookId,
+                        Expressions.constant("temp.jpg"), // 썸네일 경로가 임시일 경우
+                        qBook.title,
+                        qBook.sellingPrice,
+                        qBook.publisher.name,
+                        qBook.retailPrice,
+                        qBook.isActive
+                ))
+                .fetch();
+
+
         long total = from(qBookCategory)
                 .join(qBookCategory.book, qBook)
                 .where(qBookCategory.category.categoryId.eq(categoryId))
                 .distinct()
                 .fetchCount();
 
-        // Page 객체로 변환하여 반환
         return new PageImpl<>(booksDto, pageable, total);
     }
 
 
-
     /**
-     * 책 하나의 상세한 정보를 조회하는 메서드
-     * @param bookId 검색하려는 도서id
-     * @return 특정 도서와 상태 코드를 담은 응답
+     * 특정 도서의 상세 정보를 조회합니다.
+     *
+     * @param bookId 조회할 도서의 ID
+     * @return 도서의 상세 정보를 담은 BookResponseDto 객체
      */
     @Override
-    public Optional<Book> findBookByBookId(Long bookId) {
+    public BookResponseDto findBookByBookId(Long bookId) {
         QBook qBook = QBook.book;
 
-        Book book = from(qBook)
+        return from(qBook)
                 .where(qBook.bookId.eq(bookId))
-                .select(qBook)
+                .select(Projections.constructor(
+                        BookResponseDto.class,
+                        qBook.bookId,
+                        qBook.publisher.name,
+                        qBook.title,
+                        qBook.description,
+                        qBook.publishedDate,
+                        qBook.isbn,
+                        qBook.retailPrice,
+                        qBook.sellingPrice,
+                        qBook.giftWrappable,
+                        qBook.isActive,
+                        qBook.remainQuantity,
+                        qBook.views,
+                        qBook.likes,
+                        Expressions.constant("temp.jpg") // 썸네일 경로가 임시일 경우
+                ))
                 .fetchOne();
-
-        return Optional.ofNullable(book);
     }
 }
 

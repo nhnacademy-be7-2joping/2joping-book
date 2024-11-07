@@ -12,7 +12,4 @@ public interface BookService {
     BookResponseDto getBookById(Long bookId);
     Page<BookSimpleResponseDto> getBooksByCategoryId(Pageable pageable, Long categoryId);
     Page<BookSimpleResponseDto> getBooksByContributorId(Pageable pageable, Long contributorId);
-
-
-
 }
