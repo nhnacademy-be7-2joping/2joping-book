@@ -1,26 +1,27 @@
 package com.nhnacademy.bookstore.bookset.book.service.impl;
 
-import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateRequestDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
+import com.nhnacademy.bookstore.bookset.book.exception.BookNotFoundException;
 import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+
+
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
-    @Override
-    public BookResponseDto createBook(BookCreateRequestDto request) {
-        return new BookResponseDto();
-    }
 
 
     /**
@@ -41,7 +42,7 @@ public class BookServiceImpl implements BookService {
                 getBookThumbnail(book),
                 book.getTitle(),
                 book.getSellingPrice(),
-                book.getPublisher(),
+                book.getPublisher().getName(),
                 book.getRetailPrice(),
                 book.isActive()
         );
@@ -60,11 +61,12 @@ public class BookServiceImpl implements BookService {
      */
 
     @Override
-    public Optional<BookResponseDto> getbookById(Long bookId) {
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new IllegalArgumentException("Book not found with ID: " + bookId));
-        return Optional.ofNullable(convertToBookResponseDto(book));
+    public BookResponseDto getBookById(Long bookId) {
+        Book book = bookRepository.findBookByBookId(bookId)
+                .orElseThrow(() -> new BookNotFoundException("도서를 찾을 수 없습니다"));
+        return convertToBookResponseDto(book);
     }
+
 
 
     /**
@@ -72,45 +74,39 @@ public class BookServiceImpl implements BookService {
      * @param categoryId
      * @return 도서 객체
      */
-
     @Override
     public Page<BookSimpleResponseDto> getBooksByCategoryId(Pageable pageable, Long categoryId) {
-
         return bookRepository.findBooksByCategoryId(pageable, categoryId);
     }
 
-
-//    @Override
-//    public List<BookSimpleResponseDto> getBooksByCategoryId(Pageable pageable, Long categoryId) {
-//        Page<Book> books = bookRepository.findBooksByCategoryId(pageable, categoryId);
-//        List<BookSimpleResponseDto> responseDtoList = new ArrayList<>();
-//
-//        for (Book book : books) {
-//            BookSimpleResponseDto dto = convertToBookSimpleResponseDto(book);
-//            responseDtoList.add(dto);
-//        }
-//
-//        return responseDtoList;
-//    }
-
-    private BookResponseDto convertToBookResponseDto(Book book) {
-        return BookResponseDto.builder()
-                .bookId(book.getBookId())
-                .publisher(book.getPublisher())
-                .title(book.getTitle())
-                .description(book.getDescription())
-                .publishedDate(book.getPublishedDate())
-                .isbn(book.getIsbn())
-                .retailPrice(book.getRetailPrice())
-                .sellingPrice(book.getSellingPrice())
-                .giftWrappable(book.isGiftWrappable())
-                .isActive(book.isActive())
-                .remainQuantity(book.getRemainQuantity())
-                .views(book.getViews())
-                .likes(book.getLikes())
-                .thumbnail(getBookThumbnail(book)) // 임시로 단일 썸네일을 가져오는 메서드
-                .build();
+    /**
+     * 기여자로 도서를 조회하는 메서드
+     * @param contributorId
+     * @return 도서 객체
+     */
+    @Override
+    public Page<BookSimpleResponseDto> getBooksByContributorId(Pageable pageable, Long contributorId) {
+        return bookRepository.findBooksByContributorId(pageable, contributorId);
     }
 
+
+    private BookResponseDto convertToBookResponseDto(Book book) {
+        return new BookResponseDto(
+                book.getBookId(),
+                book.getPublisher().getName(),
+                book.getTitle(),
+                book.getDescription(),
+                book.getPublishedDate(),
+                book.getIsbn(),
+                book.getRetailPrice(),
+                book.getSellingPrice(),
+                book.isGiftWrappable(),
+                book.isActive(),
+                book.getRemainQuantity(),
+                book.getViews(),
+                book.getLikes(),
+                getBookThumbnail(book)
+        );
+    }
 
 }

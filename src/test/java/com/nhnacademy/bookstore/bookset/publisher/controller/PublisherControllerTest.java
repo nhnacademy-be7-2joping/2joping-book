@@ -101,7 +101,7 @@ public class PublisherControllerTest {
     @Test
     public void testUpdatePublisher_Success() throws Exception {
         // given
-        PublisherRequestDto requestDto = new PublisherRequestDto();
+        PublisherRequestDto requestDto = new PublisherRequestDto("업데이트된 출판사 이름");
         PublisherResponseDto responseDto = new PublisherResponseDto(1L, "업데이트된 출판사 이름");
 
         when(publisherService.updatePublisher(eq(1L), any(PublisherRequestDto.class))).thenReturn(responseDto);

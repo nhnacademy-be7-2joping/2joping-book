@@ -1,11 +1,8 @@
 package com.nhnacademy.bookstore.bookset.book.dto.response;
 
 
-import com.nhnacademy.bookstore.bookset.publisher.entity.Publisher;
 import jakarta.validation.constraints.Positive;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+
 
 
 /**
@@ -21,7 +18,7 @@ public record BookSimpleResponseDto (
      String thumbnail,
      String title,
      int sellingPrice,
-    Publisher publisher,
+     String publisherName,
      int retailPrice,
      boolean isActive
 //     List<ContributorResponseDto> contributorList

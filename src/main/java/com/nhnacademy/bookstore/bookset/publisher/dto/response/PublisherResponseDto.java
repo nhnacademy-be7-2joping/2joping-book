@@ -1,7 +1,6 @@
 package com.nhnacademy.bookstore.bookset.publisher.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import jakarta.validation.constraints.Positive;
 
 /**
  * 출판사 Response DTO
@@ -10,10 +9,7 @@ import lombok.Getter;
  * @date : 2024.10.23
  */
 
-@Getter
-@AllArgsConstructor
-public class PublisherResponseDto {
-
-    private Long id; // 서버한테 보내는 용도
-    private String name;
-}
+public record PublisherResponseDto (
+        @Positive Long id,
+        String name
+) {}
