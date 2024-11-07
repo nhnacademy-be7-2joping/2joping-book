@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -21,6 +22,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ShipmentPolicyController.class)
+@TestPropertySource(properties = "keymanager.url=http://localhost:8084")
 class ShipmentPolicyControllerTest {
 
     @Autowired
@@ -111,6 +113,19 @@ class ShipmentPolicyControllerTest {
 
         // when
         mockMvc.perform(MockMvcRequestBuilders.put("/bookstore/shipment-policies/1/deactivate")
+                        .contentType(MediaType.APPLICATION_JSON))
+                // then
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("배송 정책 활성화 테스트")
+    void activateShipmentPolicy() throws Exception {
+        // given
+        Mockito.doNothing().when(shipmentPolicyService).activateShipmentPolicy(1L);
+
+        // when
+        mockMvc.perform(MockMvcRequestBuilders.put("/bookstore/shipment-policies/1/activate")
                         .contentType(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk());

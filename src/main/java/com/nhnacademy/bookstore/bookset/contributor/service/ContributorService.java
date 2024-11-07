@@ -10,4 +10,5 @@ public interface ContributorService {
     ContributorResponseDto getContributor(Long contributorId);
     ContributorResponseDto updateContributor(Long contributorId, ContributorRequestDto dto);
     void deactivateContributor(Long contributorId);
+    void activateContributor(Long contributorId);
 }

@@ -1,10 +1,10 @@
 package com.nhnacademy.bookstore.bookset.contributor.entity;
 
+import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRoleRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * 도서 기여자 역할 Entity
@@ -14,7 +14,6 @@ import lombok.Setter;
  */
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -26,6 +25,10 @@ public class ContributorRole {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long contributorRoleId;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String name;
+
+    public void toEntity(ContributorRoleRequestDto requestDto){
+        this.name = requestDto.roleName();
+    }
 }

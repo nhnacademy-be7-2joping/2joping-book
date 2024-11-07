@@ -72,7 +72,7 @@ public class PathvariableAspectTest {
             pathvariableAspect.checkPathVariable(joinPoint);
         });
 
-        assertEquals("음수 값은 허용되지 않습니다.", exception.getMessage());
+        assertEquals("0 또는 음수 값은 허용되지 않습니다.", exception.getMessage());
     }
 
     /**
@@ -91,7 +91,7 @@ public class PathvariableAspectTest {
         });
 
         // Assert
-        assertEquals("음수 값은 허용되지 않습니다.", exception.getMessage());
+        assertEquals("0 또는 음수 값은 허용되지 않습니다.", exception.getMessage());
     }
 
     /**
@@ -136,7 +136,7 @@ public class PathvariableAspectTest {
         InvalidPathVariableException exception = assertThrows(InvalidPathVariableException.class, () -> {
             proxy.integerMethod(-1); // 음수 Integer 값
         });
-        assertEquals("음수 값은 허용되지 않습니다.", exception.getMessage());
+        assertEquals("0 또는 음수 값은 허용되지 않습니다.", exception.getMessage());
     }
 
 
