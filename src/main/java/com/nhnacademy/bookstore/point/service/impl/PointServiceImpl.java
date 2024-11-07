@@ -1,8 +1,7 @@
-package com.nhnacademy.bookstore.point.service;
+package com.nhnacademy.bookstore.point.service.impl;
 
 import com.nhnacademy.bookstore.common.error.exception.point.SignUpPointPolicyNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
-import com.nhnacademy.bookstore.orderset.order.entity.Order;
 import com.nhnacademy.bookstore.point.dto.request.PointHistoryDto;
 import com.nhnacademy.bookstore.point.dto.request.PointUseRequest;
 import com.nhnacademy.bookstore.point.entity.PointHistory;
@@ -10,6 +9,7 @@ import com.nhnacademy.bookstore.point.entity.PointType;
 import com.nhnacademy.bookstore.point.enums.PointTypeEnum;
 import com.nhnacademy.bookstore.point.repository.PointHistoryRepository;
 import com.nhnacademy.bookstore.point.repository.PointTypeRepository;
+import com.nhnacademy.bookstore.point.service.PointService;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,7 +22,7 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class PointService {
+public class PointServiceImpl implements PointService {
 
     private final PointTypeRepository pointTypeRepository;
     private final PointHistoryRepository pointHistoryRepository;
