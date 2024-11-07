@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 public record UpdateCategoryRequest(
 
         @Nullable
-        Category subcategory,
+        Category parentCategory,
 
         @NotBlank(message = "카테고리 이름이 존재하지 않습니다.")
         String categoryName
