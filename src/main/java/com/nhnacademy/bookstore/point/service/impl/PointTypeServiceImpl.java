@@ -1,9 +1,10 @@
-package com.nhnacademy.bookstore.point.service;
+package com.nhnacademy.bookstore.point.service.impl;
 
 import com.nhnacademy.bookstore.common.error.exception.point.PointPolicyNotFoundException;
 import com.nhnacademy.bookstore.point.dto.request.PointTypeDto;
 import com.nhnacademy.bookstore.point.entity.PointType;
 import com.nhnacademy.bookstore.point.repository.PointTypeRepository;
+import com.nhnacademy.bookstore.point.service.PointTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +14,7 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class PointTypeService {
+public class PointTypeServiceImpl implements PointTypeService {
 
     private final PointTypeRepository pointTypeRepository;
 
