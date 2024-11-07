@@ -43,7 +43,7 @@ public class Category {
         this.name = name;
     }
 
-    public void updateSubcategory(Category parentCategory) {
+    public void updateParentCategory(Category parentCategory) {
         this.parentCategory = parentCategory;
     }
 }
