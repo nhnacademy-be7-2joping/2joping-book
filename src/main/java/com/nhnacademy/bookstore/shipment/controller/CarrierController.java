@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +51,7 @@ public class CarrierController {
             @ApiResponse(responseCode = "404", description = "배송 업체를 찾을 수 없음")
     })
     @GetMapping("/{carrierId}")
-    public ResponseEntity<CarrierResponseDto> getCarrier(@PathVariable Long carrierId) {
+    public ResponseEntity<CarrierResponseDto> getCarrier(@PathVariable @Positive Long carrierId) {
         CarrierResponseDto responseDto = carrierService.getCarrier(carrierId);
         return ResponseEntity.ok(responseDto);
     }
@@ -63,7 +64,7 @@ public class CarrierController {
     })
     @PutMapping("/{carrierId}")
     public ResponseEntity<CarrierResponseDto> updateCarrier(
-            @PathVariable Long carrierId,
+            @PathVariable @Positive Long carrierId,
             @Valid @RequestBody CarrierRequestDto requestDto) {
         CarrierResponseDto responseDto = carrierService.updateCarrier(carrierId, requestDto);
         return ResponseEntity.ok(responseDto);
@@ -75,7 +76,7 @@ public class CarrierController {
             @ApiResponse(responseCode = "404", description = "배송 업체를 찾을 수 없음")
     })
     @DeleteMapping("/{carrierId}")
-    public ResponseEntity<Void> deleteCarrier(@PathVariable Long carrierId) {
+    public ResponseEntity<Void> deleteCarrier(@PathVariable @Positive Long carrierId) {
         carrierService.deleteCarrier(carrierId);
         return ResponseEntity.ok().build();
     }

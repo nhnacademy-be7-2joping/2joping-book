@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +52,7 @@ public class ShipmentPolicyController {
             @ApiResponse(responseCode = "404", description = "배송 정책을 찾을 수 없음")
     })
     @GetMapping("/{shipmentPolicyId}")
-    public ResponseEntity<ShipmentPolicyResponseDto> getShipmentPolicy(@PathVariable Long shipmentPolicyId) {
+    public ResponseEntity<ShipmentPolicyResponseDto> getShipmentPolicy(@PathVariable @Positive Long shipmentPolicyId) {
         ShipmentPolicyResponseDto responseDto = shipmentPolicyService.getShipmentPolicy(shipmentPolicyId);
         return ResponseEntity.ok(responseDto);
     }
@@ -64,7 +65,7 @@ public class ShipmentPolicyController {
     })
     @PutMapping("/{shipmentPolicyId}")
     public ResponseEntity<ShipmentPolicyResponseDto> updateShipmentPolicy(
-            @PathVariable Long shipmentPolicyId,
+            @PathVariable @Positive Long shipmentPolicyId,
             @Valid @RequestBody ShipmentPolicyRequestDto requestDto) {
         ShipmentPolicyResponseDto responseDto = shipmentPolicyService.updateShipmentPolicy(shipmentPolicyId, requestDto);
         return ResponseEntity.ok(responseDto);
@@ -76,7 +77,7 @@ public class ShipmentPolicyController {
             @ApiResponse(responseCode = "404", description = "배송 정책을 찾을 수 없음")
     })
     @PutMapping("/{shipmentPolicyId}/deactivate")
-    public ResponseEntity<Void> deactivateShipmentPolicy(@PathVariable Long shipmentPolicyId) {
+    public ResponseEntity<Void> deactivateShipmentPolicy(@PathVariable @Positive Long shipmentPolicyId) {
         shipmentPolicyService.deactivateShipmentPolicy(shipmentPolicyId);
         return ResponseEntity.ok().build();
     }
@@ -87,7 +88,7 @@ public class ShipmentPolicyController {
             @ApiResponse(responseCode = "404", description = "배송 정책을 찾을 수 없음")
     })
     @PutMapping("/{shipmentPolicyId}/activate")
-    public ResponseEntity<Void> activateShipmentPolicy(@PathVariable Long shipmentPolicyId) {
+    public ResponseEntity<Void> activateShipmentPolicy(@PathVariable @Positive Long shipmentPolicyId) {
         shipmentPolicyService.activateShipmentPolicy(shipmentPolicyId);
         return ResponseEntity.ok().build();
     }

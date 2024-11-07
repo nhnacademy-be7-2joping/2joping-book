@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +51,7 @@ public class ShipmentController {
             @ApiResponse(responseCode = "404", description = "배송을 찾을 수 없음")
     })
     @GetMapping("/{shipmentId}")
-    public ResponseEntity<ShipmentResponseDto> getShipment(@PathVariable Long shipmentId) {
+    public ResponseEntity<ShipmentResponseDto> getShipment(@PathVariable @Positive  Long shipmentId) {
         ShipmentResponseDto responseDto = shipmentService.getShipment(shipmentId);
         return ResponseEntity.ok(responseDto);
     }
@@ -83,7 +84,7 @@ public class ShipmentController {
     })
     @PutMapping("/{shipmentId}")
     public ResponseEntity<ShipmentResponseDto> updateShipment(
-            @PathVariable Long shipmentId,
+            @PathVariable @Positive Long shipmentId,
             @Valid @RequestBody ShipmentRequestDto requestDto) {
         ShipmentResponseDto responseDto = shipmentService.updateShipment(shipmentId, requestDto);
         return ResponseEntity.ok(responseDto);
@@ -95,7 +96,7 @@ public class ShipmentController {
             @ApiResponse(responseCode = "404", description = "배송을 찾을 수 없음")
     })
     @DeleteMapping("/{shipmentId}")
-    public ResponseEntity<Void> deleteShipment(@PathVariable Long shipmentId) {
+    public ResponseEntity<Void> deleteShipment(@PathVariable @Positive  Long shipmentId) {
         shipmentService.deleteShipment(shipmentId);
         return ResponseEntity.ok().build();
     }

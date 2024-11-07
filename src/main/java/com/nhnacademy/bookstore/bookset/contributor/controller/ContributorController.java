@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -83,7 +84,7 @@ public class ContributorController {
             @ApiResponse(responseCode = "404", description = "도서 기여자를 찾을 수 없음")
     })
     @PutMapping("/{contributorId}")
-    public ResponseEntity<ContributorResponseDto> updateContributor(@PathVariable Long contributorId, @RequestBody @Valid ContributorRequestDto dto) {
+    public ResponseEntity<ContributorResponseDto> updateContributor(@PathVariable @Positive Long contributorId, @RequestBody @Valid ContributorRequestDto dto) {
         ContributorResponseDto updatedContributor = contributorService.updateContributor(contributorId, dto);
         return ResponseEntity.ok(updatedContributor);
     }
@@ -101,7 +102,7 @@ public class ContributorController {
             @ApiResponse(responseCode = "404", description = "도서 기여자를 찾을 수 없음")
     })
     @PutMapping("/{contributorId}/deactivate")
-    public ResponseEntity<Void> deactivateContributor(@PathVariable Long contributorId) {
+    public ResponseEntity<Void> deactivateContributor(@PathVariable @Positive Long contributorId) {
         contributorService.deactivateContributor(contributorId);
         return ResponseEntity.ok().build();
     }
@@ -119,7 +120,7 @@ public class ContributorController {
             @ApiResponse(responseCode = "404", description = "도서 기여자를 찾을 수 없음")
     })
     @PutMapping("/{contributorId}/activate")
-    public ResponseEntity<Void> activateContributor(@PathVariable Long contributorId) {
+    public ResponseEntity<Void> activateContributor(@PathVariable @Positive Long contributorId) {
         contributorService.activateContributor(contributorId);
         return ResponseEntity.ok().build();
     }
