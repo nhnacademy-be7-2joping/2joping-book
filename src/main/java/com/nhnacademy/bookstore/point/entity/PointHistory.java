@@ -31,17 +31,30 @@ public class PointHistory {
     @Column(name = "order_id")
     private Long orderId;
 
-    @Column(name = "customer_id", nullable = false)
+    @Column(name = "customer_id")
     private Long customerId;
 
-    @Column(name = "point_val", nullable = false)
+    @Column(name = "point_val")
     private Integer pointVal;
 
-    @Column(name = "register_date", nullable = false)
+    @Column(name = "register_date")
     private LocalDateTime registerDate;
 
-    @PrePersist
-    public void prePersist() {
+    @Builder
+    public PointHistory(
+            PointType pointType,
+            Long orderDetailId,
+            Long refundHistoryId,
+            Long orderId,
+            Long customerId,
+            Integer pointVal
+    ) {
+        this.pointType = pointType;
+        this.orderDetailId = orderDetailId;
+        this.refundHistoryId = refundHistoryId;
+        this.orderId = orderId;
+        this.customerId = customerId;
+        this.pointVal = pointVal;
         this.registerDate = LocalDateTime.now();
     }
 }
