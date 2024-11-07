@@ -4,34 +4,43 @@ import com.nhnacademy.bookstore.point.enums.PointTypeEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Table(name = "point_type")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
 public class PointType {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "point_type_id")
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
+    @Column(name = "type")
     private PointTypeEnum type;
 
-    @Column(name = "acc_val", nullable = false)
+    @Column(name = "acc_val")
     private Integer accVal;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name", unique = true)
     private String name;
 
-    @Column(name = "is_active", nullable = false)
+    @Column(name = "is_active")
     private boolean isActive = true;
 
-    @OneToMany(mappedBy = "pointType")
-    private List<PointHistory> pointHistories = new ArrayList<>();
+    @Builder
+    public PointType(PointTypeEnum type, Integer accVal, String name) {
+        this.type = type;
+        this.accVal = accVal;
+        this.name = name;
+    }
+
+    public void updateAccVal(Integer accVal) {
+        this.accVal = accVal;
+    }
+
+//    public void deactivate() {
+//        this.isActive = false;
+//    }
 }

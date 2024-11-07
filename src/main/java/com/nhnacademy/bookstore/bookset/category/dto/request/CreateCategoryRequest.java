@@ -4,10 +4,10 @@ import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 
-public record CreateCategoryRequest(
+public record CategoryCreateRequest(
 
         @Nullable
-        Category subcategory,
+        Category parentCategory,
 
         @NotBlank(message = "카테고리 이름이 존재하지 않습니다.")
         String categoryName
