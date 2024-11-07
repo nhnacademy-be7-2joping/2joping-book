@@ -1,8 +1,8 @@
 package com.nhnacademy.bookstore.bookset.category.service.Impl;
 
-import com.nhnacademy.bookstore.bookset.category.dto.request.CreateCategoryRequest;
+import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryCreateRequest;
 import com.nhnacademy.bookstore.bookset.category.dto.request.UpdateCategoryRequest;
-import com.nhnacademy.bookstore.bookset.category.dto.response.GetAllCategoryResponse;
+import com.nhnacademy.bookstore.bookset.category.dto.response.GetAllCategoriesResponse;
 import com.nhnacademy.bookstore.bookset.category.dto.response.GetCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.dto.response.UpdateCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.entity.Category;
@@ -24,15 +24,15 @@ public class CategoryServiceImpl implements CategoryService {
     private static final int MAX_DEPTH = 3;
 
     @Override
-    public Long createCategory(CreateCategoryRequest request) {
-        Category subcategory = null;
-        if (request.subcategory() != null) {
-            subcategory = categoryRepository.findByCategoryId(request.subcategory().getCategoryId())
+    public Long createCategory(CategoryCreateRequest request) {
+        Category parentCategory = null;
+        if (request.parentCategory() != null) {
+            parentCategory = categoryRepository.findByCategoryId(request.parentCategory().getCategoryId())
                     .orElse(null);
         }
 
         Category category = Category.builder()
-                .subcategory(subcategory)
+                .parentCategory(parentCategory)
                 .name(request.categoryName())
                 .build();
 
@@ -47,13 +47,13 @@ public class CategoryServiceImpl implements CategoryService {
         return new GetCategoryResponse(
                 category.getCategoryId(),
                 category.getName(),
-                category.getSubcategory() != null ? category.getSubcategory().getCategoryId() : null
+                category.getParentCategory() != null ? category.getParentCategory().getCategoryId() : null
         );
     }
 
     // TODO: GetAllCategoryResponse 구현
     @Override
-    public List<GetAllCategoryResponse> getAllCategories() {
+    public List<GetAllCategoriesResponse> getAllCategories() {
         return null;
     }
 
@@ -62,19 +62,18 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findByCategoryId(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다."));
 
-        if (request.subcategory() != null) {
-            validateCategoryDepth(request.subcategory());
-            Category newParent = categoryRepository.findByCategoryId(request.subcategory().getCategoryId())
+        if (request.parentCategory() != null) {
+            validateCategoryDepth(request.parentCategory());
+            Category newParent = categoryRepository.findByCategoryId(request.parentCategory().getCategoryId())
                     .orElseThrow(() -> new CategoryNotFoundException("상위 카테고리를 찾을 수 없습니다."));
-            category.updateSubcategory(newParent);
+            category.updateParentCategory(newParent);
         }
 
         if (request.categoryName() != null) {
             category.updateName(request.categoryName());
         }
 
-        UpdateCategoryResponse response = UpdateCategoryResponse.from(category);
-        return  response;
+        return UpdateCategoryResponse.from(category);
     }
 
     @Override
@@ -82,7 +81,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findByCategoryId(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다."));
 
-        if (!categoryRepository.findBySubcategory(category).isEmpty()) {
+        if (categoryRepository.findByParentCategory(category).isPresent()) {
             throw new IllegalStateException("하위 카테고리가 있는 카테고리는 삭제할 수 없습니다.");
         }
 
@@ -97,12 +96,12 @@ public class CategoryServiceImpl implements CategoryService {
 
         int depth = 1;
         Category current = parent;
-        while (current.getSubcategory() != null) {
+        while (current.getParentCategory() != null) {
             depth++;
             if (depth >= MAX_DEPTH) {
                 throw new IllegalStateException("카테고리 깊이는 " + MAX_DEPTH + "를 초과할 수 없습니다.");
             }
-            current = current.getSubcategory();
+            current = current.getParentCategory();
         }
     }
 }
