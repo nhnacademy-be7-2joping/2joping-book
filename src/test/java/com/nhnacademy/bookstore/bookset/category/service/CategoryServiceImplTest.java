@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstore.bookset.category.service;
 
-import com.nhnacademy.bookstore.bookset.category.dto.request.CreateCategoryRequest;
+import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryCreateRequest;
 import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import com.nhnacademy.bookstore.bookset.category.repository.CategoryRepository;
 import com.nhnacademy.bookstore.bookset.category.service.Impl.CategoryServiceImpl;
@@ -30,19 +30,19 @@ public class CategoryServiceImplTest {
 
     private Category parentCategory;
     private Category savedCategory;
-    private CreateCategoryRequest request;
-    private CreateCategoryRequest requestWithParent;
+    private CategoryCreateRequest request;
+    private CategoryCreateRequest requestWithParent;
 
     @BeforeEach
     public void setUp() {
         parentCategory = Category.builder()
                 .name("테스트 부모 카테고리")
-                .subcategory(null)
+                .parentCategory(null)
                 .build();
 
         savedCategory = Category.builder()
                 .name("테스트 카테고리")
-                .subcategory(null)
+                .parentCategory(null)
                 .build();
 
         try {
@@ -54,8 +54,8 @@ public class CategoryServiceImplTest {
             throw new RuntimeException(e);
         }
 
-        request = new CreateCategoryRequest(null, "테스트 카테고리");
-        requestWithParent = new CreateCategoryRequest(parentCategory, "테스트 자식 카테고리");
+        request = new CategoryCreateRequest(null, "테스트 카테고리");
+        requestWithParent = new CategoryCreateRequest(parentCategory, "테스트 자식 카테고리");
     }
 
     @Test
@@ -78,7 +78,7 @@ public class CategoryServiceImplTest {
         // given
         Category childCategory = Category.builder()
                 .name("자식 카테고리")
-                .subcategory(parentCategory)
+                .parentCategory(parentCategory)
                 .build();
 
         try {
@@ -108,8 +108,8 @@ public class CategoryServiceImplTest {
         given(categoryRepository.findByCategoryId(1L)).willReturn(Optional.empty());
         given(categoryRepository.save(any(Category.class))).willReturn(savedCategory);
 
-        CreateCategoryRequest requestWithNonExistentParent =
-                new CreateCategoryRequest(parentCategory, "테스트 카테고리");
+        CategoryCreateRequest requestWithNonExistentParent =
+                new CategoryCreateRequest(parentCategory, "테스트 카테고리");
 
         // when
         Long resultId = categoryService.createCategory(requestWithNonExistentParent);
