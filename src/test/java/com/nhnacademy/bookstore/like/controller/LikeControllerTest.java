@@ -43,7 +43,7 @@ class LikeControllerTest {
 
         when(likeService.setBookLike(any(LikeRequestDto.class))).thenReturn(responseDto);
 
-        mockMvc.perform(post("/api/likes/1")
+        mockMvc.perform(post("/api/likes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"memberId\": 1, \"bookId\": 1}"))
                 .andExpect(status().isOk())
