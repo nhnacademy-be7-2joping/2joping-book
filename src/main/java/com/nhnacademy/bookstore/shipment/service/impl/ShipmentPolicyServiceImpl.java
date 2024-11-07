@@ -14,6 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * ShipmentPolicyService 구현체 클래스.
+ * 배송 정책의 생성, 조회, 수정, 활성화 및 비활성화 기능을 제공합니다.
+ *
+ * @author 양준하
+ */
 @Service
 @RequiredArgsConstructor
 public class ShipmentPolicyServiceImpl implements ShipmentPolicyService {
@@ -21,6 +27,12 @@ public class ShipmentPolicyServiceImpl implements ShipmentPolicyService {
     private final ShipmentPolicyRepository shipmentPolicyRepository;
     private final ShipmentPolicyMapper shipmentPolicyMapper;
 
+    /**
+     * 새로운 배송 정책을 생성하는 메서드입니다.
+     *
+     * @param requestDto 생성할 배송 정책 정보를 담은 DTO
+     * @return 생성된 배송 정책의 정보를 포함한 ShipmentPolicyResponseDto
+     */
     @Override
     @Transactional
     public ShipmentPolicyResponseDto createShipmentPolicy(ShipmentPolicyRequestDto requestDto) {
@@ -39,13 +51,24 @@ public class ShipmentPolicyServiceImpl implements ShipmentPolicyService {
         return shipmentPolicyMapper.toShipmentPolicyResponseDto(savedPolicy);
     }
 
+    /**
+     * 모든 활성화된 배송 정책을 조회하는 메서드입니다.
+     *
+     * @return 활성화된 배송 정책 목록을 포함한 ShipmentPolicyResponseDto 리스트
+     */
     @Override
     @Transactional(readOnly = true)
     public List<ShipmentPolicyResponseDto> getAllShipmentPolicies() {
         return shipmentPolicyRepository.findActiveShipmentPolicies();
     }
 
-
+    /**
+     * 특정 ID의 배송 정책을 조회하는 메서드입니다.
+     *
+     * @param shipmentPolicyId 조회할 배송 정책의 ID
+     * @return 조회된 배송 정책의 정보를 포함한 ShipmentPolicyResponseDto
+     * @throws ShipmentPolicyNotFoundException 배송 정책을 찾을 수 없을 경우 발생
+     */
     @Override
     @Transactional(readOnly = true)
     public ShipmentPolicyResponseDto getShipmentPolicy(Long shipmentPolicyId) {
@@ -54,6 +77,14 @@ public class ShipmentPolicyServiceImpl implements ShipmentPolicyService {
         return shipmentPolicyMapper.toShipmentPolicyResponseDto(policy);
     }
 
+    /**
+     * 특정 ID의 배송 정책을 수정하는 메서드입니다.
+     *
+     * @param shipmentPolicyId 수정할 배송 정책의 ID
+     * @param requestDto 수정할 배송 정책 정보를 담은 DTO
+     * @return 수정된 배송 정책의 정보를 포함한 ShipmentPolicyResponseDto
+     * @throws ShipmentPolicyNotFoundException 배송 정책을 찾을 수 없을 경우 발생
+     */
     @Override
     @Transactional
     public ShipmentPolicyResponseDto updateShipmentPolicy(Long shipmentPolicyId, ShipmentPolicyRequestDto requestDto) {
@@ -64,6 +95,12 @@ public class ShipmentPolicyServiceImpl implements ShipmentPolicyService {
         return shipmentPolicyMapper.toShipmentPolicyResponseDto(updatedPolicy);
     }
 
+    /**
+     * 특정 배송 정책을 비활성화하는 메서드입니다.
+     *
+     * @param shipmentPolicyId 비활성화할 배송 정책의 ID
+     * @throws ShipmentPolicyNotFoundException 배송 정책을 찾을 수 없을 경우 발생
+     */
     @Override
     @Transactional
     public void deactivateShipmentPolicy(Long shipmentPolicyId) {
@@ -73,6 +110,12 @@ public class ShipmentPolicyServiceImpl implements ShipmentPolicyService {
         shipmentPolicyRepository.save(policy);
     }
 
+    /**
+     * 특정 배송 정책을 활성화하는 메서드입니다.
+     *
+     * @param shipmentPolicyId 활성화할 배송 정책의 ID
+     * @throws ShipmentPolicyNotFoundException 배송 정책을 찾을 수 없을 경우 발생
+     */
     @Override
     @Transactional
     public void activateShipmentPolicy(Long shipmentPolicyId) {
