@@ -10,10 +10,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * wrap policy service
+ *
+ * @author : 박채연
+ * @date : 2024-11-06
+ */
 @Service
 @RequiredArgsConstructor
-public class WrapPolicyServiceImpl implements WrapPolicyService {
 
+public class WrapPolicyServiceImpl implements WrapPolicyService {
     private final WrapPolicyRepository wrapPolicyRepository;
 
     @Override
@@ -33,5 +39,12 @@ public class WrapPolicyServiceImpl implements WrapPolicyService {
                 savedPolicy.getWrapPrice(),
                 savedPolicy.isActive()
         );
+
     }
+//
+//    @Override
+//    @Transactional
+//    public WrapPolicyResponseDto getWrapPolicy(Long WrapPolicyId) {
+//
+//    }
 }

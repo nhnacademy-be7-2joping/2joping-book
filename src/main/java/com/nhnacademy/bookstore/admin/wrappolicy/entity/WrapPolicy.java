@@ -24,14 +24,14 @@ public class WrapPolicy {
     @Column(name = "wrap_id")
     private Long wrapId;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", unique = true)
     private String name;
 
-    @Column(name = "wrap_price", nullable = false)
+    @Column(name = "wrap_price")
     @Positive
     private int wrapPrice;
 
-    @Column(name = "is_active", nullable = false)
+    @Column(name = "is_active")
     private boolean isActive = true;
 
     public WrapPolicy(String name, int wrapPrice, boolean isActive) {
