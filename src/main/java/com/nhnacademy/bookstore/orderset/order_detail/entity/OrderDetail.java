@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 import com.nhnacademy.bookstore.orderset.order.entity.Order;
 
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 

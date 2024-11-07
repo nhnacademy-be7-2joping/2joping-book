@@ -9,5 +9,6 @@ public interface ContributorService {
     ContributorResponseDto createContributor(ContributorRequestDto dto);
     ContributorResponseDto getContributor(Long contributorId);
     ContributorResponseDto updateContributor(Long contributorId, ContributorRequestDto dto);
-    void deleteContributorById(Long contributorId);
+    void deactivateContributor(Long contributorId);
+    void activateContributor(Long contributorId);
 }
