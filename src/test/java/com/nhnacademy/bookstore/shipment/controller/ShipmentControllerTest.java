@@ -46,7 +46,7 @@ class ShipmentControllerTest {
         Mockito.when(shipmentService.createShipment(any(ShipmentRequestDto.class))).thenReturn(responseDto);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.post("/bookstore/shipments")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/bookstore/shipments")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 // then
@@ -65,7 +65,7 @@ class ShipmentControllerTest {
         Mockito.when(shipmentService.getAllShipments()).thenReturn(List.of(responseDto1, responseDto2));
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.get("/bookstore/shipments")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bookstore/shipments")
                         .accept(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk())
@@ -84,7 +84,7 @@ class ShipmentControllerTest {
         Mockito.when(shipmentService.getShipment(1L)).thenReturn(responseDto);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.get("/bookstore/shipments/1")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bookstore/shipments/1")
                         .accept(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk())
@@ -101,7 +101,7 @@ class ShipmentControllerTest {
         Mockito.when(shipmentService.getCompletedShipments()).thenReturn(Collections.singletonList(completedShipment));
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.get("/bookstore/shipments/completed")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bookstore/shipments/completed")
                         .accept(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk())
@@ -118,7 +118,7 @@ class ShipmentControllerTest {
         Mockito.when(shipmentService.getPendingShipments()).thenReturn(Collections.singletonList(pendingShipment));
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.get("/bookstore/shipments/pending")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bookstore/shipments/pending")
                         .accept(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk())
@@ -136,7 +136,7 @@ class ShipmentControllerTest {
         Mockito.when(shipmentService.updateShipment(eq(1L), any(ShipmentRequestDto.class))).thenReturn(responseDto);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.put("/bookstore/shipments/1")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/bookstore/shipments/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 // then
@@ -152,7 +152,7 @@ class ShipmentControllerTest {
         Mockito.doNothing().when(shipmentService).deleteShipment(1L);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.delete("/bookstore/shipments/1")
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/bookstore/shipments/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk());

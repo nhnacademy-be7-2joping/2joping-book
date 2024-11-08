@@ -43,7 +43,7 @@ class ContributorControllerTest {
                 .thenReturn(responseDto);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.post("/bookstore/contributors")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/bookstore/contributors")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 // then
@@ -60,7 +60,7 @@ class ContributorControllerTest {
         Mockito.when(contributorService.getContributor(1L)).thenReturn(responseDto);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.get("/bookstore/contributors/1")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bookstore/contributors/1")
                         .accept(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk())
@@ -79,7 +79,7 @@ class ContributorControllerTest {
                 .thenReturn(responseDto);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.put("/bookstore/contributors/1")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/bookstore/contributors/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 // then
@@ -95,7 +95,7 @@ class ContributorControllerTest {
         Mockito.doNothing().when(contributorService).deactivateContributor(1L);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.put("/bookstore/contributors/1/deactivate")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/bookstore/contributors/1/deactivate")
                         .contentType(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk());
@@ -108,7 +108,7 @@ class ContributorControllerTest {
         Mockito.doNothing().when(contributorService).activateContributor(1L);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.put("/bookstore/contributors/1/activate")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/bookstore/contributors/1/activate")
                         .contentType(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk());
