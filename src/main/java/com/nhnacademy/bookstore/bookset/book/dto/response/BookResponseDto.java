@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.bookset.book.dto.response;
 
-import lombok.*;
+import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
+import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -8,32 +9,27 @@ import java.util.List;
 /**
  * 도서 Response DTO
  *
- * @author : 양준하
- * @date : 2024-10-23
+ * @author : 이유현
+ * @date : 2024-11-03
  */
 
-@Setter
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class BookResponseDto {
-    private String title;
-    private boolean isActive;
-    private String description;
-    private LocalDate publishedDate;
-    private String isbn;
-    private int retailPrice;
-    private int sellingPrice;
-    private boolean giftWrappable;
-    private int remainQuantity;
-    private String publisherName;
-    private String author;
-    private int views;
-    private int likes;
-//    private List<ContributorResponseDto> contributorList;
-//    private List<CategoryResponseDto> categoryList;
-//    private List<TagResponseDto> tagList;
-    private List<String> thumbnails;
-    private String detail;
-}
+
+public record BookResponseDto (
+        @Positive Long bookId,
+        String publisherName,
+        String title,
+        String description,
+        LocalDate publishedDate,
+        String isbn,
+        int retailPrice,
+        int sellingPrice,
+        boolean giftWrappable,
+        boolean isActive,
+        int remainQuantity,
+        int views,
+        int likes,
+        List<String> contributorList,
+        List<String> categoryList,
+//        List<TagResponseDto> tagList,
+        String thumbnail
+) {}

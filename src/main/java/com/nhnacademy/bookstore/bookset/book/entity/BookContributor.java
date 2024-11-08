@@ -19,7 +19,7 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "book_category")
+@Table(name = "book_contributor")
 public class BookContributor {
     @EmbeddedId
     private BookContributorId id;
@@ -35,7 +35,6 @@ public class BookContributor {
     private Contributor contributor;
 
     @Getter
-    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     @Embeddable

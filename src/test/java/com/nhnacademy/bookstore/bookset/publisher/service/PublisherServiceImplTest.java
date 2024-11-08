@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +37,7 @@ public class PublisherServiceImplTest {
     @Test
     public void testRegisterPublisher_Success() {
         // given
-        PublisherRequestDto requestDto = new PublisherRequestDto();
+        PublisherRequestDto requestDto = new PublisherRequestDto("출판사 이름");
         Publisher savedPublisher = new Publisher(1L, "출판사 이름");
 
         when(publisherRepository.findByName("출판사 이름")).thenReturn(Optional.empty());
@@ -49,19 +48,16 @@ public class PublisherServiceImplTest {
 
         // then
         assertNotNull(responseDto);
-        assertEquals(1L, responseDto.getId());
-        assertEquals("출판사 이름", responseDto.getName());
+        assertEquals(1L, responseDto.id());
+        assertEquals("출판사 이름", responseDto.name());
     }
 
     @Test
     public void testRegisterPublisher_AlreadyExists() {
         // given
-        PublisherRequestDto requestDto = new PublisherRequestDto();
-        ReflectionTestUtils.setField(requestDto, "name", "중복된 출판사");
+        PublisherRequestDto requestDto = new PublisherRequestDto("중복된 출판사");
         Publisher existingPublisher = new Publisher(1L, "중복된 출판사");
-        PublisherCreateResponseDto createResponseDto = new PublisherCreateResponseDto(1L, "이전 출판사 이름");
-        Publisher publisher = new Publisher(createResponseDto.getId(),createResponseDto.getName());
-        when(publisherRepository.findByName("중복된 출판사")).thenReturn(Optional.of(publisher));
+
         when(publisherRepository.findByName("중복된 출판사")).thenReturn(Optional.of(existingPublisher));
 
         // when & then
@@ -79,8 +75,8 @@ public class PublisherServiceImplTest {
 
         // then
         assertNotNull(responseDto);
-        assertEquals(1L, responseDto.getId());
-        assertEquals("출판사 이름", responseDto.getName());
+        assertEquals(1L, responseDto.id());
+        assertEquals("출판사 이름", responseDto.name());
     }
 
     @Test
@@ -107,8 +103,8 @@ public class PublisherServiceImplTest {
 
         // then
         assertEquals(2, responseDtos.size());
-        assertEquals("출판사1", responseDtos.get(0).getName());
-        assertEquals("출판사2", responseDtos.get(1).getName());
+        assertEquals("출판사1", responseDtos.get(0).name());
+        assertEquals("출판사2", responseDtos.get(1).name());
     }
 
     @Test
@@ -129,8 +125,7 @@ public class PublisherServiceImplTest {
     public void testUpdatePublisher_Success() {
         // given
         Publisher publisher = new Publisher(1L, "이전 출판사 이름");
-        PublisherRequestDto requestDto = new PublisherRequestDto();
-        ReflectionTestUtils.setField(requestDto, "name", "새로운 출판사 이름");
+        PublisherRequestDto requestDto = new PublisherRequestDto("새로운 출판사 이름");
 
         when(publisherRepository.findById(1L)).thenReturn(Optional.of(publisher));
         when(publisherRepository.save(any(Publisher.class))).thenReturn(publisher);
@@ -139,17 +134,17 @@ public class PublisherServiceImplTest {
         PublisherResponseDto responseDto = publisherService.updatePublisher(1L, requestDto);
 
         // then
-        assertEquals("새로운 출판사 이름", responseDto.getName());
+        assertEquals("새로운 출판사 이름", responseDto.name());
     }
-
 
     @Test
     public void testUpdatePublisher_NotFound() {
         // given
-        PublisherRequestDto requestDto = new PublisherRequestDto();
+        PublisherRequestDto requestDto = new PublisherRequestDto("출판사 이름");
         when(publisherRepository.findById(1L)).thenReturn(Optional.empty());
 
         // when & then
         assertThrows(PublisherNotFoundException.class, () -> publisherService.updatePublisher(1L, requestDto));
     }
 }
+
