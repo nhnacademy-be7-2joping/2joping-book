@@ -11,4 +11,5 @@ public interface ShipmentPolicyService {
     List<ShipmentPolicyResponseDto> getAllShipmentPolicies();
     ShipmentPolicyResponseDto updateShipmentPolicy(Long shipmentPolicyId, ShipmentPolicyRequestDto requestDto);
     void deactivateShipmentPolicy(Long shipmentPolicyId);
+    void activateShipmentPolicy(Long shipmentPolicyId);
 }

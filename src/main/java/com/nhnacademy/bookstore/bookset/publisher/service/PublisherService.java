@@ -14,19 +14,14 @@ import java.util.List;
 public interface PublisherService {
 
 
-    //출판사 등록
     PublisherCreateResponseDto registerPublisher(PublisherRequestDto requestDto);
 
-    //출판사 선택 조회
     PublisherResponseDto getPublisherById(Long id);
 
-    //출판사 전체 조회
     List<PublisherResponseDto> getAllPublishers();
 
-    //출판사 업데이트
     PublisherResponseDto updatePublisher(Long id, PublisherRequestDto publisherRequestDto);
 
-    //출판사 삭제
     void deletePublisher(Long id);
 
 }
