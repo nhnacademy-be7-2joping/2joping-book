@@ -9,6 +9,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * 카테고리 서비스 인터페이스
+ *
+ * @author : 정세희
+ * @date : 2024-11-07
+ */
 @Service
 public interface CategoryService {
 

@@ -15,6 +15,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * 카테고리 서비스 구현 클래스
+ *
+ * @author : 정세희
+ * @date : 2024-11-07
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -23,6 +29,11 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private static final int MAX_DEPTH = 3;
 
+    /**
+     * 카테고리 생성 메서드
+     * @param request
+     * @return 생성한 카테고리의 ID
+     */
     @Override
     public Long createCategory(CategoryCreateRequest request) {
         Category parentCategory = null;
@@ -39,6 +50,11 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.save(category).getCategoryId();
     }
 
+    /**
+     * 카테고리 조회 메서드
+     * @param categoryId
+     * @return 조회한 단일 카테고리 DTO
+     */
     @Override
     public GetCategoryResponse getCategory(Long categoryId) {
         Category category = categoryRepository.findByCategoryId(categoryId)
@@ -57,6 +73,11 @@ public class CategoryServiceImpl implements CategoryService {
         return null;
     }
 
+    /**
+     * 카테고리 수정 메서드
+     * @param categoryId, request
+     * @return 수정한 카테고리 DTO 객체
+     */
     @Override
     public UpdateCategoryResponse updateCategory(Long categoryId, UpdateCategoryRequest request) {
         Category category = categoryRepository.findByCategoryId(categoryId)
@@ -76,6 +97,11 @@ public class CategoryServiceImpl implements CategoryService {
         return UpdateCategoryResponse.from(category);
     }
 
+    /**
+     * 카테고리 삭제 메서드
+     * @param categoryId
+     * @return 삭제한 카테고리의 ID
+     */
     @Override
     public Long deleteCategory(Long categoryId) {
         Category category = categoryRepository.findByCategoryId(categoryId)
