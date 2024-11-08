@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Tag(name = "Shipment Policy", description = "배송 정책 API")
 @RestController
-@RequestMapping("/bookstore/shipment-policies")
+@RequestMapping("/api/v1/bookstore/shipment-policies")
 @RequiredArgsConstructor
 public class ShipmentPolicyController {
 
