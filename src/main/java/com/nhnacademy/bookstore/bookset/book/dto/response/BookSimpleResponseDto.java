@@ -22,5 +22,6 @@ public record BookSimpleResponseDto (
      String publisherName,
      int retailPrice,
      boolean isActive,
-     List<String> contributorList
+     List<String> contributorList,
+     List<String> categoryList
 ) {}

@@ -39,7 +39,7 @@ class BookServiceImplTest {
     void testGetAllBooks() {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
-        BookSimpleResponseDto bookDto = new BookSimpleResponseDto(1L, "thumbnail1", "Book Title 1", 15000, "Publisher 1", 20000, true,List.of("Contributor 1", "Contributor 2"));
+        BookSimpleResponseDto bookDto = new BookSimpleResponseDto(1L, "thumbnail1", "Book Title 1", 15000, "Publisher 1", 20000, true,List.of("Contributor 1", "Contributor 2"),List.of("Category 1", "Category 2"));
         Page<BookSimpleResponseDto> bookPage = new PageImpl<>(List.of(bookDto));
         when(bookRepository.findAllBooks(any(Pageable.class))).thenReturn(bookPage);
 
@@ -55,7 +55,7 @@ class BookServiceImplTest {
     void testGetBooksByCategoryId() {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
-        BookSimpleResponseDto bookDto = new BookSimpleResponseDto(1L, "thumbnail1", "Book Title 1", 15000, "Publisher 1", 20000, true,List.of("Contributor 1", "Contributor 2"));
+        BookSimpleResponseDto bookDto = new BookSimpleResponseDto(1L, "thumbnail1", "Book Title 1", 15000, "Publisher 1", 20000, true,List.of("Contributor 1", "Contributor 2"),List.of("Category 1", "Category 2"));
         Page<BookSimpleResponseDto> bookPage = new PageImpl<>(List.of(bookDto));
         when(bookRepository.findBooksByCategoryId(any(Pageable.class), anyLong())).thenReturn(bookPage);
 
@@ -71,7 +71,7 @@ class BookServiceImplTest {
     void testGetBooksByContributorId() {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
-        BookSimpleResponseDto bookDto = new BookSimpleResponseDto(1L, "thumbnail1", "Book Title 1", 15000, "Publisher 1", 20000, true,List.of("Contributor 1", "Contributor 2"));
+        BookSimpleResponseDto bookDto = new BookSimpleResponseDto(1L, "thumbnail1", "Book Title 1", 15000, "Publisher 1", 20000, true,List.of("Contributor 1", "Contributor 2"),List.of("Category 1", "Category 2"));
         Page<BookSimpleResponseDto> bookPage = new PageImpl<>(List.of(bookDto));
         when(bookRepository.findBooksByContributorId(any(Pageable.class), anyLong())).thenReturn(bookPage);
 
@@ -86,7 +86,7 @@ class BookServiceImplTest {
     @Test
     void testGetBookById() {
         // Arrange
-        BookResponseDto bookResponseDto = new BookResponseDto(1L, "Publisher 1", "Book Title 1", "Description", LocalDate.of(2023, 10, 29), "1234567890123", 20000, 15000, true, true, 10, 0, 0, List.of("Contributor 1", "Contributor 2"),"thumbnail1");
+        BookResponseDto bookResponseDto = new BookResponseDto(1L, "Publisher 1", "Book Title 1", "Description", LocalDate.of(2023, 10, 29), "1234567890123", 20000, 15000, true, true, 10, 0, 0, List.of("Contributor 1", "Contributor 2"),List.of("Category 1", "Category 2"),"thumbnail1");
         when(bookRepository.findBookByBookId(anyLong())).thenReturn(bookResponseDto);
 
         // Act
