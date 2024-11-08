@@ -43,7 +43,7 @@ class LikeControllerTest {
 
         when(likeService.setBookLike(any(LikeRequestDto.class))).thenReturn(responseDto);
 
-        mockMvc.perform(post("/api/likes")
+        mockMvc.perform(post("/api/v1/likes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"memberId\": 1, \"bookId\": 1}"))
                 .andExpect(status().isOk())
@@ -57,7 +57,7 @@ class LikeControllerTest {
     void getLikeCount_success() throws Exception {
         when(likeService.getLikeCount(anyLong())).thenReturn(10L);
 
-        mockMvc.perform(get("/api/likes/count/1"))
+        mockMvc.perform(get("/api/v1/likes/count/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("10"));
     }
@@ -69,7 +69,7 @@ class LikeControllerTest {
 
         when(likeService.getBooksLikedByCustomer(anyLong())).thenReturn(books);
 
-        mockMvc.perform(get("/api/likes/member/1"))
+        mockMvc.perform(get("/api/v1/likes/members/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].bookId").value(1L))
                 .andExpect(jsonPath("$[0].title").value("Sample Book"))

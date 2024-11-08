@@ -27,7 +27,7 @@ import java.util.List;
 @Tag(name = "Like", description = "좋아요 API")
 @Validated
 @RestController
-@RequestMapping("/api/likes")
+@RequestMapping("/api/v1/likes")
 @RequiredArgsConstructor
 public class LikeController {
 
@@ -81,7 +81,7 @@ public class LikeController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음")
     })
-    @GetMapping("/member/{member-id}")
+    @GetMapping("/members/{member-id}")
     public ResponseEntity<List<Book>> getBooksLikedByMember(@PathVariable ("member-id") Long memberId) {
         List<Book> books = likeService.getBooksLikedByCustomer(memberId);
         return ResponseEntity.ok(books);
