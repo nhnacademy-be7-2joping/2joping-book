@@ -7,11 +7,11 @@ package com.nhnacademy.bookstore.shipment.entity;
  * @date : 2024-10-22
  */
 
+import com.nhnacademy.bookstore.shipment.dto.request.CarrierRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -20,10 +20,10 @@ public class Carrier {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "carrier_id", nullable = false)
+    @Column(name = "carrier_id")
     private Long carrierId;
 
-    @Column(name = "name", length = 100, nullable = false)
+    @Column(name = "name", length = 100)
     private String name;
 
     @Column(name = "contact_number", length = 20)
@@ -34,4 +34,11 @@ public class Carrier {
 
     @Column(name = "website_url", length = 255)
     private String websiteUrl;
+
+    public void toEntity(CarrierRequestDto requestDto) {
+        this.name = requestDto.name();
+        this.contactNumber = requestDto.contactNumber();
+        this.contactEmail = requestDto.contactEmail();
+        this.websiteUrl = requestDto.websiteUrl();
+    }
 }

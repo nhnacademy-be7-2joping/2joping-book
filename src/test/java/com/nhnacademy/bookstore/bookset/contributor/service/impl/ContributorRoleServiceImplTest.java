@@ -3,6 +3,8 @@ package com.nhnacademy.bookstore.bookset.contributor.service.impl;
 import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRoleRequestDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorRoleResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.entity.ContributorRole;
+import com.nhnacademy.bookstore.bookset.contributor.mapper.ContributorMapper;
+import com.nhnacademy.bookstore.bookset.contributor.mapper.ContributorRoleMapper;
 import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorRoleRepository;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +26,13 @@ class ContributorRoleServiceImplTest {
     @Mock
     private ContributorRoleRepository contributorRoleRepository;
 
+    @Mock
+    private ContributorMapper contributorMapper;
+
+    @Mock
+    private ContributorRoleMapper contributorRoleMapper;
+
+
     @InjectMocks
     private ContributorRoleServiceImpl contributorRoleService;
 
@@ -31,35 +40,39 @@ class ContributorRoleServiceImplTest {
     @DisplayName("기여자 역할 생성 테스트")
     void createContributorRole() {
         // given
-        ContributorRoleRequestDto requestDto = new ContributorRoleRequestDto();
-        requestDto.setRoleName("작가");
+        ContributorRoleRequestDto requestDto = new ContributorRoleRequestDto("지은이");
+        ContributorRole savedRole = new ContributorRole(1L, "지은이");
+        ContributorRoleResponseDto responseDto = new ContributorRoleResponseDto(1L, "지은이");
 
-        ContributorRole savedRole = new ContributorRole(1L, "작가");
         when(contributorRoleRepository.save(any(ContributorRole.class))).thenReturn(savedRole);
+        when(contributorRoleMapper.toContributorRoleResponseDto(savedRole)).thenReturn(responseDto);
 
         // when
-        ContributorRoleResponseDto responseDto = contributorRoleService.createContributorRole(requestDto);
+        ContributorRoleResponseDto result = contributorRoleService.createContributorRole(requestDto);
 
         // then
-        assertNotNull(responseDto);
-        assertEquals(1L, responseDto.getContributorRoleId());
-        assertEquals("작가", responseDto.getRoleName());
+        assertNotNull(result);
+        assertEquals(1L, result.contributorRoleId());
+        assertEquals("지은이", result.name());
     }
 
     @Test
     @DisplayName("기여자 역할 조회 테스트")
     void getContributorRole() {
         // given
-        ContributorRole contributorRole = new ContributorRole(1L, "작가");
+        ContributorRole contributorRole = new ContributorRole(1L, "지은이");
+        ContributorRoleResponseDto responseDto = new ContributorRoleResponseDto(1L, "지은이");
+
         when(contributorRoleRepository.findById(1L)).thenReturn(Optional.of(contributorRole));
+        when(contributorRoleMapper.toContributorRoleResponseDto(contributorRole)).thenReturn(responseDto);
 
         // when
-        ContributorRoleResponseDto responseDto = contributorRoleService.getContributorRole(1L);
+        ContributorRoleResponseDto result = contributorRoleService.getContributorRole(1L);
 
         // then
-        assertNotNull(responseDto);
-        assertEquals(1L, responseDto.getContributorRoleId());
-        assertEquals("작가", responseDto.getRoleName());
+        assertNotNull(result);
+        assertEquals(1L, result.contributorRoleId());
+        assertEquals("지은이", result.name());
     }
 
     @Test
@@ -76,28 +89,29 @@ class ContributorRoleServiceImplTest {
     @DisplayName("기여자 역할 수정 테스트")
     void updateContributorRole() {
         // given
-        ContributorRoleRequestDto requestDto = new ContributorRoleRequestDto();
-        requestDto.setRoleName("편집자");
+        ContributorRoleRequestDto requestDto = new ContributorRoleRequestDto("옮긴이");
+        ContributorRole existingRole = new ContributorRole(1L, "지은이");
+        ContributorRole updatedRole = new ContributorRole(1L, "옮긴이");
+        ContributorRoleResponseDto responseDto = new ContributorRoleResponseDto(1L, "옮긴이");
 
-        ContributorRole existingRole = new ContributorRole(1L, "작가");
         when(contributorRoleRepository.findById(1L)).thenReturn(Optional.of(existingRole));
-        when(contributorRoleRepository.save(any(ContributorRole.class))).thenReturn(new ContributorRole(1L, "편집자"));
+        when(contributorRoleRepository.save(any(ContributorRole.class))).thenReturn(updatedRole);
+        when(contributorRoleMapper.toContributorRoleResponseDto(updatedRole)).thenReturn(responseDto);
 
         // when
-        ContributorRoleResponseDto responseDto = contributorRoleService.updateContributorRole(1L, requestDto);
+        ContributorRoleResponseDto result = contributorRoleService.updateContributorRole(1L, requestDto);
 
         // then
-        assertNotNull(responseDto);
-        assertEquals(1L, responseDto.getContributorRoleId());
-        assertEquals("편집자", responseDto.getRoleName());
+        assertNotNull(result);
+        assertEquals(1L, result.contributorRoleId());
+        assertEquals("옮긴이", result.name());
     }
 
     @Test
     @DisplayName("존재하지 않는 기여자 역할 수정시 예외 발생 테스트")
     void updateContributorRoleNotFound() {
         // given
-        ContributorRoleRequestDto requestDto = new ContributorRoleRequestDto();
-        requestDto.setRoleName("편집자");
+        ContributorRoleRequestDto requestDto = new ContributorRoleRequestDto("옮긴이");
         when(contributorRoleRepository.findById(1L)).thenReturn(Optional.empty());
 
         // when & then

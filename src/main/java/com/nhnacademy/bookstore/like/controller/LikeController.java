@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,7 +27,7 @@ import java.util.List;
 @Tag(name = "Like", description = "좋아요 API")
 @Validated
 @RestController
-@RequestMapping("/api/likes")
+@RequestMapping("/api/v1/likes")
 @RequiredArgsConstructor
 public class LikeController {
 
@@ -45,7 +46,7 @@ public class LikeController {
             @ApiResponse(responseCode = "404", description = "회원 또는 책을 찾을 수 없음")
     })
 
-    @PostMapping("/{bookId}")
+    @PostMapping
     public ResponseEntity<LikeResponseDto> setBookLike(@RequestBody @Valid LikeRequestDto request) {
         LikeResponseDto responseDto = likeService.setBookLike(request);
         return ResponseEntity.ok(responseDto);
@@ -62,8 +63,8 @@ public class LikeController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "404", description = "책을 찾을 수 없음")
     })
-    @GetMapping("/count/{bookId}")
-    public ResponseEntity<Long> getLikeCount(@PathVariable @Valid Long bookId) {
+    @GetMapping("/count/{book-id}")
+    public ResponseEntity<Long> getLikeCount(@PathVariable("book-id") @Positive Long bookId) {
         Long likeCount = likeService.getLikeCount(bookId);
         return ResponseEntity.ok(likeCount);
     }
@@ -80,8 +81,8 @@ public class LikeController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음")
     })
-    @GetMapping("/member/{memberId}")
-    public ResponseEntity<List<Book>> getBooksLikedByMember(@PathVariable Long memberId) {
+    @GetMapping("/members/{member-id}")
+    public ResponseEntity<List<Book>> getBooksLikedByMember(@PathVariable ("member-id") Long memberId) {
         List<Book> books = likeService.getBooksLikedByCustomer(memberId);
         return ResponseEntity.ok(books);
 

@@ -1,11 +1,17 @@
 package com.nhnacademy.bookstore.bookset.tag.service;
 
+import com.nhnacademy.bookstore.bookset.book.entity.Book;
+import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
+import com.nhnacademy.bookstore.bookset.publisher.entity.Publisher;
 import com.nhnacademy.bookstore.bookset.tag.dto.TagRequestDto;
 import com.nhnacademy.bookstore.bookset.tag.dto.TagResponseDto;
 import com.nhnacademy.bookstore.bookset.tag.entity.Tag;
-import com.nhnacademy.bookstore.bookset.tag.exception.TagAlreadyExistException;
-import com.nhnacademy.bookstore.bookset.tag.exception.TagNotFoundException;
+import com.nhnacademy.bookstore.bookset.tag.repository.BookTagRepository;
 import com.nhnacademy.bookstore.bookset.tag.repository.TagRepository;
+import com.nhnacademy.bookstore.common.error.exception.base.ConflictException;
+import com.nhnacademy.bookstore.common.error.exception.base.NotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.tag.TagAlreadyAssignedBookException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.tag.TagNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +34,12 @@ public class TagServiceTest {
 
     @Mock
     private TagRepository tagRepository;
+    @Mock
+    private BookTagRepository bookTagRepository;
+
+    @Mock
+    private BookRepository bookRepository;
+
 
     @InjectMocks
     private TagServiceImpl tagService;
@@ -39,7 +52,6 @@ public class TagServiceTest {
     @Test
     public void testCreateTag_Success() {
         TagRequestDto requestDto = new TagRequestDto("New Tag");
-        Tag tag = new Tag(requestDto.name());
         Tag savedTag = new Tag(1L, "New Tag");
 
         when(tagRepository.save(any(Tag.class))).thenReturn(savedTag);
@@ -50,15 +62,45 @@ public class TagServiceTest {
     }
 
     @Test
+    public void testAssignedTagToBook_Success() {
+        Long tagId = 1L;
+        Long bookId = 2L;
+        Tag tag = new Tag(tagId, "Sample Tag");
+        Book book = new Book(
+                bookId, null, "Sample Book", "A description", LocalDate.of(2020, 1, 1),
+                "1234567890123", 1000, 900, true, true, 10, 100, 50
+        );
+
+        when(bookTagRepository.existsByBook_BookIdAndTag_TagId(bookId, tagId)).thenReturn(false);
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        when(tagRepository.findById(tagId)).thenReturn(Optional.of(tag));
+
+        TagResponseDto responseDto = tagService.assignedTagToBook(tagId, bookId);
+
+        assertThat(responseDto.tagId()).isEqualTo(tagId);
+        assertThat(responseDto.name()).isEqualTo(tag.getName());
+    }
+
+    @Test
+    public void testAssignedTagToBook_TagAlreadyAssigned() {
+        Long tagId = 1L;
+        Long bookId = 2L;
+
+        when(bookTagRepository.existsByBook_BookIdAndTag_TagId(bookId, tagId)).thenReturn(true);
+
+        assertThatThrownBy(() -> tagService.assignedTagToBook(tagId, bookId))
+                .isInstanceOf(TagAlreadyAssignedBookException.class); // 수정된 예외 타입 반영
+    }
+
+    @Test
     public void testCreateTag_TagAlreadyExists() {
         TagRequestDto requestDto = new TagRequestDto("Existing Tag");
         Tag existingTag = new Tag(1L, "Existing Tag");
 
         when(tagRepository.findByName(requestDto.name())).thenReturn(Optional.of(existingTag));
         assertThatThrownBy(() -> tagService.createTag(requestDto))
-                .isInstanceOf(TagAlreadyExistException.class);
+                .isInstanceOf(ConflictException.class);
     }
-
     @Test
     public void testGetTag_TagExists() {
         Tag tag = new Tag(2L, "Test Tag");
@@ -110,7 +152,7 @@ public class TagServiceTest {
         when(tagRepository.findById(anyLong())).thenReturn(Optional.empty()); // 이것만 필요
 
         assertThatThrownBy(() -> tagService.updateTag(1L, requestDto))
-                .isInstanceOf(TagNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
 
         verify(tagRepository, never()).save(any(Tag.class));
     }
@@ -131,6 +173,6 @@ public class TagServiceTest {
         when(tagRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> tagService.deleteById(1L))
-                .isInstanceOf(TagNotFoundException.class);
+                .isInstanceOf(NotFoundException.class);
     }
 }
