@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "ContributorRole", description = "도서 도서 기여자 역할 API")
 @Validated
 @RestController
-@RequestMapping("/bookstore/contributors/role")
+@RequestMapping("/api/v1/bookstore/contributors/role")
 @RequiredArgsConstructor
 public class ContributorRoleController {
     private final ContributorRoleService contributorRoleService;

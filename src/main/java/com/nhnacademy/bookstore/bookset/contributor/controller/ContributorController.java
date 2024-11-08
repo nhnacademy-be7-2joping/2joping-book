@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Contributor", description = "도서 기여자 API")
 @Validated
 @RestController
-@RequestMapping("/bookstore/contributors")
+@RequestMapping("/api/v1/bookstore/contributors")
 @RequiredArgsConstructor
 public class ContributorController {
     private final ContributorService contributorService;

@@ -43,7 +43,7 @@ class ShipmentPolicyControllerTest {
         Mockito.when(shipmentPolicyService.createShipmentPolicy(any(ShipmentPolicyRequestDto.class))).thenReturn(responseDto);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.post("/bookstore/shipment-policies")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/bookstore/shipment-policies")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 // then
@@ -60,7 +60,7 @@ class ShipmentPolicyControllerTest {
         Mockito.when(shipmentPolicyService.getShipmentPolicy(1L)).thenReturn(responseDto);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.get("/bookstore/shipment-policies/1")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bookstore/shipment-policies/1")
                         .accept(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk())
@@ -77,7 +77,7 @@ class ShipmentPolicyControllerTest {
         Mockito.when(shipmentPolicyService.getAllShipmentPolicies()).thenReturn(List.of(responseDto1, responseDto2));
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.get("/bookstore/shipment-policies")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bookstore/shipment-policies")
                         .accept(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk())
@@ -96,7 +96,7 @@ class ShipmentPolicyControllerTest {
         Mockito.when(shipmentPolicyService.updateShipmentPolicy(eq(1L), any(ShipmentPolicyRequestDto.class))).thenReturn(responseDto);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.put("/bookstore/shipment-policies/1")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/bookstore/shipment-policies/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 // then
@@ -112,7 +112,7 @@ class ShipmentPolicyControllerTest {
         Mockito.doNothing().when(shipmentPolicyService).deactivateShipmentPolicy(1L);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.put("/bookstore/shipment-policies/1/deactivate")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/bookstore/shipment-policies/1/deactivate")
                         .contentType(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk());
@@ -125,7 +125,7 @@ class ShipmentPolicyControllerTest {
         Mockito.doNothing().when(shipmentPolicyService).activateShipmentPolicy(1L);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.put("/bookstore/shipment-policies/1/activate")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/bookstore/shipment-policies/1/activate")
                         .contentType(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk());

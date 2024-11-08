@@ -44,7 +44,7 @@ class CarrierControllerTest {
         Mockito.when(carrierService.createCarrier(any(CarrierRequestDto.class))).thenReturn(responseDto);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.post("/bookstore/carriers")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/bookstore/carriers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 // then
@@ -62,7 +62,7 @@ class CarrierControllerTest {
         Mockito.when(carrierService.getAllCarriers()).thenReturn(Collections.singletonList(responseDto));
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.get("/bookstore/carriers")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bookstore/carriers")
                         .accept(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk())
@@ -79,7 +79,7 @@ class CarrierControllerTest {
         Mockito.when(carrierService.getCarrier(1L)).thenReturn(responseDto);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.get("/bookstore/carriers/1")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bookstore/carriers/1")
                         .accept(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk())
@@ -97,7 +97,7 @@ class CarrierControllerTest {
         Mockito.when(carrierService.updateCarrier(eq(1L), any(CarrierRequestDto.class))).thenReturn(responseDto);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.put("/bookstore/carriers/1")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/bookstore/carriers/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 // then
@@ -113,7 +113,7 @@ class CarrierControllerTest {
         Mockito.doNothing().when(carrierService).deleteCarrier(1L);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.delete("/bookstore/carriers/1")
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/bookstore/carriers/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk());
