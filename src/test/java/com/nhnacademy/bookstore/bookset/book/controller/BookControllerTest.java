@@ -1,6 +1,5 @@
 package com.nhnacademy.bookstore.bookset.book.controller;
 
-import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateRequestDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
@@ -40,7 +39,7 @@ class BookControllerTest {
     @Test
     void testGetAllBooks() {
         Pageable pageable = PageRequest.of(0, 10);
-        BookSimpleResponseDto bookDto = new BookSimpleResponseDto(1L, "thumbnail1", "Book Title 1", 15000, "Publisher 1", 20000, true);
+        BookSimpleResponseDto bookDto = new BookSimpleResponseDto(1L, "thumbnail1", "Book Title 1", 15000, "Publisher 1", 20000, true,List.of("Contributor 1", "Contributor 2"));
         Page<BookSimpleResponseDto> bookPage = new PageImpl<>(List.of(bookDto));
         when(bookService.getAllBooks(any(Pageable.class))).thenReturn(bookPage);
 
@@ -57,7 +56,7 @@ class BookControllerTest {
     void testGetBooksByCategoryId() {
 
         Pageable pageable = PageRequest.of(0, 10);
-        BookSimpleResponseDto bookDto = new BookSimpleResponseDto(1L, "thumbnail1", "Book Title 1", 15000, "Publisher 1", 20000, true);
+        BookSimpleResponseDto bookDto = new BookSimpleResponseDto(1L, "thumbnail1", "Book Title 1", 15000, "Publisher 1", 20000, true,List.of("Contributor 1", "Contributor 2"));
         Page<BookSimpleResponseDto> bookPage = new PageImpl<>(List.of(bookDto));
         when(bookService.getBooksByCategoryId(any(Pageable.class), anyLong())).thenReturn(bookPage);
 
@@ -74,7 +73,7 @@ class BookControllerTest {
     void testGetBooksByContributorId() {
 
         Pageable pageable = PageRequest.of(0, 10);
-        BookSimpleResponseDto bookDto = new BookSimpleResponseDto(1L, "thumbnail1", "Book Title 1", 15000, "Publisher 1", 20000, true);
+        BookSimpleResponseDto bookDto = new BookSimpleResponseDto(1L, "thumbnail1", "Book Title 1", 15000, "Publisher 1", 20000, true,List.of("Contributor 1", "Contributor 2"));
         Page<BookSimpleResponseDto> bookPage = new PageImpl<>(List.of(bookDto));
         when(bookService.getBooksByContributorId(any(Pageable.class), anyLong())).thenReturn(bookPage);
 
@@ -90,7 +89,7 @@ class BookControllerTest {
     @Test
     void testGetBookByBookId() {
 
-        BookResponseDto bookResponseDto = new BookResponseDto(1L, "Publisher 1", "Book Title 1", "Description", LocalDate.of(2023, 10, 29), "1234567890123", 20000, 15000, true, true, 10, 0, 0, "thumbnail1");
+        BookResponseDto bookResponseDto = new BookResponseDto(1L, "Publisher 1", "Book Title 1", "Description", LocalDate.of(2023, 10, 29), "1234567890123", 20000, 15000, true, true, 10, 0, 0,List.of("Contributor 1", "Contributor 2"), "thumbnail1");
         when(bookService.getBookById(anyLong())).thenReturn(bookResponseDto);
 
 

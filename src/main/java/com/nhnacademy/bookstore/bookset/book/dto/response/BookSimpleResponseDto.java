@@ -1,8 +1,10 @@
 package com.nhnacademy.bookstore.bookset.book.dto.response;
 
 
+import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import jakarta.validation.constraints.Positive;
 
+import java.util.List;
 
 
 /**
@@ -13,13 +15,12 @@ import jakarta.validation.constraints.Positive;
  */
 
 public record BookSimpleResponseDto (
-
      @Positive Long bookId,
      String thumbnail,
      String title,
      int sellingPrice,
      String publisherName,
      int retailPrice,
-     boolean isActive
-//     List<ContributorResponseDto> contributorList
+     boolean isActive,
+     List<String> contributorList
 ) {}

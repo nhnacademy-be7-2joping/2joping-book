@@ -8,15 +8,26 @@ import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.bookset.book.entity.QBook;
 import com.nhnacademy.bookstore.bookset.book.entity.QBookCategory;
 import com.nhnacademy.bookstore.bookset.book.entity.QBookContributor;
+import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
+import com.nhnacademy.bookstore.bookset.contributor.entity.QContributor;
+import com.nhnacademy.bookstore.bookset.publisher.entity.QPublisher;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.querydsl.core.types.Projections.list;
 
 @Slf4j
 public class BookRepositoryImpl extends QuerydslRepositorySupport implements BookRepositoryCustom {
@@ -36,24 +47,40 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     @Override
     public Page<BookSimpleResponseDto> findAllBooks(Pageable pageable) {
         QBook qBook = QBook.book;
+        QBookContributor qBookContributor = QBookContributor.bookContributor;
+        QContributor qContributor = QContributor.contributor;
 
-        List<BookSimpleResponseDto> booksDto = from(qBook)
+        List<Tuple> bookTuples = from(qBook)
+                .leftJoin(qBookContributor).on(qBook.bookId.eq(qBookContributor.book.bookId))
+                .leftJoin(qContributor).on(qBookContributor.contributor.contributorId.eq(qContributor.contributorId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .select(Projections.constructor(
-                        BookSimpleResponseDto.class,
-                        qBook.bookId,
-                        Expressions.constant("temp.jpg"),
-                        qBook.title,
-                        qBook.sellingPrice,
-                        qBook.publisher.name,
-                        qBook.retailPrice,
-                        qBook.isActive
-                ))
+                .select(qBook, qContributor.name)
                 .fetch();
 
-        long total = from(qBook)
-                .fetchCount();
+        Map<Long, BookSimpleResponseDto> bookMap = new HashMap<>();
+        for (Tuple tuple : bookTuples) {
+            Book book = tuple.get(qBook);
+            String contributorName = tuple.get(qContributor.name);
+
+            BookSimpleResponseDto dto = bookMap.computeIfAbsent(book.getBookId(), bookId -> new BookSimpleResponseDto(
+                    book.getBookId(),
+                    "temp.jpg", // 임시 썸네일
+                    book.getTitle(),
+                    book.getSellingPrice(),
+                    book.getPublisher().getName(),
+                    book.getRetailPrice(),
+                    book.isActive(),
+                    new ArrayList<>()
+            ));
+            if (contributorName != null) {
+                dto.contributorList().add(contributorName);
+            }
+        }
+
+        // 리스트로 변환하여 반환
+        List<BookSimpleResponseDto> booksDto = new ArrayList<>(bookMap.values());
+        long total = from(qBook).fetchCount();
 
         return new PageImpl<>(booksDto, pageable, total);
     }
@@ -67,27 +94,44 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
      * @return 기여자가 참여한 도서 목록과 페이징 정보를 담은 Page 객체
      */
     @Override
-    public Page<BookSimpleResponseDto> findBooksByContributorId(Pageable pageable,Long contributorId) {
+    public Page<BookSimpleResponseDto> findBooksByContributorId(Pageable pageable, Long contributorId) {
         QBook qBook = QBook.book;
         QBookContributor qBookContributor = QBookContributor.bookContributor;
+        QContributor qContributor = QContributor.contributor;
 
-        List<BookSimpleResponseDto> booksDto = from(qBookContributor)
+        List<Tuple> bookTuples = from(qBookContributor)
                 .join(qBookContributor.book, qBook)
+                .leftJoin(qBookContributor.contributor, qContributor)
                 .where(qBookContributor.contributor.contributorId.eq(contributorId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .select(Projections.constructor(
-                        BookSimpleResponseDto.class,
-                        qBook.bookId,
-                        Expressions.constant("temp.jpg"), // 썸네일 경로가 임시일 경우
-                        qBook.title,
-                        qBook.sellingPrice,
-                        qBook.publisher,
-                        qBook.retailPrice,
-                        qBook.isActive
-                ))
+                .select(qBook, qContributor.name)
                 .fetch();
 
+        // 도서 ID 기준으로 기여자들을 매핑
+        Map<Long, BookSimpleResponseDto> bookMap = new HashMap<>();
+        for (Tuple tuple : bookTuples) {
+            Book book = tuple.get(qBook);
+            String contributorName = tuple.get(qContributor.name);
+
+            // 이미 책 정보가 있다면 기여자만 추가
+            BookSimpleResponseDto dto = bookMap.computeIfAbsent(book.getBookId(), bookId -> new BookSimpleResponseDto(
+                    book.getBookId(),
+                    "temp.jpg", // 임시 썸네일
+                    book.getTitle(),
+                    book.getSellingPrice(),
+                    book.getPublisher().getName(),
+                    book.getRetailPrice(),
+                    book.isActive(),
+                    new ArrayList<>()
+            ));
+            if (contributorName != null) {
+                dto.contributorList().add(contributorName);
+            }
+        }
+
+        // 리스트로 변환하여 반환
+        List<BookSimpleResponseDto> booksDto = new ArrayList<>(bookMap.values());
         long total = from(qBookContributor)
                 .join(qBookContributor.book, qBook)
                 .where(qBookContributor.contributor.contributorId.eq(contributorId))
@@ -111,25 +155,41 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     public Page<BookSimpleResponseDto> findBooksByCategoryId(Pageable pageable, Long categoryId) {
         QBook qBook = QBook.book;
         QBookCategory qBookCategory = QBookCategory.bookCategory;
+        QBookContributor qBookContributor = QBookContributor.bookContributor;
+        QContributor qContributor = QContributor.contributor;
 
-        List<BookSimpleResponseDto> booksDto = from(qBookCategory)
+        List<Tuple> bookTuples = from(qBookCategory)
                 .join(qBookCategory.book, qBook)
+                .leftJoin(qBookContributor).on(qBook.bookId.eq(qBookContributor.book.bookId))
+                .leftJoin(qContributor).on(qBookContributor.contributor.contributorId.eq(qContributor.contributorId))
                 .where(qBookCategory.category.categoryId.eq(categoryId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .select(Projections.constructor(
-                        BookSimpleResponseDto.class,
-                        qBook.bookId,
-                        Expressions.constant("temp.jpg"), // 썸네일 경로가 임시일 경우
-                        qBook.title,
-                        qBook.sellingPrice,
-                        qBook.publisher.name,
-                        qBook.retailPrice,
-                        qBook.isActive
-                ))
+                .select(qBook, qContributor.name)
                 .fetch();
 
+        Map<Long, BookSimpleResponseDto> bookMap = new HashMap<>();
+        for (Tuple tuple : bookTuples) {
+            Book book = tuple.get(qBook);
+            String contributorName = tuple.get(qContributor.name);
 
+            BookSimpleResponseDto dto = bookMap.computeIfAbsent(book.getBookId(), bookId -> new BookSimpleResponseDto(
+                    book.getBookId(),
+                    "temp.jpg", // 임시 썸네일
+                    book.getTitle(),
+                    book.getSellingPrice(),
+                    book.getPublisher().getName(),
+                    book.getRetailPrice(),
+                    book.isActive(),
+                    new ArrayList<>()
+            ));
+            if (contributorName != null) {
+                dto.contributorList().add(contributorName);
+            }
+        }
+
+        // 리스트로 변환하여 반환
+        List<BookSimpleResponseDto> booksDto = new ArrayList<>(bookMap.values());
         long total = from(qBookCategory)
                 .join(qBookCategory.book, qBook)
                 .where(qBookCategory.category.categoryId.eq(categoryId))
@@ -149,28 +209,56 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     @Override
     public BookResponseDto findBookByBookId(Long bookId) {
         QBook qBook = QBook.book;
+        QBookContributor qBookContributor = QBookContributor.bookContributor;
+        QContributor qContributor = QContributor.contributor;
 
-        return from(qBook)
+        // 도서와 기여자 정보를 함께 조회
+        List<Tuple> bookTuples = from(qBook)
+                .leftJoin(qBookContributor).on(qBook.bookId.eq(qBookContributor.book.bookId))
+                .leftJoin(qContributor).on(qBookContributor.contributor.contributorId.eq(qContributor.contributorId))
                 .where(qBook.bookId.eq(bookId))
-                .select(Projections.constructor(
-                        BookResponseDto.class,
-                        qBook.bookId,
-                        qBook.publisher.name,
-                        qBook.title,
-                        qBook.description,
-                        qBook.publishedDate,
-                        qBook.isbn,
-                        qBook.retailPrice,
-                        qBook.sellingPrice,
-                        qBook.giftWrappable,
-                        qBook.isActive,
-                        qBook.remainQuantity,
-                        qBook.views,
-                        qBook.likes,
-                        Expressions.constant("temp.jpg") // 썸네일 경로가 임시일 경우
-                ))
-                .fetchOne();
+                .select(qBook, qContributor.name)
+                .fetch();
+
+        // 도서 정보를 담기 위한 변수 초기화
+        BookResponseDto bookResponseDto = null;
+        List<String> contributorNames = new ArrayList<>();
+
+        // 튜플을 반복하며 도서와 기여자 정보를 수집
+        for (Tuple tuple : bookTuples) {
+            Book book = tuple.get(qBook);
+            String contributorName = tuple.get(qContributor.name);
+
+            if (bookResponseDto == null) {
+                // 최초로 Book 정보를 설정 (한번만 설정)
+                bookResponseDto = new BookResponseDto(
+                        book.getBookId(),
+                        book.getPublisher().getName(),
+                        book.getTitle(),
+                        book.getDescription(),
+                        book.getPublishedDate(),
+                        book.getIsbn(),
+                        book.getRetailPrice(),
+                        book.getSellingPrice(),
+                        book.isGiftWrappable(),
+                        book.isActive(),
+                        book.getRemainQuantity(),
+                        book.getViews(),
+                        book.getLikes(),
+                        contributorNames,
+                        "temp.jpg" // 임시 썸네일
+                );
+            }
+
+            // 기여자 이름을 리스트에 추가
+            if (contributorName != null) {
+                contributorNames.add(contributorName);
+            }
+        }
+
+        return bookResponseDto;
     }
+
 }
 
 
