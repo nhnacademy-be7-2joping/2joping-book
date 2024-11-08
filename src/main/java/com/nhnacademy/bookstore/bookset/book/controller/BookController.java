@@ -1,6 +1,5 @@
 package com.nhnacademy.bookstore.bookset.book.controller;
 
-import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateRequestDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
@@ -14,16 +13,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-
 /**
  * 도서 Controller
  *
  * @author : 이유현
  * @date : 2024.10.29
  */
-
 
 @RestController
 @RequestMapping("/api/v1/bookstore")

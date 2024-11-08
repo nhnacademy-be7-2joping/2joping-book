@@ -2,9 +2,11 @@ package com.nhnacademy.bookstore.bookset.book.service;
 
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
+import com.nhnacademy.bookstore.bookset.book.exception.BookNotFoundException;
 import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
 import com.nhnacademy.bookstore.bookset.book.service.impl.BookServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -16,8 +18,10 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -36,6 +40,7 @@ class BookServiceImplTest {
     }
 
     @Test
+    @DisplayName("전체 도서 조회")
     void testGetAllBooks() {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
@@ -52,6 +57,7 @@ class BookServiceImplTest {
     }
 
     @Test
+    @DisplayName("카테고리id로 도서 조회")
     void testGetBooksByCategoryId() {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
@@ -68,6 +74,7 @@ class BookServiceImplTest {
     }
 
     @Test
+    @DisplayName("기여자id로 도서 조회")
     void testGetBooksByContributorId() {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
@@ -84,15 +91,21 @@ class BookServiceImplTest {
     }
 
     @Test
-    void testGetBookById() {
-        // Arrange
+    @DisplayName("도서 ID로 특정 도서 조회 - 성공")
+    void testGetBookByIdSuccess() {
         BookResponseDto bookResponseDto = new BookResponseDto(1L, "Publisher 1", "Book Title 1", "Description", LocalDate.of(2023, 10, 29), "1234567890123", 20000, 15000, true, true, 10, 0, 0, List.of("Contributor 1", "Contributor 2"),List.of("Category 1", "Category 2"),"thumbnail1");
-        when(bookRepository.findBookByBookId(anyLong())).thenReturn(bookResponseDto);
+        when(bookRepository.findBookByBookId(anyLong())).thenReturn(Optional.of(bookResponseDto));
 
-        // Act
         BookResponseDto result = bookService.getBookById(1L);
 
-        // Assert
         assertEquals(bookResponseDto, result);
+    }
+
+    @Test
+    @DisplayName("도서 ID로 특정 도서 조회 - 실패")
+    void testGetBookByIdFailure() {
+        when(bookRepository.findBookByBookId(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(BookNotFoundException.class, () -> bookService.getBookById(1L));
     }
 }

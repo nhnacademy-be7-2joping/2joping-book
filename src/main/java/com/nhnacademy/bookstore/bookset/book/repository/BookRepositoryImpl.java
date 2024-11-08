@@ -9,26 +9,16 @@ import com.nhnacademy.bookstore.bookset.book.entity.QBook;
 import com.nhnacademy.bookstore.bookset.book.entity.QBookCategory;
 import com.nhnacademy.bookstore.bookset.book.entity.QBookContributor;
 import com.nhnacademy.bookstore.bookset.category.entity.QCategory;
-import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.entity.QContributor;
-import com.nhnacademy.bookstore.bookset.publisher.entity.QPublisher;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.JPAExpressions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static com.querydsl.core.types.Projections.list;
 
 @Slf4j
 public class BookRepositoryImpl extends QuerydslRepositorySupport implements BookRepositoryCustom {
@@ -37,6 +27,11 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         super(Book.class);
     }
 
+    private final QBook qBook = QBook.book;
+    private final QBookContributor qBookContributor = QBookContributor.bookContributor;
+    private final QContributor qContributor = QContributor.contributor;
+    private final QBookCategory qBookCategory = QBookCategory.bookCategory;
+    private QCategory qCategory = QCategory.category;
 
     /**
      * 전체 도서를 페이지 단위로 조회
@@ -46,11 +41,6 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
      */
     @Override
     public Page<BookSimpleResponseDto> findAllBooks(Pageable pageable) {
-        QBook qBook = QBook.book;
-        QBookContributor qBookContributor = QBookContributor.bookContributor;
-        QContributor qContributor = QContributor.contributor;
-        QBookCategory qBookCategory = QBookCategory.bookCategory;
-        QCategory qCategory = QCategory.category;
 
         List<Tuple> bookTuples = from(qBook)
                 .leftJoin(qBookContributor).on(qBook.bookId.eq(qBookContributor.book.bookId))
@@ -116,11 +106,6 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
      */
     @Override
     public Page<BookSimpleResponseDto> findBooksByContributorId(Pageable pageable, Long contributorId) {
-        QBook qBook = QBook.book;
-        QBookContributor qBookContributor = QBookContributor.bookContributor;
-        QContributor qContributor = QContributor.contributor;
-        QBookCategory qBookCategory = QBookCategory.bookCategory;
-        QCategory qCategory = QCategory.category;
 
         // 특정 기여자가 참여한 도서를 조회
         List<Tuple> bookTuples = from(qBookContributor)
@@ -193,11 +178,6 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
      */
     @Override
     public Page<BookSimpleResponseDto> findBooksByCategoryId(Pageable pageable, Long categoryId) {
-        QBook qBook = QBook.book;
-        QBookCategory qBookCategory = QBookCategory.bookCategory;
-        QCategory qCategory = QCategory.category;
-        QBookContributor qBookContributor = QBookContributor.bookContributor;
-        QContributor qContributor = QContributor.contributor;
 
         // 특정 카테고리에 속하는 도서를 조회
         List<Tuple> bookTuples = from(qBookCategory)
@@ -266,12 +246,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
      * @return 도서의 상세 정보를 담은 BookResponseDto 객체
      */
     @Override
-    public BookResponseDto findBookByBookId(Long bookId) {
-        QBook qBook = QBook.book;
-        QBookContributor qBookContributor = QBookContributor.bookContributor;
-        QContributor qContributor = QContributor.contributor;
-        QBookCategory qBookCategory = QBookCategory.bookCategory;
-        QCategory qCategory = QCategory.category;
+    public Optional<BookResponseDto> findBookByBookId(Long bookId) {
 
         // 도서와 기여자 및 카테고리 정보를 함께 조회
         List<Tuple> bookTuples = from(qBook)
@@ -326,11 +301,8 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 categoryNames.add(categoryName);
             }
         }
-
-        return bookResponseDto;
+        return Optional.ofNullable(bookResponseDto);
     }
-
-
 }
 
 

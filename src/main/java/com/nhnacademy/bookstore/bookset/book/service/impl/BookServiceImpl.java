@@ -2,6 +2,7 @@ package com.nhnacademy.bookstore.bookset.book.service.impl;
 
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
+import com.nhnacademy.bookstore.bookset.book.exception.BookNotFoundException;
 import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +55,7 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     public BookResponseDto getBookById(Long bookId) {
-        BookResponseDto book = bookRepository.findBookByBookId(bookId);
+        BookResponseDto book = bookRepository.findBookByBookId(bookId).orElseThrow(()-> new BookNotFoundException("도서를 찾을 수 없습니다."));
         return book;
     }
 }

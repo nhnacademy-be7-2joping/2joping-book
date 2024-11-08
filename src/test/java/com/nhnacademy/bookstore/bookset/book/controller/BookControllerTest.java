@@ -4,6 +4,7 @@ import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -37,6 +38,7 @@ class BookControllerTest {
     }
 
     @Test
+    @DisplayName("전체 도서 조회")
     void testGetAllBooks() {
         Pageable pageable = PageRequest.of(0, 10);
         BookSimpleResponseDto bookDto = new BookSimpleResponseDto(1L, "thumbnail1", "Book Title 1", 15000, "Publisher 1", 20000, true,List.of("Contributor 1", "Contributor 2"),List.of("Category 1", "Category 2"));
@@ -53,6 +55,7 @@ class BookControllerTest {
     }
 
     @Test
+    @DisplayName("카테고리id로 도서 조회")
     void testGetBooksByCategoryId() {
 
         Pageable pageable = PageRequest.of(0, 10);
@@ -70,6 +73,7 @@ class BookControllerTest {
     }
 
     @Test
+    @DisplayName("기여자id로 도서 조회")
     void testGetBooksByContributorId() {
 
         Pageable pageable = PageRequest.of(0, 10);
@@ -87,6 +91,7 @@ class BookControllerTest {
     }
 
     @Test
+    @DisplayName("도서 id로 특정 도서 하나 조회")
     void testGetBookByBookId() {
 
         BookResponseDto bookResponseDto = new BookResponseDto(1L, "Publisher 1", "Book Title 1", "Description", LocalDate.of(2023, 10, 29), "1234567890123", 20000, 15000, true, true, 10, 0, 0,List.of("Contributor 1", "Contributor 2"), List.of("Category 1", "Category 2"),"thumbnail1");
