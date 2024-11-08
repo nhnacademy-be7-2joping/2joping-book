@@ -28,9 +28,6 @@ public class BookCreateRequestDto {
     private boolean giftWrappable;
     private int remainQuantity;
     private String publisherName;
-//    private List<ContributorResponseDto> contributorList;
-//    private List<CategoryResponseDto> categoryList;
-//    private List<TagResponseDto> tagList;
     private List<String> thumbnails;
     private String detail;
 }
