@@ -43,7 +43,7 @@ class ContributorRoleControllerTest {
                 .thenReturn(responseDto);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.post("/bookstore/contributors/role")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/bookstore/contributors/role")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 // then
@@ -61,7 +61,7 @@ class ContributorRoleControllerTest {
         Mockito.when(contributorRoleService.getContributorRole(1L)).thenReturn(responseDto);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.get("/bookstore/contributors/role/1")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bookstore/contributors/role/1")
                         .accept(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk())
@@ -80,7 +80,7 @@ class ContributorRoleControllerTest {
                 .thenReturn(responseDto);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.put("/bookstore/contributors/role/1")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/bookstore/contributors/role/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 // then
@@ -96,7 +96,7 @@ class ContributorRoleControllerTest {
         Mockito.doNothing().when(contributorRoleService).deleteContributorRole(1L);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.delete("/bookstore/contributors/role/1")
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/bookstore/contributors/role/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isNoContent());
