@@ -63,6 +63,4 @@ public class Book {
     @Column(nullable = false, columnDefinition = "INT default 0")
     private int likes;
 
-//    @Column(length = 500) //얘를 추가해야하나?
-//    private String thumbnail;
 }
