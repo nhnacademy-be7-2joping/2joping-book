@@ -25,7 +25,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/bookstore")
+@RequestMapping("/api/v1/bookstore")
 @Tag(name = "Publisher API", description = "출판사 관련 CRUD API")
 public class PublisherController {
 
