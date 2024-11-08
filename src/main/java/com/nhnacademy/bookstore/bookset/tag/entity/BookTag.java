@@ -27,16 +27,15 @@ public class BookTag {
 
     @ManyToOne
     @MapsId("bookId")
-    @JoinColumn(name = "book_id", nullable = false)
+    @JoinColumn(name = "book_id")
     private Book book;
 
     @ManyToOne
     @MapsId("tagId")
-    @JoinColumn(name = "tag_id", nullable = false)
+    @JoinColumn(name = "tag_id")
     private Tag tag;
 
     @Getter
-    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     @Embeddable
