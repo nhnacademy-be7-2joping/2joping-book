@@ -3,6 +3,7 @@ package com.nhnacademy.bookstore.bookset.tag.service;
 
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
+import com.nhnacademy.bookstore.bookset.contributor.entity.ContributorRole;
 import com.nhnacademy.bookstore.bookset.tag.dto.TagRequestDto;
 import com.nhnacademy.bookstore.bookset.tag.dto.TagResponseDto;
 import com.nhnacademy.bookstore.bookset.tag.entity.BookTag;
@@ -12,6 +13,9 @@ import com.nhnacademy.bookstore.bookset.tag.repository.BookTagRepository;
 
 import com.nhnacademy.bookstore.common.error.exception.base.ConflictException;
 import com.nhnacademy.bookstore.common.error.exception.base.NotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.tag.TagAlreadyAssignedBookException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.tag.TagNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -42,7 +46,7 @@ public class TagServiceImpl implements TagService {
      */
     public TagResponseDto createTag(TagRequestDto dto) {
         if (tagRepository.findByName(dto.name()).isPresent()) {
-            throw new ConflictException("이미 존재하는 태그입니다.");
+            throw new TagAlreadyAssignedBookException();
         }
         Tag tag = new Tag(dto.name());
         Tag savedTag = tagRepository.save(tag);
@@ -61,13 +65,13 @@ public class TagServiceImpl implements TagService {
     @Override
     public TagResponseDto assignedTagToBook(Long tagId, Long bookId) {
         if (bookTagRepository.existsByBook_BookIdAndTag_TagId(bookId, tagId)) {
-            throw new ConflictException("책에 이미 태그가 할당되어 있습니다.");
+            throw new TagAlreadyAssignedBookException();
         }
 
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new NotFoundException("존재하지 않는 책입니다."));
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 책입니다.")); // 일단은 이렇게 구현 나중에 book exception 생기면 추가예정
         Tag tag = tagRepository.findById(tagId)
-                .orElseThrow(() -> new NotFoundException("존재하지 않는 태그입니다."));
+                .orElseThrow(TagNotFoundException::new);
 
         BookTag bookTag = new BookTag(new BookTag.BookTagId(bookId, tagId), book, tag);
         bookTagRepository.save(bookTag);
@@ -84,7 +88,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public TagResponseDto getTag(Long tagId) {
         Tag tag = tagRepository.findById(tagId)
-                .orElseThrow(() -> new NotFoundException("존재하지 않는 태그입니다."));
+                .orElseThrow(TagNotFoundException::new);
 
         return new TagResponseDto(tag.getTagId(), tag.getName());
     }
@@ -101,7 +105,7 @@ public class TagServiceImpl implements TagService {
         List<Tag> tags = tagRepository.findAll();
         return tags.stream()
                 .map(tag -> new TagResponseDto(tag.getTagId(), tag.getName()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -114,7 +118,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public TagResponseDto updateTag(Long tagId, TagRequestDto dto) {
         Tag tag = tagRepository.findById(tagId)
-                .orElseThrow(() -> new NotFoundException("존재하지 않는 태그입니다."));
+                .orElseThrow(TagNotFoundException::new);
 
         tag.updateTag(dto.name());
         Tag updatedTag = tagRepository.save(tag);
@@ -129,7 +133,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public void deleteById(Long tagId) {
         Tag tag = tagRepository.findById(tagId)
-                .orElseThrow(() -> new NotFoundException("존재하지 않는 태그입니다."));
+                .orElseThrow(TagNotFoundException::new);
         tagRepository.delete(tag);
     }
 }

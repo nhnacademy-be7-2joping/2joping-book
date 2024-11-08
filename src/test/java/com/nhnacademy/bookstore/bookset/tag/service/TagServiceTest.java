@@ -10,6 +10,8 @@ import com.nhnacademy.bookstore.bookset.tag.repository.BookTagRepository;
 import com.nhnacademy.bookstore.bookset.tag.repository.TagRepository;
 import com.nhnacademy.bookstore.common.error.exception.base.ConflictException;
 import com.nhnacademy.bookstore.common.error.exception.base.NotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.tag.TagAlreadyAssignedBookException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.tag.TagNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -87,7 +89,7 @@ public class TagServiceTest {
         when(bookTagRepository.existsByBook_BookIdAndTag_TagId(bookId, tagId)).thenReturn(true);
 
         assertThatThrownBy(() -> tagService.assignedTagToBook(tagId, bookId))
-                .isInstanceOf(ConflictException.class); // 수정된 예외 타입 반영
+                .isInstanceOf(TagAlreadyAssignedBookException.class); // 수정된 예외 타입 반영
     }
 
     @Test
@@ -115,7 +117,7 @@ public class TagServiceTest {
         when(tagRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> tagService.getTag(1L))
-                .isInstanceOf(NotFoundException.class);
+                .isInstanceOf(TagNotFoundException.class);
     }
 
     @Test
