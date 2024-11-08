@@ -1,7 +1,6 @@
-package com.nhnacademy.bookstore.admin.wrappolicy.entity;
+package com.nhnacademy.bookstore.admin.wrap.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Table(name = "wrap")
-public class WrapPolicy {
+public class Wrap {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +33,7 @@ public class WrapPolicy {
     @Column(name = "is_active")
     private boolean isActive = true;
 
-    public WrapPolicy(String name, int wrapPrice, boolean isActive) {
+    public Wrap(String name, int wrapPrice, boolean isActive) {
         this.name = name;
         this.wrapPrice = wrapPrice;
         this.isActive = isActive;

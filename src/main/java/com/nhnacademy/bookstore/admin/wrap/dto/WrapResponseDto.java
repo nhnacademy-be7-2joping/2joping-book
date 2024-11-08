@@ -1,9 +1,9 @@
-package com.nhnacademy.bookstore.admin.wrappolicy.dto;
+package com.nhnacademy.bookstore.admin.wrap.dto;
 
 /**
  * 포장 정책 정보를 반환하는 DTO
  */
-public record WrapPolicyResponseDto (
+public record WrapResponseDto(
     Long wrapId,
     String name,
     int wrapPrice,
