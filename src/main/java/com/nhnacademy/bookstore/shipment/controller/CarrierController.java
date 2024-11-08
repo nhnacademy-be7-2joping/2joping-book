@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Tag(name = "Carrier", description = "배송 업체 API")
 @RestController
-@RequestMapping("/bookstore/carriers")
+@RequestMapping("/api/v1/bookstore/carriers")
 @RequiredArgsConstructor
 public class CarrierController {
 
