@@ -39,7 +39,7 @@ public class PublisherControllerTest {
 
         when(publisherService.registerPublisher(any(PublisherRequestDto.class))).thenReturn(createResponseDto);
         //when
-        ResultActions resultActions = mockMvc.perform(post("/bookstore/publishers")
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/bookstore/publishers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"출판사 1\"}"));
         //then
@@ -59,7 +59,7 @@ public class PublisherControllerTest {
         when(publisherService.getAllPublishers()).thenReturn(responseList);
 
         // when
-        ResultActions resultActions = mockMvc.perform(get("/bookstore/publishers")
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/bookstore/publishers")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -78,7 +78,7 @@ public class PublisherControllerTest {
         when(publisherService.getPublisherById(1L)).thenReturn(responseDto);
 
         // when
-        ResultActions resultActions = mockMvc.perform(get("/bookstore/publisher/1")
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/bookstore/publisher/1")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -93,7 +93,7 @@ public class PublisherControllerTest {
         doNothing().when(publisherService).deletePublisher(1L);
 
         // when
-        ResultActions resultActions = mockMvc.perform(delete("/bookstore/publisher/1")
+        ResultActions resultActions = mockMvc.perform(delete("/api/v1/bookstore/publisher/1")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -109,7 +109,7 @@ public class PublisherControllerTest {
         when(publisherService.updatePublisher(eq(1L), any(PublisherRequestDto.class))).thenReturn(responseDto);
 
         // when
-        ResultActions resultActions = mockMvc.perform(put("/bookstore/publisher/1")
+        ResultActions resultActions = mockMvc.perform(put("/api/v1/bookstore/publisher/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"name\": \"업데이트된 출판사 이름\"}"));
 
