@@ -31,9 +31,6 @@ public class BookResponseDto {
     private String author;
     private int views;
     private int likes;
-//    private List<ContributorResponseDto> contributorList;
-//    private List<CategoryResponseDto> categoryList;
-//    private List<TagResponseDto> tagList;
     private List<String> thumbnails;
     private String detail;
 }
