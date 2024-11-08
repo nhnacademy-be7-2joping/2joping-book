@@ -11,5 +11,5 @@ public interface WrapService {
     WrapResponseDto getWrap(Long WrapId);
     List<WrapResponseDto> getAllWraps();
 
-    WrapResponseDto updateWrap(Long WrapId, WrapResponseDto);
+    WrapResponseDto updateWrap(Long WrapId, WrapResponseDto wrapResponseDto);
 }

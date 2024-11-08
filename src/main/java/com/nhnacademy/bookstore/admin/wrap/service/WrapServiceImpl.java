@@ -66,10 +66,10 @@ public class WrapServiceImpl implements WrapService {
                 .collect(Collectors.toList()); // strema? 이거 써도되는지? querydsl?
 
     }
-//
-//    @Override
-//    @Transactional
-//    public WrapPolicyResponseDto getWrapPolicy(Long WrapPolicyId) {
-//
-//    }
+
+    @Override
+    public WrapResponseDto updateWrap(Long WrapId, WrapResponseDto wrapResponseDto) {
+
+        return null;
+    }
 }
