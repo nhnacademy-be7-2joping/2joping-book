@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.user.member;
 
+import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberDuplicateException;
 import com.nhnacademy.bookstore.user.enums.Gender;
 import com.nhnacademy.bookstore.user.member.controller.MemberController;
@@ -69,7 +70,7 @@ public class MemberControllerTest {
                 "testuser", "Test@1234", "이한빈", "010-1234-5678",
                 "dlgksqls7218@naver.com", "루하", Gender.M, LocalDate.of(1996, 6, 23));
 
-        doThrow(new MemberDuplicateException("이미 사용 중인 아이디입니다."))
+        doThrow(new MemberDuplicateException("이미 사용 중인 아이디입니다.", RedirectType.REDIRECT, "/members", requestDto))
                 .when(memberService).registerNewMember(requestDto);
 
         // when & then

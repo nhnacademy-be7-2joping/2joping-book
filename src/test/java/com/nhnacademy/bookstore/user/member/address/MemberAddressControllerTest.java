@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.user.member.address;
 
+import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.user.address.AddressLimitToTenException;
 import com.nhnacademy.bookstore.user.member.controller.MemberAddressController;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberAddressRequestDto;
@@ -62,18 +63,18 @@ public class MemberAddressControllerTest {
      */
     @Test
     public void testGetAllMemberAddress_Success() {
-//        // given
-//        long memberId = 1L;
-//        MemberAddressResponseDto responseDto = new MemberAddressResponseDto(1L, "12345", "도로명 주소", "상세 주소", "별칭", true, "수신인");
-//        when(memberAddressService.getMemberAddresses(memberId)).thenReturn(Collections.singletonList(responseDto));
-//
-//        // when
-//        ResponseEntity<List<MemberAddressResponseDto>> response = memberAddressController.getAllMemberAddress(memberId);
-//
-//        // then
-//        assertEquals(200, response.getStatusCodeValue());
-//        assertEquals(1, response.getBody().size());
-//        assertEquals("도로명 주소", response.getBody().get(0).getRoadAddress());
+        // given
+        long memberId = 1L;
+        MemberAddressResponseDto responseDto = new MemberAddressResponseDto(1L, "12345", "도로명 주소", "상세 주소", "별칭", true, "수신인");
+        when(memberAddressService.getMemberAddresses(memberId)).thenReturn(Collections.singletonList(responseDto));
+
+        // when
+        ResponseEntity<List<MemberAddressResponseDto>> response = memberAddressController.getAllMemberAddress(memberId);
+
+        // then
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(1, response.getBody().size());
+        assertEquals("도로명 주소", response.getBody().get(0).getRoadAddress());
     }
 
     /**
@@ -85,7 +86,7 @@ public class MemberAddressControllerTest {
         // given
         long memberId = 1L;
         MemberAddressRequestDto requestDto = new MemberAddressRequestDto("12345", "도로명 주소", "상세 주소", "별칭", true, "수신인");
-        doThrow(new AddressLimitToTenException("주소는 10개까지 저장할 수 있습니다."))
+        doThrow(new AddressLimitToTenException("주소는 10개까지 저장할 수 있습니다.", RedirectType.REDIRECT, "signup", null))
                 .when(memberAddressService).addMemberAddress(memberId, requestDto);
 
         // when & then

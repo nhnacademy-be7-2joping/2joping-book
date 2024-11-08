@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.user.member.service.impl;
 
+import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberDuplicateException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberStatusNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.tier.MemberTierNotFoundException;
@@ -15,6 +16,15 @@ import com.nhnacademy.bookstore.user.tier.repository.MemberTierRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * MemberServiceImpl
+ *
+ * 회원 서비스 구현 클래스입니다. 회원 가입 시, ID, 이메일, 전화번호 중복 여부를 검사하고
+ * 기본 회원 상태 및 등급을 설정합니다. 회원 가입 성공 시, 환영 메시지를 포함한 DTO를 반환합니다.
+ *
+ * @author Luha
+ * @since 1.0
+ */
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
@@ -23,40 +33,69 @@ public class MemberServiceImpl implements MemberService {
     private final MemberStatusRepository statusRepository;
     private final MemberTierRepository tierRepository;
 
+    /**
+     * 신규 회원을 등록하는 메서드.
+     *
+     * ID, 이메일, 전화번호 중복 여부를 검증하고, 기본 회원 상태 및 등급을 설정하여 저장합니다.
+     *
+     * @param memberDto 신규 회원 정보가 담긴 DTO
+     * @return MemberCreateSuccessResponseDto 회원 가입 성공 메시지와 닉네임을 포함한 DTO
+     * @throws MemberDuplicateException ID, 이메일, 전화번호 중복 발생 시 예외
+     * @throws MemberStatusNotFoundException 기본 회원 상태가 존재하지 않을 경우 예외
+     * @throws MemberTierNotFoundException 기본 회원 등급이 존재하지 않을 경우 예외
+     */
     @Override
     public MemberCreateSuccessResponseDto registerNewMember(MemberCreateRequestDto memberDto) {
 
-        // 아이디 Validation
         if (memberRepository.existsByLoginId(memberDto.getLoginId())) {
-            throw new MemberDuplicateException("이미 존재하는 아이디입니다.");
+            throw new MemberDuplicateException(
+                    "이미 사용 중인 아이디입니다.",
+                    RedirectType.REDIRECT,
+                    "/members",
+                    memberDto
+            );
         }
 
-        // 이메일 Validation
         if (memberRepository.existsByEmail(memberDto.getEmail())) {
-            throw new MemberDuplicateException("이미 존재하는 이메일입니다.");
+            throw new MemberDuplicateException(
+                    "이미 존재하는 이메일입니다.",
+                    RedirectType.REDIRECT,
+                    "/members",
+                    memberDto
+            );
         }
 
-        // 전화번호 Validation
         if (memberRepository.existsByPhone(memberDto.getPhone())) {
-            throw new MemberDuplicateException("이미 존재하는 전화번호입니다.");
+            throw new MemberDuplicateException(
+                    "이미 존재하는 전화번호입니다.",
+                    RedirectType.REDIRECT,
+                    "/members",
+                    memberDto
+            );
         }
 
-        //기본 회원 상태 가져오기 아이디값 1로 가져옴
         MemberStatus defaultStatus = statusRepository.findById(1L)
-                .orElseThrow(() -> new MemberStatusNotFoundException("기본 상태를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberStatusNotFoundException(
+                        "기본 상태를 찾을 수 없습니다.",
+                        RedirectType.REDIRECT,
+                        "/members",
+                        memberDto
+                ));
 
-        //기본 회원 등급 가져오기 아이디값 1로 가져옴
         MemberTier defaultTier = tierRepository.findById(1L)
-                .orElseThrow(() -> new MemberTierNotFoundException("기본 회원등급을 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberTierNotFoundException(
+                        "기본 회원등급을 찾을 수 없습니다.",
+                        RedirectType.REDIRECT,
+                        "/members",
+                        memberDto
+                ));
 
-        // request dto를 entity로 변환 후 저장
         Member requestMember = new Member();
         requestMember.toEntity(memberDto);
         requestMember.setStatus(defaultStatus);
         requestMember.setTier(defaultTier);
         Member member = memberRepository.save(requestMember);
 
-        //멤버의 닉네임, 회원 가입 메세지 포함을 반환
         return new MemberCreateSuccessResponseDto(member.getNickname());
     }
 }
