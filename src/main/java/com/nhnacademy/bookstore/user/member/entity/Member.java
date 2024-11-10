@@ -1,7 +1,8 @@
 package com.nhnacademy.bookstore.user.member.entity;
 
-import com.nhnacademy.bookstore.user.enums.Gender;
+import com.nhnacademy.bookstore.coupon.entity.member.MemberCoupon;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
+import com.nhnacademy.bookstore.user.enums.Gender;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
 import com.nhnacademy.bookstore.user.memberStatus.entity.MemberStatus;
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
@@ -72,6 +73,10 @@ public class Member extends Customer {
     @JoinColumn(name = "member_tier_id", nullable = false)
     @Setter
     private MemberTier tier;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<MemberCoupon> memberCoupons;
+
 
     /**
      * 주어진 DTO를 기반으로 회원의 필드를 초기화합니다.
