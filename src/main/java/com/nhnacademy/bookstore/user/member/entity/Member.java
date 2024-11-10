@@ -14,7 +14,15 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 
-
+/**
+ * Member
+ *
+ * 회원 정보를 나타내는 엔티티 클래스입니다. 고객 정보를 상속받으며, 회원의 로그인 정보, 포인트, 적립금, 회원 상태 및 등급 등 다양한 정보를 포함합니다.
+ * 추가적으로, 회원 가입 시 필요한 정보를 DTO를 통해 엔티티로 변환할 수 있습니다.
+ *
+ * @author Luha
+ * @since 1.0
+ */
 @Entity
 @Table(name = "member")
 @PrimaryKeyJoinColumn(name = "customer_id")
@@ -65,6 +73,11 @@ public class Member extends Customer {
     @Setter
     private MemberTier tier;
 
+    /**
+     * 주어진 DTO를 기반으로 회원의 필드를 초기화합니다.
+     *
+     * @param requestDto 회원 가입 시 필요한 정보를 담은 DTO 객체
+     */
     public void toEntity(MemberCreateRequestDto requestDto) {
         this.initializeCustomerFields(requestDto.getName(), requestDto.getPhone(), requestDto.getEmail());
         this.loginId = requestDto.getLoginId();
