@@ -1,7 +1,5 @@
 package com.nhnacademy.bookstore.bookset.book.dto.response;
 
-
-import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import jakarta.validation.constraints.Positive;
 
 import java.util.List;
@@ -22,6 +20,6 @@ public record BookSimpleResponseDto (
      String publisherName,
      int retailPrice,
      boolean isActive,
-     List<String> contributorList,
+     List<BookContributorResponseDto> contributorList,
      List<String> categoryList
 ) {}

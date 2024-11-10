@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.bookset.book.repository;
 
+import com.nhnacademy.bookstore.bookset.book.dto.response.BookContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
 
@@ -9,7 +10,9 @@ import com.nhnacademy.bookstore.bookset.book.entity.QBook;
 import com.nhnacademy.bookstore.bookset.book.entity.QBookCategory;
 import com.nhnacademy.bookstore.bookset.book.entity.QBookContributor;
 import com.nhnacademy.bookstore.bookset.category.entity.QCategory;
+import com.nhnacademy.bookstore.bookset.contributor.entity.Contributor;
 import com.nhnacademy.bookstore.bookset.contributor.entity.QContributor;
+import com.nhnacademy.bookstore.bookset.contributor.entity.QContributorRole;
 import com.querydsl.core.Tuple;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -31,7 +34,8 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     private final QBookContributor qBookContributor = QBookContributor.bookContributor;
     private final QContributor qContributor = QContributor.contributor;
     private final QBookCategory qBookCategory = QBookCategory.bookCategory;
-    private QCategory qCategory = QCategory.category;
+    private final QCategory qCategory = QCategory.category;
+    private final QContributorRole qContributorRole = QContributorRole.contributorRole;
 
     /**
      * 전체 도서를 페이지 단위로 조회
@@ -45,18 +49,20 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         List<Tuple> bookTuples = from(qBook)
                 .leftJoin(qBookContributor).on(qBook.bookId.eq(qBookContributor.book.bookId))
                 .leftJoin(qContributor).on(qBookContributor.contributor.contributorId.eq(qContributor.contributorId))
+                .leftJoin(qContributorRole).on(qContributor.contributorRole.contributorRoleId.eq(qContributorRole.contributorRoleId))
                 .leftJoin(qBookCategory).on(qBook.bookId.eq(qBookCategory.book.bookId))
                 .leftJoin(qCategory).on(qBookCategory.category.categoryId.eq(qCategory.categoryId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .select(qBook, qContributor.name, qCategory.category.name)
+                .select(qBook, qContributor, qContributorRole.name, qCategory.category.name)
                 .fetch();
 
         Map<Long, BookSimpleResponseDto> bookMap = new HashMap<>();
 
         for (Tuple tuple : bookTuples) {
             Book book = tuple.get(qBook);
-            String contributorName = tuple.get(qContributor.name);
+            Contributor contributor = tuple.get(qContributor);
+            String contributorRoleName = tuple.get(qContributorRole.name);
             String categoryName = tuple.get(qCategory.category.name);
 
             BookSimpleResponseDto existingDto = bookMap.get(book.getBookId());
@@ -78,8 +84,16 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
             }
 
             // 기여자 리스트 추가
-            if (contributorName != null && !existingDto.contributorList().contains(contributorName)) {
-                existingDto.contributorList().add(contributorName);
+            if (contributor != null && contributor.getContributorId() != null) {
+                BookContributorResponseDto contributorDto = new BookContributorResponseDto(
+                        contributor.getContributorId(),
+                        contributor.getName(),
+                        contributor.getContributorRole().getContributorRoleId(),
+                        contributorRoleName
+                );
+                if (!existingDto.contributorList().contains(contributorDto)) {
+                    existingDto.contributorList().add(contributorDto);
+                }
             }
 
             // 카테고리 리스트 추가
@@ -94,7 +108,6 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
 
         return new PageImpl<>(booksDto, pageable, total);
     }
-
 
 
     /**
@@ -113,10 +126,11 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .leftJoin(qBookCategory).on(qBook.bookId.eq(qBookCategory.book.bookId))
                 .leftJoin(qCategory).on(qBookCategory.category.categoryId.eq(qCategory.categoryId))
                 .leftJoin(qContributor).on(qBookContributor.contributor.contributorId.eq(qContributor.contributorId))
+                .leftJoin(qContributorRole).on(qContributor.contributorRole.contributorRoleId.eq(qContributorRole.contributorRoleId))
                 .where(qBookContributor.contributor.contributorId.eq(contributorId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .select(qBook, qContributor.name, qCategory.category.name)
+                .select(qBook, qContributor, qContributorRole.name, qCategory.category.name)
                 .fetch();
 
         // 도서 ID를 기준으로 BookSimpleResponseDto를 수집하기 위한 맵 초기화
@@ -124,7 +138,8 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
 
         for (Tuple tuple : bookTuples) {
             Book book = tuple.get(qBook);
-            String contributorName = tuple.get(qContributor.name);
+            Contributor contributor = tuple.get(qContributor);
+            String contributorRoleName = tuple.get(qContributorRole.name);
             String categoryName = tuple.get(qCategory.category.name);
 
             // 맵에서 도서 정보를 가져오거나 새로 생성
@@ -146,8 +161,16 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
             }
 
             // 기여자 리스트 추가
-            if (contributorName != null && !existingDto.contributorList().contains(contributorName)) {
-                existingDto.contributorList().add(contributorName);
+            if (contributor != null && contributor.getContributorId() != null) {
+                BookContributorResponseDto contributorDto = new BookContributorResponseDto(
+                        contributor.getContributorId(),
+                        contributor.getName(),
+                        contributor.getContributorRole().getContributorRoleId(),
+                        contributorRoleName
+                );
+                if (!existingDto.contributorList().contains(contributorDto)) {
+                    existingDto.contributorList().add(contributorDto);
+                }
             }
 
             // 카테고리 리스트 추가
@@ -165,10 +188,6 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         return new PageImpl<>(booksDto, pageable, total);
     }
 
-
-
-
-
     /**
      * 특정 카테고리에 속하는 도서를 페이지 단위로 조회
      *
@@ -184,11 +203,12 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .join(qBookCategory.book, qBook)
                 .leftJoin(qBookContributor).on(qBook.bookId.eq(qBookContributor.book.bookId))
                 .leftJoin(qContributor).on(qBookContributor.contributor.contributorId.eq(qContributor.contributorId))
+                .leftJoin(qContributorRole).on(qContributor.contributorRole.contributorRoleId.eq(qContributorRole.contributorRoleId))
                 .leftJoin(qCategory).on(qBookCategory.category.categoryId.eq(qCategory.categoryId))
                 .where(qBookCategory.category.categoryId.eq(categoryId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .select(qBook, qContributor.name, qCategory.category.name)
+                .select(qBook, qContributor, qContributorRole.name, qCategory.category.name)
                 .fetch();
 
         // 도서 ID를 기준으로 BookSimpleResponseDto를 수집하기 위한 맵 초기화
@@ -196,7 +216,8 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
 
         for (Tuple tuple : bookTuples) {
             Book book = tuple.get(qBook);
-            String contributorName = tuple.get(qContributor.name);
+            Contributor contributor = tuple.get(qContributor);
+            String contributorRoleName = tuple.get(qContributorRole.name);
             String categoryName = tuple.get(qCategory.category.name);
 
             // 맵에서 도서 정보를 가져오거나 새로 생성
@@ -218,8 +239,16 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
             }
 
             // 기여자 리스트 추가
-            if (contributorName != null && !existingDto.contributorList().contains(contributorName)) {
-                existingDto.contributorList().add(contributorName);
+            if (contributor != null && contributor.getContributorId() != null) {
+                BookContributorResponseDto contributorDto = new BookContributorResponseDto(
+                        contributor.getContributorId(),
+                        contributor.getName(),
+                        contributor.getContributorRole().getContributorRoleId(),
+                        contributorRoleName
+                );
+                if (!existingDto.contributorList().contains(contributorDto)) {
+                    existingDto.contributorList().add(contributorDto);
+                }
             }
 
             // 카테고리 리스트 추가
@@ -238,7 +267,6 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     }
 
 
-
     /**
      * 특정 도서의 상세 정보를 조회합니다.
      *
@@ -252,21 +280,23 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         List<Tuple> bookTuples = from(qBook)
                 .leftJoin(qBookContributor).on(qBook.bookId.eq(qBookContributor.book.bookId))
                 .leftJoin(qContributor).on(qBookContributor.contributor.contributorId.eq(qContributor.contributorId))
+                .leftJoin(qContributorRole).on(qContributor.contributorRole.contributorRoleId.eq(qContributorRole.contributorRoleId))
                 .leftJoin(qBookCategory).on(qBook.bookId.eq(qBookCategory.book.bookId))
                 .leftJoin(qCategory).on(qBookCategory.category.categoryId.eq(qCategory.categoryId))
                 .where(qBook.bookId.eq(bookId))
-                .select(qBook, qContributor.name, qCategory.category.name)
+                .select(qBook, qContributor, qContributorRole.name, qCategory.category.name)
                 .fetch();
 
         // 도서 정보를 담기 위한 변수 초기화
         BookResponseDto bookResponseDto = null;
-        List<String> contributorNames = new ArrayList<>();
+        List<BookContributorResponseDto> contributorDtos = new ArrayList<>();
         List<String> categoryNames = new ArrayList<>();
 
         // 튜플을 반복하며 도서, 기여자 및 카테고리 정보를 수집
         for (Tuple tuple : bookTuples) {
             Book book = tuple.get(qBook);
-            String contributorName = tuple.get(qContributor.name);
+            Contributor contributor = tuple.get(qContributor);
+            String contributorRoleName = tuple.get(qContributorRole.name);
             String categoryName = tuple.get(qCategory.category.name);
 
             if (bookResponseDto == null) {
@@ -285,15 +315,23 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                         book.getRemainQuantity(),
                         book.getViews(),
                         book.getLikes(),
-                        contributorNames,
+                        contributorDtos,
                         categoryNames,
                         "temp.jpg" // 임시 썸네일
                 );
             }
 
-            // 기여자 이름을 리스트에 추가
-            if (contributorName != null && !contributorNames.contains(contributorName)) {
-                contributorNames.add(contributorName);
+            // 기여자 리스트 추가
+            if (contributor != null && contributor.getContributorId() != null) {
+                BookContributorResponseDto contributorDto = new BookContributorResponseDto(
+                        contributor.getContributorId(),
+                        contributor.getName(),
+                        contributor.getContributorRole().getContributorRoleId(),
+                        contributorRoleName
+                );
+                if (!contributorDtos.contains(contributorDto)) {
+                    contributorDtos.add(contributorDto);
+                }
             }
 
             // 카테고리 이름을 리스트에 추가
