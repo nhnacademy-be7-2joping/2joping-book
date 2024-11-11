@@ -11,5 +11,7 @@ public interface WrapService {
     WrapResponseDto getWrap(Long WrapId);
     List<WrapResponseDto> getAllWraps();
 
-    WrapResponseDto updateWrap(Long WrapId, WrapResponseDto wrapResponseDto);
+    WrapResponseDto updateWrap(Long WrapId, WrapRequestDto wrapRequestDto); // request dto 아닌지?
+
+    void deleteWrap(Long wrapId);
 }

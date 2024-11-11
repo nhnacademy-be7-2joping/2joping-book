@@ -39,15 +39,9 @@ public class Wrap {
         this.isActive = isActive;
     }
 
-//    public WrapPolicy(String name, int wrapPrice) {
-//        this.name = name;
-//        this.wrapPrice = wrapPrice;
-//    }
-//
-//    // 포장 정책 수정 메서드
-//    public void updatePackagingPolicy(String name, int wrapPrice, boolean isActive) {
-//        this.name = name;
-//        this.wrapPrice = wrapPrice;
-//        this.isActive = isActive;
-//    }
+    public void updateWrap(String name, int wrapPrice, boolean isActive) {
+        this.name = name;
+        this.wrapPrice = wrapPrice;
+        this.isActive = isActive;
+    }
 }
