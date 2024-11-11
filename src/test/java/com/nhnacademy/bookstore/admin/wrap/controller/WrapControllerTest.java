@@ -43,7 +43,7 @@ class WrapControllerTest {
     }
 
     @Test
-    void createWrapPolicy() throws Exception {
+    void createWrap() throws Exception {
         doNothing().when(wrapService).createWrap(any(WrapRequestDto.class));
 
         mockMvc.perform(post("/api/v1/wraps")
