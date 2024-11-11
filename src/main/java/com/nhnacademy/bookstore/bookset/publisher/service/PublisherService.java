@@ -8,6 +8,8 @@ package com.nhnacademy.bookstore.bookset.publisher.service;
 import com.nhnacademy.bookstore.bookset.publisher.dto.response.PublisherCreateResponseDto;
 import com.nhnacademy.bookstore.bookset.publisher.dto.request.PublisherRequestDto;
 import com.nhnacademy.bookstore.bookset.publisher.dto.response.PublisherResponseDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -18,7 +20,7 @@ public interface PublisherService {
 
     PublisherResponseDto getPublisherById(Long id);
 
-    List<PublisherResponseDto> getAllPublishers();
+    Page<PublisherResponseDto> getAllPublishers(Pageable pageable);
 
     PublisherResponseDto updatePublisher(Long id, PublisherRequestDto publisherRequestDto);
 
