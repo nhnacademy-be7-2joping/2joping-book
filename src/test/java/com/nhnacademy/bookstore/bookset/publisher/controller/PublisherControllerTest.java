@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -21,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @WebMvcTest(PublisherController.class)
+@TestPropertySource(properties = "keymanager.url=http://localhost:8084")
 public class PublisherControllerTest {
 
     @Autowired
@@ -37,7 +39,7 @@ public class PublisherControllerTest {
 
         when(publisherService.registerPublisher(any(PublisherRequestDto.class))).thenReturn(createResponseDto);
         //when
-        ResultActions resultActions = mockMvc.perform(post("/bookstore/publishers")
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/bookstore/publishers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"출판사 1\"}"));
         //then
@@ -57,7 +59,7 @@ public class PublisherControllerTest {
         when(publisherService.getAllPublishers()).thenReturn(responseList);
 
         // when
-        ResultActions resultActions = mockMvc.perform(get("/bookstore/publishers")
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/bookstore/publishers")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -76,7 +78,7 @@ public class PublisherControllerTest {
         when(publisherService.getPublisherById(1L)).thenReturn(responseDto);
 
         // when
-        ResultActions resultActions = mockMvc.perform(get("/bookstore/publisher/1")
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/bookstore/publisher/1")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -91,7 +93,7 @@ public class PublisherControllerTest {
         doNothing().when(publisherService).deletePublisher(1L);
 
         // when
-        ResultActions resultActions = mockMvc.perform(delete("/bookstore/publisher/1")
+        ResultActions resultActions = mockMvc.perform(delete("/api/v1/bookstore/publisher/1")
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -101,13 +103,13 @@ public class PublisherControllerTest {
     @Test
     public void testUpdatePublisher_Success() throws Exception {
         // given
-        PublisherRequestDto requestDto = new PublisherRequestDto();
+        PublisherRequestDto requestDto = new PublisherRequestDto("업데이트된 출판사 이름");
         PublisherResponseDto responseDto = new PublisherResponseDto(1L, "업데이트된 출판사 이름");
 
         when(publisherService.updatePublisher(eq(1L), any(PublisherRequestDto.class))).thenReturn(responseDto);
 
         // when
-        ResultActions resultActions = mockMvc.perform(put("/bookstore/publisher/1")
+        ResultActions resultActions = mockMvc.perform(put("/api/v1/bookstore/publisher/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"name\": \"업데이트된 출판사 이름\"}"));
 

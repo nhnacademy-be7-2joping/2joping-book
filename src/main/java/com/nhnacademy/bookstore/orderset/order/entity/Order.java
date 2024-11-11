@@ -20,10 +20,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Entity
 @Table(name = "orders")
 public class Order {
