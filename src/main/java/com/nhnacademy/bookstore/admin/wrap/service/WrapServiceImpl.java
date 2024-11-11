@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -88,14 +89,20 @@ public class WrapServiceImpl implements WrapService {
     @ApiResponse(responseCode = "200", description = "포장 정책 목록 조회 성공")
     public List<WrapResponseDto> getAllWraps() {
         List<Wrap> wraps = wrapRepository.findAll();
-        return wraps.stream()
-                .map(wrap -> new WrapResponseDto(
-                        wrap.getWrapId(),
-                        wrap.getName(),
-                        wrap.getWrapPrice(),
-                        wrap.isActive()))
-                .collect(Collectors.toList());
+        List<WrapResponseDto> responseList = new ArrayList<>();
+
+        for (Wrap wrap : wraps) {
+            responseList.add(new WrapResponseDto(
+                    wrap.getWrapId(),
+                    wrap.getName(),
+                    wrap.getWrapPrice(),
+                    wrap.isActive()
+            ));
+        }
+
+        return responseList;
     }
+
 
     /**
      * 포장 정책을 업데이트합니다.
