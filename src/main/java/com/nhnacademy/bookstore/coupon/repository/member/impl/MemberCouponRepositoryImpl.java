@@ -15,12 +15,29 @@ import static com.nhnacademy.bookstore.coupon.entity.QCoupon.coupon;
 import static com.nhnacademy.bookstore.coupon.entity.QCouponPolicy.couponPolicy;
 import static com.nhnacademy.bookstore.coupon.entity.member.QMemberCoupon.memberCoupon;
 
+/**
+ * MemberCouponRepositoryImpl
+ *
+ * 이 클래스는 Querydsl을 사용하여 특정 회원의 쿠폰 정보를 조회하는 커스텀 레포지토리 구현체입니다.
+ * 회원 ID를 기반으로 해당 회원이 보유한 쿠폰 목록을 조회하며, 쿠폰 및 쿠폰 정책에 대한 상세 정보도 함께 제공합니다.
+ * JPAQueryFactory를 사용하여 효율적으로 데이터베이스 접근을 수행합니다.
+ *
+ * @since 1.0
+ * @author Luha
+ */
 @Repository
 @RequiredArgsConstructor
 public class MemberCouponRepositoryImpl implements MemberCouponQuerydslRespository {
 
     private final JPAQueryFactory queryFactory;
 
+    /**
+     * 특정 회원의 모든 쿠폰을 조회하여 MemberCouponResponseDto 목록으로 반환합니다.
+     * 쿠폰과 쿠폰 정책 정보가 포함된 상세 정보를 조회합니다.
+     *
+     * @param customerId 조회할 회원의 ID
+     * @return 해당 회원이 보유한 모든 쿠폰 정보를 담은 MemberCouponResponseDto 목록
+     */
     @Override
     public List<MemberCouponResponseDto> getAllMemberCoupons(Long customerId) {
         return queryFactory.select(Projections.constructor(MemberCouponResponseDto.class,
