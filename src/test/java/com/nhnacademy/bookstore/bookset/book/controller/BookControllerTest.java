@@ -3,6 +3,7 @@ package com.nhnacademy.bookstore.bookset.book.controller;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
+import com.nhnacademy.bookstore.bookset.book.dto.response.BookTagResponseDto;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,7 +58,7 @@ class BookControllerTest {
         bookResponseDto = new BookResponseDto(
                 1L, "Publisher 1", "Book Title 1", "Description", LocalDate.of(2023, 10, 29),
                 "1234567890123", 20000, 15000, true, true, 10, 0, 0,
-                contributors, List.of("Category 1", "Category 2"), "thumbnail1"
+                contributors, List.of("Category 1", "Category 2"), List.of(new BookTagResponseDto(1L,"Tag 1")),"thumbnail1"
         );
     }
 

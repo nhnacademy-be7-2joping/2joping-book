@@ -30,6 +30,6 @@ public record BookResponseDto (
         int likes,
         List<BookContributorResponseDto> contributorList,
         List<String> categoryList,
-//        List<TagResponseDto> tagList,
+        List<BookTagResponseDto> tagList,
         String thumbnail
 ) {}

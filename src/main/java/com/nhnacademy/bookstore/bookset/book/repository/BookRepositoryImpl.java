@@ -5,6 +5,7 @@ import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
 
 
+import com.nhnacademy.bookstore.bookset.book.dto.response.BookTagResponseDto;
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.bookset.book.entity.QBook;
 import com.nhnacademy.bookstore.bookset.book.entity.QBookCategory;
@@ -13,6 +14,9 @@ import com.nhnacademy.bookstore.bookset.category.entity.QCategory;
 import com.nhnacademy.bookstore.bookset.contributor.entity.Contributor;
 import com.nhnacademy.bookstore.bookset.contributor.entity.QContributor;
 import com.nhnacademy.bookstore.bookset.contributor.entity.QContributorRole;
+import com.nhnacademy.bookstore.bookset.tag.entity.QBookTag;
+import com.nhnacademy.bookstore.bookset.tag.entity.QTag;
+import com.nhnacademy.bookstore.bookset.tag.entity.Tag;
 import com.querydsl.core.Tuple;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -36,6 +40,8 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     private final QBookCategory qBookCategory = QBookCategory.bookCategory;
     private final QCategory qCategory = QCategory.category;
     private final QContributorRole qContributorRole = QContributorRole.contributorRole;
+    private final QBookTag qBookTag = QBookTag.bookTag;
+    private final QTag qTag = QTag.tag;
 
     /**
      * 전체 도서를 페이지 단위로 조회
@@ -276,28 +282,32 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     @Override
     public Optional<BookResponseDto> findBookByBookId(Long bookId) {
 
-        // 도서와 기여자 및 카테고리 정보를 함께 조회
+        // 도서와 기여자, 카테고리 및 태그 정보를 함께 조회
         List<Tuple> bookTuples = from(qBook)
                 .leftJoin(qBookContributor).on(qBook.bookId.eq(qBookContributor.book.bookId))
                 .leftJoin(qContributor).on(qBookContributor.contributor.contributorId.eq(qContributor.contributorId))
                 .leftJoin(qContributorRole).on(qContributor.contributorRole.contributorRoleId.eq(qContributorRole.contributorRoleId))
                 .leftJoin(qBookCategory).on(qBook.bookId.eq(qBookCategory.book.bookId))
                 .leftJoin(qCategory).on(qBookCategory.category.categoryId.eq(qCategory.categoryId))
+                .leftJoin(qBookTag).on(qBook.bookId.eq(qBookTag.book.bookId))
+                .leftJoin(qTag).on(qBookTag.tag.tagId.eq(qTag.tagId))
                 .where(qBook.bookId.eq(bookId))
-                .select(qBook, qContributor, qContributorRole.name, qCategory.category.name)
+                .select(qBook, qContributor, qContributorRole.name, qCategory.category.name, qTag)
                 .fetch();
 
         // 도서 정보를 담기 위한 변수 초기화
         BookResponseDto bookResponseDto = null;
         List<BookContributorResponseDto> contributorDtos = new ArrayList<>();
         List<String> categoryNames = new ArrayList<>();
+        List<BookTagResponseDto> tagDtos = new ArrayList<>();
 
-        // 튜플을 반복하며 도서, 기여자 및 카테고리 정보를 수집
+        // 튜플을 반복하며 도서, 기여자, 카테고리 및 태그 정보를 수집
         for (Tuple tuple : bookTuples) {
             Book book = tuple.get(qBook);
             Contributor contributor = tuple.get(qContributor);
             String contributorRoleName = tuple.get(qContributorRole.name);
             String categoryName = tuple.get(qCategory.category.name);
+            Tag tag = tuple.get(qTag);
 
             if (bookResponseDto == null) {
                 // 최초로 Book 정보를 설정 (한번만 설정)
@@ -317,6 +327,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                         book.getLikes(),
                         contributorDtos,
                         categoryNames,
+                        tagDtos,
                         "temp.jpg" // 임시 썸네일
                 );
             }
@@ -338,9 +349,18 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
             if (categoryName != null && !categoryNames.contains(categoryName)) {
                 categoryNames.add(categoryName);
             }
+
+            // 태그 리스트 추가
+            if (tag != null && tag.getTagId() != null) {
+                BookTagResponseDto tagDto = new BookTagResponseDto(
+                        tag.getTagId(),
+                        tag.getName()
+                );
+                if (!tagDtos.contains(tagDto)) {
+                    tagDtos.add(tagDto);
+                }
+            }
         }
         return Optional.ofNullable(bookResponseDto);
     }
 }
-
-
