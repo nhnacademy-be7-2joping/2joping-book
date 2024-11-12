@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface BookRepositoryCustom {
 
     Page<BookSimpleResponseDto> findAllBooks(Pageable pageable);
-    Page<BookSimpleResponseDto> findBooksByContributorId(Pageable pageable,Long contributorId);
-    Page<BookSimpleResponseDto> findBooksByCategoryId(Pageable pageable,Long categoryId);
+    Page<BookSimpleResponseDto> findBooksByContributorId(Pageable pageable, Long contributorId);
+    Page<BookSimpleResponseDto> findBooksByCategoryId(Pageable pageable, Long categoryId);
     Optional<BookResponseDto> findBookByBookId(Long bookId);
 }

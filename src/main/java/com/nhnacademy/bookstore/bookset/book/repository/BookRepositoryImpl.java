@@ -18,6 +18,7 @@ import com.nhnacademy.bookstore.bookset.tag.entity.QBookTag;
 import com.nhnacademy.bookstore.bookset.tag.entity.QTag;
 import com.nhnacademy.bookstore.bookset.tag.entity.Tag;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -52,66 +54,59 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     @Override
     public Page<BookSimpleResponseDto> findAllBooks(Pageable pageable) {
 
-        List<Tuple> bookTuples = from(qBook)
-                .leftJoin(qBookContributor).on(qBook.bookId.eq(qBookContributor.book.bookId))
-                .leftJoin(qContributor).on(qBookContributor.contributor.contributorId.eq(qContributor.contributorId))
-                .leftJoin(qContributorRole).on(qContributor.contributorRole.contributorRoleId.eq(qContributorRole.contributorRoleId))
-                .leftJoin(qBookCategory).on(qBook.bookId.eq(qBookCategory.book.bookId))
-                .leftJoin(qCategory).on(qBookCategory.category.categoryId.eq(qCategory.categoryId))
+        // 1. Book 엔티티만 페이징하여 가져옵니다.
+        List<Book> books = from(qBook)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .select(qBook, qContributor, qContributorRole.name, qCategory.category.name)
                 .fetch();
 
-        Map<Long, BookSimpleResponseDto> bookMap = new HashMap<>();
+        // 2. 필요한 데이터를 매핑하면서 DTO로 변환합니다.
+        List<BookSimpleResponseDto> booksDto = books.stream()
+                .map(book -> {
+                    // 각 Book에 대한 BookSimpleResponseDto 생성
+                    BookSimpleResponseDto dto = new BookSimpleResponseDto(
+                            book.getBookId(),
+                            "temp.jpg", // 임시 썸네일
+                            book.getTitle(),
+                            book.getSellingPrice(),
+                            book.getPublisher().getName(),
+                            book.getRetailPrice(),
+                            book.isActive(),
+                            new ArrayList<>(), // 기여자 리스트 초기화
+                            new ArrayList<>() // 카테고리 리스트 빈 리스트로 초기화
+                    );
 
-        for (Tuple tuple : bookTuples) {
-            Book book = tuple.get(qBook);
-            Contributor contributor = tuple.get(qContributor);
-            String contributorRoleName = tuple.get(qContributorRole.name);
-            String categoryName = tuple.get(qCategory.category.name);
+                    // 2-1. 각 Book에 대해 contributor와 contributor role 조회 및 추가
+                    List<BookContributorResponseDto> contributors = from(qBookContributor)
+                            .leftJoin(qContributor).on(qBookContributor.contributor.contributorId.eq(qContributor.contributorId))
+                            .leftJoin(qContributorRole).on(qContributor.contributorRole.contributorRoleId.eq(qContributorRole.contributorRoleId))
+                            .where(qBookContributor.book.bookId.eq(book.getBookId()))
+                            .select(Projections.constructor(BookContributorResponseDto.class,
+                                    qContributor.contributorId,
+                                    qContributor.name,
+                                    qContributorRole.contributorRoleId,
+                                    qContributorRole.name))
+                            .fetch();
 
-            BookSimpleResponseDto existingDto = bookMap.get(book.getBookId());
+                    dto.contributorList().addAll(contributors);
 
-            if (existingDto == null) {
-                // DTO가 처음 생성되는 경우
-                existingDto = new BookSimpleResponseDto(
-                        book.getBookId(),
-                        "temp.jpg", // 임시 썸네일
-                        book.getTitle(),
-                        book.getSellingPrice(),
-                        book.getPublisher().getName(),
-                        book.getRetailPrice(),
-                        book.isActive(),
-                        new ArrayList<>(), // 기여자 리스트 초기화
-                        new ArrayList<>() // 카테고리 리스트 빈 리스트로 초기화
-                );
-                bookMap.put(book.getBookId(), existingDto);
-            }
+                    // 2-2. 각 Book에 대해 category 조회 및 추가
+                    List<String> categories = from(qBookCategory)
+                            .leftJoin(qCategory).on(qBookCategory.category.categoryId.eq(qCategory.categoryId))
+                            .where(qBookCategory.book.bookId.eq(book.getBookId()))
+                            .select(qCategory.category.name)
+                            .fetch();
 
-            // 기여자 리스트 추가
-            if (contributor != null && contributor.getContributorId() != null) {
-                BookContributorResponseDto contributorDto = new BookContributorResponseDto(
-                        contributor.getContributorId(),
-                        contributor.getName(),
-                        contributor.getContributorRole().getContributorRoleId(),
-                        contributorRoleName
-                );
-                if (!existingDto.contributorList().contains(contributorDto)) {
-                    existingDto.contributorList().add(contributorDto);
-                }
-            }
+                    dto.categoryList().addAll(categories);
 
-            // 카테고리 리스트 추가
-            if (categoryName != null && !existingDto.categoryList().contains(categoryName)) {
-                existingDto.categoryList().add(categoryName);
-            }
-        }
+                    return dto;
+                })
+                .collect(Collectors.toList());
 
-        // 리스트로 변환하여 반환
-        List<BookSimpleResponseDto> booksDto = new ArrayList<>(bookMap.values());
+        // 3. 총 개수 계산
         long total = from(qBook).fetchCount();
 
+        // 4. Page 객체 반환
         return new PageImpl<>(booksDto, pageable, total);
     }
 
@@ -126,71 +121,63 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     @Override
     public Page<BookSimpleResponseDto> findBooksByContributorId(Pageable pageable, Long contributorId) {
 
-        // 특정 기여자가 참여한 도서를 조회
-        List<Tuple> bookTuples = from(qBookContributor)
+        // 1. 특정 기여자가 참여한 도서를 `Book` 기준으로 페이징하여 가져옵니다.
+        List<Book> books = from(qBookContributor)
                 .join(qBookContributor.book, qBook)
-                .leftJoin(qBookCategory).on(qBook.bookId.eq(qBookCategory.book.bookId))
-                .leftJoin(qCategory).on(qBookCategory.category.categoryId.eq(qCategory.categoryId))
-                .leftJoin(qContributor).on(qBookContributor.contributor.contributorId.eq(qContributor.contributorId))
-                .leftJoin(qContributorRole).on(qContributor.contributorRole.contributorRoleId.eq(qContributorRole.contributorRoleId))
                 .where(qBookContributor.contributor.contributorId.eq(contributorId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .select(qBook, qContributor, qContributorRole.name, qCategory.category.name)
+                .select(qBook)
                 .fetch();
 
-        // 도서 ID를 기준으로 BookSimpleResponseDto를 수집하기 위한 맵 초기화
-        Map<Long, BookSimpleResponseDto> bookMap = new HashMap<>();
+        // 2. 필요한 데이터를 매핑하면서 DTO로 변환합니다.
+        List<BookSimpleResponseDto> booksDto = new ArrayList<>();
+        for (Book book : books) {
+            // 각 Book에 대한 BookSimpleResponseDto 생성
+            BookSimpleResponseDto dto = new BookSimpleResponseDto(
+                    book.getBookId(),
+                    "temp.jpg", // 임시 썸네일
+                    book.getTitle(),
+                    book.getSellingPrice(),
+                    book.getPublisher().getName(),
+                    book.getRetailPrice(),
+                    book.isActive(),
+                    new ArrayList<>(), // 기여자 리스트 초기화
+                    new ArrayList<>() // 카테고리 리스트 빈 리스트로 초기화
+            );
 
-        for (Tuple tuple : bookTuples) {
-            Book book = tuple.get(qBook);
-            Contributor contributor = tuple.get(qContributor);
-            String contributorRoleName = tuple.get(qContributorRole.name);
-            String categoryName = tuple.get(qCategory.category.name);
+            // 2-1. 각 Book에 대해 contributor와 contributor role 조회 및 추가
+            List<BookContributorResponseDto> contributors = from(qBookContributor)
+                    .leftJoin(qContributor).on(qBookContributor.contributor.contributorId.eq(qContributor.contributorId))
+                    .leftJoin(qContributorRole).on(qContributor.contributorRole.contributorRoleId.eq(qContributorRole.contributorRoleId))
+                    .where(qBookContributor.book.bookId.eq(book.getBookId()))
+                    .select(Projections.constructor(BookContributorResponseDto.class,
+                            qContributor.contributorId,
+                            qContributor.name,
+                            qContributorRole.contributorRoleId,
+                            qContributorRole.name))
+                    .fetch();
 
-            // 맵에서 도서 정보를 가져오거나 새로 생성
-            BookSimpleResponseDto existingDto = bookMap.get(book.getBookId());
+            dto.contributorList().addAll(contributors);
 
-            if (existingDto == null) {
-                existingDto = new BookSimpleResponseDto(
-                        book.getBookId(),
-                        "temp.jpg", // 임시 썸네일
-                        book.getTitle(),
-                        book.getSellingPrice(),
-                        book.getPublisher().getName(),
-                        book.getRetailPrice(),
-                        book.isActive(),
-                        new ArrayList<>(), // 기여자 리스트 초기화
-                        new ArrayList<>() // 카테고리 리스트 빈 리스트로 초기화
-                );
-                bookMap.put(book.getBookId(), existingDto);
-            }
+            // 2-2. 각 Book에 대해 category 조회 및 추가
+            List<String> categories = from(qBookCategory)
+                    .leftJoin(qCategory).on(qBookCategory.category.categoryId.eq(qCategory.categoryId))
+                    .where(qBookCategory.book.bookId.eq(book.getBookId()))
+                    .select(qCategory.category.name)
+                    .fetch();
 
-            // 기여자 리스트 추가
-            if (contributor != null && contributor.getContributorId() != null) {
-                BookContributorResponseDto contributorDto = new BookContributorResponseDto(
-                        contributor.getContributorId(),
-                        contributor.getName(),
-                        contributor.getContributorRole().getContributorRoleId(),
-                        contributorRoleName
-                );
-                if (!existingDto.contributorList().contains(contributorDto)) {
-                    existingDto.contributorList().add(contributorDto);
-                }
-            }
+            dto.categoryList().addAll(categories);
 
-            // 카테고리 리스트 추가
-            if (categoryName != null && !existingDto.categoryList().contains(categoryName)) {
-                existingDto.categoryList().add(categoryName);
-            }
+            booksDto.add(dto);
         }
 
-        // 리스트로 변환하여 반환
-        List<BookSimpleResponseDto> booksDto = new ArrayList<>(bookMap.values());
+        // 3. 총 개수 계산
         long total = from(qBookContributor)
                 .where(qBookContributor.contributor.contributorId.eq(contributorId))
                 .fetchCount();
 
+        // 4. Page 객체 반환
         return new PageImpl<>(booksDto, pageable, total);
     }
 
@@ -204,71 +191,63 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     @Override
     public Page<BookSimpleResponseDto> findBooksByCategoryId(Pageable pageable, Long categoryId) {
 
-        // 특정 카테고리에 속하는 도서를 조회
-        List<Tuple> bookTuples = from(qBookCategory)
+        // 1. 특정 카테고리에 속하는 도서를 `Book` 기준으로 페이징하여 가져옵니다.
+        List<Book> books = from(qBookCategory)
                 .join(qBookCategory.book, qBook)
-                .leftJoin(qBookContributor).on(qBook.bookId.eq(qBookContributor.book.bookId))
-                .leftJoin(qContributor).on(qBookContributor.contributor.contributorId.eq(qContributor.contributorId))
-                .leftJoin(qContributorRole).on(qContributor.contributorRole.contributorRoleId.eq(qContributorRole.contributorRoleId))
-                .leftJoin(qCategory).on(qBookCategory.category.categoryId.eq(qCategory.categoryId))
                 .where(qBookCategory.category.categoryId.eq(categoryId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .select(qBook, qContributor, qContributorRole.name, qCategory.category.name)
+                .select(qBook)
                 .fetch();
 
-        // 도서 ID를 기준으로 BookSimpleResponseDto를 수집하기 위한 맵 초기화
-        Map<Long, BookSimpleResponseDto> bookMap = new HashMap<>();
+        // 2. 필요한 데이터를 매핑하면서 DTO로 변환합니다.
+        List<BookSimpleResponseDto> booksDto = new ArrayList<>();
+        for (Book book : books) {
+            // 각 Book에 대한 BookSimpleResponseDto 생성
+            BookSimpleResponseDto dto = new BookSimpleResponseDto(
+                    book.getBookId(),
+                    "temp.jpg", // 임시 썸네일
+                    book.getTitle(),
+                    book.getSellingPrice(),
+                    book.getPublisher().getName(),
+                    book.getRetailPrice(),
+                    book.isActive(),
+                    new ArrayList<>(), // 기여자 리스트 초기화
+                    new ArrayList<>() // 카테고리 리스트 빈 리스트로 초기화
+            );
 
-        for (Tuple tuple : bookTuples) {
-            Book book = tuple.get(qBook);
-            Contributor contributor = tuple.get(qContributor);
-            String contributorRoleName = tuple.get(qContributorRole.name);
-            String categoryName = tuple.get(qCategory.category.name);
+            // 2-1. 각 Book에 대해 contributor와 contributor role 조회 및 추가
+            List<BookContributorResponseDto> contributors = from(qBookContributor)
+                    .leftJoin(qContributor).on(qBookContributor.contributor.contributorId.eq(qContributor.contributorId))
+                    .leftJoin(qContributorRole).on(qContributor.contributorRole.contributorRoleId.eq(qContributorRole.contributorRoleId))
+                    .where(qBookContributor.book.bookId.eq(book.getBookId()))
+                    .select(Projections.constructor(BookContributorResponseDto.class,
+                            qContributor.contributorId,
+                            qContributor.name,
+                            qContributorRole.contributorRoleId,
+                            qContributorRole.name))
+                    .fetch();
 
-            // 맵에서 도서 정보를 가져오거나 새로 생성
-            BookSimpleResponseDto existingDto = bookMap.get(book.getBookId());
+            dto.contributorList().addAll(contributors);
 
-            if (existingDto == null) {
-                existingDto = new BookSimpleResponseDto(
-                        book.getBookId(),
-                        "temp.jpg", // 임시 썸네일
-                        book.getTitle(),
-                        book.getSellingPrice(),
-                        book.getPublisher().getName(),
-                        book.getRetailPrice(),
-                        book.isActive(),
-                        new ArrayList<>(), // 기여자 리스트 초기화
-                        new ArrayList<>() // 카테고리 리스트 빈 리스트로 초기화
-                );
-                bookMap.put(book.getBookId(), existingDto);
-            }
+            // 2-2. 각 Book에 대해 category 조회 및 추가
+            List<String> categories = from(qBookCategory)
+                    .leftJoin(qCategory).on(qBookCategory.category.categoryId.eq(qCategory.categoryId))
+                    .where(qBookCategory.book.bookId.eq(book.getBookId()))
+                    .select(qCategory.category.name)
+                    .fetch();
 
-            // 기여자 리스트 추가
-            if (contributor != null && contributor.getContributorId() != null) {
-                BookContributorResponseDto contributorDto = new BookContributorResponseDto(
-                        contributor.getContributorId(),
-                        contributor.getName(),
-                        contributor.getContributorRole().getContributorRoleId(),
-                        contributorRoleName
-                );
-                if (!existingDto.contributorList().contains(contributorDto)) {
-                    existingDto.contributorList().add(contributorDto);
-                }
-            }
+            dto.categoryList().addAll(categories);
 
-            // 카테고리 리스트 추가
-            if (categoryName != null && !existingDto.categoryList().contains(categoryName)) {
-                existingDto.categoryList().add(categoryName);
-            }
+            booksDto.add(dto);
         }
 
-        // 리스트로 변환하여 반환
-        List<BookSimpleResponseDto> booksDto = new ArrayList<>(bookMap.values());
+        // 3. 총 개수 계산
         long total = from(qBookCategory)
                 .where(qBookCategory.category.categoryId.eq(categoryId))
                 .fetchCount();
 
+        // 4. Page 객체 반환
         return new PageImpl<>(booksDto, pageable, total);
     }
 
