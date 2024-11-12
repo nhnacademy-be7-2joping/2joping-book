@@ -13,8 +13,8 @@ public record ShipmentPolicyResponseDto(
         String name,
         Integer minOrderAmount,
         Boolean isMemberOnly,
-        Integer shippingFee,
-        Boolean isActive,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        LocalDateTime updatedAt,
+        Integer shippingFee,
+        Boolean isActive
 ) {}
