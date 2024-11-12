@@ -2,6 +2,7 @@ package com.nhnacademy.bookstore.bookset.book.entity;
 
 import com.nhnacademy.bookstore.bookset.publisher.entity.Publisher;
 import jakarta.persistence.*;
+//import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,9 +32,6 @@ public class Book {
 
     @Column(nullable = false, length = 200)
     private String title;
-
-    @Column(columnDefinition = "TEXT")
-    private String tableOfContent;
 
     @Column(columnDefinition = "TEXT")
     private String description;

@@ -8,25 +8,22 @@ package com.nhnacademy.bookstore.bookset.publisher.service;
 import com.nhnacademy.bookstore.bookset.publisher.dto.response.PublisherCreateResponseDto;
 import com.nhnacademy.bookstore.bookset.publisher.dto.request.PublisherRequestDto;
 import com.nhnacademy.bookstore.bookset.publisher.dto.response.PublisherResponseDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface PublisherService {
 
 
-    //출판사 등록
     PublisherCreateResponseDto registerPublisher(PublisherRequestDto requestDto);
 
-    //출판사 선택 조회
     PublisherResponseDto getPublisherById(Long id);
 
-    //출판사 전체 조회
-    List<PublisherResponseDto> getAllPublishers();
+    Page<PublisherResponseDto> getAllPublishers(Pageable pageable);
 
-    //출판사 업데이트
     PublisherResponseDto updatePublisher(Long id, PublisherRequestDto publisherRequestDto);
 
-    //출판사 삭제
     void deletePublisher(Long id);
 
 }

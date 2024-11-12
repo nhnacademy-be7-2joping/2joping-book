@@ -5,39 +5,59 @@ package com.nhnacademy.bookstore.shipment.entity;
  * @author : 이유현
  * @date : 2024-10-22
  */
+import com.nhnacademy.bookstore.shipment.dto.request.ShipmentPolicyRequestDto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import java.time.LocalDateTime;
-import java.math.BigDecimal;
 
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "shipment_policy")
-@Getter
-@Setter
-@NoArgsConstructor
 public class ShipmentPolicy {
 
     @Id
-    @Column(name = "shipment_policy_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "shipment_policy_id")
     private Long shipmentPolicyId;
 
-    @Column(name = "policy_name", length = 255, nullable = false, unique = true)
-    private String policyName;
+    @Column(name = "name", length = 255, unique = true)
+    private String name;
 
-    @Column(name = "min_order_amount", precision = 10, scale = 2, nullable = false)
-    private BigDecimal minOrderAmount;
+    @Column(name = "min_order_amount")
+    private Integer minOrderAmount;
 
-    @Column(name = "is_member_only", nullable = false)
-    private boolean isMemberOnly;
+    @Column(name = "is_member_only")
+    private Boolean isMemberOnly;
 
-    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "shipping_fee", nullable = false)
-    private int shippingFee;
+    @Column(name = "shipping_fee")
+    private Integer shippingFee;
+
+    @Column(name = "is_active")
+    private Boolean isActive;
+
+    public void deactivate() {
+        this.isActive = false;
+    }
+
+    public void activate() {
+        this.isActive = true;
+    }
+
+    public void toEntity(ShipmentPolicyRequestDto requestDto) {
+        this.name = requestDto.name();
+        this.minOrderAmount = requestDto.minOrderAmount();
+        this.isMemberOnly = requestDto.isMemberOnly();
+        this.shippingFee = requestDto.shippingFee();
+        this.updatedAt = LocalDateTime.now();
+    }
 }

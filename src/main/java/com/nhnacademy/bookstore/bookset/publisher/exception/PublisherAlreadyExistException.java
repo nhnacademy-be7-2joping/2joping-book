@@ -1,6 +1,8 @@
 package com.nhnacademy.bookstore.bookset.publisher.exception;
 
-public class PublisherAlreadyExistException extends RuntimeException {
+import com.nhnacademy.bookstore.common.error.exception.base.ConflictException;
+
+public class PublisherAlreadyExistException extends ConflictException {
     public PublisherAlreadyExistException(String message) {
         super(message);
     }

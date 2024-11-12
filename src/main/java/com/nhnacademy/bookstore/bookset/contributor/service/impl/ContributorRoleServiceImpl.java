@@ -3,7 +3,8 @@ package com.nhnacademy.bookstore.bookset.contributor.service.impl;
 import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRoleRequestDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorRoleResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.entity.ContributorRole;
-import com.nhnacademy.bookstore.bookset.contributor.exception.NotFoundContributorRoleException;
+import com.nhnacademy.bookstore.bookset.contributor.mapper.ContributorRoleMapper;
+import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
 import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorRoleRepository;
 import com.nhnacademy.bookstore.bookset.contributor.service.ContributorRoleService;
 import lombok.RequiredArgsConstructor;
@@ -21,47 +22,73 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ContributorRoleServiceImpl implements ContributorRoleService {
     private final ContributorRoleRepository contributorRoleRepository;
+    private final ContributorRoleMapper contributorRoleMapper;
 
-    // 기여자 역할 생성
+    /**
+     * 도서 기여자 역할을 생성하는 메서드입니다.
+     *
+     * @param dto 생성할 기여자 역할 정보가 담긴 DTO
+     * @return 생성된 기여자 역할의 정보를 포함한 ContributorRoleResponseDto
+     */
     @Override
     @Transactional
     public ContributorRoleResponseDto createContributorRole(ContributorRoleRequestDto dto) {
-        ContributorRole contributorRole = new ContributorRole(null, dto.getRoleName());
-        ContributorRole savedRole = contributorRoleRepository.save(contributorRole);
+        ContributorRole contributorRole = new ContributorRole();
+        contributorRole.toEntity(dto);
 
-        return new ContributorRoleResponseDto(savedRole.getContributorRoleId(), savedRole.getName());
+        ContributorRole savedRole = contributorRoleRepository.save(contributorRole);
+        return contributorRoleMapper.toContributorRoleResponseDto(savedRole);
     }
-    
-    // 기여자 역할 id로 읽기
+
+    /**
+     * 특정 ID로 기여자 역할을 조회하는 메서드입니다.
+     *
+     * @param contributorRoleId 조회할 기여자 역할의 ID
+     * @return 조회된 기여자 역할의 정보를 포함한 ContributorRoleResponseDto
+     * @throws ContributorRoleNotFoundException 기여자 역할을 찾을 수 없을 경우 발생
+     */
     @Override
     @Transactional(readOnly = true)
     public ContributorRoleResponseDto getContributorRole(Long contributorRoleId) {
         ContributorRole contributorRole = contributorRoleRepository.findById(contributorRoleId)
-                .orElseThrow(() -> new NotFoundContributorRoleException());
+                .orElseThrow(ContributorRoleNotFoundException::new);
 
-        return new ContributorRoleResponseDto(contributorRole.getContributorRoleId(), contributorRole.getName());
+        return contributorRoleMapper.toContributorRoleResponseDto(contributorRole);
     }
 
-    // 기여자 역할 수정
+    /**
+     * 특정 ID의 기여자 역할 정보를 수정하는 메서드입니다.
+     *
+     * @param contributorRoleId 수정할 기여자 역할의 ID
+     * @param dto 수정할 기여자 역할 정보가 담긴 DTO
+     * @return 수정된 기여자 역할의 정보를 포함한 ContributorRoleResponseDto
+     * @throws ContributorRoleNotFoundException 기여자 역할을 찾을 수 없을 경우 발생
+     */
     @Override
     @Transactional
     public ContributorRoleResponseDto updateContributorRole(Long contributorRoleId, ContributorRoleRequestDto dto) {
         ContributorRole contributorRole = contributorRoleRepository.findById(contributorRoleId)
-                .orElseThrow(() -> new NotFoundContributorRoleException());
+                .orElseThrow(ContributorRoleNotFoundException::new);
 
-        contributorRole.setName(dto.getRoleName());
+        contributorRole.toEntity(dto);
         ContributorRole updatedRole = contributorRoleRepository.save(contributorRole);
 
-        return new ContributorRoleResponseDto(updatedRole.getContributorRoleId(), updatedRole.getName());
+        return contributorRoleMapper.toContributorRoleResponseDto(updatedRole);
     }
 
-    // 기여자 역할 삭제
+    /**
+     * 특정 ID의 기여자 역할을 삭제하는 메서드입니다.
+     *
+     * @param contributorRoleId 삭제할 기여자 역할의 ID
+     * @throws ContributorRoleNotFoundException 기여자 역할을 찾을 수 없을 경우 발생
+     */
     @Override
     @Transactional
     public void deleteContributorRole(Long contributorRoleId) {
         if (!contributorRoleRepository.existsById(contributorRoleId)) {
-            throw new NotFoundContributorRoleException();
+            throw new ContributorRoleNotFoundException();
         }
         contributorRoleRepository.deleteById(contributorRoleId);
     }
+
 }

@@ -6,6 +6,10 @@ import com.nhnacademy.bookstore.bookset.publisher.dto.response.PublisherResponse
 import com.nhnacademy.bookstore.bookset.publisher.service.PublisherService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -25,7 +29,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/bookstore")
+@RequestMapping("/api/v1/bookstore")
 @Tag(name = "Publisher API", description = "출판사 관련 CRUD API")
 public class PublisherController {
 
@@ -55,8 +59,8 @@ public class PublisherController {
      */
     @Operation(summary = "전체 출판사 조회", description = "등록된 모든 출판사를 조회합니다.")
     @GetMapping("/publishers")
-    public ResponseEntity<List<PublisherResponseDto>> getAllPublishers() {
-        List<PublisherResponseDto> publishers = publisherService.getAllPublishers();
+    public ResponseEntity<Page<PublisherResponseDto>> getAllPublishers(@PageableDefault(size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
+        Page<PublisherResponseDto> publishers = publisherService.getAllPublishers(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(publishers);
     }
 

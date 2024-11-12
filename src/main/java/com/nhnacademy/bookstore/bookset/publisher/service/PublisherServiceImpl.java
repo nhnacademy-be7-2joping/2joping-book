@@ -16,11 +16,11 @@ import com.nhnacademy.bookstore.bookset.publisher.exception.PublisherAlreadyExis
 import com.nhnacademy.bookstore.bookset.publisher.exception.PublisherNotFoundException;
 import com.nhnacademy.bookstore.bookset.publisher.repository.PublisherRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -41,12 +41,12 @@ public class PublisherServiceImpl implements PublisherService{
      */
     @Override
     public PublisherCreateResponseDto registerPublisher(PublisherRequestDto requestDto) {
-        publisherRepository.findByName(requestDto.getName())
+        publisherRepository.findByName(requestDto.name())
                 .ifPresent(existingPublisher -> {
                     throw new PublisherAlreadyExistException("등록하려는 출판사가 이미 존재합니다.");
                 });
 
-        Publisher publisher = new Publisher(requestDto.getName());
+        Publisher publisher = new Publisher(requestDto.name());
         Publisher savedPublisher = publisherRepository.save(publisher);
 
         return new PublisherCreateResponseDto(savedPublisher.getPublisherId(), savedPublisher.getName());
@@ -55,7 +55,7 @@ public class PublisherServiceImpl implements PublisherService{
 
     /**
      * 특정 출판사를 조회하는 메서드
-     * @param id 삭제하려는 publisher의 id, 없으면 PublisherNotFoundException 발생
+     * @param id 조회하려는 publisher의 id, 없으면 PublisherNotFoundException 발생
      * @return -> 출판사 객체
      */
     @Override
@@ -71,15 +71,8 @@ public class PublisherServiceImpl implements PublisherService{
      */
     @Override
     @Transactional(readOnly = true)
-    public List<PublisherResponseDto> getAllPublishers() {
-        List<Publisher> publishers = publisherRepository.findAll();
-        List<PublisherResponseDto> responseDtoList = new ArrayList<>();
-
-        for (Publisher publisher : publishers) {
-            PublisherResponseDto dto = new PublisherResponseDto(publisher.getPublisherId(), publisher.getName());
-            responseDtoList.add(dto);
-        }
-        return responseDtoList;
+    public Page<PublisherResponseDto> getAllPublishers(Pageable pageable) {
+        return publisherRepository.findAllBy(pageable);
     }
 
     /**
@@ -100,7 +93,7 @@ public class PublisherServiceImpl implements PublisherService{
     @Override
     public PublisherResponseDto updatePublisher(Long id, PublisherRequestDto publisherRequestDto) {
         Publisher publisher = findPublisherById(id);
-        publisher.update(publisherRequestDto.getName());
+        publisher.update(publisherRequestDto.name());
         Publisher updatedPublisher = publisherRepository.save(publisher);
         return new PublisherResponseDto(updatedPublisher.getPublisherId(), updatedPublisher.getName());
     }

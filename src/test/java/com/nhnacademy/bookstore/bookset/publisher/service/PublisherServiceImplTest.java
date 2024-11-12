@@ -1,8 +1,8 @@
 package com.nhnacademy.bookstore.bookset.publisher.service;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import com.nhnacademy.bookstore.bookset.publisher.dto.request.PublisherRequestDto;
 import com.nhnacademy.bookstore.bookset.publisher.dto.response.PublisherCreateResponseDto;
@@ -12,17 +12,22 @@ import com.nhnacademy.bookstore.bookset.publisher.exception.PublisherAlreadyExis
 import com.nhnacademy.bookstore.bookset.publisher.exception.PublisherNotFoundException;
 import com.nhnacademy.bookstore.bookset.publisher.repository.PublisherRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class PublisherServiceImplTest {
+@ExtendWith(MockitoExtension.class)
+class PublisherServiceImplTest {
 
     @Mock
     private PublisherRepository publisherRepository;
@@ -30,126 +35,139 @@ public class PublisherServiceImplTest {
     @InjectMocks
     private PublisherServiceImpl publisherService;
 
+    private PublisherRequestDto publisherRequestDto;
+    private Publisher publisher;
+
     @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
+    void setUp() {
+        publisherRequestDto = new PublisherRequestDto("Test Publisher");
+        publisher = new Publisher(1L, "Test Publisher");
     }
 
     @Test
-    public void testRegisterPublisher_Success() {
-        // given
-        PublisherRequestDto requestDto = new PublisherRequestDto();
-        Publisher savedPublisher = new Publisher(1L, "출판사 이름");
+    @DisplayName("출판사 등록 - 성공")
+    void registerPublisher_Success() {
+        // Given
+        when(publisherRepository.findByName(publisherRequestDto.name())).thenReturn(Optional.empty());
+        when(publisherRepository.save(any(Publisher.class))).thenReturn(publisher);
 
-        when(publisherRepository.findByName("출판사 이름")).thenReturn(Optional.empty());
-        when(publisherRepository.save(any(Publisher.class))).thenReturn(savedPublisher);
+        // When
+        PublisherCreateResponseDto responseDto = publisherService.registerPublisher(publisherRequestDto);
 
-        // when
-        PublisherCreateResponseDto responseDto = publisherService.registerPublisher(requestDto);
-
-        // then
-        assertNotNull(responseDto);
-        assertEquals(1L, responseDto.getId());
-        assertEquals("출판사 이름", responseDto.getName());
+        // Then
+        assertThat(responseDto).isNotNull();
+        assertThat(responseDto.id()).isEqualTo(publisher.getPublisherId());
+        assertThat(responseDto.name()).isEqualTo(publisher.getName());
     }
 
     @Test
-    public void testRegisterPublisher_AlreadyExists() {
-        // given
-        PublisherRequestDto requestDto = new PublisherRequestDto();
-        ReflectionTestUtils.setField(requestDto, "name", "중복된 출판사");
-        Publisher existingPublisher = new Publisher(1L, "중복된 출판사");
-        PublisherCreateResponseDto createResponseDto = new PublisherCreateResponseDto(1L, "이전 출판사 이름");
-        Publisher publisher = new Publisher(createResponseDto.getId(),createResponseDto.getName());
-        when(publisherRepository.findByName("중복된 출판사")).thenReturn(Optional.of(publisher));
-        when(publisherRepository.findByName("중복된 출판사")).thenReturn(Optional.of(existingPublisher));
+    @DisplayName("출판사 등록 - 예외 처리")
+    void registerPublisher_AlreadyExists() {
+        // Given
+        when(publisherRepository.findByName(publisherRequestDto.name())).thenReturn(Optional.of(publisher));
 
-        // when & then
-        assertThrows(PublisherAlreadyExistException.class, () -> publisherService.registerPublisher(requestDto));
+        // Then
+        assertThatThrownBy(() -> publisherService.registerPublisher(publisherRequestDto))
+                .isInstanceOf(PublisherAlreadyExistException.class)
+                .hasMessageContaining("등록하려는 출판사가 이미 존재합니다.");
     }
 
     @Test
-    public void testGetPublisherById_Success() {
-        // given
-        Publisher publisher = new Publisher(1L, "출판사 이름");
-        when(publisherRepository.findById(1L)).thenReturn(Optional.of(publisher));
+    @DisplayName("특정 출판사 조회 - 성공")
+    void getPublisherById_Success() {
+        // Given
+        when(publisherRepository.findById(publisher.getPublisherId())).thenReturn(Optional.of(publisher));
 
-        // when
-        PublisherResponseDto responseDto = publisherService.getPublisherById(1L);
+        // When
+        PublisherResponseDto responseDto = publisherService.getPublisherById(publisher.getPublisherId());
 
-        // then
-        assertNotNull(responseDto);
-        assertEquals(1L, responseDto.getId());
-        assertEquals("출판사 이름", responseDto.getName());
+        // Then
+        assertThat(responseDto).isNotNull();
+        assertThat(responseDto.id()).isEqualTo(publisher.getPublisherId());
+        assertThat(responseDto.name()).isEqualTo(publisher.getName());
     }
 
     @Test
-    public void testGetPublisherById_NotFound() {
-        // given
-        when(publisherRepository.findById(1L)).thenReturn(Optional.empty());
+    @DisplayName("특정 출판사 조회 - 예외 처리")
+    void getPublisherById_NotExist() {
+        // Given
+        when(publisherRepository.findById(publisher.getPublisherId())).thenReturn(Optional.empty());
 
-        // when & then
-        assertThrows(PublisherNotFoundException.class, () -> publisherService.getPublisherById(1L));
+        // Then
+        assertThatThrownBy(() -> publisherService.getPublisherById(publisher.getPublisherId()))
+                .isInstanceOf(PublisherNotFoundException.class)
+                .hasMessageContaining("출판사를 찾을 수 없습니다.");
     }
 
     @Test
-    public void testGetAllPublishers() {
-        // given
-        List<Publisher> publishers = Arrays.asList(
-                new Publisher(1L, "출판사1"),
-                new Publisher(2L, "출판사2")
-        );
+    @DisplayName("전체 출판사 조회")
+    void getAllPublishers_Success() {
+        // Given
+        Pageable pageable = PageRequest.of(0, 10);
+        PublisherResponseDto publisherResponseDto = new PublisherResponseDto(publisher.getPublisherId(), publisher.getName());
+        Page<PublisherResponseDto> page = new PageImpl<>(List.of(publisherResponseDto));
+        when(publisherRepository.findAllBy(pageable)).thenReturn(page);
 
-        when(publisherRepository.findAll()).thenReturn(publishers);
+        // When
+        Page<PublisherResponseDto> result = publisherService.getAllPublishers(pageable);
 
-        // when
-        List<PublisherResponseDto> responseDtos = publisherService.getAllPublishers();
-
-        // then
-        assertEquals(2, responseDtos.size());
-        assertEquals("출판사1", responseDtos.get(0).getName());
-        assertEquals("출판사2", responseDtos.get(1).getName());
+        // Then
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().get(0).id()).isEqualTo(publisher.getPublisherId());
+        assertThat(result.getContent().get(0).name()).isEqualTo(publisher.getName());
     }
 
     @Test
-    public void testDeletePublisher_Success() {
-        // given
-        Publisher publisher = new Publisher(1L, "출판사 이름");
-        when(publisherRepository.findById(1L)).thenReturn(Optional.of(publisher));
-        doNothing().when(publisherRepository).delete(publisher);
+    @DisplayName("출판사 삭제 - 성공")
+    void deletePublisher_Success() {
+        // Given
+        when(publisherRepository.findById(publisher.getPublisherId())).thenReturn(Optional.of(publisher));
 
-        // when
-        publisherService.deletePublisher(1L);
+        // When
+        publisherService.deletePublisher(publisher.getPublisherId());
 
-        // then
+        // Then
         verify(publisherRepository, times(1)).delete(publisher);
     }
 
     @Test
-    public void testUpdatePublisher_Success() {
-        // given
-        Publisher publisher = new Publisher(1L, "이전 출판사 이름");
-        PublisherRequestDto requestDto = new PublisherRequestDto();
-        ReflectionTestUtils.setField(requestDto, "name", "새로운 출판사 이름");
+    @DisplayName("출판사 삭제 - 예외 처리")
+    void deletePublisher_NotExist() {
+        // Given
+        when(publisherRepository.findById(publisher.getPublisherId())).thenReturn(Optional.empty());
 
-        when(publisherRepository.findById(1L)).thenReturn(Optional.of(publisher));
-        when(publisherRepository.save(any(Publisher.class))).thenReturn(publisher);
-
-        // when
-        PublisherResponseDto responseDto = publisherService.updatePublisher(1L, requestDto);
-
-        // then
-        assertEquals("새로운 출판사 이름", responseDto.getName());
+        // Then
+        assertThatThrownBy(() -> publisherService.deletePublisher(publisher.getPublisherId()))
+                .isInstanceOf(PublisherNotFoundException.class)
+                .hasMessageContaining("출판사를 찾을 수 없습니다.");
     }
 
+    @Test
+    @DisplayName("출판사 수정 - 성공")
+    void updatePublisher_Success() {
+        // Given
+        Publisher updatedPublisher = new Publisher(1L, "Updated Publisher");
+        when(publisherRepository.findById(publisher.getPublisherId())).thenReturn(Optional.of(publisher));
+        when(publisherRepository.save(any(Publisher.class))).thenReturn(updatedPublisher);
+
+        // When
+        PublisherResponseDto responseDto = publisherService.updatePublisher(publisher.getPublisherId(), new PublisherRequestDto("Updated Publisher"));
+
+        // Then
+        assertThat(responseDto).isNotNull();
+        assertThat(responseDto.id()).isEqualTo(updatedPublisher.getPublisherId());
+        assertThat(responseDto.name()).isEqualTo(updatedPublisher.getName());
+    }
 
     @Test
-    public void testUpdatePublisher_NotFound() {
-        // given
-        PublisherRequestDto requestDto = new PublisherRequestDto();
-        when(publisherRepository.findById(1L)).thenReturn(Optional.empty());
+    @DisplayName("출판사 수정 - 예외 처리")
+    void updatePublisher_NotExist() {
+        // Given
+        when(publisherRepository.findById(publisher.getPublisherId())).thenReturn(Optional.empty());
 
-        // when & then
-        assertThrows(PublisherNotFoundException.class, () -> publisherService.updatePublisher(1L, requestDto));
+        // Then
+        assertThatThrownBy(() -> publisherService.updatePublisher(publisher.getPublisherId(), publisherRequestDto))
+                .isInstanceOf(PublisherNotFoundException.class)
+                .hasMessageContaining("출판사를 찾을 수 없습니다.");
     }
 }
