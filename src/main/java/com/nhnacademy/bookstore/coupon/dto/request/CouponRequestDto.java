@@ -1,10 +1,7 @@
 package com.nhnacademy.bookstore.coupon.dto.request;
 
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
@@ -28,6 +25,7 @@ public record CouponRequestDto(
         String name,
 
         @NotNull(message = "쿠폰 만료일은 필수입니다.")
+        @Future(message = "쿠폰 만료일은 오늘 이후여야 합니다.")
         LocalDate expiredAt,
 
         @Positive(message = "쿠폰 수량은 양수여야 합니다.")

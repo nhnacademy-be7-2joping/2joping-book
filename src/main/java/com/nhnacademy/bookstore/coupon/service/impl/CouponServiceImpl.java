@@ -2,6 +2,7 @@ package com.nhnacademy.bookstore.coupon.service.impl;
 
 
 import com.nhnacademy.bookstore.common.error.enums.RedirectType;
+import com.nhnacademy.bookstore.common.error.exception.coupon.CouponPolicyNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.coupon.DuplicateCouponNameException;
 import com.nhnacademy.bookstore.coupon.dto.request.CouponRequestDto;
 import com.nhnacademy.bookstore.coupon.dto.response.CouponResponseDto;
@@ -45,13 +46,14 @@ public class CouponServiceImpl implements CouponService {
     public CouponResponseDto create(CouponRequestDto couponRequestDto) {
 
         if (couponRepository.existsByName(couponRequestDto.name())) {
-            throw new DuplicateCouponNameException("쿠폰 이름이 이미 존재합니다:" + couponRequestDto.name() , RedirectType.REDIRECT, "/coupons");
+            throw new DuplicateCouponNameException("쿠폰 이름이 이미 존재합니다:" + couponRequestDto.name() , RedirectType.REDIRECT, "/admin/coupons");
         }
         Optional<CouponPolicy> couponPolicy =couponPolicyRepository.findById(couponRequestDto.couponPolicyId());
 
         Coupon coupon = Coupon.from(couponRequestDto);
-        coupon.setCouponPolicy(couponPolicy.get());
-
+        coupon.setCouponPolicy(couponPolicy.orElseThrow(() ->
+                new CouponPolicyNotFoundException("존재하지 않는 쿠폰 정책입니다: " + couponRequestDto.couponPolicyId(), RedirectType.REDIRECT, "/admin/coupons")
+        ));
         CouponResponseDto responseDto = couponMapper.toCouponResponseDto(couponRepository.save(coupon));
 
         return responseDto;
