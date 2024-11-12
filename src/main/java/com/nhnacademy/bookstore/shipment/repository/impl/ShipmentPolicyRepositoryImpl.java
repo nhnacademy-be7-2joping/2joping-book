@@ -26,10 +26,10 @@ public class ShipmentPolicyRepositoryImpl extends QuerydslRepositorySupport impl
                         shipmentPolicy.name,
                         shipmentPolicy.minOrderAmount,
                         shipmentPolicy.isMemberOnly,
-                        shipmentPolicy.shippingFee,
-                        shipmentPolicy.isActive,
                         shipmentPolicy.createdAt,
-                        shipmentPolicy.updatedAt))
+                        shipmentPolicy.updatedAt,
+                        shipmentPolicy.shippingFee,
+                        shipmentPolicy.isActive))
                 .where(shipmentPolicy.isActive.isTrue())
                 .fetch();
     }
