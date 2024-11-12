@@ -6,7 +6,7 @@ import com.nhnacademy.bookstore.bookset.category.dto.response.GetAllCategoriesRe
 import com.nhnacademy.bookstore.bookset.category.dto.response.GetCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.dto.response.UpdateCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.service.CategoryService;
-import jakarta.validation.constraints.Positive;
+import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +42,7 @@ public class CategoryController {
      * @return 조회한 카테고리 DTO 객체
      */
     @GetMapping("/categories/{categoryId}")
-    public ResponseEntity<GetCategoryResponse> getCategory(@Positive @PathVariable Long categoryId) {
+    public ResponseEntity<GetCategoryResponse> getCategory(@ValidPathVariable @PathVariable Long categoryId) {
         GetCategoryResponse response = categoryService.getCategory(categoryId);
         return ResponseEntity.ok(response);
     }
@@ -63,7 +63,7 @@ public class CategoryController {
      * @return 수정된 카테고리 DTO 객체
      */
     @PutMapping("/categories/{categoryId}")
-    public ResponseEntity<UpdateCategoryResponse> updateCategory(@Positive @PathVariable Long categoryId,
+    public ResponseEntity<UpdateCategoryResponse> updateCategory(@ValidPathVariable @PathVariable Long categoryId,
                                            @RequestBody UpdateCategoryRequest request) {
         UpdateCategoryResponse response = categoryService.updateCategory(categoryId, request);
         return ResponseEntity.ok(response);
@@ -75,7 +75,7 @@ public class CategoryController {
      * @return 삭제한 카테고리의 ID
      */
     @DeleteMapping("/categories/{categoryId}")
-    public ResponseEntity<Long> deleteCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<Long> deleteCategory(@ValidPathVariable @PathVariable Long categoryId) {
         Long deletedCategoryId = categoryService.deleteCategory(categoryId);
         return ResponseEntity.ok(deletedCategoryId);
     }
