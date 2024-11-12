@@ -1,22 +1,19 @@
 package com.nhnacademy.bookstore.bookset.book.dto.response;
 
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 /**
  * 도서 기여자 Response DTO
  *
- * @author : 양준하
- * @date : 2024-10-24
+ * @author : 이유현
+ * @date : 2024-11-03
  */
 
-@Setter
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class BookContributorResponseDto {
-    private Long contributorId;
-    private String contributorName;
-    private Long roleId;
-    private String roleName;
-}
+
+public record BookContributorResponseDto (
+    @Positive Long contributorId,
+     String contributorName,
+     Long roleId,
+     String roleName
+) {}

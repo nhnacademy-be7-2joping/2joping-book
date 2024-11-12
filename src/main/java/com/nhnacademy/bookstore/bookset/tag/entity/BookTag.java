@@ -20,23 +20,22 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "booktag")
+@Table(name = "book_tag")
 public class BookTag {
     @EmbeddedId
     private BookTagId id;
 
     @ManyToOne
     @MapsId("bookId")
-    @JoinColumn(name = "book_id", nullable = false)
+    @JoinColumn(name = "book_id")
     private Book book;
 
     @ManyToOne
     @MapsId("tagId")
-    @JoinColumn(name = "tag_id", nullable = false)
+    @JoinColumn(name = "tag_id")
     private Tag tag;
 
     @Getter
-    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     @Embeddable

@@ -35,7 +35,6 @@ public class BookContributor {
     private Contributor contributor;
 
     @Getter
-    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     @Embeddable

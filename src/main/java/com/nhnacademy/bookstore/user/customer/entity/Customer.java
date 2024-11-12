@@ -4,9 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-
+@Getter
 @Entity
 @Table(name = "customer")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -26,4 +27,10 @@ public class Customer {
 
     @Column(nullable = false, length = 50, unique = true)
     private String email;
+
+    public void initializeCustomerFields(String name, String phone, String email) {
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+    }
 }
