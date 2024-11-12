@@ -33,36 +33,37 @@ public class Review {
 
     @MapsId("orderDetailId")
     @OneToOne
-    @JoinColumn(name = "order_detail_id")
+    @JoinColumn(name = "order_detail_id", nullable = false)
     private OrderDetail orderDetail;
 
     @MapsId("customerId")
     @ManyToOne
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
     @MapsId("bookId")
     @ManyToOne
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
 
     @Column(nullable = false, length = 255)
     private String title;
 
+    @Column(nullable = false)
     private String text;
 
-    private Byte ratingValue;
+    @Column(nullable = false)
+    private int ratingValue;
 
     @CreationTimestamp
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     private String imageUrl;
-
-
 
 
     @Getter
