@@ -1,0 +1,78 @@
+package com.nhnacademy.bookstore.review.entity;
+
+import com.nhnacademy.bookstore.bookset.book.entity.Book;
+import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
+import com.nhnacademy.bookstore.user.customer.entity.Customer;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+/**
+ * 리뷰 Entity
+ *
+ * @author : 이유현
+ * @date : 2024-11-12
+ */
+
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "review")
+public class Review {
+
+    @EmbeddedId
+    private ReviewId reviewId;
+
+    @MapsId("orderDetailId")
+    @OneToOne
+    @JoinColumn(name = "order_detail_id")
+    private OrderDetail orderDetail;
+
+    @MapsId("customerId")
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+
+    @MapsId("bookId")
+    @ManyToOne
+    @JoinColumn(name = "book_id")
+    private Book book;
+
+
+    @Column(nullable = false, length = 255)
+    private String title;
+
+    private String text;
+
+    private Byte ratingValue;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    private String imageUrl;
+
+
+
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Embeddable
+    public static class ReviewId implements Serializable {
+        private Long orderDetailId;
+        private Long customerId;
+        private Long bookId;
+
+    }
+}
