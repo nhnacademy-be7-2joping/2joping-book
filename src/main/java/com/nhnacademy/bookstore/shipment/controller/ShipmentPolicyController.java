@@ -1,7 +1,10 @@
 package com.nhnacademy.bookstore.shipment.controller;
 
+import com.nhnacademy.bookstore.orderset.order.dto.response.OrderShippingFeeRequestDto;
+import com.nhnacademy.bookstore.shipment.dto.request.CarrierRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.request.ShipmentPolicyRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.response.ShipmentPolicyResponseDto;
+import com.nhnacademy.bookstore.shipment.dto.response.ShippingFeeResponseDto;
 import com.nhnacademy.bookstore.shipment.service.ShipmentPolicyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -135,5 +138,21 @@ public class ShipmentPolicyController {
     public ResponseEntity<Void> activateShipmentPolicy(@PathVariable @Positive Long shipmentPolicyId) {
         shipmentPolicyService.activateShipmentPolicy(shipmentPolicyId);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 모든 활성화된 배송 정책 중 회원, 비회원 여부에 따라 구분된 배송비를 조회하는 메서드.
+     *
+     * @return 활성화된 모든 배송 정책 중 회원 또는 비회원 배송비 목록을 포함한 ResponseEntity
+     */
+    @Operation(
+            summary = "Get Shipping Fees by Member Status", description = "회원여부에 따른 배송비 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Shipping policies successfully retrieved")
+    })
+    @GetMapping("/shipping-fee")
+    public ResponseEntity<List<ShippingFeeResponseDto>> getShippingFee(@Valid @RequestBody OrderShippingFeeRequestDto requestDto) {
+        List<ShippingFeeResponseDto> responseDtos = shipmentPolicyService.getShippingFee(requestDto);
+        return ResponseEntity.ok(responseDtos);
     }
 }
