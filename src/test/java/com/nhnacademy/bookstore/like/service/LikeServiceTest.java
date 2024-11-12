@@ -19,11 +19,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -31,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 class LikeServiceTest {
 
@@ -59,7 +57,7 @@ class LikeServiceTest {
         Member member = new Member(
                 "user1", "password", "nickname", Gender.M,
                 LocalDate.of(2003, 4, 25), LocalDate.now(), LocalDate.now(), false,
-                0, 0, List.of(), new MemberStatus(), new MemberTier()
+                0, 0, List.of(), new MemberStatus(), new MemberTier(), null
         );
         ReflectionTestUtils.setField(member, "id", 1L);
 
@@ -94,7 +92,7 @@ class LikeServiceTest {
         Member member = new Member(
                 "user1", "password", "nickname", Gender.F,
                 LocalDate.of(1995, 5, 5), LocalDate.now(), LocalDate.now(), false,
-                0, 0, List.of(), new MemberStatus(), new MemberTier()
+                0, 0, List.of(), new MemberStatus(), new MemberTier(), null
         );
         ReflectionTestUtils.setField(member, "id", 1L);
 
@@ -128,7 +126,7 @@ class LikeServiceTest {
         Member member = new Member(
                 "user1", "password", "nickname", Gender.F,
                 LocalDate.of(1995, 5, 5), LocalDate.now(), LocalDate.now(), false,
-                0, 0, List.of(), new MemberStatus(), new MemberTier()
+                0, 0, List.of(), new MemberStatus(), new MemberTier(), null
         );
         ReflectionTestUtils.setField(member, "id", 1L);
 
