@@ -50,5 +50,7 @@ public class Member extends Customer {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<MemberAddress> addresses;
 
-
+    public void addPoint(int amount) {
+        this.point += amount;
+    }
 }
