@@ -16,11 +16,11 @@ import com.nhnacademy.bookstore.bookset.publisher.exception.PublisherAlreadyExis
 import com.nhnacademy.bookstore.bookset.publisher.exception.PublisherNotFoundException;
 import com.nhnacademy.bookstore.bookset.publisher.repository.PublisherRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -71,15 +71,8 @@ public class PublisherServiceImpl implements PublisherService{
      */
     @Override
     @Transactional(readOnly = true)
-    public List<PublisherResponseDto> getAllPublishers() {
-        List<Publisher> publishers = publisherRepository.findAll();
-        List<PublisherResponseDto> responseDtoList = new ArrayList<>();
-
-        for (Publisher publisher : publishers) {
-            PublisherResponseDto dto = new PublisherResponseDto(publisher.getPublisherId(), publisher.getName());
-            responseDtoList.add(dto);
-        }
-        return responseDtoList;
+    public Page<PublisherResponseDto> getAllPublishers(Pageable pageable) {
+        return publisherRepository.findAllBy(pageable);
     }
 
     /**
