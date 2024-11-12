@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.shipment.controller;
 
+import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
 import com.nhnacademy.bookstore.shipment.dto.request.CarrierRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.response.CarrierResponseDto;
 import com.nhnacademy.bookstore.shipment.service.CarrierService;
@@ -8,7 +9,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -76,7 +76,7 @@ public class CarrierController {
             @ApiResponse(responseCode = "404", description = "배송 업체를 찾을 수 없음")
     })
     @GetMapping("/{carrierId}")
-    public ResponseEntity<CarrierResponseDto> getCarrier(@PathVariable @Positive Long carrierId) {
+    public ResponseEntity<CarrierResponseDto> getCarrier(@PathVariable @ValidPathVariable Long carrierId) {
         CarrierResponseDto responseDto = carrierService.getCarrier(carrierId);
         return ResponseEntity.ok(responseDto);
     }
@@ -96,7 +96,7 @@ public class CarrierController {
     })
     @PutMapping("/{carrierId}")
     public ResponseEntity<CarrierResponseDto> updateCarrier(
-            @PathVariable @Positive Long carrierId,
+            @PathVariable @ValidPathVariable Long carrierId,
             @Valid @RequestBody CarrierRequestDto requestDto) {
         CarrierResponseDto responseDto = carrierService.updateCarrier(carrierId, requestDto);
         return ResponseEntity.ok(responseDto);
@@ -114,7 +114,7 @@ public class CarrierController {
             @ApiResponse(responseCode = "404", description = "배송 업체를 찾을 수 없음")
     })
     @DeleteMapping("/{carrierId}")
-    public ResponseEntity<Void> deleteCarrier(@PathVariable @Positive Long carrierId) {
+    public ResponseEntity<Void> deleteCarrier(@PathVariable @ValidPathVariable Long carrierId) {
         carrierService.deleteCarrier(carrierId);
         return ResponseEntity.ok().build();
     }

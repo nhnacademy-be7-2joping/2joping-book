@@ -20,7 +20,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ContributorController.class)
-@TestPropertySource(properties = "keymanager.url=http://localhost:8084")
 class ContributorControllerTest {
 
     @Autowired

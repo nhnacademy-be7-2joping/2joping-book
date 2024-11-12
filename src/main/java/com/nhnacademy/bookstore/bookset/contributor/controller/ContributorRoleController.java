@@ -3,13 +3,13 @@ package com.nhnacademy.bookstore.bookset.contributor.controller;
 import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRoleRequestDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorRoleResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.service.ContributorRoleService;
+import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,7 +61,7 @@ public class ContributorRoleController {
             @ApiResponse(responseCode = "404", description = "도서 기여자 역할을 찾을 수 없음")
     })
     @GetMapping("/{contributorRoleId}")
-    public ResponseEntity<ContributorRoleResponseDto> getContributorRole(@PathVariable @Positive Long contributorRoleId) {
+    public ResponseEntity<ContributorRoleResponseDto> getContributorRole(@PathVariable @ValidPathVariable Long contributorRoleId) {
         ContributorRoleResponseDto contributorRole = contributorRoleService.getContributorRole(contributorRoleId);
         return ResponseEntity.ok(contributorRole);
     }
@@ -81,7 +81,7 @@ public class ContributorRoleController {
             @ApiResponse(responseCode = "404", description = "도서 기여자 역할을 찾을 수 없음")
     })
     @PutMapping("/{contributorRoleId}")
-    public ResponseEntity<ContributorRoleResponseDto> updateContributorRole(@PathVariable @Positive Long contributorRoleId, @RequestBody @Valid ContributorRoleRequestDto dto) {
+    public ResponseEntity<ContributorRoleResponseDto> updateContributorRole(@PathVariable @ValidPathVariable Long contributorRoleId, @RequestBody @Valid ContributorRoleRequestDto dto) {
         ContributorRoleResponseDto updatedRole = contributorRoleService.updateContributorRole(contributorRoleId, dto);
         return ResponseEntity.ok(updatedRole);
     }
@@ -99,7 +99,7 @@ public class ContributorRoleController {
             @ApiResponse(responseCode = "404", description = "도서 기여자 역할을 찾을 수 없음")
     })
     @DeleteMapping("/{contributorRoleId}")
-    public ResponseEntity<Void> deleteContributorRole(@PathVariable @Positive Long contributorRoleId) {
+    public ResponseEntity<Void> deleteContributorRole(@PathVariable @ValidPathVariable Long contributorRoleId) {
         contributorRoleService.deleteContributorRole(contributorRoleId);
         return ResponseEntity.noContent().build();
     }

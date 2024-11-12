@@ -3,6 +3,7 @@ package com.nhnacademy.bookstore.shipment.service.impl;
 import com.nhnacademy.bookstore.common.error.exception.shipment.ShipmentPolicyNotFoundException;
 import com.nhnacademy.bookstore.shipment.dto.request.ShipmentPolicyRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.response.ShipmentPolicyResponseDto;
+import com.nhnacademy.bookstore.shipment.dto.response.ShippingFeeResponseDto;
 import com.nhnacademy.bookstore.shipment.entity.ShipmentPolicy;
 import com.nhnacademy.bookstore.shipment.mapper.ShipmentPolicyMapper;
 import com.nhnacademy.bookstore.shipment.repository.ShipmentPolicyRepository;
@@ -123,5 +124,16 @@ public class ShipmentPolicyServiceImpl implements ShipmentPolicyService {
                 .orElseThrow(ShipmentPolicyNotFoundException::new);
         policy.activate();
         shipmentPolicyRepository.save(policy);
+    }
+
+    /**
+     * 모든 활성화된 배송 정책을 조회하는 메서드입니다.
+     *
+     * @return 활성화된 배송 정책 목록을 포함한 ShipmentPolicyResponseDto 리스트
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<ShippingFeeResponseDto> getShippingFee(Boolean isLogin) {
+        return shipmentPolicyRepository.findActiveShippingFee(isLogin);
     }
 }
