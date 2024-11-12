@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface PointService {
 
-    void awardSignUpPoint(Long customerId);
     void awardReviewPoint(Long customerId, Long orderDetailId);
+    void awardOrderPoint(Long customerId, Long orderId);
     void usePoint(PointUseRequest request);
     List<PointHistoryDto> getPointHistory(Long customerId);
 }
