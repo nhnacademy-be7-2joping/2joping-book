@@ -3,6 +3,7 @@ package com.nhnacademy.bookstore.bookset.contributor.controller;
 import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRequestDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.service.ContributorService;
+import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorIsDeactivateException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,7 +11,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,7 +63,7 @@ public class ContributorController {
             @ApiResponse(responseCode = "404", description = "도서 기여자를 찾을 수 없음")
     })
     @GetMapping("/{contributorId}")
-    public ResponseEntity<ContributorResponseDto> getContributor(@PathVariable Long contributorId) {
+    public ResponseEntity<ContributorResponseDto> getContributor(@PathVariable @ValidPathVariable Long contributorId) {
         ContributorResponseDto contributor = contributorService.getContributor(contributorId);
         return ResponseEntity.ok(contributor);
     }
@@ -84,7 +84,7 @@ public class ContributorController {
             @ApiResponse(responseCode = "404", description = "도서 기여자를 찾을 수 없음")
     })
     @PutMapping("/{contributorId}")
-    public ResponseEntity<ContributorResponseDto> updateContributor(@PathVariable @Positive Long contributorId, @RequestBody @Valid ContributorRequestDto dto) {
+    public ResponseEntity<ContributorResponseDto> updateContributor(@PathVariable @ValidPathVariable Long contributorId, @RequestBody @Valid ContributorRequestDto dto) {
         ContributorResponseDto updatedContributor = contributorService.updateContributor(contributorId, dto);
         return ResponseEntity.ok(updatedContributor);
     }
@@ -102,7 +102,7 @@ public class ContributorController {
             @ApiResponse(responseCode = "404", description = "도서 기여자를 찾을 수 없음")
     })
     @PutMapping("/{contributorId}/deactivate")
-    public ResponseEntity<Void> deactivateContributor(@PathVariable @Positive Long contributorId) {
+    public ResponseEntity<Void> deactivateContributor(@PathVariable @ValidPathVariable Long contributorId) {
         contributorService.deactivateContributor(contributorId);
         return ResponseEntity.ok().build();
     }
@@ -120,7 +120,7 @@ public class ContributorController {
             @ApiResponse(responseCode = "404", description = "도서 기여자를 찾을 수 없음")
     })
     @PutMapping("/{contributorId}/activate")
-    public ResponseEntity<Void> activateContributor(@PathVariable @Positive Long contributorId) {
+    public ResponseEntity<Void> activateContributor(@PathVariable @ValidPathVariable Long contributorId) {
         contributorService.activateContributor(contributorId);
         return ResponseEntity.ok().build();
     }
