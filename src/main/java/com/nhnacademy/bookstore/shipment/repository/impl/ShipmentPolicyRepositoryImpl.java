@@ -35,7 +35,7 @@ public class ShipmentPolicyRepositoryImpl extends QuerydslRepositorySupport impl
     }
 
     @Override
-    public List<ShippingFeeResponseDto> findActiveShippingFee(Boolean isMember) {
+    public List<ShippingFeeResponseDto> findActiveShippingFee(Boolean isLogin) {
         QShipmentPolicy shipmentPolicy = QShipmentPolicy.shipmentPolicy;
 
         return from(shipmentPolicy)
@@ -44,7 +44,7 @@ public class ShipmentPolicyRepositoryImpl extends QuerydslRepositorySupport impl
                         shipmentPolicy.minOrderAmount,
                         shipmentPolicy.shippingFee))
                 .where(shipmentPolicy.isActive.isTrue()
-                        .and(shipmentPolicy.isMemberOnly.eq(isMember)))
+                        .and(shipmentPolicy.isMemberOnly.eq(isLogin)))
                 .fetch();
     }
 }

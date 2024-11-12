@@ -1,6 +1,5 @@
 package com.nhnacademy.bookstore.shipment.service.impl;
 
-import com.nhnacademy.bookstore.orderset.order.dto.response.OrderShippingFeeRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.request.ShipmentPolicyRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.response.ShipmentPolicyResponseDto;
 import com.nhnacademy.bookstore.shipment.dto.response.ShippingFeeResponseDto;
@@ -148,14 +147,14 @@ class ShipmentPolicyServiceImplTest {
     @DisplayName("회원 여부에 따른 활성화된 배송비 조회 테스트")
     void getShippingFee() {
         // given
-        OrderShippingFeeRequestDto requestDto = new OrderShippingFeeRequestDto(true); // 예: 회원 여부가 true
+        Boolean isMember = true; // 예: 회원 여부가 true
         ShippingFeeResponseDto responseDto1 = new ShippingFeeResponseDto(1L, 10000, 5000);
         ShippingFeeResponseDto responseDto2 = new ShippingFeeResponseDto(2L, 20000, 3000);
 
-        when(shipmentPolicyRepository.findActiveShippingFee(requestDto.isMember())).thenReturn(List.of(responseDto1, responseDto2));
+        when(shipmentPolicyRepository.findActiveShippingFee(isMember)).thenReturn(List.of(responseDto1, responseDto2));
 
         // when
-        List<ShippingFeeResponseDto> result = shipmentPolicyService.getShippingFee(requestDto);
+        List<ShippingFeeResponseDto> result = shipmentPolicyService.getShippingFee(isMember);
 
         // then
         assertNotNull(result);
@@ -165,5 +164,6 @@ class ShipmentPolicyServiceImplTest {
         assertEquals(20000, result.get(1).minOrderAmount());
         assertEquals(3000, result.get(1).shippingFee());
     }
+
 
 }

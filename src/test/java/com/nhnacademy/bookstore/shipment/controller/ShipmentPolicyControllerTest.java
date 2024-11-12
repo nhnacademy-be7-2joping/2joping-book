@@ -1,7 +1,6 @@
 package com.nhnacademy.bookstore.shipment.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstore.orderset.order.dto.response.OrderShippingFeeRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.request.ShipmentPolicyRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.response.ShipmentPolicyResponseDto;
 import com.nhnacademy.bookstore.shipment.dto.response.ShippingFeeResponseDto;
@@ -135,15 +134,15 @@ class ShipmentPolicyControllerTest {
     @DisplayName("회원 여부에 따른 배송비 조회 테스트")
     void getShippingFee() throws Exception {
         // given
-        OrderShippingFeeRequestDto requestDto = new OrderShippingFeeRequestDto(true); // 예: 회원 여부가 true
+        Boolean isLogin = true;
         ShippingFeeResponseDto responseDto1 = new ShippingFeeResponseDto(1L, 10000, 5000);
         ShippingFeeResponseDto responseDto2 = new ShippingFeeResponseDto(2L, 20000, 3000);
-        Mockito.when(shipmentPolicyService.getShippingFee(any(OrderShippingFeeRequestDto.class))).thenReturn(List.of(responseDto1, responseDto2));
+        Mockito.when(shipmentPolicyService.getShippingFee(isLogin)).thenReturn(List.of(responseDto1, responseDto2));
 
         // when
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bookstore/shipment-policies/shipping-fee")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
+                        .param("isLogin", String.valueOf(isLogin))
+                        .contentType(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].shipmentPolicyId").value(1L))
@@ -153,5 +152,6 @@ class ShipmentPolicyControllerTest {
                 .andExpect(jsonPath("$[1].minOrderAmount").value(20000))
                 .andExpect(jsonPath("$[1].shippingFee").value(3000));
     }
+
 }
 

@@ -1,7 +1,6 @@
 package com.nhnacademy.bookstore.shipment.controller;
 
 import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
-import com.nhnacademy.bookstore.orderset.order.dto.response.OrderShippingFeeRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.request.ShipmentPolicyRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.response.ShipmentPolicyResponseDto;
 import com.nhnacademy.bookstore.shipment.dto.response.ShippingFeeResponseDto;
@@ -150,8 +149,9 @@ public class ShipmentPolicyController {
             @ApiResponse(responseCode = "200", description = "Shipping policies successfully retrieved")
     })
     @GetMapping("/shipping-fee")
-    public ResponseEntity<List<ShippingFeeResponseDto>> getShippingFee(@Valid @RequestBody OrderShippingFeeRequestDto requestDto) {
-        List<ShippingFeeResponseDto> responseDtos = shipmentPolicyService.getShippingFee(requestDto);
+    public ResponseEntity<List<ShippingFeeResponseDto>> getShippingFee(@RequestParam("isLogin") Boolean isLogin) {
+        List<ShippingFeeResponseDto> responseDtos = shipmentPolicyService.getShippingFee(isLogin);
         return ResponseEntity.ok(responseDtos);
     }
+
 }

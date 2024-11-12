@@ -1,7 +1,6 @@
 package com.nhnacademy.bookstore.shipment.service.impl;
 
 import com.nhnacademy.bookstore.common.error.exception.shipment.ShipmentPolicyNotFoundException;
-import com.nhnacademy.bookstore.orderset.order.dto.response.OrderShippingFeeRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.request.ShipmentPolicyRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.response.ShipmentPolicyResponseDto;
 import com.nhnacademy.bookstore.shipment.dto.response.ShippingFeeResponseDto;
@@ -134,7 +133,7 @@ public class ShipmentPolicyServiceImpl implements ShipmentPolicyService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<ShippingFeeResponseDto> getShippingFee(OrderShippingFeeRequestDto requestDto) {
-        return shipmentPolicyRepository.findActiveShippingFee(requestDto.isMember());
+    public List<ShippingFeeResponseDto> getShippingFee(Boolean isLogin) {
+        return shipmentPolicyRepository.findActiveShippingFee(isLogin);
     }
 }
