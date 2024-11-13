@@ -77,7 +77,7 @@ public class WrapController {
      */
     @Operation(summary = "활성화 된 포장상품 목록 조회", description = "활성화 된 포장상품을 조회합니다.")
     @ApiResponse(responseCode = "200", description = "포장상품 목록 조회 성공")
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<List<WrapResponseDto>> findAllByIsActiveTrue() {
         List<WrapResponseDto> wrap = wrapService.findAllByIsActiveTrue();
         return ResponseEntity.ok(wrap);

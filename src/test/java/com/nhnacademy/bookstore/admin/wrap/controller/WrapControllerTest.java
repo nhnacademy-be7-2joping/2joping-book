@@ -71,7 +71,7 @@ class WrapControllerTest {
 
         when(wrapService.findAllByIsActiveTrue()).thenReturn(wrapList);
 
-        mockMvc.perform(get("/api/v1/wraps/list")
+        mockMvc.perform(get("/api/v1/wraps")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].wrapId").value(1L))
