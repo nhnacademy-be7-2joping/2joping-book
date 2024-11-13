@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.point.service.impl;
 
+import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.point.SignUpPointPolicyNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
 import com.nhnacademy.bookstore.orderset.order.entity.Order;
@@ -58,7 +59,11 @@ public class PointServiceImpl implements PointService {
     @Override
     public void awardOrderPoint(Long customerId, Long orderId) {
         Member member = memberRepository.findById(customerId)
-                .orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(
+                        "회원을 찾을 수 없습니다.",
+                        RedirectType.NONE,
+                        null
+                ));
 
         PointType reviewPointType = pointTypeRepository.findByNameAndIsActiveTrue("도서 결제")
                 .orElseThrow(() -> new EntityNotFoundException("리뷰 포인트 정책을 찾을 수 없습니다."));
@@ -74,7 +79,11 @@ public class PointServiceImpl implements PointService {
     @Override
     public void usePoint(PointUseRequest request) {
         Member member = memberRepository.findById(request.customerId())
-                .orElseThrow(() -> new MemberNotFoundException("회원을 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(
+                        "회원을 찾을 수 없습니다.",
+                        RedirectType.NONE,
+                        null
+                ));
 
         // TODO: 주문 시에 포인트 사용할 경우 포인트 사용 요청에 담겨 들어온 포인트 양만큼 멤버 포인트 삭제
 //        member.usePoint(request.pointAmount());
