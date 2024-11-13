@@ -9,9 +9,9 @@ import java.util.List;
 public interface WrapService {
     void createWrap(WrapRequestDto requestDto);
     WrapResponseDto getWrap(Long WrapId);
-    List<WrapResponseDto> getAllWraps();
+    List<WrapResponseDto> findAllByIsActiveTrue();
 
-    WrapResponseDto updateWrap(Long WrapId, WrapRequestDto wrapRequestDto); // request dto 아닌지?
+    WrapResponseDto updateWrap(Long WrapId, WrapRequestDto wrapRequestDto);
 
-    void deleteWrap(Long wrapId);
+//    void deleteWrap(Long wrapId);
 }

@@ -66,12 +66,10 @@ class WrapControllerTest {
     }
 
     @Test
-    void getAllWraps() throws Exception {
-       // WrapResponseDto wrapResponseDto2 = new WrapResponseDto(2L, "포장 정책 2", 2000, false);
+    void findAllByIsActiveTrue() throws Exception {
+        List<WrapResponseDto> wrapList = List.of(wrapResponseDto);
 
-        List<WrapResponseDto> wrapList = List.of(wrapResponseDto, wrapResponseDto2);
-
-        when(wrapService.getAllWraps()).thenReturn(wrapList);
+        when(wrapService.findAllByIsActiveTrue()).thenReturn(wrapList);
 
         mockMvc.perform(get("/api/v1/wraps/list")
                         .accept(MediaType.APPLICATION_JSON))
@@ -79,21 +77,15 @@ class WrapControllerTest {
                 .andExpect(jsonPath("$[0].wrapId").value(1L))
                 .andExpect(jsonPath("$[0].name").value("포장 정책"))
                 .andExpect(jsonPath("$[0].wrapPrice").value(1000))
-                .andExpect(jsonPath("$[0].isActive").value(true))
-                .andExpect(jsonPath("$[1].wrapId").value(2L))
-                .andExpect(jsonPath("$[1].name").value("포장 정책 2"))
-                .andExpect(jsonPath("$[1].wrapPrice").value(2000))
-                .andExpect(jsonPath("$[1].isActive").value(false));
+                .andExpect(jsonPath("$[0].isActive").value(true));
     }
+
     @Test
     void updateWrap() throws Exception {
-        // 수정된 wrapResponseDto를 설정합니다.
         WrapResponseDto updatedWrapResponseDto = new WrapResponseDto(1L, "수정 포장 정책", 2000, true);
 
-        // 서비스 메서드가 수정된 객체를 반환하도록 Mock 설정
         when(wrapService.updateWrap(anyLong(), any(WrapRequestDto.class))).thenReturn(updatedWrapResponseDto);
 
-        // 수정 요청을 보내고, 결과를 검증
         mockMvc.perform(put("/api/v1/wraps/{wrap-id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"수정 포장 정책\",\"wrapPrice\":2000,\"isActive\":true}"))
@@ -103,23 +95,24 @@ class WrapControllerTest {
                 .andExpect(jsonPath("$.wrapPrice").value(2000))
                 .andExpect(jsonPath("$.isActive").value(true));
     }
-
-
-    @Test
-    void deleteWrap() throws Exception {
-        doNothing().when(wrapService).deleteWrap(anyLong());
-        List<WrapResponseDto> wrapList = List.of(
-                new WrapResponseDto(1L, "포장 상품1", 1000, true),
-                new WrapResponseDto(2L, "포장 상품2", 2000, false)
-        );
-        when(wrapService.getAllWraps()).thenReturn(wrapList);
-
-        mockMvc.perform(delete("/api/v1/wraps/{wrap-id}", 1L))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(wrapList.size()))
-                .andExpect(jsonPath("$[0].name").value("포장 상품1"))
-                .andExpect(jsonPath("$[1].name").value("포장 상품2"));
     }
 
-}
+
+//    @Test
+//    void deleteWrap() throws Exception {
+//        doNothing().when(wrapService).findAllByIsActiveTrue(anyLong());
+//        List<WrapResponseDto> wrapList = List.of(
+//                new WrapResponseDto(1L, "포장 상품1", 1000, true),
+//                new WrapResponseDto(2L, "포장 상품2", 2000, false)
+//        );
+//        when(wrapService.findAllByIsActiveTrue()).thenReturn(wrapList);
+//
+//        mockMvc.perform(delete("/api/v1/wraps/{wrap-id}", 1L))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$").isArray())
+//                .andExpect(jsonPath("$.length()").value(wrapList.size()))
+//                .andExpect(jsonPath("$[0].name").value("포장 상품1"))
+//                .andExpect(jsonPath("$[1].name").value("포장 상품2"));
+//    }
+//
+//}

@@ -69,17 +69,17 @@ public class WrapController {
     }
 
     /**
-     * 전체 포장상품 목록 조회
+     * 활성화 된 포장상품 목록 조회
      *
-     * 모든 포장상품을 조회합니다.
+     * 활성화 된 포장상품을 조회합니다.
      *
      * @return 포장상품 목록
      */
-    @Operation(summary = "전체 포장상품 목록 조회", description = "모든 포장상품을 조회합니다.")
+    @Operation(summary = "활성화 된 포장상품 목록 조회", description = "활성화 된 포장상품을 조회합니다.")
     @ApiResponse(responseCode = "200", description = "포장상품 목록 조회 성공")
     @GetMapping("/list")
-    public ResponseEntity<List<WrapResponseDto>> getAllWraps() {
-        List<WrapResponseDto> wrap = wrapService.getAllWraps();
+    public ResponseEntity<List<WrapResponseDto>> findAllByIsActiveTrue() {
+        List<WrapResponseDto> wrap = wrapService.findAllByIsActiveTrue();
         return ResponseEntity.ok(wrap);
     }
 
@@ -106,24 +106,24 @@ public class WrapController {
     }
 
 
-    /**
-     * 포장상품 삭제
-     *
-     * 특정 포장상품을 삭제합니다.
-     *
-     * @param wrapId 삭제할 포장상품의 ID
-     * @return 상태 204 (No Content)
-     */
-    @Operation(summary = "포장상품 삭제", description = "특정 포장상품을 삭제합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "포장상품 삭제 후 목록 반환 성공"),
-            @ApiResponse(responseCode = "404", description = "포장상품을 찾을 수 없음")
-    })
-
-    @DeleteMapping("/{wrap-id}")
-    public ResponseEntity<List<WrapResponseDto>> deleteWrap(@PathVariable("wrap-id") Long wrapId) {
-        wrapService.deleteWrap(wrapId);
-        List<WrapResponseDto> wrapList = wrapService.getAllWraps();
-        return ResponseEntity.ok(wrapList);
-    }
+//    /**
+//     * 포장상품 삭제
+//     *
+//     * 특정 포장상품을 삭제합니다.
+//     *
+//     * @param wrapId 삭제할 포장상품의 ID
+//     * @return 상태 204 (No Content)
+//     */
+//    @Operation(summary = "포장상품 삭제", description = "특정 포장상품을 삭제합니다.")
+//    @ApiResponses({
+//            @ApiResponse(responseCode = "200", description = "포장상품 삭제 후 목록 반환 성공"),
+//            @ApiResponse(responseCode = "404", description = "포장상품을 찾을 수 없음")
+//    })
+//
+//    @DeleteMapping("/{wrap-id}")
+//    public ResponseEntity<List<WrapResponseDto>> deleteWrap(@PathVariable("wrap-id") Long wrapId) {
+//        wrapService.deleteWrap(wrapId);
+//        List<WrapResponseDto> wrapList = wrapService.getAllWraps();
+//        return ResponseEntity.ok(wrapList);
+//    }
 }
