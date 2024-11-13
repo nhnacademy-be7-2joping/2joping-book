@@ -2,7 +2,7 @@ package com.nhnacademy.bookstore.bookset.book.service.impl;
 
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
-import com.nhnacademy.bookstore.bookset.book.exception.BookNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.book.BookNotFoundException;
 import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
 import lombok.RequiredArgsConstructor;
