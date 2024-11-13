@@ -71,4 +71,17 @@ public class Review {
     public static class ReviewId implements Serializable {
         private Long orderDetailId;
     }
+
+    // Review 객체 생성 시 ReviewId 수동 설정 메서드 예시
+    public Review(OrderDetail orderDetail, Customer customer, Book book, String title, String text, int ratingValue) {
+        this.reviewId = new ReviewId(orderDetail.getOrderDetailId()); // ReviewId를 수동으로 설정
+        this.orderDetail = orderDetail;
+        this.customer = customer;
+        this.book = book;
+        this.title = title;
+        this.text = text;
+        this.ratingValue = ratingValue;
+    }
+
+
 }

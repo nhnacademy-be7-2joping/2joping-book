@@ -6,7 +6,6 @@ import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
 import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.bookset.book.BookNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
-import com.nhnacademy.bookstore.orderset.order.repository.OrderRepository;
 import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
 import com.nhnacademy.bookstore.orderset.order_detail.repository.OrderDetailRepository;
 import com.nhnacademy.bookstore.review.dto.request.ReviewCreateRequestDto;
@@ -63,8 +62,8 @@ public class ReviewServiceImpl implements ReviewService {
                 reviewCreateRequestDto.image() // imageUrl 설정
         );
 
-//        ReviewCreateResponseDto newReview = reviewRepository.save(review);
+        Review savedReview = reviewRepository.save(review);
 
-        return reviewMapper.toDto(review);
+        return reviewMapper.toDto(savedReview);
     }
 }

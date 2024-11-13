@@ -6,14 +6,19 @@ import com.nhnacademy.bookstore.review.dto.request.ReviewModifyRequestDto;
 import com.nhnacademy.bookstore.review.dto.response.ReviewCreateResponseDto;
 import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
 import com.nhnacademy.bookstore.review.service.ReviewService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/review")
+@Tag(name = "Review API", description = "리뷰 관련 CRUD API")
 public class ReviewController {
 
 
@@ -25,10 +30,11 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     //생성
+    @Operation(summary = "리뷰 등록", description = "새로운 리뷰를 등록합니다.")
     @PostMapping
     public ResponseEntity<ReviewCreateResponseDto> registerReview(@RequestBody @Valid ReviewCreateRequestDto reviewCreateRequestDto) {
-
-        return null;
+        ReviewCreateResponseDto dto = reviewService.registerReview(reviewCreateRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
 
