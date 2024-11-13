@@ -36,12 +36,10 @@ public class Review {
     @JoinColumn(name = "order_detail_id", nullable = false)
     private OrderDetail orderDetail;
 
-    @MapsId("customerId")
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    @MapsId("bookId")
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;

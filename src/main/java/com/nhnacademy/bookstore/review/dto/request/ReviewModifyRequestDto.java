@@ -6,6 +6,6 @@ public record ReviewModifyRequestDto (
         int ratingValue,
         String title,
         String text,
-        LocalDateTime updatedAt
+        String image  // TODO 임시
 )
 {}

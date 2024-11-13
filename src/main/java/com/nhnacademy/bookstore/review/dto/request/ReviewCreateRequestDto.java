@@ -14,9 +14,10 @@ import java.time.LocalDateTime;
 public record ReviewCreateRequestDto (
         @Positive Long orderDetailId,
         @Positive Long customerId,
+        @Positive Long bookId,
         int ratingValue,
         String title,
         String text,
-        LocalDateTime createdAt
+        String image // TODO 임시
 )
 {}
