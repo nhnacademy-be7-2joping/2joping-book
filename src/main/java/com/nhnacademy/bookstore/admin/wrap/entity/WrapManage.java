@@ -1,5 +1,4 @@
-package com.nhnacademy.bookstore.wrap.entity;
-
+package com.nhnacademy.bookstore.admin.wrap.entity;
 /**
  * 주문포장관리 Entity
  *
