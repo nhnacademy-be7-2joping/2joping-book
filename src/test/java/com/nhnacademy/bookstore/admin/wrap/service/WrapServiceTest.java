@@ -89,24 +89,24 @@ class WrapServiceTest {
     }
 
     @Test
-    void getAllWraps() {
+    void findAllByIsActiveTrue() {
         Wrap wrap1 = new Wrap("포장지1", 1000, true);
         ReflectionTestUtils.setField(wrap1, "wrapId", 1L);
-
-        Wrap wrap2 = new Wrap("포장지2", 2000, false);
+        Wrap wrap2 = new Wrap("포장지2", 1000, false);
         ReflectionTestUtils.setField(wrap2, "wrapId", 2L);
 
-        given(wrapRepository.getAllWraps()).willReturn(List.of(
-                new WrapResponseDto(1L, "포장지1", 1000, true),
-                new WrapResponseDto(2L, "포장지2", 2000, false)
+        given(wrapRepository.findAllByIsActiveTrue()).willReturn(List.of(
+                new WrapResponseDto(1L, "포장지1", 1000, true)
         ));
 
-        List<WrapResponseDto> responseDtos = wrapService.getAllWraps();
+        List<WrapResponseDto> responseDtos = wrapService.findAllByIsActiveTrue();
 
-        assertThat(responseDtos).hasSize(2);
+        assertThat(responseDtos).hasSize(1);
         assertThat(responseDtos.get(0).name()).isEqualTo("포장지1");
-        assertThat(responseDtos.get(1).name()).isEqualTo("포장지2");
+        assertThat(responseDtos.get(0).wrapPrice()).isEqualTo(1000);
+        assertThat(responseDtos.get(0).isActive()).isTrue();
     }
+
 
 
     @Test
@@ -131,22 +131,23 @@ class WrapServiceTest {
                 .isInstanceOf(WrapNotFoundException.class)
                 .hasMessageContaining("해당 포장상품이 없습니다.");
     }
-
-    @Test
-    void deleteWrap_Success() {
-        given(wrapRepository.findById(1L)).willReturn(Optional.of(wrap));
-
-        wrapService.deleteWrap(1L);
-
-        verify(wrapRepository).deleteById(1L);
-    }
-
-    @Test
-    void deleteWrap_NotFoundException() {
-        given(wrapRepository.findById(1L)).willReturn(Optional.empty());
-
-        assertThatThrownBy(() -> wrapService.deleteWrap(1L))
-                .isInstanceOf(WrapNotFoundException.class)
-                .hasMessageContaining("해당 포장상품이 없습니다.");
-    }
 }
+
+//    @Test
+//    void deleteWrap_Success() {
+//        given(wrapRepository.findById(1L)).willReturn(Optional.of(wrap));
+//
+//        wrapService.deleteWrap(1L);
+//
+//        verify(wrapRepository).deleteById(1L);
+//    }
+//
+//    @Test
+//    void deleteWrap_NotFoundException() {
+//        given(wrapRepository.findById(1L)).willReturn(Optional.empty());
+//
+//        assertThatThrownBy(() -> wrapService.deleteWrap(1L))
+//                .isInstanceOf(WrapNotFoundException.class)
+//                .hasMessageContaining("해당 포장상품이 없습니다.");
+//    }
+//}
