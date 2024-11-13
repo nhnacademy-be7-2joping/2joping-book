@@ -47,8 +47,8 @@ public class BookController {
      * @return 카테고리로 조회한 도서와 상태 코드를 담은 응답
      */
     @Operation(summary = "카테고리로 도서 조회", description = "카테고리별 도서를 조회합니다.")
-    @GetMapping("/books/get/category/{categoryId}")// 임시로 설정해둔거
-    public ResponseEntity<Page<BookSimpleResponseDto>> getBooksByCategoryId(@PathVariable Long categoryId,
+    @GetMapping("/books/get/category/{category-id}")// 임시로 설정해둔거
+    public ResponseEntity<Page<BookSimpleResponseDto>> getBooksByCategoryId(@PathVariable("category-id") Long categoryId,
                                                                             @PageableDefault(size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<BookSimpleResponseDto> books = bookService.getBooksByCategoryId(pageable,categoryId);
         return ResponseEntity.status(HttpStatus.OK).body(books);
@@ -60,8 +60,8 @@ public class BookController {
      * @return 기여자로 조회한 상태 코드를 담은 응답
      */
     @Operation(summary = "기여자로 도서 조회", description = "기여자별 도서를 조회합니다.")
-    @GetMapping("/books/get/contributor/{contributorId}")// 임시로 설정해둔거
-    public ResponseEntity<Page<BookSimpleResponseDto>> getBooksByContributorId(@PathVariable Long contributorId,
+    @GetMapping("/books/get/contributor/{contributor-id}")// 임시로 설정해둔거
+    public ResponseEntity<Page<BookSimpleResponseDto>> getBooksByContributorId(@PathVariable("contributor-id") Long contributorId,
                                                                                @PageableDefault(size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<BookSimpleResponseDto> books = bookService.getBooksByContributorId(pageable, contributorId);
         return ResponseEntity.status(HttpStatus.OK).body(books);
@@ -73,8 +73,8 @@ public class BookController {
      * @return 특정 도서와 상태 코드를 담은 응답
      */
     @Operation(summary = "특정 도서 상세 조회", description = "특정 도서의 상세 정보를 조회합니다.")
-    @GetMapping("/books/get/book/{bookId}")
-    public ResponseEntity<BookResponseDto> getBookByBookId(@PathVariable Long bookId) {
+    @GetMapping("/books/get/book/{book-id}")
+    public ResponseEntity<BookResponseDto> getBookByBookId(@PathVariable("book-id") Long bookId) {
         BookResponseDto book = bookService.getBookById(bookId);
         return ResponseEntity.status(HttpStatus.OK).body(book);
     }

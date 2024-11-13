@@ -108,8 +108,18 @@ class WrapControllerTest {
     @Test
     void deleteWrap() throws Exception {
         doNothing().when(wrapService).deleteWrap(anyLong());
+        List<WrapResponseDto> wrapList = List.of(
+                new WrapResponseDto(1L, "포장 상품1", 1000, true),
+                new WrapResponseDto(2L, "포장 상품2", 2000, false)
+        );
+        when(wrapService.getAllWraps()).thenReturn(wrapList);
 
         mockMvc.perform(delete("/api/v1/wraps/{wrap-id}", 1L))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(wrapList.size()))
+                .andExpect(jsonPath("$[0].name").value("포장 상품1"))
+                .andExpect(jsonPath("$[1].name").value("포장 상품2"));
     }
+
 }

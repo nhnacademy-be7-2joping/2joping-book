@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.shipment.repository.impl;
 
 import com.nhnacademy.bookstore.shipment.dto.response.ShipmentPolicyResponseDto;
+import com.nhnacademy.bookstore.shipment.dto.response.ShippingFeeResponseDto;
 import com.nhnacademy.bookstore.shipment.entity.QShipmentPolicy;
 import com.nhnacademy.bookstore.shipment.entity.ShipmentPolicy;
 import com.nhnacademy.bookstore.shipment.repository.ShipmentPolicyRepositoryCustom;
@@ -30,6 +31,20 @@ public class ShipmentPolicyRepositoryImpl extends QuerydslRepositorySupport impl
                         shipmentPolicy.shippingFee,
                         shipmentPolicy.isActive))
                 .where(shipmentPolicy.isActive.isTrue())
+                .fetch();
+    }
+
+    @Override
+    public List<ShippingFeeResponseDto> findActiveShippingFee(Boolean isLogin) {
+        QShipmentPolicy shipmentPolicy = QShipmentPolicy.shipmentPolicy;
+
+        return from(shipmentPolicy)
+                .select(Projections.constructor(ShippingFeeResponseDto.class,
+                        shipmentPolicy.shipmentPolicyId,
+                        shipmentPolicy.minOrderAmount,
+                        shipmentPolicy.shippingFee))
+                .where(shipmentPolicy.isActive.isTrue()
+                        .and(shipmentPolicy.isMemberOnly.eq(isLogin)))
                 .fetch();
     }
 }

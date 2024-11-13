@@ -1,14 +1,15 @@
 package com.nhnacademy.bookstore.shipment.controller;
 
+import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
 import com.nhnacademy.bookstore.shipment.dto.request.ShipmentPolicyRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.response.ShipmentPolicyResponseDto;
+import com.nhnacademy.bookstore.shipment.dto.response.ShippingFeeResponseDto;
 import com.nhnacademy.bookstore.shipment.service.ShipmentPolicyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -77,7 +78,7 @@ public class ShipmentPolicyController {
             @ApiResponse(responseCode = "404", description = "배송 정책을 찾을 수 없음")
     })
     @GetMapping("/{shipmentPolicyId}")
-    public ResponseEntity<ShipmentPolicyResponseDto> getShipmentPolicy(@PathVariable @Positive Long shipmentPolicyId) {
+    public ResponseEntity<ShipmentPolicyResponseDto> getShipmentPolicy(@PathVariable @ValidPathVariable Long shipmentPolicyId) {
         ShipmentPolicyResponseDto responseDto = shipmentPolicyService.getShipmentPolicy(shipmentPolicyId);
         return ResponseEntity.ok(responseDto);
     }
@@ -97,7 +98,7 @@ public class ShipmentPolicyController {
     })
     @PutMapping("/{shipmentPolicyId}")
     public ResponseEntity<ShipmentPolicyResponseDto> updateShipmentPolicy(
-            @PathVariable @Positive Long shipmentPolicyId,
+            @PathVariable @ValidPathVariable Long shipmentPolicyId,
             @Valid @RequestBody ShipmentPolicyRequestDto requestDto) {
         ShipmentPolicyResponseDto responseDto = shipmentPolicyService.updateShipmentPolicy(shipmentPolicyId, requestDto);
         return ResponseEntity.ok(responseDto);
@@ -115,7 +116,7 @@ public class ShipmentPolicyController {
             @ApiResponse(responseCode = "404", description = "배송 정책을 찾을 수 없음")
     })
     @PutMapping("/{shipmentPolicyId}/deactivate")
-    public ResponseEntity<Void> deactivateShipmentPolicy(@PathVariable @Positive Long shipmentPolicyId) {
+    public ResponseEntity<Void> deactivateShipmentPolicy(@PathVariable @ValidPathVariable Long shipmentPolicyId) {
         shipmentPolicyService.deactivateShipmentPolicy(shipmentPolicyId);
         return ResponseEntity.ok().build();
     }
@@ -132,8 +133,25 @@ public class ShipmentPolicyController {
             @ApiResponse(responseCode = "404", description = "배송 정책을 찾을 수 없음")
     })
     @PutMapping("/{shipmentPolicyId}/activate")
-    public ResponseEntity<Void> activateShipmentPolicy(@PathVariable @Positive Long shipmentPolicyId) {
+    public ResponseEntity<Void> activateShipmentPolicy(@PathVariable @ValidPathVariable Long shipmentPolicyId) {
         shipmentPolicyService.activateShipmentPolicy(shipmentPolicyId);
         return ResponseEntity.ok().build();
     }
+
+    /**
+     * 모든 활성화된 배송 정책 중 회원, 비회원 여부에 따라 구분된 배송비를 조회하는 메서드.
+     *
+     * @return 활성화된 모든 배송 정책 중 회원 또는 비회원 배송비 목록을 포함한 ResponseEntity
+     */
+    @Operation(
+            summary = "Get Shipping Fees by Member Status", description = "회원여부에 따른 배송비 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Shipping policies successfully retrieved")
+    })
+    @GetMapping("/shipping-fee")
+    public ResponseEntity<List<ShippingFeeResponseDto>> getShippingFee(@RequestParam("isLogin") Boolean isLogin) {
+        List<ShippingFeeResponseDto> responseDtos = shipmentPolicyService.getShippingFee(isLogin);
+        return ResponseEntity.ok(responseDtos);
+    }
+
 }

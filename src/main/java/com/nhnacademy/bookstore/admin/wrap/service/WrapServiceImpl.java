@@ -4,24 +4,14 @@ import com.nhnacademy.bookstore.admin.wrap.dto.WrapRequestDto;
 import com.nhnacademy.bookstore.admin.wrap.dto.WrapResponseDto;
 import com.nhnacademy.bookstore.admin.wrap.entity.Wrap;
 import com.nhnacademy.bookstore.admin.wrap.repository.WrapRepository;
-import com.nhnacademy.bookstore.common.error.exception.base.ConflictException;
-import com.nhnacademy.bookstore.common.error.exception.base.NotFoundException;
-import com.nhnacademy.bookstore.common.error.exception.bookset.tag.TagNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.wrap.WrapAlreadyExistException;
 import com.nhnacademy.bookstore.common.error.exception.wrap.WrapNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import com.nhnacademy.bookstore.shipment.entity.QShipmentPolicy;
-import com.nhnacademy.bookstore.shipment.repository.ShipmentPolicyRepositoryCustom;
-import com.querydsl.core.types.Projections;
-import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
-import java.util.List;
 
 /**
  * 포장 정책 서비스 구현
