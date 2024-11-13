@@ -20,17 +20,14 @@ public class Wrap {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "wrap_id")
     private Long wrapId;
 
-    @Column(name = "name", unique = true)
+    @Column(unique = true)
     private String name;
 
-    @Column(name = "wrap_price")
     @Positive
     private int wrapPrice;
 
-    @Column(name = "is_active")
     private boolean isActive = true;
 
     public Wrap(String name, int wrapPrice, boolean isActive) {

@@ -4,9 +4,8 @@ import com.nhnacademy.bookstore.admin.wrap.dto.WrapRequestDto;
 import com.nhnacademy.bookstore.admin.wrap.dto.WrapResponseDto;
 import com.nhnacademy.bookstore.admin.wrap.entity.Wrap;
 import com.nhnacademy.bookstore.admin.wrap.repository.WrapRepository;
-import com.nhnacademy.bookstore.admin.wrap.service.WrapServiceImpl;
-import com.nhnacademy.bookstore.common.error.exception.base.ConflictException;
-import com.nhnacademy.bookstore.common.error.exception.base.NotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.wrap.WrapAlreadyExistException;
+import com.nhnacademy.bookstore.common.error.exception.wrap.WrapNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -61,8 +60,8 @@ class WrapServiceTest {
         given(wrapRepository.findByName(requestDto.name())).willReturn(Optional.of(wrap));
 
         assertThatThrownBy(() -> wrapService.createWrap(requestDto))
-                .isInstanceOf(ConflictException.class)
-                .hasMessageContaining("이미 존재하는 포장상품 입니다.");
+                .isInstanceOf(WrapAlreadyExistException.class)
+                .hasMessageContaining("포장 상품이 이미 존재합니다.");
 
         verify(wrapRepository, never()).save(any(Wrap.class)); // 호출되지 않은 것을 확인
     }
@@ -85,18 +84,22 @@ class WrapServiceTest {
         given(wrapRepository.findById(anyLong())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> wrapService.getWrap(1L))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessageContaining("존재하지 않는 포장상품 입니다.");
+                .isInstanceOf(WrapNotFoundException.class)
+                .hasMessageContaining("해당 포장상품이 없습니다");
     }
 
     @Test
     void getAllWraps() {
-        ReflectionTestUtils.setField(wrap, "wrapId", 1L);
-        Wrap wrap2 = new Wrap("포장지2", 2000, false);
-        ReflectionTestUtils.setField(wrap, "wrapId", 2L);
+        Wrap wrap1 = new Wrap("포장지1", 1000, true);
+        ReflectionTestUtils.setField(wrap1, "wrapId", 1L);
 
-        List<Wrap> wraps = List.of( wrap, wrap2);
-        given(wrapRepository.findAll()).willReturn(wraps);
+        Wrap wrap2 = new Wrap("포장지2", 2000, false);
+        ReflectionTestUtils.setField(wrap2, "wrapId", 2L);
+
+        given(wrapRepository.getAllWraps()).willReturn(List.of(
+                new WrapResponseDto(1L, "포장지1", 1000, true),
+                new WrapResponseDto(2L, "포장지2", 2000, false)
+        ));
 
         List<WrapResponseDto> responseDtos = wrapService.getAllWraps();
 
@@ -104,6 +107,7 @@ class WrapServiceTest {
         assertThat(responseDtos.get(0).name()).isEqualTo("포장지1");
         assertThat(responseDtos.get(1).name()).isEqualTo("포장지2");
     }
+
 
     @Test
     void updateWrap_Success() {
@@ -124,8 +128,8 @@ class WrapServiceTest {
         given(wrapRepository.findById(1L)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> wrapService.updateWrap(1L, requestDto))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessageContaining("존재하지 않는 포장상품입니다.");
+                .isInstanceOf(WrapNotFoundException.class)
+                .hasMessageContaining("해당 포장상품이 없습니다.");
     }
 
     @Test
@@ -142,7 +146,7 @@ class WrapServiceTest {
         given(wrapRepository.findById(1L)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> wrapService.deleteWrap(1L))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessageContaining("존재하지 않는 포장상품입니다.");
+                .isInstanceOf(WrapNotFoundException.class)
+                .hasMessageContaining("해당 포장상품이 없습니다.");
     }
 }

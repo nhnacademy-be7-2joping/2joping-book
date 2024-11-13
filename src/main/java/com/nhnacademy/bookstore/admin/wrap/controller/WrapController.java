@@ -3,6 +3,7 @@ package com.nhnacademy.bookstore.admin.wrap.controller;
 import com.nhnacademy.bookstore.admin.wrap.dto.WrapRequestDto;
 import com.nhnacademy.bookstore.admin.wrap.dto.WrapResponseDto;
 import com.nhnacademy.bookstore.admin.wrap.service.WrapService;
+import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -32,16 +33,16 @@ public class WrapController {
     private final WrapService wrapService;
 
     /**
-     * 포장 정책 생성
+     * 포장상품 생성
      *
-     * 포장 정책을 새로 생성합니다.
+     * 포장상품을 새로 생성합니다.
      *
-     * @param requestDto 포장 정책 생성 요청 데이터
+     * @param requestDto 포장상품 생성 요청 데이터
      * @return 201 Created 상태
      */
-    @Operation(summary = "포장 정책 생성", description = "새로운 포장 정책을 생성합니다.")
+    @Operation(summary = "포장상품 생성", description = "새로운 포장상품을 생성합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "포장 정책 생성 성공"),
+            @ApiResponse(responseCode = "201", description = "포장상품 생성 성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
     })
     @PostMapping
@@ -51,31 +52,31 @@ public class WrapController {
     }
 
     /**
-     * 특정 포장 정책 조회
+     * 특정 포장상품 조회
      *
-     * @param wrapId 조회할 포장 정책의 ID
-     * @return 포장 정책의 상세 정보
+     * @param wrapId 조회할 포장상품의 ID
+     * @return 포장상품의 상세 정보
      */
-    @Operation(summary = "포장 정책 조회", description = "특정 포장 정책의 상세 정보를 조회합니다.")
+    @Operation(summary = "포장상품 조회", description = "특정 포장상품의 상세 정보를 조회합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "포장 정책 조회 성공"),
-            @ApiResponse(responseCode = "404", description = "포장 정책을 찾을 수 없음")
+            @ApiResponse(responseCode = "200", description = "포장상품 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "포장상품을 찾을 수 없음")
     })
     @GetMapping("/{wrap-id}")
-    public ResponseEntity<WrapResponseDto> getWrap(@PathVariable("wrap-id") @Positive Long wrapId) {
+    public ResponseEntity<WrapResponseDto> getWrap(@PathVariable("wrap-id") @ValidPathVariable Long wrapId) {
         WrapResponseDto wrap = wrapService.getWrap(wrapId);
         return ResponseEntity.ok(wrap);
     }
 
     /**
-     * 전체 포장 정책 목록 조회
+     * 전체 포장상품 목록 조회
      *
-     * 모든 포장 정책을 조회합니다.
+     * 모든 포장상품을 조회합니다.
      *
-     * @return 포장 정책 목록
+     * @return 포장상품 목록
      */
-    @Operation(summary = "전체 포장 정책 목록 조회", description = "모든 포장 정책을 조회합니다.")
-    @ApiResponse(responseCode = "200", description = "포장 정책 목록 조회 성공")
+    @Operation(summary = "전체 포장상품 목록 조회", description = "모든 포장상품을 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "포장상품 목록 조회 성공")
     @GetMapping("/list")
     public ResponseEntity<List<WrapResponseDto>> getAllWraps() {
         List<WrapResponseDto> wrap = wrapService.getAllWraps();
@@ -83,17 +84,17 @@ public class WrapController {
     }
 
     /**
-     * 포장 정책 수정
+     * 포장상품 수정
      *
-     * 특정 포장 정책을 수정합니다.
+     * 특정 포장상품을 수정합니다.
      *
-     * @param wrapId 수정할 포장 정책의 ID
-     * @return 수정된 포장 정책 정보
+     * @param wrapId 수정할 포장상품의 ID
+     * @return 수정된 포장상품 정보
      */
-    @Operation(summary = "포장 정책 수정", description = "특정 포장 정책을 수정합니다.")
+    @Operation(summary = "포장상품 수정", description = "특정 포장상품을 수정합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "포장 정책 수정 성공"),
-            @ApiResponse(responseCode = "404", description = "포장 정책을 찾을 수 없음")
+            @ApiResponse(responseCode = "200", description = "포장상품 수정 성공"),
+            @ApiResponse(responseCode = "404", description = "포장상품을 찾을 수 없음")
     })
     @PutMapping("/{wrap-id}")
     public ResponseEntity<WrapResponseDto> updateWrap(
@@ -106,22 +107,23 @@ public class WrapController {
 
 
     /**
-     * 포장 정책 삭제
+     * 포장상품 삭제
      *
-     * 특정 포장 정책을 삭제합니다.
+     * 특정 포장상품을 삭제합니다.
      *
-     * @param wrapId 삭제할 포장 정책의 ID
+     * @param wrapId 삭제할 포장상품의 ID
      * @return 상태 204 (No Content)
      */
-    @Operation(summary = "포장 정책 삭제", description = "특정 포장 정책을 삭제합니다.")
+    @Operation(summary = "포장상품 삭제", description = "특정 포장상품을 삭제합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "포장 정책 삭제 성공"),
-            @ApiResponse(responseCode = "404", description = "포장 정책을 찾을 수 없음")
+            @ApiResponse(responseCode = "200", description = "포장상품 삭제 후 목록 반환 성공"),
+            @ApiResponse(responseCode = "404", description = "포장상품을 찾을 수 없음")
     })
 
     @DeleteMapping("/{wrap-id}")
-    public ResponseEntity<Void> deleteWrap(@PathVariable("wrap-id") Long wrapId) {
+    public ResponseEntity<List<WrapResponseDto>> deleteWrap(@PathVariable("wrap-id") Long wrapId) {
         wrapService.deleteWrap(wrapId);
-        return ResponseEntity.noContent().build();
+        List<WrapResponseDto> wrapList = wrapService.getAllWraps();
+        return ResponseEntity.ok(wrapList);
     }
 }
