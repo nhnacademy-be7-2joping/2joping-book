@@ -72,8 +72,5 @@ public class Review {
     @Embeddable
     public static class ReviewId implements Serializable {
         private Long orderDetailId;
-        private Long customerId;
-        private Long bookId;
-
     }
 }
