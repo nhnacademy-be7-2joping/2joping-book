@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstore.user.member.entity;
 
-import com.nhnacademy.bookstore.user.enums.Gender;
+import com.nhnacademy.bookstore.coupon.entity.member.MemberCoupon;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import com.nhnacademy.bookstore.user.enums.Gender;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
