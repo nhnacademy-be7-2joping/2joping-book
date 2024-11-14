@@ -28,8 +28,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PointServiceImpl implements PointService {
 
-    private static final int REVIEW_POINT = 500;
-
     private final PointTypeRepository pointTypeRepository;
     private final PointHistoryRepository pointHistoryRepository;
     private final MemberRepository memberRepository;
