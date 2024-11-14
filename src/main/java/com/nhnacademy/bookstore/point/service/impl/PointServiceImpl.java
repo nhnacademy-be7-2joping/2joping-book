@@ -4,6 +4,7 @@ import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.point.SignUpPointPolicyNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
 import com.nhnacademy.bookstore.orderset.order.entity.Order;
+import com.nhnacademy.bookstore.orderset.order.repository.OrderRepository;
 import com.nhnacademy.bookstore.point.dto.request.PointHistoryDto;
 import com.nhnacademy.bookstore.point.dto.request.PointUseRequest;
 import com.nhnacademy.bookstore.point.entity.PointHistory;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,6 +33,7 @@ public class PointServiceImpl implements PointService {
     private final PointTypeRepository pointTypeRepository;
     private final PointHistoryRepository pointHistoryRepository;
     private final MemberRepository memberRepository;
+    private final OrderRepository orderRepository;
 
     @Transactional
     @Override
@@ -51,8 +54,8 @@ public class PointServiceImpl implements PointService {
 
     // TODO: 결제 시 적립 포인트 관련 메서드
     // 멤버가 주문 완료했을 때
-    // 어떤 주문인지 주문 정보를 찾고
     // 어떤 멤버인지 멤버 정보를 찾고
+    // 어떤 주문인지 주문 정보를 찾고
     // 해당 주문에 대해서 구매 적립 포인트 추가
     // 추가 완료 return
     @Transactional
@@ -65,14 +68,16 @@ public class PointServiceImpl implements PointService {
                         null
                 ));
 
-        PointType reviewPointType = pointTypeRepository.findByNameAndIsActiveTrue("도서 결제")
-                .orElseThrow(() -> new EntityNotFoundException("리뷰 포인트 정책을 찾을 수 없습니다."));
+        // 주문 정보를 통해서 총 가격 구하기
+        // 해당 주문 정보에 대한 가격으로 구매 적립 포인트 추가
+        PointType orderPointType = pointTypeRepository.findByNameAndIsActiveTrue("도서 결제")
+                .orElseThrow(() -> new EntityNotFoundException("주문 포인트 정책을 찾을 수 없습니다."));
 
-//        Order order = orderRepository.findByOrderId(orderId);
-//        int totalPrice = order.getTotalPrice();
-//
-//        int amount = (int) Math.floor(totalPrice);
-//        member.addPoint(amount);
+        Order order = orderRepository.findByOrderId(orderId);
+        int totalPrice = order.getTotalPrice();
+
+        int amount = (int) Math.floor(totalPrice);
+        member.addPoint(amount);
     }
 
     @Transactional
@@ -86,7 +91,7 @@ public class PointServiceImpl implements PointService {
                 ));
 
         // TODO: 주문 시에 포인트 사용할 경우 포인트 사용 요청에 담겨 들어온 포인트 양만큼 멤버 포인트 삭제
-//        member.usePoint(request.pointAmount());
+        member.usePoint(request.pointAmount());
 
         PointType usePointType = pointTypeRepository.findByNameAndIsActiveTrue("포인트사용")
                 .orElseThrow(() -> new EntityNotFoundException("포인트 사용 정책을 찾을 수 없습니다."));
