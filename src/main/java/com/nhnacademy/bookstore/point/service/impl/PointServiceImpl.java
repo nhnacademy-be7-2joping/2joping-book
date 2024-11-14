@@ -15,6 +15,7 @@ import com.nhnacademy.bookstore.point.repository.PointTypeRepository;
 import com.nhnacademy.bookstore.point.service.PointService;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
+import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,13 +37,17 @@ public class PointServiceImpl implements PointService {
     @Transactional
     @Override
     public void awardReviewPoint(Long customerId, Long orderDetailId) {
+        Member member = memberRepository.findById(customerId)
+                .orElseThrow(() -> new MemberNotFoundException(
+                        "회원을 찾을 수 없습니다.",
+                        RedirectType.NONE,
+                        null
+                ));
+
         PointType reviewPointType = pointTypeRepository.findByNameAndIsActiveTrue("리뷰작성")
                 .orElseThrow(() -> new EntityNotFoundException("리뷰 포인트 정책을 찾을 수 없습니다."));
 
-        Member member = memberRepository.findById(customerId)
-                .orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
-
-        Integer pointAmount = reviewPointType.getAccVal();
+        int pointAmount = reviewPointType.getAccVal();
 
         member.addPoint(pointAmount);
 
@@ -65,16 +70,17 @@ public class PointServiceImpl implements PointService {
                         null
                 ));
 
+        MemberTier memberTier = member.getTier();
+        String tierName = memberTier.getTierName();
+
         // 주문 정보를 통해서 총 가격 구하기
         // 해당 주문 정보에 대한 가격으로 구매 적립 포인트 추가
-        PointType orderPointType = pointTypeRepository.findByNameAndIsActiveTrue("도서 결제")
-                .orElseThrow(() -> new EntityNotFoundException("주문 포인트 정책을 찾을 수 없습니다."));
-
+        // 순수금액 = 주문금액 - (쿠폰 + 배송비 + 취소금액 + 포장비)
         Order order = orderRepository.findByOrderId(orderId);
-        int totalPrice = order.getTotalPrice();
 
-        int amount = (int) Math.floor(totalPrice);
-        member.addPoint(amount);
+        int pointAmount = getPointAmount(order, tierName, member);
+
+        member.addPoint(pointAmount);
     }
 
     @Transactional
@@ -123,5 +129,26 @@ public class PointServiceImpl implements PointService {
                 .build();
 
         pointHistoryRepository.save(pointHistory);
+    }
+
+    private static int getPointAmount(Order order, String tierName, Member member) {
+        int totalPrice = order.getTotalPrice();
+        int couponSalePrice = order.getCouponSalePrice();
+        int shippingFee = order.getShippingFee();
+
+        int pointAmount = totalPrice - (couponSalePrice + shippingFee);
+
+        if (tierName.equals("일반")) {
+            pointAmount = pointAmount * 1 / 100;
+        } else if (member.getTier().equals("로얄")) {
+            pointAmount = pointAmount * 2 / 100;
+        } else if (member.getTier().equals("골드")) {
+            pointAmount = pointAmount * 3 / 100;
+        } else if (member.getTier().equals("플래티넘")) {
+            pointAmount = pointAmount * 4 / 100;
+        } else {
+            pointAmount = 0;
+        }
+        return pointAmount;
     }
 }
