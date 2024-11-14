@@ -40,7 +40,7 @@ public class PointType {
         this.accVal = accVal;
     }
 
-//    public void deactivate() {
-//        this.isActive = false;
-//    }
+    public void deactivate() {
+        this.isActive = false;
+    }
 }
