@@ -2,6 +2,7 @@ package com.nhnacademy.bookstore.coupon.service;
 
 
 import com.nhnacademy.bookstore.coupon.dto.response.CouponPolicyResponseDto;
+import com.nhnacademy.bookstore.coupon.dto.response.CouponResponseDto;
 
 import java.util.List;
 
@@ -15,5 +16,7 @@ import java.util.List;
  * @author Luha
  */
 public interface CouponPolicyService {
+
+    CouponResponseDto create();
     List<CouponPolicyResponseDto> getAllCouponPolicies();
 }
