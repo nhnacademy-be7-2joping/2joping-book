@@ -48,5 +48,6 @@ public class CouponPolicyRepositoryImpl implements CouponPolicyQuerydslRepositor
                         couponPolicy.maxDiscount))
                 .from(couponPolicy)
                 .where(couponPolicy.isActive.isTrue())
-                .fetch();    }
+                .fetch();
+    }
 }
