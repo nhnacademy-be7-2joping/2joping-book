@@ -1,8 +1,12 @@
 package com.nhnacademy.bookstore.coupon.service.impl;
 
 
+import com.nhnacademy.bookstore.common.error.enums.RedirectType;
+import com.nhnacademy.bookstore.common.error.exception.coupon.CouponPolicyNotFoundException;
+import com.nhnacademy.bookstore.coupon.dto.request.CreateCouponPolicyRequest;
+import com.nhnacademy.bookstore.coupon.dto.request.UpdateCouponPolicyRequest;
 import com.nhnacademy.bookstore.coupon.dto.response.CouponPolicyResponseDto;
-import com.nhnacademy.bookstore.coupon.dto.response.CouponResponseDto;
+import com.nhnacademy.bookstore.coupon.entity.CouponPolicy;
 import com.nhnacademy.bookstore.coupon.repository.policy.CouponPolicyRepository;
 import com.nhnacademy.bookstore.coupon.service.CouponPolicyService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +19,6 @@ import java.util.List;
 
 /**
  * CouponPolicyServiceImpl
- *
  * 이 클래스는 쿠폰 정책에 대한 비즈니스 로직을 구현하는 서비스 클래스입니다.
  * 활성화된 모든 쿠폰 정책을 조회하는 기능을 제공합니다.
  *
@@ -28,9 +31,23 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
     private final CouponPolicyRepository couponPolicyRepository;
 
+    @Override
+    public Long createCouponPolicy(CreateCouponPolicyRequest request) {
+        CouponPolicy couponPolicy = CouponPolicy.builder()
+                .name(request.name())
+                .discountType(request.discountType())
+                .discountValue(request.discountValue())
+                .usageLimit(request.usageLimit())
+                .duration(request.duration())
+                .detail(request.detail())
+                .maxDiscount(request.maxDiscount())
+                .isActive(request.isActive())
+                .build();
+        return couponPolicyRepository.save(couponPolicy).getCouponPolicyId();
+    }
 
     @Override
-    public CouponResponseDto create() {
+    public CouponPolicyResponseDto getCouponPolicy(CouponPolicyResponseDto request) {
         return null;
     }
 
@@ -49,5 +66,24 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
             responseDtos = Collections.emptyList();
         }
         return responseDtos;
+    }
+
+    @Override
+    public Long updateCouponPolicy(Long id, UpdateCouponPolicyRequest request) {
+        CouponPolicy couponPolicy = couponPolicyRepository.findByCouponPolicyId(id)
+                .orElseThrow(() -> new CouponPolicyNotFoundException(
+                        "쿠폰 정책을 찾을 수 없습니다.",
+                        RedirectType.REDIRECT,
+                        "/api/v1/coupon/policies"
+                ));
+
+        // TODO: 쿠폰 정책 업데이트 로직
+
+        return null;
+    }
+
+    @Override
+    public void deleteCouponPolicy(Long id) {
+        couponPolicyRepository.deleteByCouponPolicyId(id);
     }
 }
