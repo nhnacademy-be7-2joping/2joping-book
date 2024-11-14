@@ -2,6 +2,7 @@ package com.nhnacademy.bookstore.coupon.service.impl;
 
 
 import com.nhnacademy.bookstore.coupon.dto.response.CouponPolicyResponseDto;
+import com.nhnacademy.bookstore.coupon.dto.response.CouponResponseDto;
 import com.nhnacademy.bookstore.coupon.repository.policy.CouponPolicyRepository;
 import com.nhnacademy.bookstore.coupon.service.CouponPolicyService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,12 @@ import java.util.List;
 public class CouponPolicyServiceImpl implements CouponPolicyService {
 
     private final CouponPolicyRepository couponPolicyRepository;
+
+
+    @Override
+    public CouponResponseDto create() {
+        return null;
+    }
 
     /**
      * 활성화된 모든 쿠폰 정책을 조회하여 CouponPolicyResponseDto 목록으로 반환합니다.
