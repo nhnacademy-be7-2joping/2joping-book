@@ -44,10 +44,9 @@ public class PointServiceImpl implements PointService {
         Member member = memberRepository.findById(customerId)
                 .orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
 
-        Integer pointAmount = reviewPointType.getAccVal();
-
-        // TODO: 리뷰 작성 시 해당 멤버의 포인트 +500 로직 추가
         member.addPoint(REVIEW_POINT);
+
+        Integer pointAmount = reviewPointType.getAccVal();
 
         createPointHistory(reviewPointType, orderDetailId, null, customerId, pointAmount);
     }
