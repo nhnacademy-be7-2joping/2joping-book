@@ -20,7 +20,8 @@ public class AdminPointController {
     @PutMapping("/types/{id}")
     public ResponseEntity<PointTypeDto> updatePointType(
             @PathVariable Long id,
-            @RequestBody @Valid PointTypeDto request) {
+            @RequestBody @Valid PointTypeDto request
+    ) {
         return ResponseEntity.ok(pointTypeServiceImpl.updatePointType(id, request));
     }
 }
