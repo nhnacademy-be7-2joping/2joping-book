@@ -2,6 +2,7 @@ package com.nhnacademy.bookstore.user.memberStatus.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
  * @author Luha
  * @since 1.0
  */
+@Getter
 @Entity
 @Table(name = "member_status")
 @AllArgsConstructor
