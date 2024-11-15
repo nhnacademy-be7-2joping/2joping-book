@@ -2,19 +2,20 @@ package com.nhnacademy.bookstore.user.member.controller;
 
 
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
+import com.nhnacademy.bookstore.user.member.dto.response.GetAllMembersResponse;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
 import com.nhnacademy.bookstore.user.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 회원 정보 Crud 컨트롤러
@@ -46,5 +47,14 @@ public class MemberController {
 
         return ResponseEntity.ok(response);
 
+    }
+
+    // TODO: 전체 회원 조회 API
+    @GetMapping("")
+    public ResponseEntity<List<GetAllMembersResponse>> getAllMembers(
+            @RequestParam(name = "page", defaultValue = "0") @PositiveOrZero final int page
+    ) {
+        List<GetAllMembersResponse> responses = memberService.getAllMembers(page);
+        return ResponseEntity.ok(responses);
     }
 }
