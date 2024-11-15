@@ -4,9 +4,8 @@ import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryCreateReque
 import com.nhnacademy.bookstore.bookset.category.dto.request.UpdateCategoryRequest;
 import com.nhnacademy.bookstore.bookset.category.dto.response.GetAllCategoriesResponse;
 import com.nhnacademy.bookstore.bookset.category.dto.response.GetCategoryResponse;
-import com.nhnacademy.bookstore.bookset.category.dto.response.GetMiddleClassificationCategoriesResponse;
+import com.nhnacademy.bookstore.bookset.category.dto.response.GetParentCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.dto.response.UpdateCategoryResponse;
-import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public interface CategoryService {
 
     Long createCategory(CategoryCreateRequest request);
     GetCategoryResponse getCategory(Long categoryId);
-    List<GetMiddleClassificationCategoriesResponse> getMiddleClassificationCategories(Long categoryId);
+    List<GetParentCategoryResponse> getParentCategory(Long categoryId);
     List<GetAllCategoriesResponse> getAllCategories();
     UpdateCategoryResponse updateCategory(Long categoryId, UpdateCategoryRequest request);
     Long deleteCategory(Long categoryId);

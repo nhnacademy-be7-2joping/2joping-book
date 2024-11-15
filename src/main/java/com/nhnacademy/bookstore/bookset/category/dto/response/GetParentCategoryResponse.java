@@ -2,7 +2,7 @@ package com.nhnacademy.bookstore.bookset.category.dto.response;
 
 import com.nhnacademy.bookstore.bookset.category.entity.Category;
 
-public record GetMiddleClassificationCategoriesResponse(
+public record GetParentCategoryResponse(
 
         Long categoryId,
         Category parentCategory,
@@ -10,8 +10,8 @@ public record GetMiddleClassificationCategoriesResponse(
 
 ) {
 
-    public static GetMiddleClassificationCategoriesResponse from(Category category) {
-        return new GetMiddleClassificationCategoriesResponse(
+    public static GetParentCategoryResponse from(Category category) {
+        return new GetParentCategoryResponse(
                 category.getCategoryId(),
                 category.getParentCategory(),
                 category.getName()

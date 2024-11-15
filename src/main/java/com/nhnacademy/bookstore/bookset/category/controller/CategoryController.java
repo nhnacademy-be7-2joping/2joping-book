@@ -3,10 +3,8 @@ package com.nhnacademy.bookstore.bookset.category.controller;
 import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryCreateRequest;
 import com.nhnacademy.bookstore.bookset.category.dto.request.UpdateCategoryRequest;
 import com.nhnacademy.bookstore.bookset.category.dto.response.GetAllCategoriesResponse;
-import com.nhnacademy.bookstore.bookset.category.dto.response.GetCategoryResponse;
-import com.nhnacademy.bookstore.bookset.category.dto.response.GetMiddleClassificationCategoriesResponse;
+import com.nhnacademy.bookstore.bookset.category.dto.response.GetParentCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.dto.response.UpdateCategoryResponse;
-import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import com.nhnacademy.bookstore.bookset.category.service.CategoryService;
 import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
 import lombok.RequiredArgsConstructor;
@@ -54,10 +52,10 @@ public class CategoryController {
      * @return 조회한 전체 카테고리 리스트 DTO
      */
     @GetMapping("/categories/{categoryId}")
-    public ResponseEntity<List<GetMiddleClassificationCategoriesResponse>> getMiddleClassificationCategories(
+    public ResponseEntity<List<GetParentCategoryResponse>> getMiddleClassificationCategories(
             @ValidPathVariable @PathVariable Long categoryId
     ) {
-        List<GetMiddleClassificationCategoriesResponse> response = categoryService.getMiddleClassificationCategories(categoryId);
+        List<GetParentCategoryResponse> response = categoryService.getMiddleClassificationCategories(categoryId);
         return ResponseEntity.ok(response);
     }
 

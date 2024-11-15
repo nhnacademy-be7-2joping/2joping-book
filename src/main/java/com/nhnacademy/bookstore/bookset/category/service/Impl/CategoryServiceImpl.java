@@ -4,7 +4,7 @@ import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryCreateReque
 import com.nhnacademy.bookstore.bookset.category.dto.request.UpdateCategoryRequest;
 import com.nhnacademy.bookstore.bookset.category.dto.response.GetAllCategoriesResponse;
 import com.nhnacademy.bookstore.bookset.category.dto.response.GetCategoryResponse;
-import com.nhnacademy.bookstore.bookset.category.dto.response.GetMiddleClassificationCategoriesResponse;
+import com.nhnacademy.bookstore.bookset.category.dto.response.GetParentCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.dto.response.UpdateCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import com.nhnacademy.bookstore.bookset.category.repository.CategoryRepository;
@@ -69,7 +69,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<GetMiddleClassificationCategoriesResponse> getMiddleClassificationCategories(Long categoryId) {
+    public List<GetParentCategoryResponse> getParentCategory(Long categoryId) {
         Category childCategory = categoryRepository.findByCategoryId(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다."));
 
@@ -81,7 +81,7 @@ public class CategoryServiceImpl implements CategoryService {
         List<Category> childCategories = categoryRepository.findAllByParentCategory(parentCategory);
 
         return childCategories.stream()
-                .map(GetMiddleClassificationCategoriesResponse::from)
+                .map(GetParentCategoryResponse::from)
                 .toList();
     }
 
