@@ -58,7 +58,7 @@ public class MemberAddressServiceTest {
 
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
         when(memberAddressRepositroy.countByMemberId(memberId)).thenReturn(5);
-        when(memberAddressRepositroy.findByMemberIdAndIsDefaultAddressTrue(memberId)).thenReturn(null);
+        when(memberAddressRepositroy.findByMemberIdAndDefaultAddressTrue(memberId)).thenReturn(null);
         when(memberAddressRepositroy.findByMember_Id(memberId)).thenReturn(Collections.singletonList(new MemberAddress()));
 
         // when
@@ -69,7 +69,7 @@ public class MemberAddressServiceTest {
         assertFalse(result.isEmpty());
         verify(memberRepository).findById(memberId);
         verify(memberAddressRepositroy).countByMemberId(memberId);
-        verify(memberAddressRepositroy).findByMemberIdAndIsDefaultAddressTrue(memberId);
+        verify(memberAddressRepositroy).findByMemberIdAndDefaultAddressTrue(memberId);
         verify(memberAddressRepositroy).save(any(MemberAddress.class));
     }
 
@@ -162,7 +162,7 @@ public class MemberAddressServiceTest {
 
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
         when(memberAddressRepositroy.countByMemberId(memberId)).thenReturn(5);
-        when(memberAddressRepositroy.findByMemberIdAndIsDefaultAddressTrue(memberId)).thenReturn(existingDefaultAddress);
+        when(memberAddressRepositroy.findByMemberIdAndDefaultAddressTrue(memberId)).thenReturn(existingDefaultAddress);
         when(memberAddressRepositroy.findByMember_Id(memberId)).thenReturn(Collections.singletonList(existingDefaultAddress));
 
         // when
@@ -174,7 +174,7 @@ public class MemberAddressServiceTest {
         assertFalse(existingDefaultAddress.isDefaultAddress()); // 기존 주소의 기본 설정이 해제되었는지 확인
         verify(memberRepository).findById(memberId);
         verify(memberAddressRepositroy).countByMemberId(memberId);
-        verify(memberAddressRepositroy).findByMemberIdAndIsDefaultAddressTrue(memberId);
+        verify(memberAddressRepositroy).findByMemberIdAndDefaultAddressTrue(memberId);
         verify(memberAddressRepositroy).save(any(MemberAddress.class));
     }
 
@@ -199,6 +199,6 @@ public class MemberAddressServiceTest {
         List<MemberAddressResponseDto> result = memberAddressService.addMemberAddress(memberId, requestDto);
 
         assertNotNull(result);
-        verify(memberAddressRepositroy, never()).findByMemberIdAndIsDefaultAddressTrue(memberId);
+        verify(memberAddressRepositroy, never()).findByMemberIdAndDefaultAddressTrue(memberId);
     }
 }

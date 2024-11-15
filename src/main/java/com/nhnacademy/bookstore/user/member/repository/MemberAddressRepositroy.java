@@ -9,7 +9,7 @@ import java.util.List;
 public interface MemberAddressRepositroy  extends JpaRepository<MemberAddress, Long> {
     List<MemberAddress> findByMember_Id(long memberId);
     int countByMemberId(Long memberId);
-    MemberAddress findByMemberIdAndIsDefaultAddressTrue(Long memberId);
+    MemberAddress findByMemberIdAndDefaultAddressTrue(Long memberId);
 
 
 }
