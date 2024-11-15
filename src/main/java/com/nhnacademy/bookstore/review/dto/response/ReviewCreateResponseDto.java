@@ -1,7 +1,7 @@
 package com.nhnacademy.bookstore.review.dto.response;
 
+import java.sql.Timestamp;
 
-import java.time.LocalDateTime;
 
 public record ReviewCreateResponseDto(
         Long orderDetailId,
@@ -9,6 +9,6 @@ public record ReviewCreateResponseDto(
         String title,
         String text,
         String image, // 임시
-        LocalDateTime createdAt
+        Timestamp createdAt
 )
 {}

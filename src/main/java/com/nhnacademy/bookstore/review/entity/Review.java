@@ -8,7 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+
 
 /**
  * 리뷰 Entity
@@ -17,50 +19,45 @@ import java.time.LocalDateTime;
  * @date : 2024-11-12
  */
 
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "review")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class Review {
 
     @EmbeddedId
     private ReviewId reviewId;
 
     @MapsId("orderDetailId")
-    @OneToOne
-    @JoinColumn(name = "order_detail_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_detail_id")
     private OrderDetail orderDetail;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @ManyToOne
-    @JoinColumn(name = "book_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id")
     private Book book;
 
-
-    @Column(nullable = false, length = 255)
+    @Column(name = "title")
     private String title;
 
-    @Column(nullable = false)
+    @Column(name = "text")
     private String text;
 
-    @Column(nullable = false)
+    @Column(name = "rating_value", columnDefinition = "TINYINT")
     private int ratingValue;
 
-    @CreationTimestamp
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
+    @Column(name = "created_at", updatable = false)
+    private Timestamp createdAt;
 
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    @Column(name = "updated_at")
+    private Timestamp updatedAt;
 
+    @Column(name = "image_url")
     private String imageUrl;
 
 
@@ -72,16 +69,15 @@ public class Review {
         private Long orderDetailId;
     }
 
-    // Review 객체 생성 시 ReviewId 수동 설정 메서드 예시
-    public Review(OrderDetail orderDetail, Customer customer, Book book, String title, String text, int ratingValue) {
-        this.reviewId = new ReviewId(orderDetail.getOrderDetailId()); // ReviewId를 수동으로 설정
+    public Review(OrderDetail orderDetail, Customer customer, Book book, String title, String text, int ratingValue, String imageUrl) {
         this.orderDetail = orderDetail;
         this.customer = customer;
         this.book = book;
         this.title = title;
         this.text = text;
         this.ratingValue = ratingValue;
+        this.imageUrl = imageUrl;
+        this.createdAt= Timestamp.valueOf(LocalDateTime.now());
     }
-
 
 }

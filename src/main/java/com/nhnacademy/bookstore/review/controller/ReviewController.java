@@ -32,9 +32,9 @@ public class ReviewController {
     //생성
     @Operation(summary = "리뷰 등록", description = "새로운 리뷰를 등록합니다.")
     @PostMapping
-    public ResponseEntity<ReviewCreateResponseDto> registerReview(@RequestBody @Valid ReviewCreateRequestDto reviewCreateRequestDto) {
-        ReviewCreateResponseDto dto = reviewService.registerReview(reviewCreateRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+    public ResponseEntity<Void> registerReview(@RequestBody @Valid ReviewCreateRequestDto reviewCreateRequestDto) {
+        reviewService.registerReview(reviewCreateRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 

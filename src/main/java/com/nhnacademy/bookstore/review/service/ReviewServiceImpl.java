@@ -16,24 +16,26 @@ import com.nhnacademy.bookstore.review.repository.ReviewRepository;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final BookRepository bookRepository;
     private final MemberRepository memberRepository;
     private final OrderDetailRepository orderDetailRepository;
-
-    @Autowired
-    private ReviewMapper reviewMapper;
+    private final ReviewMapper reviewMapper;
 
 
+    @Transactional
     @Override
     public ReviewCreateResponseDto registerReview(ReviewCreateRequestDto reviewCreateRequestDto) {
         Book book = bookRepository.findById(reviewCreateRequestDto.bookId()).orElseThrow(() ->
@@ -45,22 +47,21 @@ public class ReviewServiceImpl implements ReviewService {
         OrderDetail orderDetail = orderDetailRepository.findById(reviewCreateRequestDto.orderDetailId()).orElseThrow(() ->
         new RuntimeException("에러")); // TODO 예외 처리 따로
 
-
-        Review.ReviewId reviewId = new Review.ReviewId(reviewCreateRequestDto.orderDetailId());
-
+        log.debug("orderDetailId: {}", reviewCreateRequestDto.orderDetailId());
 
         Review review = new Review(
-                reviewId,
+                new Review.ReviewId(reviewCreateRequestDto.orderDetailId()),
                 orderDetail,
                 customer,
                 book,
                 reviewCreateRequestDto.title(),
                 reviewCreateRequestDto.text(),
                 reviewCreateRequestDto.ratingValue(),
-                LocalDateTime.now(),
+                Timestamp.valueOf(LocalDateTime.now()),
                 null,
                 reviewCreateRequestDto.image() // imageUrl 설정
         );
+        log.debug("orderDetailId: {}", reviewCreateRequestDto.orderDetailId());
 
         Review savedReview = reviewRepository.save(review);
 

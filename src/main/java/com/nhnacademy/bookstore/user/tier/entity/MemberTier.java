@@ -34,7 +34,7 @@ public class MemberTier {
     @Column(nullable = false)
     private boolean status; // true: 활성, false: 비활성
 
-    @Column(name = "acc_rate", nullable = false)
+    @Column(name = "acc_rate", nullable = false, columnDefinition = "TINYINT")
     private int accRate;
 
     @Column(nullable = false, precision = 10, scale = 2)
