@@ -73,12 +73,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category childCategory = categoryRepository.findByCategoryId(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다."));
 
-        Long parentCategoryId = childCategory.getParentCategory().getCategoryId();
-
-        Category parentCategory = categoryRepository.findByCategoryId(parentCategoryId)
-                .orElseThrow(() -> new CategoryNotFoundException("부모 카테고리를 찾을 수 없습니다."));
-
-        return GetParentCategoryResponse.from(parentCategory);
+        return GetParentCategoryResponse.from(childCategory);
     }
 
     // TODO: GetAllCategoryResponse 구현
