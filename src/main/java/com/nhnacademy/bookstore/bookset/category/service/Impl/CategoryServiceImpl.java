@@ -70,7 +70,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<GetMiddleClassificationCategoriesResponse> getMiddleClassificationCategories(Long categoryId) {
-        Category parentCategory = categoryRepository.findByCategoryId(categoryId)
+        Category childCategory = categoryRepository.findByCategoryId(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다."));
+
+        Long parentCategoryId = childCategory.getParentCategory().getCategoryId();
+
+        Category parentCategory = categoryRepository.findByCategoryId(parentCategoryId)
                 .orElseThrow(() -> new CategoryNotFoundException("부모 카테고리를 찾을 수 없습니다."));
 
         List<Category> childCategories = categoryRepository.findAllByParentCategory(parentCategory);
