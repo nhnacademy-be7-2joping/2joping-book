@@ -5,6 +5,7 @@ import com.nhnacademy.bookstore.common.error.exception.user.member.MemberDuplica
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberStatusNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.tier.MemberTierNotFoundException;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
+import com.nhnacademy.bookstore.user.member.dto.response.GetAllMembersResponse;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
@@ -14,7 +15,12 @@ import com.nhnacademy.bookstore.user.memberStatus.repository.MemberStatusReposit
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.repository.MemberTierRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * MemberServiceImpl
@@ -29,9 +35,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
+    private static final int INITIAL_PAGE_SIZE = 10;
+
     private final MemberRepository memberRepository;
     private final MemberStatusRepository statusRepository;
     private final MemberTierRepository tierRepository;
+    private final MemberStatusRepository memberStatusRepository;
+    private final MemberTierRepository memberTierRepository;
 
     /**
      * 신규 회원을 등록하는 메서드.
@@ -97,5 +107,17 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.save(requestMember);
 
         return new MemberCreateSuccessResponseDto(member.getNickname());
+    }
+
+    // TODO: 전체 회원 조회 메서드 구현
+    @Transactional(readOnly = true)
+    @Override
+    public List<GetAllMembersResponse> getAllMembers(
+            final int page
+    ) {
+        final Pageable pageable = PageRequest.of(page, INITIAL_PAGE_SIZE);
+        return memberRepository.findAllByOrderByNicknameDesc(pageable).stream()
+                .map(GetAllMembersResponse::from)
+                .toList();
     }
 }
