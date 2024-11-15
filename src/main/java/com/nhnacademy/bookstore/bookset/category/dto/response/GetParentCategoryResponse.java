@@ -13,14 +13,19 @@ public record GetParentCategoryResponse(
 
 ) {
     public static GetParentCategoryResponse from(Category category) {
-        Long parentCategoryId = category.getParentCategory() != null
-                ? category.getParentCategory().getCategoryId()
-                : null;  // 부모 카테고리가 없을 경우 null 처리
+        Category parentCategory = category.getParentCategory();
+
+        Long parentOfParentCategoryId = null;
+        if (parentCategory != null) {
+            parentOfParentCategoryId = parentCategory.getParentCategory() != null
+                    ? parentCategory.getParentCategory().getCategoryId()
+                    : null;
+        }
 
         return new GetParentCategoryResponse(
-                category.getCategoryId(),
-                category.getName(),
-                parentCategoryId
+                parentCategory != null ? parentCategory.getCategoryId() : null,
+                parentCategory != null ? parentCategory.getName() : null,
+                parentOfParentCategoryId
         );
     }
 }
