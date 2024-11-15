@@ -21,7 +21,7 @@ public interface CategoryService {
 
     Long createCategory(CategoryCreateRequest request);
     GetCategoryResponse getCategory(Long categoryId);
-    List<GetParentCategoryResponse> getParentCategory(Long categoryId);
+    GetParentCategoryResponse getParentCategory(Long categoryId);
     List<GetAllCategoriesResponse> getAllCategories();
     UpdateCategoryResponse updateCategory(Long categoryId, UpdateCategoryRequest request);
     Long deleteCategory(Long categoryId);

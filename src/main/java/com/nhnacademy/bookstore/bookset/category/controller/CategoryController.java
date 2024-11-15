@@ -3,6 +3,7 @@ package com.nhnacademy.bookstore.bookset.category.controller;
 import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryCreateRequest;
 import com.nhnacademy.bookstore.bookset.category.dto.request.UpdateCategoryRequest;
 import com.nhnacademy.bookstore.bookset.category.dto.response.GetAllCategoriesResponse;
+import com.nhnacademy.bookstore.bookset.category.dto.response.GetCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.dto.response.GetParentCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.dto.response.UpdateCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.service.CategoryService;
@@ -36,26 +37,26 @@ public class CategoryController {
         return ResponseEntity.created(URI.create("/" + categoryId)).build();
     }
 
-//    /**
-//     * 카테고리 조회 메서드
-//     * @param categoryId
-//     * @return 조회한 카테고리 DTO 객체
-//     */
-//    @GetMapping("/categories/{categoryId}")
-//    public ResponseEntity<GetCategoryResponse> getCategory(@ValidPathVariable @PathVariable Long categoryId) {
-//        GetCategoryResponse response = categoryService.getCategory(categoryId);
-//        return ResponseEntity.ok(response);
-//    }
+    /**
+     * 카테고리 조회 메서드
+     * @param categoryId
+     * @return 조회한 카테고리 DTO 객체
+     */
+    @GetMapping("/categories/{categoryId}")
+    public ResponseEntity<GetCategoryResponse> getCategory(@ValidPathVariable @PathVariable Long categoryId) {
+        GetCategoryResponse response = categoryService.getCategory(categoryId);
+        return ResponseEntity.ok(response);
+    }
 
     /**
      * 카테고리 전체 조회 메서드
      * @return 조회한 전체 카테고리 리스트 DTO
      */
-    @GetMapping("/categories/{categoryId}")
-    public ResponseEntity<List<GetParentCategoryResponse>> getMiddleClassificationCategories(
+    @GetMapping("/categories/parent/{categoryId}")
+    public ResponseEntity<GetParentCategoryResponse> getParentCategory(
             @ValidPathVariable @PathVariable Long categoryId
     ) {
-        List<GetParentCategoryResponse> response = categoryService.getMiddleClassificationCategories(categoryId);
+        GetParentCategoryResponse response = categoryService.getParentCategory(categoryId);
         return ResponseEntity.ok(response);
     }
 

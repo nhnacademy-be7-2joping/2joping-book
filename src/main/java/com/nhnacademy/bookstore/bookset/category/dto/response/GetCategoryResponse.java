@@ -11,7 +11,6 @@ import jakarta.annotation.Nullable;
 public record GetCategoryResponse(
 
         Long categoryId,
-
         String name,
 
         @Nullable
