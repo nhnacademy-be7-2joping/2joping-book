@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -26,10 +25,9 @@ import java.time.LocalDateTime;
 @Getter
 public class Review {
 
-    @EmbeddedId
-    private ReviewId reviewId;
+    @Id
+    private Long reviewId;
 
-    @MapsId("orderDetailId")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_detail_id")
     private OrderDetail orderDetail;
@@ -59,25 +57,5 @@ public class Review {
 
     @Column(name = "image_url")
     private String imageUrl;
-
-
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Embeddable
-    public static class ReviewId implements Serializable {
-        private Long orderDetailId;
-    }
-
-    public Review(OrderDetail orderDetail, Customer customer, Book book, String title, String text, int ratingValue, String imageUrl) {
-        this.orderDetail = orderDetail;
-        this.customer = customer;
-        this.book = book;
-        this.title = title;
-        this.text = text;
-        this.ratingValue = ratingValue;
-        this.imageUrl = imageUrl;
-        this.createdAt= Timestamp.valueOf(LocalDateTime.now());
-    }
 
 }

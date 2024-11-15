@@ -5,5 +5,5 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 @NoRepositoryBean
 public interface ReviewRepositoryCustom {
-    Review customSave(Review review);
+//    Review customSave(Review review);
 }

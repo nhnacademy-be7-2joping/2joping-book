@@ -8,11 +8,10 @@ package com.nhnacademy.bookstore.orderset.order_detail.entity;
  */
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import jakarta.persistence.*;
+import com.nhnacademy.bookstore.orderset.order.entity.Order;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import com.nhnacademy.bookstore.orderset.order.entity.Order;
 
 @Getter
 @NoArgsConstructor
@@ -42,4 +41,5 @@ public class OrderDetail {
 
     @Column(name = "sell_price", nullable = false)
     private int sellPrice;
+
 }

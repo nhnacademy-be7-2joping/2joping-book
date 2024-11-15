@@ -14,6 +14,7 @@ import com.nhnacademy.bookstore.review.entity.Review;
 import com.nhnacademy.bookstore.review.mapper.ReviewMapper;
 import com.nhnacademy.bookstore.review.repository.ReviewRepository;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
+import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,8 +50,9 @@ public class ReviewServiceImpl implements ReviewService {
 
         log.debug("orderDetailId: {}", reviewCreateRequestDto.orderDetailId());
 
+
         Review review = new Review(
-                new Review.ReviewId(reviewCreateRequestDto.orderDetailId()),
+                reviewCreateRequestDto.reviewId(),
                 orderDetail,
                 customer,
                 book,
@@ -61,10 +63,10 @@ public class ReviewServiceImpl implements ReviewService {
                 null,
                 reviewCreateRequestDto.image() // imageUrl 설정
         );
-        log.debug("orderDetailId: {}", reviewCreateRequestDto.orderDetailId());
 
         Review savedReview = reviewRepository.save(review);
 
         return reviewMapper.toDto(savedReview);
     }
 }
+

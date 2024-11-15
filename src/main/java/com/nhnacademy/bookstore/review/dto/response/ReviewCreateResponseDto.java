@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 
 public record ReviewCreateResponseDto(
-        Long orderDetailId,
+        Long reviewId,
         int ratingValue,
         String title,
         String text,

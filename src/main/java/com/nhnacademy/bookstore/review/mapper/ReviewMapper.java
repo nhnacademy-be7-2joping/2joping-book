@@ -11,7 +11,7 @@ import org.mapstruct.factory.Mappers;
 public interface ReviewMapper {
     ReviewMapper INSTANCE = Mappers.getMapper(ReviewMapper.class);
 
-    @Mapping(source = "reviewId", target = "orderDetailId")
+    @Mapping(source = "reviewId", target = "reviewId")
     @Mapping(source = "ratingValue", target = "ratingValue")
     @Mapping(source = "title", target = "title")
     @Mapping(source = "text", target = "text")
@@ -19,16 +19,4 @@ public interface ReviewMapper {
     @Mapping(source = "createdAt", target = "createdAt")
     ReviewCreateResponseDto toDto(Review review);
 
-    // ReviewId를 Long으로 변환하는 헬퍼 메서드 추가
-    default Long map(Review.ReviewId reviewId) {
-        return reviewId != null ? reviewId.getOrderDetailId() : null;
-    }
-
-//    default Long map(ReviewPK reviewPK) {
-//        return reviewPK != null ? reviewPK.getOrderDetailId() : null;
-//    }
-//
-//    default ReviewPK map(Long orderDetailId) {
-//        return orderDetailId != null ? new ReviewPK(orderDetailId) : null;
-//    }
 }
