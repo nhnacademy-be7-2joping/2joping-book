@@ -63,15 +63,14 @@ public class MemberAddressController {
      * @author Luha
      * @since 1.0
      *
-     * @param memberId 회원 ID
      * @return 회원 주소 목록이 포함된 ResponseEntity
      * @throws MemberNotFoundException 회원이 존재하지 않을 경우 발생
      */
-    @GetMapping("/{memberId}/addresses")
+    @GetMapping("/addresses")
     public ResponseEntity<List<MemberAddressResponseDto>> getAllMemberAddress(
-            @Parameter(description = "회원 ID", required = true) @PathVariable long memberId) {
+            @RequestHeader("X-Customer-Id") String customerId ) {
 
-        List<MemberAddressResponseDto> addresses = memberAddressService.getMemberAddresses(memberId);
+        List<MemberAddressResponseDto> addresses = memberAddressService.getMemberAddresses(Long.parseLong(customerId));
 
         return ResponseEntity.ok(addresses);
     }

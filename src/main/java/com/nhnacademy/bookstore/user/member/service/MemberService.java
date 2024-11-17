@@ -1,7 +1,9 @@
 package com.nhnacademy.bookstore.user.member.service;
 
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
+import com.nhnacademy.bookstore.user.member.dto.request.MemberUpdateRequesteDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto;
 
 /**
  * MemberService
@@ -14,4 +16,5 @@ import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResp
  */
 public interface MemberService {
     MemberCreateSuccessResponseDto registerNewMember(MemberCreateRequestDto memberDto);
+    MemberUpdateResponseDto updateMember(long customerId, MemberUpdateRequesteDto memberDto);
 }

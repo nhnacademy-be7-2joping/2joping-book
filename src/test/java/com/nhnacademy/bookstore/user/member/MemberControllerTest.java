@@ -5,7 +5,9 @@ import com.nhnacademy.bookstore.common.error.exception.user.member.MemberDuplica
 import com.nhnacademy.bookstore.user.enums.Gender;
 import com.nhnacademy.bookstore.user.member.controller.MemberController;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
+import com.nhnacademy.bookstore.user.member.dto.request.MemberUpdateRequesteDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto;
 import com.nhnacademy.bookstore.user.member.service.MemberService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,7 +53,7 @@ public class MemberControllerTest {
         when(memberService.registerNewMember(requestDto)).thenReturn(responseDto);
 
         // when
-        ResponseEntity<MemberCreateSuccessResponseDto> response = memberController.addMemberAddress(requestDto);
+        ResponseEntity<MemberCreateSuccessResponseDto> response = memberController.addMember(requestDto);
 
         // then
         assertEquals(200, response.getStatusCodeValue());
@@ -74,6 +76,57 @@ public class MemberControllerTest {
                 .when(memberService).registerNewMember(requestDto);
 
         // when & then
-        assertThrows(MemberDuplicateException.class, () -> memberController.addMemberAddress(requestDto));
+        assertThrows(MemberDuplicateException.class, () -> memberController.addMember(requestDto));
     }
+
+    @Test
+    public void testUpdateMember_Success() {
+        // given
+        String customerId = "84";
+        MemberUpdateRequesteDto requestDto = new MemberUpdateRequesteDto(
+                "이한빈", Gender.M, LocalDate.of(1996, 6, 23), "010-5678-1234","newemail@example.com", "루하업데이트"
+        );
+
+        MemberUpdateResponseDto responseDto = new MemberUpdateResponseDto(
+                "이한빈", Gender.M, LocalDate.of(1996, 6, 23), "010-5678-1234","newemail@example.com", "루하업데이트"
+        );
+
+        when(memberService.updateMember(Long.parseLong(customerId), requestDto))
+                .thenReturn(responseDto);
+
+        // when
+        ResponseEntity<MemberUpdateResponseDto> response = memberController.updateMember(customerId, requestDto);
+
+        // then
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("010-5678-1234", response.getBody().phone());
+        assertEquals("newemail@example.com", response.getBody().email());
+        assertEquals("루하업데이트", response.getBody().nickName());
+    }
+
+    /**
+     * 테스트: 잘못된 헤더 또는 요청 데이터로 인해 업데이트 실패
+     * 예상 결과: 적절한 예외 처리 및 응답 코드 반환
+     */
+    @Test
+    public void testUpdateMember_Failure() {
+        // given
+        String customerId = "84";
+        MemberUpdateRequesteDto requestDto = new MemberUpdateRequesteDto(
+                "이한빈", Gender.M, LocalDate.of(1996, 6, 23), "010-5678-1234","newemail@example.com", "루하업데이트"
+        );
+
+        doThrow(new IllegalArgumentException("유효하지 않은 이메일 형식입니다."))
+                .when(memberService).updateMember(Long.parseLong(customerId), requestDto);
+
+        // when & then
+        Exception exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> memberController.updateMember(customerId, requestDto)
+        );
+
+        assertEquals("유효하지 않은 이메일 형식입니다.", exception.getMessage());
+    }
+
+
 }

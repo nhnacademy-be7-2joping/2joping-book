@@ -71,7 +71,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         if (memberAddressRequestDto.isDefaultAddress()) {
 
             // 기존에 기본 주소가 설정된 경우 해제
-            MemberAddress existingDefaultAddress = memberAddressRepositroy.findByMemberIdAndIsDefaultAddressTrue(customerId);
+            MemberAddress existingDefaultAddress = memberAddressRepositroy.findByMemberIdAndDefaultAddressTrue(customerId);
             if (existingDefaultAddress != null) {
                 existingDefaultAddress.setDefaultAddress(false); //defaultAddress  기존에 있던 기본 배송지 해제
             }
@@ -83,17 +83,11 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         //주소 저장
         memberAddressRepositroy.save(address);
         //변경 후 주소 조회
-        List<MemberAddress> memberAddresses = memberAddressRepositroy.findByMember_Id(customerId);
+        List<MemberAddressResponseDto> memberAddresses = memberAddressRepositroy.findAddressesByMemberId(customerId);
 
-        //dto 변환
-        List<MemberAddressResponseDto> memberAddressResponse = new ArrayList<>();
 
-        for (MemberAddress memberAddress : memberAddresses) {
-
-            memberAddressResponse.add(MemberAddressMapper.INSTANCE.toResponseDto(memberAddress));
-        }
         //주소 조회
-        return memberAddressResponse;
+        return memberAddresses;
     }
 
     /**
@@ -117,14 +111,11 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 
         List<MemberAddressResponseDto> memberAddressResponse = new ArrayList<>();
 
-        List<MemberAddress> memberAddresses = memberAddressRepositroy.findByMember_Id(customerId);
+        List<MemberAddressResponseDto> memberAddresses = memberAddressRepositroy.findAddressesByMemberId(customerId);
 
-        for (MemberAddress memberAddress : memberAddresses) {
 
-            memberAddressResponse.add(MemberAddressMapper.INSTANCE.toResponseDto(memberAddress));
-        }
 
-        return memberAddressResponse;
+        return memberAddresses;
     }
 
 

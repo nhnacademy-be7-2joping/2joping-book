@@ -5,7 +5,9 @@ import com.nhnacademy.bookstore.common.error.exception.user.member.MemberDuplica
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberStatusNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.tier.MemberTierNotFoundException;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
+import com.nhnacademy.bookstore.user.member.dto.request.MemberUpdateRequesteDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.member.service.MemberService;
@@ -13,6 +15,7 @@ import com.nhnacademy.bookstore.user.memberStatus.entity.MemberStatus;
 import com.nhnacademy.bookstore.user.memberStatus.repository.MemberStatusRepository;
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.repository.MemberTierRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -101,5 +104,31 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.save(requestMember);
 
         return new MemberCreateSuccessResponseDto(member.getNickname());
+    }
+    @Transactional
+    @Override
+    public MemberUpdateResponseDto updateMember(long customerId, MemberUpdateRequesteDto memberDto) {
+
+        if (memberRepository.existsByEmail(memberDto.email())) {
+            throw new MemberDuplicateException(
+                    "이미 존재하는 이메일입니다.",
+                    RedirectType.REDIRECT,
+                    "/mypage/edit-profile",
+                    memberDto
+            );
+        }
+
+        if (memberRepository.existsByPhone(memberDto.phone())) {
+            throw new MemberDuplicateException(
+                    "이미 존재하는 전화번호입니다.",
+                    RedirectType.REDIRECT,
+                    "/mypage/edit-profile",
+                    memberDto
+            );
+        }
+
+        MemberUpdateResponseDto responseDto = memberRepository.updateMemberDetails(memberDto, customerId);
+
+        return responseDto;
     }
 }

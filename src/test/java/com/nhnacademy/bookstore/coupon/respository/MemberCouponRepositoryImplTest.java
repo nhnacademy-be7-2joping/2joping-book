@@ -84,7 +84,7 @@ class MemberCouponRepositoryImplTest {
 
         // 빈 Member 객체 생성 후 toEntity로 초기화
         Member member = new Member();
-        member.toEntity(requestDto);
+        member.toEntity(requestDto, "password");
 
         // 추가 필드 설정 (status, tier 등)
         member.setStatus(new MemberStatus(1L, "Active")); // 예시용 MemberStatus

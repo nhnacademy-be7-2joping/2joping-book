@@ -2,7 +2,9 @@ package com.nhnacademy.bookstore.user.member.controller;
 
 
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
+import com.nhnacademy.bookstore.user.member.dto.request.MemberUpdateRequesteDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto;
 import com.nhnacademy.bookstore.user.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -11,10 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 회원 정보 Crud 컨트롤러
@@ -39,7 +38,7 @@ public class MemberController {
      */
     @Operation(summary = "신규 회원 생성", description = "새로운 회원을 등록합니다.")
     @PostMapping
-    public ResponseEntity<MemberCreateSuccessResponseDto> addMemberAddress(
+    public ResponseEntity<MemberCreateSuccessResponseDto> addMember(
             @Parameter(description = "회원 가입 정보", required = true) @Valid @RequestBody MemberCreateRequestDto requestDto){
 
 
@@ -48,4 +47,19 @@ public class MemberController {
         return ResponseEntity.ok(response);
 
     }
+
+    @PatchMapping
+    public ResponseEntity<MemberUpdateResponseDto> updateMember(
+            @RequestHeader("X-Customer-Id") String customerId,
+            @Valid @RequestBody MemberUpdateRequesteDto requestDto){
+
+        MemberUpdateResponseDto responseDto = memberService.updateMember(Long.parseLong(customerId), requestDto);
+
+
+
+        return ResponseEntity.ok(responseDto);
+
+    }
+
+
 }
