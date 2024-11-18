@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.bookset.category.dto.response;
 
+import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import jakarta.annotation.Nullable;
 
 /**
@@ -11,9 +12,17 @@ import jakarta.annotation.Nullable;
 public record GetCategoryResponse(
 
         Long categoryId,
+
         String name,
 
         @Nullable
         Long parentCategoryId
 ) {
+        public static GetCategoryResponse from(Category category) {
+                return new GetCategoryResponse(
+                        category.getCategoryId(),
+                        category.getName(),
+                        category.getParentCategory() != null ? category.getParentCategory().getCategoryId() : null
+                );
+        }
 }
