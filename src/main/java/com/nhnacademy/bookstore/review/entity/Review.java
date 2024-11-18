@@ -4,12 +4,11 @@ import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-
 
 /**
  * 리뷰 Entity
@@ -57,5 +56,14 @@ public class Review {
 
     @Column(name = "image_url")
     private String imageUrl;
+
+
+    public void update(int ratingValue, String title, String text, String imageUrl, Timestamp updatedAt) {
+        this.ratingValue = ratingValue;
+        this.title = title;
+        this.text= text;
+        this.imageUrl= imageUrl;
+        this.updatedAt = updatedAt;
+    }
 
 }

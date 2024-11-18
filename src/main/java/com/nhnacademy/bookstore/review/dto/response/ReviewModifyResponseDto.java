@@ -1,15 +1,14 @@
 package com.nhnacademy.bookstore.review.dto.response;
 
-import java.time.LocalDateTime;
+
+import java.sql.Timestamp;
 
 public record ReviewModifyResponseDto(
-        Long orderDetailId,
+        Long reviewId,
         int ratingValue,
         String title,
         String text,
-        String image,
-        LocalDateTime updatedAt
+        String imageUrl,
+        Timestamp updatedAt
 )
-
-
 {}

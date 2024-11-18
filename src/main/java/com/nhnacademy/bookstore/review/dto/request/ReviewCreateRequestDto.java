@@ -18,6 +18,6 @@ public record ReviewCreateRequestDto (
         int ratingValue,
         String title,
         String text,
-        String image // TODO 임시
+        String imageUrl // TODO 임시
 )
 {}

@@ -7,7 +7,7 @@ public record ReviewResponseDto(
         int ratingValue,
         String title,
         String text,
-        String image, // 임시
+        String imageUrl, // 임시
         LocalDateTime createdAt
 )
 {}
