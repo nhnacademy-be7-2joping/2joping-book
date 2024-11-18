@@ -3,6 +3,7 @@ package com.nhnacademy.bookstore.review.controller;
 
 import com.nhnacademy.bookstore.review.dto.request.ReviewCreateRequestDto;
 import com.nhnacademy.bookstore.review.dto.request.ReviewModifyRequestDto;
+import com.nhnacademy.bookstore.review.dto.request.ReviewRequestDto;
 import com.nhnacademy.bookstore.review.dto.response.ReviewModifyResponseDto;
 import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
 import com.nhnacademy.bookstore.review.service.ReviewService;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("api/v1/reviews")
 @Tag(name = "Review API", description = "리뷰 관련 CRUD API")
-public class ReviewController {
+public class    ReviewController {
 
 
     // TODO 필수 ->생성,수정,조회
@@ -46,8 +47,12 @@ public class ReviewController {
     }
 
     //조회
+    @Operation(summary = "리뷰 조회", description = "등록된 리뷰를 조회합니다.")
     @GetMapping("/{reviewId}")
-    public ResponseEntity<ReviewResponseDto> getReviews(@PathVariable Long OrderDetailId) {
-        return null;
+    public ResponseEntity<ReviewResponseDto> getReviews(@PathVariable Long reviewId) {
+        ReviewRequestDto reviewRequestDto = new ReviewRequestDto(reviewId);
+        ReviewResponseDto responseDto = reviewService.getReviews(reviewRequestDto);
+        return ResponseEntity.ok(responseDto);
+
     }
 }
