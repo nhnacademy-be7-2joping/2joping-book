@@ -61,11 +61,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findByCategoryId(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다."));
 
-        return new GetCategoryResponse(
-                category.getCategoryId(),
-                category.getName(),
-                category.getParentCategory() != null ? category.getParentCategory().getCategoryId() : null
-        );
+        return GetCategoryResponse.from(category);
     }
 
     @Override
@@ -76,14 +72,16 @@ public class CategoryServiceImpl implements CategoryService {
         return GetParentCategoryResponse.from(childCategory);
     }
 
+    // TODO: 모든 부모 카테고리 반환할 수 있도록 구현
     public List<Category> getAllParentCategories() {
-        return categoryRepository.findAll();
+        return null;
     }
 
-    // TODO: GetAllCategoryResponse 구현
     @Override
     public List<GetAllCategoriesResponse> getAllCategories() {
-        return null;
+        return categoryRepository.findAllByOrderByCategoryId().stream()
+                .map(GetAllCategoriesResponse::from)
+                .toList();
     }
 
     /**
