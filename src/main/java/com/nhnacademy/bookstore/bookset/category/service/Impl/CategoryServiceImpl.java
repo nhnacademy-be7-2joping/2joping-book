@@ -76,6 +76,10 @@ public class CategoryServiceImpl implements CategoryService {
         return GetParentCategoryResponse.from(childCategory);
     }
 
+    public List<Category> getAllParentCategories() {
+        return categoryRepository.findAll();
+    }
+
     // TODO: GetAllCategoryResponse 구현
     @Override
     public List<GetAllCategoriesResponse> getAllCategories() {
