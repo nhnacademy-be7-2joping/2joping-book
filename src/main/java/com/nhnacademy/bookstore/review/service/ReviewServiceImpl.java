@@ -43,7 +43,19 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewMapper reviewMapper;
 
 
+
     @Transactional
+    /**
+     * 리뷰 등록
+     *
+     * @param reviewCreateRequestDto 리뷰 생성을 위한 DTO.
+     * @return 생성된 리뷰 정보가 포함된 ReviewCreateResponseDto.
+     * @throws BookNotFoundException 지정된 도서를 찾을 수 없는 경우 발생.
+     * @throws MemberNotFoundException 지정된 회원을 찾을 수 없는 경우 발생.
+     * @throws OrderNotFoundException 지정된 주문 상세를 찾을 수 없는 경우 발생.
+     * @throws ReviewAlreadyExistException 동일한 ID의 리뷰가 이미 존재하는 경우 발생.
+     * @throws RatingValueNotValidException 평점 값이 1에서 5 사이가 아닌 경우 발생.
+     */
     @Override
     public ReviewCreateResponseDto registerReview(ReviewCreateRequestDto reviewCreateRequestDto) {
         Book book = bookRepository.findById(reviewCreateRequestDto.bookId()).orElseThrow(() ->
@@ -79,22 +91,51 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewMapper.toCreateResponseDto(savedReview);
     }
 
+    /**
+     * 특정 리뷰를 조회
+     *
+     * @param reviewRequestDto 리뷰 조회를 위한 DTO.
+     * @return 조회된 리뷰 정보가 포함된 ReviewResponseDto.
+     * @throws ReviewNotFoundException 지정된 ID의 리뷰를 찾을 수 없는 경우 발생.
+     */
     @Override
     public ReviewResponseDto getReviews(ReviewRequestDto reviewRequestDto) {
         Review review = reviewRepository.findById(reviewRequestDto.reviewId()).orElseThrow(()-> new ReviewNotFoundException("리뷰가 존재하지 않습니다."));
         return reviewMapper.toResponseDto(review);
     }
 
+    /**
+     * 특정 도서에 대한 전체 리뷰를 조회
+     *
+     * @param pageable 페이징 정보를 담은 객체.
+     * @param bookId 도서의 ID.
+     * @return 조회된 리뷰 목록과 페이징 정보를 포함한 Page<ReviewResponseDto>.
+     */
     @Override
     public Page<ReviewResponseDto> getReviewsByBookId(Pageable pageable, Long bookId) {
         return reviewRepository.getReviewsByBookId(pageable,bookId);
     }
 
+    /**
+     * 특정 회원이 작성한 전체 리뷰를 조회
+     *
+     * @param pageable 페이징 정보를 담은 객체.
+     * @param customerId 회원의 ID.
+     * @return 조회된 리뷰 목록과 페이징 정보를 포함한 Page<ReviewResponseDto>.
+     */
     @Override
     public Page<ReviewResponseDto> getReviewsByCustomerId(Pageable pageable, Long customerId) {
         return reviewRepository.getReviewsByCustomerId(pageable,customerId);
     }
 
+    /**
+     * 기존 리뷰를 수정
+     *
+     * @param reviewModifyRequestDto 리뷰 수정을 위한 DTO.
+     * @return 수정된 리뷰 정보가 포함된 ReviewModifyResponseDto.
+     * @throws ReviewNotFoundException 지정된 ID의 리뷰를 찾을 수 없는 경우 발생.
+     * @throws RatingValueNotValidException 평점 값이 1에서 5 사이가 아닌 경우 발생.
+     */
     @Override
     public ReviewModifyResponseDto modifyReview(ReviewModifyRequestDto reviewModifyRequestDto) {
 

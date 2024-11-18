@@ -4,7 +4,6 @@ import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
 import com.nhnacademy.bookstore.review.entity.QReview;
 import com.nhnacademy.bookstore.review.entity.Review;
 
-import com.nhnacademy.bookstore.user.member.entity.QMember;
 import com.querydsl.core.types.Projections;
 
 import org.springframework.data.domain.Page;
@@ -22,7 +21,7 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
     }
 
     private final QReview qReview = QReview.review;
-    private final QMember qmember = QMember.member;
+
 
 
 
