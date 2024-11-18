@@ -91,6 +91,11 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public Page<ReviewResponseDto> getReviewsByCustomerId(Pageable pageable, Long customerId) {
+        return reviewRepository.getReviewsByCustomerId(pageable,customerId);
+    }
+
+    @Override
     public ReviewModifyResponseDto modifyReview(ReviewModifyRequestDto reviewModifyRequestDto) {
 
         Review review = reviewRepository.findById(reviewModifyRequestDto.reviewId()).orElseThrow(()-> new ReviewNotFoundException("리뷰가 존재하지 않습니다."));

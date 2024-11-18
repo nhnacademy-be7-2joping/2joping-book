@@ -11,5 +11,5 @@ import org.springframework.data.repository.query.Param;
 public interface ReviewRepositoryCustom {
 
         Page<ReviewResponseDto> getReviewsByBookId(Pageable pageable, @Param("bookId") Long bookId);
-        Page<ReviewResponseDto> getReviewsByMemberId(Pageable pageable, Long memberId);
+        Page<ReviewResponseDto> getReviewsByCustomerId(Pageable pageable,@Param("customerId") Long customerId);
 }

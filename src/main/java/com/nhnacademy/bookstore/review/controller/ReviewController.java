@@ -76,12 +76,27 @@ public class    ReviewController {
      * @param bookId 리뷰 조회를 위한 bookId
      * @return 조회할 리뷰와 상태 코드를 담은 응답
      */
-    @Operation(summary = "도서 별 리뷰 조회", description = "특정 도서에 등록된 리뷰를 조회합니다.")
+    @Operation(summary = "도서별 리뷰 조회", description = "특정 도서에 등록된 리뷰들을 조회합니다.")
     @GetMapping("/books/{bookId}")
     public ResponseEntity<Page<ReviewResponseDto>> getReviewsByBookId(@PathVariable Long bookId,
                                                                       @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         ReviewRequestDto reviewRequestDto = new ReviewRequestDto(bookId);
         Page<ReviewResponseDto> responseDtoPage = reviewService.getReviewsByBookId(pageable,bookId);
+        return ResponseEntity.ok(responseDtoPage);
+
+    }
+
+    /**
+     * 회원이 작성한 리뷰들을 조회하는 컨트롤러
+     * @param customerId 리뷰 조회를 위한 customerId
+     * @return 조회할 리뷰와 상태 코드를 담은 응답
+     */
+    @Operation(summary = "회원별 리뷰 조회", description = "특정 회원이 등록한 리뷰들을 조회합니다.")
+    @GetMapping("/customers/{customerId}")
+    public ResponseEntity<Page<ReviewResponseDto>> getReviewsByCustomerId(@PathVariable Long customerId,
+                                                                      @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        ReviewRequestDto reviewRequestDto = new ReviewRequestDto(customerId);
+        Page<ReviewResponseDto> responseDtoPage = reviewService.getReviewsByCustomerId(pageable,customerId);
         return ResponseEntity.ok(responseDtoPage);
 
     }

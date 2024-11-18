@@ -19,6 +19,8 @@ public interface ReviewService {
 
     Page<ReviewResponseDto> getReviewsByBookId(Pageable pageable,Long bookId);
 
+    Page<ReviewResponseDto> getReviewsByCustomerId(Pageable pageable,Long customerId);
+
     // 수정 U
     ReviewModifyResponseDto modifyReview(ReviewModifyRequestDto reviewModifyRequestDto);
 }
