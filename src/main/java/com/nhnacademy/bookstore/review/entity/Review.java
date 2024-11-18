@@ -3,6 +3,7 @@ package com.nhnacademy.bookstore.review.entity;
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
+import com.nhnacademy.bookstore.user.member.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -33,7 +34,7 @@ public class Review {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
-    private Customer customer;
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")

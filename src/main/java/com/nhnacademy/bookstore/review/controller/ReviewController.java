@@ -11,6 +11,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +33,10 @@ public class    ReviewController {
 
     private final ReviewService reviewService;
 
-    //생성
+    /**
+     * 리뷰 등록하는 컨트롤러
+     * @param reviewCreateRequestDto 리뷰 등록을 위한 dto
+     */
     @Operation(summary = "리뷰 등록", description = "새로운 리뷰를 등록합니다.")
     @PostMapping
     public ResponseEntity<Void> registerReview(@RequestBody @Valid ReviewCreateRequestDto reviewCreateRequestDto) {
@@ -37,7 +44,11 @@ public class    ReviewController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    //수정
+    /**
+     * 리뷰 수정하는 컨트롤러
+     * @param reviewModifyRequestDto 리뷰 수정을 위한 dto
+     * @return 수정된 리뷰와 상태 코드를 담은 응답
+     */
     @Operation(summary = "리뷰 수정", description = "등록된 리뷰를 수정합니다.")
     @PatchMapping("/{reviewId}")
     public ResponseEntity<ReviewModifyResponseDto> modifyReview(@PathVariable Long reviewId,
@@ -46,13 +57,32 @@ public class    ReviewController {
         return ResponseEntity.ok(modifyDto);
     }
 
-    //조회
+    /**
+     * 리뷰 하나를 조회하는 컨트롤러
+     * @param reviewId 리뷰 조회를 위한 reviewId
+     * @return 조회할 리뷰와 상태 코드를 담은 응답
+     */
     @Operation(summary = "리뷰 조회", description = "등록된 리뷰를 조회합니다.")
     @GetMapping("/{reviewId}")
     public ResponseEntity<ReviewResponseDto> getReviews(@PathVariable Long reviewId) {
         ReviewRequestDto reviewRequestDto = new ReviewRequestDto(reviewId);
         ReviewResponseDto responseDto = reviewService.getReviews(reviewRequestDto);
         return ResponseEntity.ok(responseDto);
+
+    }
+
+    /**
+     * 특정 도서에 달린 리뷰들을 조회하는 컨트롤러
+     * @param bookId 리뷰 조회를 위한 bookId
+     * @return 조회할 리뷰와 상태 코드를 담은 응답
+     */
+    @Operation(summary = "도서 별 리뷰 조회", description = "특정 도서에 등록된 리뷰를 조회합니다.")
+    @GetMapping("/books/{bookId}")
+    public ResponseEntity<Page<ReviewResponseDto>> getReviewsByBookId(@PathVariable Long bookId,
+                                                                      @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        ReviewRequestDto reviewRequestDto = new ReviewRequestDto(bookId);
+        Page<ReviewResponseDto> responseDtoPage = reviewService.getReviewsByBookId(pageable,bookId);
+        return ResponseEntity.ok(responseDtoPage);
 
     }
 }

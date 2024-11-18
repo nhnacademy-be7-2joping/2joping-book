@@ -21,9 +21,11 @@ import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
 import com.nhnacademy.bookstore.review.entity.Review;
 import com.nhnacademy.bookstore.review.mapper.ReviewMapper;
 import com.nhnacademy.bookstore.review.repository.ReviewRepository;
-import com.nhnacademy.bookstore.user.customer.entity.Customer;
+import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,7 +49,7 @@ public class ReviewServiceImpl implements ReviewService {
         Book book = bookRepository.findById(reviewCreateRequestDto.bookId()).orElseThrow(() ->
                 new BookNotFoundException("해당 도서가 없습니다."));
 
-        Customer customer = memberRepository.findById(reviewCreateRequestDto.customerId()).orElseThrow(() ->
+        Member member = memberRepository.findById(reviewCreateRequestDto.customerId()).orElseThrow(() ->
                 new MemberNotFoundException(("해당 회원이 없습니다."), RedirectType.REDIRECT, "url")); // TODO url 수정
 
         OrderDetail orderDetail = orderDetailRepository.findById(reviewCreateRequestDto.orderDetailId()).orElseThrow(OrderNotFoundException::new);
@@ -62,7 +64,7 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = new Review(
                 reviewCreateRequestDto.reviewId(),
                 orderDetail,
-                customer,
+                member,
                 book,
                 reviewCreateRequestDto.title(),
                 reviewCreateRequestDto.text(),
@@ -81,6 +83,11 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewResponseDto getReviews(ReviewRequestDto reviewRequestDto) {
         Review review = reviewRepository.findById(reviewRequestDto.reviewId()).orElseThrow(()-> new ReviewNotFoundException("리뷰가 존재하지 않습니다."));
         return reviewMapper.toResponseDto(review);
+    }
+
+    @Override
+    public Page<ReviewResponseDto> getReviewsByBookId(Pageable pageable, Long bookId) {
+        return reviewRepository.getReviewsByBookId(pageable,bookId);
     }
 
     @Override

@@ -1,9 +1,15 @@
 package com.nhnacademy.bookstore.review.repository;
 
-import com.nhnacademy.bookstore.review.entity.Review;
+import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.data.repository.query.Param;
 
 @NoRepositoryBean
 public interface ReviewRepositoryCustom {
-//    Review customSave(Review review);
+
+        Page<ReviewResponseDto> getReviewsByBookId(Pageable pageable, @Param("bookId") Long bookId);
+        Page<ReviewResponseDto> getReviewsByMemberId(Pageable pageable, Long memberId);
 }

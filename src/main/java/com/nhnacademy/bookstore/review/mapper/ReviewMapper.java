@@ -31,7 +31,7 @@ public interface ReviewMapper {
 
     @Mapping(source = "reviewId", target = "reviewId")
     @Mapping(source = "orderDetail.orderDetailId", target = "orderDetailId")
-    @Mapping(source = "customer.id", target = "customerId")
+    @Mapping(source = "member.id", target = "customerId")
     @Mapping(source = "book.bookId", target = "bookId")
     @Mapping(source = "ratingValue", target = "ratingValue")
     @Mapping(source = "title", target = "title")
