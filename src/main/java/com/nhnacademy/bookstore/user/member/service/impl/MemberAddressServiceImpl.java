@@ -71,7 +71,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         if (memberAddressRequestDto.isDefaultAddress()) {
 
             // 기존에 기본 주소가 설정된 경우 해제
-            MemberAddress existingDefaultAddress = memberAddressRepositroy.findByMemberIdAndIsDefaultAddressTrue(customerId);
+            MemberAddress existingDefaultAddress = memberAddressRepositroy.findByMemberIdAndDefaultAddressTrue(customerId);
             if (existingDefaultAddress != null) {
                 existingDefaultAddress.setDefaultAddress(false); //defaultAddress  기존에 있던 기본 배송지 해제
             }

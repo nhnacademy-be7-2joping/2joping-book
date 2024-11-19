@@ -14,8 +14,8 @@ import java.util.List;
 
 
 /**
- * 포장 정책 서비스 구현
- * 포장 정책 생성, 조회, 수정, 삭제 기능을 제공합니다.
+ * 포장 상품 서비스 구현
+ * 포장 상품 생성, 조회, 수정, 삭제 기능을 제공합니다.
  * <p>
  * 작성자: 박채연
  * 작성일: 2024-11-06
@@ -26,9 +26,9 @@ public class WrapServiceImpl implements WrapService {
     private final WrapRepository wrapRepository;
 
     /**
-     * 새로운 포장 정책을 생성합니다.
+     * 새로운 포장 상품을 생성합니다.
      *
-     * @param requestDto 포장 정책 요청 DTO
+     * @param requestDto 포장 상품 요청 DTO
      * @throws WrapAlreadyExistException 동일한 이름의 포장 상품이 이미 존재하는 경우
      */
     @Override
@@ -47,11 +47,11 @@ public class WrapServiceImpl implements WrapService {
     }
 
     /**
-     * 포장 정책을 ID로 조회합니다.
+     * 포장 상품을 ID로 조회합니다.
      *
-     * @param wrapId 포장 정책의 ID
-     * @return 포장 정책 응답 DTO
-     * @throws WrapNotFoundException 포장 정책을 찾을 수 없는 경우
+     * @param wrapId 포장 상품의 ID
+     * @return 포장 상품 응답 DTO
+     * @throws WrapNotFoundException 포장 상품을 찾을 수 없는 경우
      */
     @Override
     public WrapResponseDto getWrap(Long wrapId) {
@@ -66,23 +66,23 @@ public class WrapServiceImpl implements WrapService {
     }
 
     /**
-     * 모든 포장 정책을 조회합니다.
+     * 활성화 된 포장 상품을 조회합니다.
      *
-     * @return 포장 정책 응답 DTO 리스트
+     * @return 포장 상품 응답 DTO 리스트
      */
     @Override // query dsl 사용
-    public List<WrapResponseDto> getAllWraps() {
-        return wrapRepository.getAllWraps();
+    public List<WrapResponseDto> findAllByIsActiveTrue() {
+        return wrapRepository.findAllByIsActiveTrue();
     }
 
 
     /**
-     * 포장 정책을 업데이트합니다.
+     * 포장 상품을 업데이트합니다.
      *
-     * @param wrapId 업데이트할 포장 정책의 ID
-     * @param dto    업데이트할 포장 정책 데이터
-     * @return 업데이트된 포장 정책 응답 DTO
-     * @throws WrapNotFoundException 포장 정책을 찾을 수 없는 경우
+     * @param wrapId 업데이트할 포장 상품의 ID
+     * @param dto    업데이트할 포장 상품 데이터
+     * @return 업데이트된 포장 상품 응답 DTO
+     * @throws WrapNotFoundException 포장 상품을 찾을 수 없는 경우
      */
     @Override
     public WrapResponseDto updateWrap(Long wrapId, WrapRequestDto dto) {
@@ -99,16 +99,18 @@ public class WrapServiceImpl implements WrapService {
         return new WrapResponseDto(updatedWrap.getWrapId(), updatedWrap.getName(), updatedWrap.getWrapPrice(), updatedWrap.isActive());
     }
 
-    /**
-     * 포장 정책을 ID로 삭제합니다.
-     *
-     * @param wrapId 삭제할 포장 정책의 ID
-     * @throws WrapNotFoundException 포장 정책을 찾을 수 없는 경우
-     */
-    @Override
-    public void deleteWrap(Long wrapId) {
-        wrapRepository.findById(wrapId)
-                .orElseThrow(WrapNotFoundException::new);
-        wrapRepository.deleteById(wrapId);
-    }
+//    /**
+//     * 포장 상품을 ID로 삭제합니다.
+//     *
+//     * @param wrapId 삭제할 포장 상품의 ID
+//     * @throws WrapNotFoundException 포장 상품을 찾을 수 없는 경우
+//     */
+//    @Override
+//    public void deleteWrap(Long wrapId) {
+//        wrapRepository.findById(wrapId)
+//                .orElseThrow(WrapNotFoundException::new);
+//        wrapRepository.deleteById(wrapId);
+//    }
 }
+
+

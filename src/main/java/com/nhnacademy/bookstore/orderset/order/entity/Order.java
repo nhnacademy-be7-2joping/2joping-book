@@ -14,6 +14,7 @@ import com.nhnacademy.bookstore.orderset.order_state.entity.OrderState;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -53,6 +54,7 @@ public class Order {
 
     @Column(name = "receiver", length = 20, nullable = false)
     private String receiver;
+
 
     @Column(name = "postal_code",  columnDefinition = "CHAR(5)")
     private String postalCode;
