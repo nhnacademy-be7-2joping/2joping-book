@@ -15,8 +15,12 @@ import com.nhnacademy.bookstore.user.memberStatus.repository.MemberStatusReposit
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.repository.MemberTierRepository;
 import lombok.RequiredArgsConstructor;
+<<<<<<< HEAD
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+=======
+import org.springframework.security.crypto.password.PasswordEncoder;
+>>>>>>> develop
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,8 +44,12 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final MemberStatusRepository statusRepository;
     private final MemberTierRepository tierRepository;
+<<<<<<< HEAD
     private final MemberStatusRepository memberStatusRepository;
     private final MemberTierRepository memberTierRepository;
+=======
+    private final PasswordEncoder passwordEncoder;
+>>>>>>> develop
 
     /**
      * 신규 회원을 등록하는 메서드.
@@ -57,7 +65,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberCreateSuccessResponseDto registerNewMember(MemberCreateRequestDto memberDto) {
 
-        if (memberRepository.existsByLoginId(memberDto.getLoginId())) {
+        if (memberRepository.existsByLoginId(memberDto.loginId())) {
             throw new MemberDuplicateException(
                     "이미 사용 중인 아이디입니다.",
                     RedirectType.REDIRECT,
@@ -66,7 +74,7 @@ public class MemberServiceImpl implements MemberService {
             );
         }
 
-        if (memberRepository.existsByEmail(memberDto.getEmail())) {
+        if (memberRepository.existsByEmail(memberDto.email())) {
             throw new MemberDuplicateException(
                     "이미 존재하는 이메일입니다.",
                     RedirectType.REDIRECT,
@@ -75,7 +83,7 @@ public class MemberServiceImpl implements MemberService {
             );
         }
 
-        if (memberRepository.existsByPhone(memberDto.getPhone())) {
+        if (memberRepository.existsByPhone(memberDto.phone())) {
             throw new MemberDuplicateException(
                     "이미 존재하는 전화번호입니다.",
                     RedirectType.REDIRECT,
@@ -101,9 +109,11 @@ public class MemberServiceImpl implements MemberService {
                 ));
 
         Member requestMember = new Member();
-        requestMember.toEntity(memberDto);
+        String encodedPassword = passwordEncoder.encode(memberDto.password());
+        requestMember.toEntity(memberDto, encodedPassword);
         requestMember.setStatus(defaultStatus);
         requestMember.setTier(defaultTier);
+
         Member member = memberRepository.save(requestMember);
 
         return new MemberCreateSuccessResponseDto(member.getNickname());

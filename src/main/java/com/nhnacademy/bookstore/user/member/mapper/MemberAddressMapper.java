@@ -24,6 +24,7 @@ public interface MemberAddressMapper {
     MemberAddressMapper INSTANCE = Mappers.getMapper(MemberAddressMapper.class);
 
     @Mapping(source = "id",  target = "memberAddressId")
+    @Mapping(source = "defaultAddress", target = "isDefaultAddress") // boolean 필드 매핑
     MemberAddressResponseDto toResponseDto(MemberAddress memberAddress);
 
 }

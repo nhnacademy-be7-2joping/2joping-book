@@ -8,6 +8,7 @@ import com.nhnacademy.bookstore.user.member.dto.response.MemberAddressResponseDt
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.entity.MemberAddress;
 import com.nhnacademy.bookstore.user.member.mapper.MemberAddressMapper;
+import com.nhnacademy.bookstore.user.member.repository.MemberAddressRepository;
 import com.nhnacademy.bookstore.user.member.repository.MemberAddressRepositroy;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.member.service.MemberAddressService;
@@ -32,7 +33,7 @@ import java.util.List;
 public class MemberAddressServiceImpl implements MemberAddressService {
 
     private final MemberRepository memberRepository;
-    private final MemberAddressRepositroy memberAddressRepositroy ;
+    private final MemberAddressRepository memberAddressRepository ;
 
     /**
      * 회원의 주소를 추가하는 메서드입니다.
@@ -57,7 +58,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
                 );
 
         //주소 개수 조회 10개 제한 /
-        int addressCnt = memberAddressRepositroy.countByMemberId(customerId);
+        int addressCnt = memberAddressRepository.countByMemberId(customerId);
         if(addressCnt >= 10) {
             throw new AddressLimitToTenException(
                     "주소는 10개까지 저장할 수 있습니다.",
@@ -71,7 +72,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         if (memberAddressRequestDto.isDefaultAddress()) {
 
             // 기존에 기본 주소가 설정된 경우 해제
-            MemberAddress existingDefaultAddress = memberAddressRepositroy.findByMemberIdAndIsDefaultAddressTrue(customerId);
+            MemberAddress existingDefaultAddress = memberAddressRepository.findByMemberIdAndDefaultAddressTrue(customerId);
             if (existingDefaultAddress != null) {
                 existingDefaultAddress.setDefaultAddress(false); //defaultAddress  기존에 있던 기본 배송지 해제
             }
@@ -81,9 +82,9 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         address.toEntity(memberAddressRequestDto, member);
 
         //주소 저장
-        memberAddressRepositroy.save(address);
+        memberAddressRepository.save(address);
         //변경 후 주소 조회
-        List<MemberAddress> memberAddresses = memberAddressRepositroy.findByMember_Id(customerId);
+        List<MemberAddress> memberAddresses = memberAddressRepository.findByMember_Id(customerId);
 
         //dto 변환
         List<MemberAddressResponseDto> memberAddressResponse = new ArrayList<>();
@@ -117,7 +118,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 
         List<MemberAddressResponseDto> memberAddressResponse = new ArrayList<>();
 
-        List<MemberAddress> memberAddresses = memberAddressRepositroy.findByMember_Id(customerId);
+        List<MemberAddress> memberAddresses = memberAddressRepository.findByMember_Id(customerId);
 
         for (MemberAddress memberAddress : memberAddresses) {
 

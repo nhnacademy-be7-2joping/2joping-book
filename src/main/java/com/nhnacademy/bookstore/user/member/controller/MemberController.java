@@ -43,6 +43,7 @@ public class MemberController {
     public ResponseEntity<MemberCreateSuccessResponseDto> addMemberAddress(
             @Parameter(description = "회원 가입 정보", required = true) @Valid @RequestBody MemberCreateRequestDto requestDto){
 
+
         MemberCreateSuccessResponseDto response =  memberService.registerNewMember(requestDto);
 
         return ResponseEntity.ok(response);
