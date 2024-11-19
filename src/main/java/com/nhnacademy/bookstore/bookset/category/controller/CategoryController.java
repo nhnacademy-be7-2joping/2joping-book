@@ -49,10 +49,10 @@ public class CategoryController {
     }
 
     /**
-     * 카테고리 전체 조회 메서드
-     * @return 조회한 전체 카테고리 리스트 DTO
+     * 부모 카테고리 조회
+     * @return 조회한 부모 카테고리 리스트 DTO
      */
-    @GetMapping("/categories/parent/{categoryId}")
+    @GetMapping("/categories/{categoryId}/parents/")
     public ResponseEntity<GetParentCategoryResponse> getParentCategory(
             @ValidPathVariable @PathVariable Long categoryId
     ) {
@@ -76,8 +76,10 @@ public class CategoryController {
      * @return 수정된 카테고리 DTO 객체
      */
     @PutMapping("/categories/{categoryId}")
-    public ResponseEntity<UpdateCategoryResponse> updateCategory(@ValidPathVariable @PathVariable Long categoryId,
-                                           @RequestBody UpdateCategoryRequest request) {
+    public ResponseEntity<UpdateCategoryResponse> updateCategory(
+        @ValidPathVariable @PathVariable Long categoryId,
+        @RequestBody UpdateCategoryRequest request
+    ) {
         UpdateCategoryResponse response = categoryService.updateCategory(categoryId, request);
         return ResponseEntity.ok(response);
     }
