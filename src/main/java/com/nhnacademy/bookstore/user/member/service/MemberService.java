@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.user.member.service;
 
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
+import com.nhnacademy.bookstore.user.member.dto.request.UpdateMemberRequest;
 import com.nhnacademy.bookstore.user.member.dto.response.GetAllMembersResponse;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
 import org.springframework.data.domain.Page;
@@ -21,4 +22,7 @@ public interface MemberService {
 
     // TODO: 전체 회원 조회 메서드
     List<GetAllMembersResponse> getAllMembers(final int page);
+
+    // TODO: 회원 정보 수정 메서드
+    UpdateMemberRequest updateMember(Long memberId, UpdateMemberRequest request);
 }
