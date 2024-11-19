@@ -2,6 +2,7 @@ package com.nhnacademy.bookstore.user.member;
 
 import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberDuplicateException;
+import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
 import com.nhnacademy.bookstore.user.enums.Gender;
 import com.nhnacademy.bookstore.user.member.controller.MemberController;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
@@ -83,8 +84,7 @@ public class MemberControllerTest {
     public void testUpdateMember_Success() {
         // given
         String customerId = "84";
-        MemberUpdateRequesteDto requestDto = new MemberUpdateRequesteDto(
-                "이한빈", Gender.M, LocalDate.of(1996, 6, 23), "010-5678-1234","newemail@example.com", "루하업데이트"
+        MemberUpdateRequesteDto requestDto = new MemberUpdateRequesteDto("010-5678-1234","newemail@example.com", "루하업데이트"
         );
 
         MemberUpdateResponseDto responseDto = new MemberUpdateResponseDto(
@@ -112,8 +112,7 @@ public class MemberControllerTest {
     public void testUpdateMember_Failure() {
         // given
         String customerId = "84";
-        MemberUpdateRequesteDto requestDto = new MemberUpdateRequesteDto(
-                "이한빈", Gender.M, LocalDate.of(1996, 6, 23), "010-5678-1234","newemail@example.com", "루하업데이트"
+        MemberUpdateRequesteDto requestDto = new MemberUpdateRequesteDto("010-5678-1234","newemail@example.com", "루하업데이트"
         );
 
         doThrow(new IllegalArgumentException("유효하지 않은 이메일 형식입니다."))
@@ -127,6 +126,51 @@ public class MemberControllerTest {
 
         assertEquals("유효하지 않은 이메일 형식입니다.", exception.getMessage());
     }
+    /**
+     * 테스트: 회원 정보 조회 성공
+     * 예상 결과: 200 OK 응답 코드와 조회된 회원 정보 반환
+     */
+    @Test
+    public void testMemberInfo_Success() {
+        // given
+        String customerId = "84";
+        MemberUpdateResponseDto responseDto = new MemberUpdateResponseDto(
+                "이한빈", Gender.M, LocalDate.of(1996, 6, 23), "010-5678-1234", "test@example.com", "루하"
+        );
 
+        when(memberService.getMemberInfo(Long.parseLong(customerId))).thenReturn(responseDto);
+
+        // when
+        ResponseEntity<MemberUpdateResponseDto> response = memberController.memberInfo(customerId);
+
+        // then
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("이한빈", response.getBody().name());
+        assertEquals(Gender.M, response.getBody().gender());
+        assertEquals(LocalDate.of(1996, 6, 23), response.getBody().birthday());
+        assertEquals("010-5678-1234", response.getBody().phone());
+        assertEquals("test@example.com", response.getBody().email());
+        assertEquals("루하", response.getBody().nickName());
+    }
+
+    /**
+     * 테스트: 회원 정보 조회 실패 (존재하지 않는 회원 ID)
+     * 예상 결과: MemberNotFoundException 발생
+     */
+    @Test
+    public void testMemberInfo_Failure() {
+        // given
+        String customerId = "999"; // 존재하지 않는 ID
+        doThrow(new MemberNotFoundException("해당 멤버가 존재하지 않습니다.", RedirectType.REDIRECT, "/members"))
+                .when(memberService).getMemberInfo(Long.parseLong(customerId));
+
+        // when & then
+        MemberNotFoundException exception = assertThrows(
+                MemberNotFoundException.class,
+                () -> memberController.memberInfo(customerId)
+        );
+
+        assertEquals("해당 멤버가 존재하지 않습니다.", exception.getMessage());
+    }
 
 }

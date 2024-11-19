@@ -1,20 +1,17 @@
 package com.nhnacademy.bookstore.user.member.dto.request;
 
-import com.nhnacademy.bookstore.user.enums.Gender;
 import jakarta.validation.constraints.*;
 
-import java.time.LocalDate;
 
+/**
+ * 회원 정보 수정을 위한 요청 데이터를 담는 DTO 클래스입니다.
+ * 클라이언트에서 전달받은 데이터를 검증하고, 서비스 계층으로 전달합니다.
+ *
+ * @author Luha
+ * @since 1.0
+ */
 public record MemberUpdateRequesteDto(
 
-        @NotBlank(message = "이름은 필수 입력 사항입니다.")
-        String name,
-
-        @NotNull(message = "성별은 필수 입력 사항입니다.")
-        Gender gender,
-
-        @Past(message = "생년월일은 과거 날짜만 가능합니다.")
-        LocalDate birthday,
 
         @NotBlank(message = "전화번호는 필수 입력 사항입니다.")
         @Pattern(regexp = "010-\\d{3,4}-\\d{4}", message = "전화번호는 '010-0000-0000' 형식이어야 합니다.")

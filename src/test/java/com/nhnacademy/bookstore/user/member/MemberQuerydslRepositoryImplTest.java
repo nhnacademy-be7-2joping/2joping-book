@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.user.member;
 
+import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberNothingToUpdateException;
 import com.nhnacademy.bookstore.user.enums.Gender;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberUpdateRequesteDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto;
@@ -40,7 +41,6 @@ class MemberQuerydslRepositoryImplTest {
     void testUpdateMemberDetails_Success() {
         // Given
         MemberUpdateRequesteDto requestDto = new MemberUpdateRequesteDto(
-                "John Doe", Gender.M, LocalDate.of(1990, 1, 1),
                 "010-1234-5678", "john.doe@example.com", "John");
 
         // When
@@ -54,19 +54,38 @@ class MemberQuerydslRepositoryImplTest {
     }
 
 
+
     @Test
     void testUpdateMemberDetails_NoFieldsToUpdate() {
-        // Given: 업데이트할 필드가 없는 요청
-        MemberUpdateRequesteDto requestDto = new MemberUpdateRequesteDto(
-                null, null, null, null, null, null
-        );
+        // Given: 업데이트할 데이터가 없는 요청
+        MemberUpdateRequesteDto requestDto = new MemberUpdateRequesteDto(null, null, null);
 
-        // When & Then: 예외 검증
-        InvalidDataAccessApiUsageException exception = assertThrows(
-                InvalidDataAccessApiUsageException.class,
+        // When & Then: 예외 발생 검증
+        MemberNothingToUpdateException exception = assertThrows(
+                MemberNothingToUpdateException.class,
                 () -> memberQuerydslRepository.updateMemberDetails(requestDto, testMemberId)
         );
 
         assertTrue(exception.getMessage().contains("업데이트할 데이터가 없습니다."));
+    }
+    @Test
+    @Transactional
+    void testGetMemberInfo_Success() {
+        // Given
+        MemberUpdateResponseDto expectedResponse = new MemberUpdateResponseDto(
+                "John Doe", Gender.M, LocalDate.of(1990, 1, 1),
+                "010-1234-5678", "johndoe@example.com", "USER1"
+        );
+
+        MemberUpdateResponseDto responseDto = memberQuerydslRepository.getMemberInfo(testMemberId);
+
+        // Then
+        assertNotNull(responseDto);
+        assertEquals(expectedResponse.name(), responseDto.name());
+        assertEquals(expectedResponse.gender(), responseDto.gender());
+        assertEquals(expectedResponse.birthday(), responseDto.birthday());
+        assertEquals(expectedResponse.phone(), responseDto.phone());
+        assertEquals(expectedResponse.email(), responseDto.email());
+        assertEquals(expectedResponse.nickName(), responseDto.nickName());
     }
 }

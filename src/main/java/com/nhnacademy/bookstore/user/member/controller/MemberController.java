@@ -48,18 +48,45 @@ public class MemberController {
 
     }
 
-    @PatchMapping
+    /**
+     * 회원 정보 수정
+     *
+     * @param customerId 요청 헤더에서 전달받은 회원 고유 ID
+     * @param requestDto 수정할 회원 정보 데이터
+     * @return 수정된 회원 정보
+     */
+    @Operation(
+            summary = "회원 정보 수정",
+            description = "기존 회원의 정보를 업데이트합니다. 수정할 데이터는 JSON 형식으로 요청 본문에 포함되어야 합니다."
+    )
+    @PostMapping("/update")
     public ResponseEntity<MemberUpdateResponseDto> updateMember(
             @RequestHeader("X-Customer-Id") String customerId,
             @Valid @RequestBody MemberUpdateRequesteDto requestDto){
 
         MemberUpdateResponseDto responseDto = memberService.updateMember(Long.parseLong(customerId), requestDto);
 
+        return ResponseEntity.ok(responseDto);
 
+    }
+    /**
+     * 회원 정보 조회
+     *
+     * @param customerId 요청 헤더에서 전달받은 회원 고유 ID
+     * @return 회원 정보 (이름, 성별, 생년월일, 연락처, 이메일, 닉네임 등)
+     */
+    @Operation(
+            summary = "회원 정보 조회",
+            description = "회원의 기본 정보를 조회합니다. 요청 헤더에 'X-Customer-Id'로 회원 ID를 전달해야 합니다."
+    )
+    @GetMapping
+    public ResponseEntity<MemberUpdateResponseDto> memberInfo(
+            @RequestHeader("X-Customer-Id") String customerId){
+
+        MemberUpdateResponseDto responseDto = memberService.getMemberInfo(Long.parseLong(customerId));
 
         return ResponseEntity.ok(responseDto);
 
     }
-
 
 }

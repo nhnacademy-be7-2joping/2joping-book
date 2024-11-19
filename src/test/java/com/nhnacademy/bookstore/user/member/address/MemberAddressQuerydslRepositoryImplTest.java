@@ -63,4 +63,6 @@ public class MemberAddressQuerydslRepositoryImplTest {
         assertNotNull(addressList, "결과 리스트는 null이 아니어야 합니다.");
         assertEquals(0, addressList.size(), "주소가 없으므로 결과 리스트 크기는 0이어야 합니다.");
     }
+
+
 }

@@ -2,6 +2,8 @@ package com.nhnacademy.bookstore.user.member.service.impl;
 
 import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberDuplicateException;
+import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberNothingToUpdateException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberStatusNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.tier.MemberTierNotFoundException;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
@@ -15,10 +17,12 @@ import com.nhnacademy.bookstore.user.memberStatus.entity.MemberStatus;
 import com.nhnacademy.bookstore.user.memberStatus.repository.MemberStatusRepository;
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.repository.MemberTierRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * MemberServiceImpl
@@ -50,6 +54,7 @@ public class MemberServiceImpl implements MemberService {
      * @throws MemberTierNotFoundException 기본 회원 등급이 존재하지 않을 경우 예외
      */
     @Override
+    @Transactional
     public MemberCreateSuccessResponseDto registerNewMember(MemberCreateRequestDto memberDto) {
 
         if (memberRepository.existsByLoginId(memberDto.loginId())) {
@@ -105,29 +110,82 @@ public class MemberServiceImpl implements MemberService {
 
         return new MemberCreateSuccessResponseDto(member.getNickname());
     }
+
+    /**
+     * 회원 정보를 업데이트하고, 업데이트된 정보를 반환합니다.
+     *
+     * @param customerId 수정할 회원의 고유 ID
+     * @param memberDto 수정 요청 데이터를 담은 DTO
+     * @return 업데이트된 회원 정보를 담은 DTO
+     * @throws MemberNotFoundException 회원 ID가 존재하지 않을 경우 발생
+     * @throws MemberDuplicateException 중복된 이메일 또는 전화번호가 존재할 경우 발생
+     */
     @Transactional
     @Override
     public MemberUpdateResponseDto updateMember(long customerId, MemberUpdateRequesteDto memberDto) {
+        Member member = memberRepository.findById(customerId)
+                .orElseThrow(() -> new MemberNotFoundException("해당 멤버가 존재하지 않습니다." + customerId, RedirectType.REDIRECT, "/mypage/edit-profile"));
 
-        if (memberRepository.existsByEmail(memberDto.email())) {
-            throw new MemberDuplicateException(
-                    "이미 존재하는 이메일입니다.",
-                    RedirectType.REDIRECT,
-                    "/mypage/edit-profile",
-                    memberDto
-            );
+        String phone = null;
+        String email = null;
+        String nickName = null;
+        boolean isUpdated = false;
+
+        if (!member.getPhone().equals(memberDto.phone()) ) {
+
+            if(memberRepository.existsByPhone(memberDto.phone())){
+                throw new MemberDuplicateException(
+                        "이미 존재하는 전화번호입니다.",
+                        RedirectType.REDIRECT,
+                        "/mypage/edit-profile",
+                        memberDto
+                );
+            }
+            phone = memberDto.phone();
+            isUpdated = true;
+
         }
 
-        if (memberRepository.existsByPhone(memberDto.phone())) {
-            throw new MemberDuplicateException(
-                    "이미 존재하는 전화번호입니다.",
-                    RedirectType.REDIRECT,
-                    "/mypage/edit-profile",
-                    memberDto
-            );
-        }
+        if (!member.getEmail().equals(memberDto.email())) {
 
-        MemberUpdateResponseDto responseDto = memberRepository.updateMemberDetails(memberDto, customerId);
+            if(memberRepository.existsByEmail(memberDto.email())){
+                throw new MemberDuplicateException(
+                        "이미 존재하는 이메일입니다.",
+                        RedirectType.REDIRECT,
+                        "/mypage/edit-profile",
+                        memberDto
+                );
+            }
+            email = memberDto.email();
+            isUpdated = true;
+
+
+        }
+        if (!member.getNickname().equals(memberDto.nickName()) ) {
+            nickName = memberDto.nickName();
+            isUpdated = true;
+
+        }
+        if (!isUpdated) {
+            throw new MemberNothingToUpdateException("업데이트할 데이터가 없습니다.", RedirectType.REDIRECT, "/mypage/edit-profile");
+        }
+        MemberUpdateRequesteDto realUpdateDto = new MemberUpdateRequesteDto(phone, email, nickName);
+
+        MemberUpdateResponseDto responseDto = memberRepository.updateMemberDetails(realUpdateDto, customerId);
+
+        return responseDto;
+    }
+
+    /**
+     * 회원 정보를 조회합니다.
+     *
+     * @param customerId 조회할 회원의 고유 ID
+     * @return 조회된 회원 정보를 담은 DTO
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public MemberUpdateResponseDto getMemberInfo(long customerId) {
+        MemberUpdateResponseDto responseDto = memberRepository.getMemberInfo(customerId);
 
         return responseDto;
     }

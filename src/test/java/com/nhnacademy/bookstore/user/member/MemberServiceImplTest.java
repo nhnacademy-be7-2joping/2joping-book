@@ -1,7 +1,10 @@
 package com.nhnacademy.bookstore.user.member;
 
 
+import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberDuplicateException;
+import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberNothingToUpdateException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberStatusNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.tier.MemberTierNotFoundException;
 import com.nhnacademy.bookstore.user.enums.Gender;
@@ -23,21 +26,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-/**
- * 회원 서비스 테스트
- * 회원 등록 및 중복 확인, 예외 처리를 테스트하는 클래스입니다.
- */
 @ExtendWith(MockitoExtension.class)
 class MemberServiceImplTest {
 
@@ -61,198 +57,388 @@ class MemberServiceImplTest {
     @BeforeEach
     void setUp() {
         memberCreateRequestDto = new MemberCreateRequestDto(
-                "testuser", "Test@1234", "이한빈", "010-1234-5678",
-                "dlgksqls7218@naver.com", "루하", Gender.M, LocalDate.of(1996, 6, 23)
+                "testuser", "password123", "John Doe", "010-1234-5678",
+                "email@example.com", "nickname", Gender.M, LocalDate.of(1990, 1, 1)
         );
     }
 
-    /**
-     * 테스트: 정상적으로 회원이 등록되는 경우
-     * 예상 결과: 닉네임이 "루하"로 설정된 응답이 반환된다.
-     */
     @Test
     void testRegisterNewMember_Success() {
-        // given
+        // Given
         MemberStatus defaultStatus = new MemberStatus(1L, "가입");
         MemberTier defaultTier = new MemberTier(1L, "일반", true, 1, 10000);
-
-        MemberCreateRequestDto memberCreateRequestDto = new MemberCreateRequestDto(
-                "testuser",
-                "password123",
-                "John Doe",
-                "010-1234-5678",
-                "dlgksqls7218@naver.com",
-                "루하",
-                Gender.M,
-                LocalDate.of(1990, 1, 1)
-        );
-
-        when(memberRepository.existsByLoginId("testuser")).thenReturn(false);
-        when(memberRepository.existsByEmail("dlgksqls7218@naver.com")).thenReturn(false);
-        when(memberRepository.existsByPhone("010-1234-5678")).thenReturn(false);
+        when(memberRepository.existsByLoginId(memberCreateRequestDto.loginId())).thenReturn(false);
+        when(memberRepository.existsByEmail(memberCreateRequestDto.email())).thenReturn(false);
+        when(memberRepository.existsByPhone(memberCreateRequestDto.phone())).thenReturn(false);
         when(statusRepository.findById(1L)).thenReturn(Optional.of(defaultStatus));
         when(tierRepository.findById(1L)).thenReturn(Optional.of(defaultTier));
-        when(memberRepository.save(any(Member.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0)); // 저장된 객체 반환
+        when(memberRepository.save(any(Member.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        // when
+        // When
         MemberCreateSuccessResponseDto response = memberService.registerNewMember(memberCreateRequestDto);
 
-        // then
-        assertEquals("루하", response.getNickname());
+        // Then
+        assertNotNull(response);
+        assertEquals(memberCreateRequestDto.nickName(), response.getNickname());
         verify(memberRepository).save(any(Member.class));
     }
 
-    /**
-     * 테스트: 이미 존재하는 로그인 ID로 등록 시도
-     * 예상 결과: MemberDuplicateException 예외가 발생한다.
-     */
     @Test
     void testRegisterNewMember_DuplicateLoginId() {
-        // given
-        when(memberRepository.existsByLoginId("testuser")).thenReturn(true);
+        // Given
+        when(memberRepository.existsByLoginId(memberCreateRequestDto.loginId())).thenReturn(true);
 
-        // when & then
+        // When & Then
         assertThrows(MemberDuplicateException.class,
                 () -> memberService.registerNewMember(memberCreateRequestDto));
     }
 
-    /**
-     * 테스트: 이미 존재하는 이메일로 등록 시도
-     * 예상 결과: MemberDuplicateException 예외가 발생한다.
-     */
-    @Test
-    void testRegisterNewMember_DuplicateEmail() {
-        // given
-        when(memberRepository.existsByLoginId("testuser")).thenReturn(false);
-        when(memberRepository.existsByEmail("dlgksqls7218@naver.com")).thenReturn(true);
-
-        // when & then
-        assertThrows(MemberDuplicateException.class,
-                () -> memberService.registerNewMember(memberCreateRequestDto));
-    }
-
-    /**
-     * 테스트: 이미 존재하는 전화번호로 등록 시도
-     * 예상 결과: MemberDuplicateException 예외가 발생한다.
-     */
-    @Test
-    void testRegisterNewMember_DuplicatePhone() {
-        // given
-        when(memberRepository.existsByLoginId("testuser")).thenReturn(false);
-        when(memberRepository.existsByEmail("dlgksqls7218@naver.com")).thenReturn(false);
-        when(memberRepository.existsByPhone("010-1234-5678")).thenReturn(true);
-
-        // when & then
-        assertThrows(MemberDuplicateException.class,
-                () -> memberService.registerNewMember(memberCreateRequestDto));
-    }
-
-    /**
-     * 테스트: 상태를 찾을 수 없는 경우
-     * 예상 결과: MemberStatusNotFoundException 예외가 발생한다.
-     */
     @Test
     void testRegisterNewMember_StatusNotFound() {
-        // given
-        when(memberRepository.existsByLoginId("testuser")).thenReturn(false);
-        when(memberRepository.existsByEmail("dlgksqls7218@naver.com")).thenReturn(false);
-        when(memberRepository.existsByPhone("010-1234-5678")).thenReturn(false);
+        // Given
+        when(memberRepository.existsByLoginId(memberCreateRequestDto.loginId())).thenReturn(false);
         when(statusRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // when & then
+        // When & Then
         assertThrows(MemberStatusNotFoundException.class,
                 () -> memberService.registerNewMember(memberCreateRequestDto));
     }
 
-    /**
-     * 테스트: 등급을 찾을 수 없는 경우
-     * 예상 결과: MemberTierNotFoundException 예외가 발생한다.
-     */
     @Test
     void testRegisterNewMember_TierNotFound() {
-        // given
+        // Given
         MemberStatus defaultStatus = new MemberStatus(1L, "가입");
-
-        when(memberRepository.existsByLoginId("testuser")).thenReturn(false);
-        when(memberRepository.existsByEmail("dlgksqls7218@naver.com")).thenReturn(false);
-        when(memberRepository.existsByPhone("010-1234-5678")).thenReturn(false);
+        when(memberRepository.existsByLoginId(memberCreateRequestDto.loginId())).thenReturn(false);
         when(statusRepository.findById(1L)).thenReturn(Optional.of(defaultStatus));
         when(tierRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // when & then
+        // When & Then
         assertThrows(MemberTierNotFoundException.class,
                 () -> memberService.registerNewMember(memberCreateRequestDto));
     }
-    /**
-     * 테스트: 회원 정보 업데이트 성공
-     * 예상 결과: 업데이트된 회원 정보가 반환된다.
-     */
+
     @Test
     void testUpdateMember_Success() {
-        // given
+        // Given
         long customerId = 1L;
         MemberUpdateRequesteDto requestDto = new MemberUpdateRequesteDto(
-                "이한빈", Gender.M, LocalDate.of(1996, 6, 23),
-                "010-9876-5432", "updated-email@domain.com", "updatedNickName"
+                "010-9876-5432", "updated-email@example.com", "updatedNick"
         );
+        Member member = new Member();
+        member.setPhone("010-1234-5678");
+        member.setEmail("email@example.com");
+        member.setNickname("nickname");
 
         MemberUpdateResponseDto responseDto = new MemberUpdateResponseDto(
-                "이한빈", Gender.M, LocalDate.of(1996, 6, 23),
-                "010-9876-5432", "updated-email@domain.com", "updatedNickName"
+                "John Doe", Gender.M, LocalDate.of(1990, 1, 1),
+                "010-9876-5432", "updated-email@example.com", "updatedNick"
         );
 
-        when(memberRepository.existsByEmail("updated-email@domain.com")).thenReturn(false);
-        when(memberRepository.existsByPhone("010-9876-5432")).thenReturn(false);
-        when(memberRepository.updateMemberDetails(requestDto, customerId)).thenReturn(responseDto);
+        when(memberRepository.findById(customerId)).thenReturn(Optional.of(member));
+        when(memberRepository.updateMemberDetails(any(MemberUpdateRequesteDto.class), eq(customerId)))
+                .thenReturn(responseDto);
 
-        // when
+        // When
         MemberUpdateResponseDto actualResponse = memberService.updateMember(customerId, requestDto);
 
-        // then
-        assertEquals("updatedNickName", actualResponse.nickName());
+        // Then
+        assertNotNull(actualResponse);
+        assertEquals("updatedNick", actualResponse.nickName());
         assertEquals("010-9876-5432", actualResponse.phone());
-        assertEquals("updated-email@domain.com", actualResponse.email());
+        assertEquals("updated-email@example.com", actualResponse.email());
     }
-
-    /**
-     * 테스트: 이메일 중복으로 인한 업데이트 실패
-     * 예상 결과: MemberDuplicateException 예외가 발생한다.
-     */
     @Test
-    void testUpdateMember_DuplicateEmail() {
-        // given
+    void testUpdateMember_ChangePhone() {
+        // Given
         long customerId = 1L;
-        MemberUpdateRequesteDto requestDto = new MemberUpdateRequesteDto(
-                "이한빈", Gender.M, LocalDate.of(1996, 6, 23),
-                "010-9876-5432", "duplicate-email@domain.com", "updatedNickName"
+        MemberUpdateRequesteDto requestDto = new MemberUpdateRequesteDto("010-9876-5432", null, null);
+
+        // Member 객체를 세터를 통해 초기화
+        Member member = new Member();
+        member.setPhone("010-1234-5678");
+        member.setEmail("email@example.com");
+        member.setNickname("nickname");
+
+        MemberUpdateResponseDto responseDto = new MemberUpdateResponseDto(
+                "John Doe", Gender.M, LocalDate.of(1990, 1, 1),
+                "010-9876-5432", "email@example.com", "nickname"
         );
 
-        when(memberRepository.existsByEmail("duplicate-email@domain.com")).thenReturn(true);
+        when(memberRepository.findById(customerId)).thenReturn(Optional.of(member));
+        when(memberRepository.existsByPhone("010-9876-5432")).thenReturn(false);
+        when(memberRepository.updateMemberDetails(any(MemberUpdateRequesteDto.class), eq(customerId)))
+                .thenReturn(responseDto);
 
-        // when & then
-        assertThrows(MemberDuplicateException.class,
-                () -> memberService.updateMember(customerId, requestDto));
+        // When
+        MemberUpdateResponseDto actualResponse = memberService.updateMember(customerId, requestDto);
+
+        // Then
+        assertNotNull(actualResponse);
+        assertEquals("010-9876-5432", actualResponse.phone());
+        verify(memberRepository).updateMemberDetails(any(MemberUpdateRequesteDto.class), eq(customerId));
     }
 
-    /**
-     * 테스트: 전화번호 중복으로 인한 업데이트 실패
-     * 예상 결과: MemberDuplicateException 예외가 발생한다.
-     */
+    @Test
+    void testUpdateMember_ChangeEmail() {
+        // Given
+        long customerId = 1L;
+        MemberUpdateRequesteDto requestDto = new MemberUpdateRequesteDto(null, "newemail@example.com", null);
+
+        // Member 객체를 세터를 통해 초기화
+        Member member = new Member();
+        member.setPhone("010-1234-5678");
+        member.setEmail("email@example.com");
+        member.setNickname("nickname");
+
+        MemberUpdateResponseDto responseDto = new MemberUpdateResponseDto(
+                "John Doe", Gender.M, LocalDate.of(1990, 1, 1),
+                "010-1234-5678", "newemail@example.com", "nickname"
+        );
+
+        when(memberRepository.findById(customerId)).thenReturn(Optional.of(member));
+        when(memberRepository.existsByEmail("newemail@example.com")).thenReturn(false);
+        when(memberRepository.updateMemberDetails(any(MemberUpdateRequesteDto.class), eq(customerId)))
+                .thenReturn(responseDto);
+
+        // When
+        MemberUpdateResponseDto actualResponse = memberService.updateMember(customerId, requestDto);
+
+        // Then
+        assertNotNull(actualResponse);
+        assertEquals("newemail@example.com", actualResponse.email());
+        verify(memberRepository).updateMemberDetails(any(MemberUpdateRequesteDto.class), eq(customerId));
+    }
+
+    @Test
+    void testUpdateMember_ChangeNickName() {
+        // Given
+        long customerId = 1L;
+        MemberUpdateRequesteDto requestDto = new MemberUpdateRequesteDto(null, null, "newNick");
+
+        // Member 객체를 세터를 통해 초기화
+        Member member = new Member();
+        member.setPhone("010-1234-5678");
+        member.setEmail("email@example.com");
+        member.setNickname("nickname");
+
+        MemberUpdateResponseDto responseDto = new MemberUpdateResponseDto(
+                "John Doe", Gender.M, LocalDate.of(1990, 1, 1),
+                "010-1234-5678", "email@example.com", "newNick"
+        );
+
+        when(memberRepository.findById(customerId)).thenReturn(Optional.of(member));
+        when(memberRepository.updateMemberDetails(any(MemberUpdateRequesteDto.class), eq(customerId)))
+                .thenReturn(responseDto);
+
+        // When
+        MemberUpdateResponseDto actualResponse = memberService.updateMember(customerId, requestDto);
+
+        // Then
+        assertNotNull(actualResponse);
+        assertEquals("newNick", actualResponse.nickName());
+        verify(memberRepository).updateMemberDetails(any(MemberUpdateRequesteDto.class), eq(customerId));
+    }
+
+    @Test
+    void testUpdateMember_AllFieldsChange() {
+        // Given
+        long customerId = 1L;
+        MemberUpdateRequesteDto requestDto = new MemberUpdateRequesteDto("010-9876-5432", "newemail@example.com", "newNick");
+
+        // Member 객체를 세터를 통해 초기화
+        Member member = new Member();
+        member.setPhone("010-1234-5678");
+        member.setEmail("email@example.com");
+        member.setNickname("nickname");
+
+        MemberUpdateResponseDto responseDto = new MemberUpdateResponseDto(
+                "John Doe", Gender.M, LocalDate.of(1990, 1, 1),
+                "010-9876-5432", "newemail@example.com", "newNick"
+        );
+
+        when(memberRepository.findById(customerId)).thenReturn(Optional.of(member));
+        when(memberRepository.existsByPhone("010-9876-5432")).thenReturn(false);
+        when(memberRepository.existsByEmail("newemail@example.com")).thenReturn(false);
+        when(memberRepository.updateMemberDetails(any(MemberUpdateRequesteDto.class), eq(customerId)))
+                .thenReturn(responseDto);
+
+        // When
+        MemberUpdateResponseDto actualResponse = memberService.updateMember(customerId, requestDto);
+
+        // Then
+        assertNotNull(actualResponse);
+        assertEquals("010-9876-5432", actualResponse.phone());
+        assertEquals("newemail@example.com", actualResponse.email());
+        assertEquals("newNick", actualResponse.nickName());
+        verify(memberRepository).updateMemberDetails(any(MemberUpdateRequesteDto.class), eq(customerId));
+    }
     @Test
     void testUpdateMember_DuplicatePhone() {
-        // given
+        // Given
         long customerId = 1L;
-        MemberUpdateRequesteDto requestDto = new MemberUpdateRequesteDto(
-                "이한빈", Gender.M, LocalDate.of(1996, 6, 23),
-                "010-1234-5678", "updated-email@domain.com", "updatedNickName"
+        MemberUpdateRequesteDto requestDto = new MemberUpdateRequesteDto("010-9876-5432", null, null);
+
+        Member member = new Member();
+        member.setPhone("010-1234-5678");
+        member.setEmail("email@example.com");
+        member.setNickname("nickname");
+
+        when(memberRepository.findById(customerId)).thenReturn(Optional.of(member));
+        when(memberRepository.existsByPhone("010-9876-5432")).thenReturn(true); // 중복된 전화번호 설정
+
+        // When & Then
+        MemberDuplicateException exception = assertThrows(
+                MemberDuplicateException.class,
+                () -> memberService.updateMember(customerId, requestDto)
         );
 
-        when(memberRepository.existsByPhone("010-1234-5678")).thenReturn(true);
+        assertEquals("이미 존재하는 전화번호입니다.", exception.getMessage());
+        verify(memberRepository).existsByPhone("010-9876-5432");
+    }
+    @Test
+    void testUpdateMember_DuplicateEmail() {
+        // Given
+        long customerId = 1L;
+        MemberUpdateRequesteDto requestDto = new MemberUpdateRequesteDto(null, "duplicate@example.com", null);
 
-        // when & then
-        assertThrows(MemberDuplicateException.class,
-                () -> memberService.updateMember(customerId, requestDto));
+        Member member = new Member();
+        member.setPhone("010-1234-5678");
+        member.setEmail("email@example.com");
+        member.setNickname("nickname");
+
+        when(memberRepository.findById(customerId)).thenReturn(Optional.of(member));
+        when(memberRepository.existsByEmail("duplicate@example.com")).thenReturn(true); // 중복된 이메일 설정
+
+        // When & Then
+        MemberDuplicateException exception = assertThrows(
+                MemberDuplicateException.class,
+                () -> memberService.updateMember(customerId, requestDto)
+        );
+
+        assertEquals("이미 존재하는 이메일입니다.", exception.getMessage());
+        verify(memberRepository).existsByEmail("duplicate@example.com");
+    }
+    @Test
+    void testGetMemberInfo_Success() {
+        // Given
+        long customerId = 1L;
+
+        MemberUpdateResponseDto expectedResponse = new MemberUpdateResponseDto(
+                "John Doe", Gender.M, LocalDate.of(1990, 1, 1),
+                "010-1234-5678", "email@example.com", "nickname"
+        );
+
+        when(memberRepository.getMemberInfo(customerId)).thenReturn(expectedResponse);
+
+        // When
+        MemberUpdateResponseDto actualResponse = memberService.getMemberInfo(customerId);
+
+        // Then
+        assertNotNull(actualResponse);
+        assertEquals(expectedResponse.name(), actualResponse.name());
+        assertEquals(expectedResponse.gender(), actualResponse.gender());
+        assertEquals(expectedResponse.birthday(), actualResponse.birthday());
+        assertEquals(expectedResponse.phone(), actualResponse.phone());
+        assertEquals(expectedResponse.email(), actualResponse.email());
+        assertEquals(expectedResponse.nickName(), actualResponse.nickName());
+        verify(memberRepository).getMemberInfo(customerId);
     }
 
+    @Test
+    void testUpdateMember_NoChanges() {
+        // Given
+        long customerId = 1L;
+        MemberUpdateRequesteDto requestDto = new MemberUpdateRequesteDto("010-1234-5678", "email@example.com", "nickname");
+
+        Member member = new Member();
+        member.setPhone("010-1234-5678");
+        member.setEmail("email@example.com");
+        member.setNickname("nickname");
+
+        when(memberRepository.findById(customerId)).thenReturn(Optional.of(member));
+
+
+        // When
+        MemberNothingToUpdateException exception = assertThrows(
+                MemberNothingToUpdateException.class,
+                () -> memberService.updateMember(customerId, requestDto)
+        );
+
+        assertEquals("업데이트할 데이터가 없습니다.", exception.getMessage());
+    }
+    @Test
+    void testRegisterNewMember_EmailAlreadyExists() {
+        // Given
+        when(memberRepository.existsByLoginId(memberCreateRequestDto.loginId())).thenReturn(false);
+        when(memberRepository.existsByEmail(memberCreateRequestDto.email())).thenReturn(true);
+
+        // When & Then
+        MemberDuplicateException exception = assertThrows(
+                MemberDuplicateException.class,
+                () -> memberService.registerNewMember(memberCreateRequestDto)
+        );
+
+        assertEquals("이미 존재하는 이메일입니다.", exception.getMessage());
+        verify(memberRepository, never()).existsByPhone(anyString());
+        verify(memberRepository, never()).save(any(Member.class));
+    }
+
+    @Test
+    void testRegisterNewMember_EmailDoesNotExist() {
+        // Given
+        when(memberRepository.existsByLoginId(memberCreateRequestDto.loginId())).thenReturn(false);
+        when(memberRepository.existsByEmail(memberCreateRequestDto.email())).thenReturn(false);
+        when(memberRepository.existsByPhone(memberCreateRequestDto.phone())).thenReturn(false);
+
+        // 추가 Mock 설정
+        when(statusRepository.findById(1L)).thenReturn(Optional.of(new MemberStatus(1L, "가입")));
+        when(tierRepository.findById(1L)).thenReturn(Optional.of(new MemberTier(1L, "일반", true, 1, 10000)));
+        when(memberRepository.save(any(Member.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // When
+        MemberCreateSuccessResponseDto response = memberService.registerNewMember(memberCreateRequestDto);
+
+        // Then
+        assertNotNull(response);
+        assertEquals("nickname", response.getNickname());
+        verify(memberRepository).save(any(Member.class));
+    }
+
+    @Test
+    void testRegisterNewMember_PhoneAlreadyExists() {
+        // Given
+        when(memberRepository.existsByLoginId(memberCreateRequestDto.loginId())).thenReturn(false);
+        when(memberRepository.existsByEmail(memberCreateRequestDto.email())).thenReturn(false);
+        when(memberRepository.existsByPhone(memberCreateRequestDto.phone())).thenReturn(true);
+
+        // When & Then
+        MemberDuplicateException exception = assertThrows(
+                MemberDuplicateException.class,
+                () -> memberService.registerNewMember(memberCreateRequestDto)
+        );
+
+        assertEquals("이미 존재하는 전화번호입니다.", exception.getMessage());
+        verify(memberRepository, never()).save(any(Member.class));
+    }
+
+    @Test
+    void testRegisterNewMember_PhoneDoesNotExist() {
+        // Given
+        when(memberRepository.existsByLoginId(memberCreateRequestDto.loginId())).thenReturn(false);
+        when(memberRepository.existsByEmail(memberCreateRequestDto.email())).thenReturn(false);
+        when(memberRepository.existsByPhone(memberCreateRequestDto.phone())).thenReturn(false);
+
+        // Mock 설정
+        when(statusRepository.findById(1L)).thenReturn(Optional.of(new MemberStatus(1L, "가입")));
+        when(tierRepository.findById(1L)).thenReturn(Optional.of(new MemberTier(1L, "일반", true, 1, 10000)));
+        when(memberRepository.save(any(Member.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // When
+        MemberCreateSuccessResponseDto response = memberService.registerNewMember(memberCreateRequestDto);
+
+        // Then
+        assertNotNull(response);
+        assertEquals("nickname", response.getNickname());
+        verify(memberRepository).save(any(Member.class));
+    }
 }

@@ -17,4 +17,5 @@ import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto
 public interface MemberService {
     MemberCreateSuccessResponseDto registerNewMember(MemberCreateRequestDto memberDto);
     MemberUpdateResponseDto updateMember(long customerId, MemberUpdateRequesteDto memberDto);
+    MemberUpdateResponseDto getMemberInfo(long customerId);
 }
