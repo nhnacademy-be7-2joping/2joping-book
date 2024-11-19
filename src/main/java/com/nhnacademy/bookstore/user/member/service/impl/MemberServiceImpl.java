@@ -2,9 +2,11 @@ package com.nhnacademy.bookstore.user.member.service.impl;
 
 import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberDuplicateException;
+import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberStatusNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.tier.MemberTierNotFoundException;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
+import com.nhnacademy.bookstore.user.member.dto.request.UpdateMemberRequest;
 import com.nhnacademy.bookstore.user.member.dto.response.GetAllMembersResponse;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
 import com.nhnacademy.bookstore.user.member.entity.Member;
@@ -112,6 +114,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     // TODO: 전체 회원 조회 메서드 구현
+    /**
+     * @param page
+     * @return
+     */
     @Transactional(readOnly = true)
     @Override
     public List<GetAllMembersResponse> getAllMembers(
@@ -121,5 +127,55 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findAllByOrderByNicknameDesc(pageable).stream()
                 .map(GetAllMembersResponse::from)
                 .toList();
+    }
+
+    /**
+     * @param memberId
+     * @param request
+     * @return
+     */
+    @Override
+    public UpdateMemberRequest updateMember(Long memberId, UpdateMemberRequest request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(
+                        "회원을 찾을 수 없습니다 : " + memberId,
+                        RedirectType.NONE,
+                        null
+                ));
+
+        if (request.email() != null && memberRepository.existsByEmail(request.email())) {
+            throw new MemberDuplicateException(
+                    "이미 존재하는 이메일입니다.",
+                    RedirectType.REDIRECT,
+                    "/members",
+                    request
+            );
+        }
+
+        // TODO:
+        //  고민사항 ->
+        //  이메일은 하나의 계정으로 하나의 회원을 만든다고 해도
+        //  여러 이메일로 가입한 한 명의 회원에 대한 전화번호는 하나일 수도 있지 않나 ?
+        //  예를 들어 네이버 메일로 가입, 지메일로 가입 .. 그러나 폰 번호는 하나로 가능하지 않나 ? ?
+        if (request.phone() != null && memberRepository.existsByPhone(request.phone())) {
+            throw new MemberDuplicateException(
+                    "이미 존재하는 전화번호입니다.",
+                    RedirectType.REDIRECT,
+                    "/members",
+                    request
+            );
+        }
+
+        member.updateMember(
+                request.name(),
+                request.gender(),
+                request.birthday(),
+                request.phone(),
+                request.email(),
+                request.nickname()
+        );
+
+        memberRepository.save(member);
+        return request;
     }
 }
