@@ -107,4 +107,23 @@ public class Member extends Customer {
     public void usePoint(int amount) {
         this.point -= amount;
     }
+
+    // TODO:
+    //  회원 정보 수정 메서드 작성
+    //  이름, 성별, 생년월일, 전화번호, 이메일, 닉네임
+    //  한꺼번에 다 할 것인가 아니면 각각 할 것인가 ..
+    public void updateMember(
+            String name,
+            Gender gender,
+            LocalDate birthday,
+            String phone,
+            String email,
+            String nickname
+    ) {
+        this.initializeCustomerFields(name, phone, email);
+
+        this.gender = gender;
+        this.birthday = birthday;
+        this.nickname = nickname;
+    }
 }
