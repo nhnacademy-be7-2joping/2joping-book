@@ -54,7 +54,7 @@ public class MemberAddressControllerTest {
         // then
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(1, response.getBody().size());
-        assertEquals("12345", response.getBody().get(0).getPostalCode());
+        assertEquals("12345", response.getBody().get(0).postalCode());
     }
 
     /**
@@ -69,12 +69,12 @@ public class MemberAddressControllerTest {
         when(memberAddressService.getMemberAddresses(memberId)).thenReturn(Collections.singletonList(responseDto));
 
         // when
-        ResponseEntity<List<MemberAddressResponseDto>> response = memberAddressController.getAllMemberAddress(memberId);
+        ResponseEntity<List<MemberAddressResponseDto>> response = memberAddressController.getAllMemberAddress(String.valueOf(memberId));
 
         // then
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(1, response.getBody().size());
-        assertEquals("도로명 주소", response.getBody().get(0).getRoadAddress());
+        assertEquals("도로명 주소", response.getBody().get(0).roadAddress());
     }
 
     /**
