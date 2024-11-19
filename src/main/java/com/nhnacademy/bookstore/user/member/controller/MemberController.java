@@ -2,6 +2,7 @@ package com.nhnacademy.bookstore.user.member.controller;
 
 
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
+import com.nhnacademy.bookstore.user.member.dto.request.UpdateMemberRequest;
 import com.nhnacademy.bookstore.user.member.dto.response.GetAllMembersResponse;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
 import com.nhnacademy.bookstore.user.member.service.MemberService;
@@ -57,5 +58,15 @@ public class MemberController {
     ) {
         List<GetAllMembersResponse> responses = memberService.getAllMembers(page);
         return ResponseEntity.ok(responses);
+    }
+
+    // TODO: 회원 정보 수정 API
+    @PutMapping("/{member-id}")
+    public ResponseEntity<UpdateMemberRequest> updateMember(
+            @PathVariable("member-id") Long memberId,
+            @RequestBody UpdateMemberRequest request
+    ) {
+        UpdateMemberRequest response = memberService.updateMember(memberId, request);
+        return ResponseEntity.ok(response);
     }
 }
