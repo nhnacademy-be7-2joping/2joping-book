@@ -4,6 +4,7 @@ package com.nhnacademy.bookstore.review.controller;
 import com.nhnacademy.bookstore.review.dto.request.ReviewCreateRequestDto;
 import com.nhnacademy.bookstore.review.dto.request.ReviewModifyRequestDto;
 import com.nhnacademy.bookstore.review.dto.request.ReviewRequestDto;
+import com.nhnacademy.bookstore.review.dto.response.ReviewCreateResponseDto;
 import com.nhnacademy.bookstore.review.dto.response.ReviewModifyResponseDto;
 import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
 import com.nhnacademy.bookstore.review.service.ReviewService;
@@ -17,19 +18,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/reviews")
+@RequestMapping("api/v1/bookstore/reviews")
 @Tag(name = "Review API", description = "리뷰 관련 CRUD API")
-public class    ReviewController {
-
+public class ReviewController {
 
     // TODO 필수 ->생성,수정,조회
     // TODO 해야하나? -> 유저가 작성한 모든 리뷰 조회, 유저가 작성한 특정 리뷰 조회, 책에 달린 별점의 평균
-
-    
 
     private final ReviewService reviewService;
 
@@ -39,9 +38,9 @@ public class    ReviewController {
      */
     @Operation(summary = "리뷰 등록", description = "새로운 리뷰를 등록합니다.")
     @PostMapping
-    public ResponseEntity<Void> registerReview(@RequestBody @Valid ReviewCreateRequestDto reviewCreateRequestDto) {
-        reviewService.registerReview(reviewCreateRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<ReviewCreateResponseDto> registerReview(@RequestBody @Valid ReviewCreateRequestDto reviewCreateRequestDto, BindingResult bindingResult) {
+        ReviewCreateResponseDto responseDto = reviewService.registerReview(reviewCreateRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     /**
@@ -50,9 +49,11 @@ public class    ReviewController {
      * @return 수정된 리뷰와 상태 코드를 담은 응답
      */
     @Operation(summary = "리뷰 수정", description = "등록된 리뷰를 수정합니다.")
-    @PatchMapping("/{reviewId}")
+    @PutMapping("/{reviewId}")
     public ResponseEntity<ReviewModifyResponseDto> modifyReview(@PathVariable Long reviewId,
-                                                                @RequestBody @Valid ReviewModifyRequestDto reviewModifyRequestDto) {
+                                                                @RequestBody @Valid ReviewModifyRequestDto reviewModifyRequestDto,
+                                                                BindingResult bindingResult) {
+
         ReviewModifyResponseDto modifyDto = reviewService.modifyReview(reviewModifyRequestDto);
         return ResponseEntity.ok(modifyDto);
     }
@@ -64,7 +65,7 @@ public class    ReviewController {
      */
     @Operation(summary = "리뷰 조회", description = "등록된 리뷰를 조회합니다.")
     @GetMapping("/{reviewId}")
-    public ResponseEntity<ReviewResponseDto> getReviews(@PathVariable Long reviewId) {
+    public ResponseEntity<ReviewResponseDto> getReview(@PathVariable Long reviewId) {
         ReviewRequestDto reviewRequestDto = new ReviewRequestDto(reviewId);
         ReviewResponseDto responseDto = reviewService.getReviews(reviewRequestDto);
         return ResponseEntity.ok(responseDto);
@@ -77,7 +78,7 @@ public class    ReviewController {
      * @return 조회할 리뷰와 상태 코드를 담은 응답
      */
     @Operation(summary = "도서별 리뷰 조회", description = "특정 도서에 등록된 리뷰들을 조회합니다.")
-    @GetMapping("/books/{bookId}")
+    @GetMapping("/book/{bookId}")
     public ResponseEntity<Page<ReviewResponseDto>> getReviewsByBookId(@PathVariable Long bookId,
                                                                       @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         ReviewRequestDto reviewRequestDto = new ReviewRequestDto(bookId);
@@ -92,7 +93,7 @@ public class    ReviewController {
      * @return 조회할 리뷰와 상태 코드를 담은 응답
      */
     @Operation(summary = "회원별 리뷰 조회", description = "특정 회원이 등록한 리뷰들을 조회합니다.")
-    @GetMapping("/customers/{customerId}")
+    @GetMapping("/customer/{customerId}")
     public ResponseEntity<Page<ReviewResponseDto>> getReviewsByCustomerId(@PathVariable Long customerId,
                                                                       @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         ReviewRequestDto reviewRequestDto = new ReviewRequestDto(customerId);

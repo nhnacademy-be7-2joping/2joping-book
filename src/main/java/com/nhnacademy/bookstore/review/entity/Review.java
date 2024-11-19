@@ -2,10 +2,8 @@ package com.nhnacademy.bookstore.review.entity;
 
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
-import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +24,7 @@ import java.sql.Timestamp;
 public class Review {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewId;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -57,6 +56,18 @@ public class Review {
 
     @Column(name = "image_url")
     private String imageUrl;
+
+    public Review(OrderDetail orderDetail, Member member, Book book, String title, String text, int ratingValue, Timestamp createdAt, Timestamp updatedAt, String imageUrl) {
+        this.orderDetail = orderDetail;
+        this.member = member;
+        this.book = book;
+        this.title = title;
+        this.text = text;
+        this.ratingValue = ratingValue;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.imageUrl = imageUrl;
+    }
 
 
     public void update(int ratingValue, String title, String text, String imageUrl, Timestamp updatedAt) {

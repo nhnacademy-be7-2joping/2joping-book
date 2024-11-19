@@ -9,6 +9,7 @@ public record ReviewModifyResponseDto(
         String title,
         String text,
         String imageUrl,
+        Timestamp createdAt,
         Timestamp updatedAt
 )
 {}

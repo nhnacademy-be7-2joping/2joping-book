@@ -13,7 +13,6 @@ import jakarta.validation.constraints.Positive;
  */
 
 public record ReviewCreateRequestDto (
-        @Positive Long reviewId,
         @Positive Long orderDetailId,
         @Positive Long customerId,
         @Positive Long bookId,

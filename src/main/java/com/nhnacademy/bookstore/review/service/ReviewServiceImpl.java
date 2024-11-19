@@ -66,15 +66,18 @@ public class ReviewServiceImpl implements ReviewService {
 
         OrderDetail orderDetail = orderDetailRepository.findById(reviewCreateRequestDto.orderDetailId()).orElseThrow(OrderNotFoundException::new);
 
-        boolean isDuplicateReview = reviewRepository.existsById(reviewCreateRequestDto.reviewId());
-        if (isDuplicateReview) { throw new ReviewAlreadyExistException("이미 존재하는 리뷰입니다.");}
+
+        //TODO 나중에 이 예외처리도 필요하므로 주석 해제해야 한다.
+//        if (reviewRepository.existsById(reviewCreateRequestDto.orderDetailId())) {
+//            throw new ReviewAlreadyExistException("리뷰가 이미 존재합니다.");
+//        }
 
         int ratingValue = reviewCreateRequestDto.ratingValue();
         if (ratingValue < 1 || ratingValue > 5) {
             throw new RatingValueNotValidException("평점 " + ratingValue + " 은 유효하지 않습니다. 1~5 사이의 값만 입력 가능합니다.", ratingValue);
         }
         Review review = new Review(
-                reviewCreateRequestDto.reviewId(),
+                null,
                 orderDetail,
                 member,
                 book,
