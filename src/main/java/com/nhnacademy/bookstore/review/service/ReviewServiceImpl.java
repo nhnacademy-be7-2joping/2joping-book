@@ -58,13 +58,13 @@ public class ReviewServiceImpl implements ReviewService {
      */
     @Override
     public ReviewCreateResponseDto registerReview(ReviewCreateRequestDto reviewCreateRequestDto) {
-        Book book = bookRepository.findById(reviewCreateRequestDto.bookId()).orElseThrow(() ->
+        Book book = bookRepository.findById(reviewCreateRequestDto.reviewDetailRequestDto().bookId()).orElseThrow(() ->
                 new BookNotFoundException("해당 도서가 없습니다."));
 
-        Member member = memberRepository.findById(reviewCreateRequestDto.customerId()).orElseThrow(() ->
+        Member member = memberRepository.findById(reviewCreateRequestDto.reviewDetailRequestDto().customerId()).orElseThrow(() ->
                 new MemberNotFoundException(("해당 회원이 없습니다."), RedirectType.REDIRECT, "url")); // TODO url 수정
 
-        OrderDetail orderDetail = orderDetailRepository.findById(reviewCreateRequestDto.orderDetailId()).orElseThrow(OrderNotFoundException::new);
+        OrderDetail orderDetail = orderDetailRepository.findById(reviewCreateRequestDto.reviewDetailRequestDto().orderDetailId()).orElseThrow(OrderNotFoundException::new);
 
 
         //TODO 나중에 이 예외처리도 필요하므로 주석 해제해야 한다.
@@ -72,7 +72,9 @@ public class ReviewServiceImpl implements ReviewService {
 //            throw new ReviewAlreadyExistException("리뷰가 이미 존재합니다.");
 //        }
 
-        int ratingValue = reviewCreateRequestDto.ratingValue();
+        int ratingValue = reviewCreateRequestDto.reviewDetailRequestDto().ratingValue();
+
+        String reviewImage = reviewCreateRequestDto.reviewImageUrlRequestDto().reviewImage() != null ? reviewCreateRequestDto.reviewImageUrlRequestDto().reviewImage() : " ";
         if (ratingValue < 1 || ratingValue > 5) {
             throw new RatingValueNotValidException("평점 " + ratingValue + " 은 유효하지 않습니다. 1~5 사이의 값만 입력 가능합니다.", ratingValue);
         }
@@ -81,12 +83,12 @@ public class ReviewServiceImpl implements ReviewService {
                 orderDetail,
                 member,
                 book,
-                reviewCreateRequestDto.title(),
-                reviewCreateRequestDto.text(),
+                reviewCreateRequestDto.reviewDetailRequestDto().title(),
+                reviewCreateRequestDto.reviewDetailRequestDto().text(),
                 ratingValue,
                 Timestamp.valueOf(LocalDateTime.now()),
                 null,
-                reviewCreateRequestDto.imageUrl() // imageUrl 설정
+                reviewImage
         );
 
         Review savedReview = reviewRepository.save(review);

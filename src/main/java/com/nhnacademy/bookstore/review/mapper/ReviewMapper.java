@@ -17,7 +17,7 @@ public interface ReviewMapper {
     @Mapping(source = "ratingValue", target = "ratingValue")
     @Mapping(source = "title", target = "title")
     @Mapping(source = "text", target = "text")
-    @Mapping(source = "imageUrl", target = "imageUrl")
+    @Mapping(source = "imageUrl", target = "reviewImage")
     @Mapping(source = "createdAt", target = "createdAt")
     ReviewCreateResponseDto toCreateResponseDto(Review review);
 

@@ -13,12 +13,7 @@ import jakarta.validation.constraints.Positive;
  */
 
 public record ReviewCreateRequestDto (
-        @Positive Long orderDetailId,
-        @Positive Long customerId,
-        @Positive Long bookId,
-        @Min(1) @Max(5)int ratingValue,
-        String title,
-        String text,
-        String imageUrl // TODO 임시
+    ReviewDetailRequestDto reviewDetailRequestDto,
+    ReviewImageUrlRequestDto reviewImageUrlRequestDto
 )
 {}
