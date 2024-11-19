@@ -77,7 +77,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
             // 각 Book에 대한 BookSimpleResponseDto 생성
             BookSimpleResponseDto dto = new BookSimpleResponseDto(
                     book.getBookId(),
-                    thumbnailUrl != null ? thumbnailUrl : "default-thumbnail.jpg", // 썸네일 URL이 없으면 기본값 사용
+                    thumbnailUrl != null ? thumbnailUrl : "", // 썸네일 URL이 없으면 기본값 사용
                     book.getTitle(),
                     book.getSellingPrice(),
                     book.getPublisher().getName(),
