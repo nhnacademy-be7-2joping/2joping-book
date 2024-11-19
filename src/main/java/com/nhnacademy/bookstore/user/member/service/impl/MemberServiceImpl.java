@@ -15,12 +15,9 @@ import com.nhnacademy.bookstore.user.memberStatus.repository.MemberStatusReposit
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.repository.MemberTierRepository;
 import lombok.RequiredArgsConstructor;
-<<<<<<< HEAD
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-=======
 import org.springframework.security.crypto.password.PasswordEncoder;
->>>>>>> develop
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,12 +41,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final MemberStatusRepository statusRepository;
     private final MemberTierRepository tierRepository;
-<<<<<<< HEAD
-    private final MemberStatusRepository memberStatusRepository;
-    private final MemberTierRepository memberTierRepository;
-=======
     private final PasswordEncoder passwordEncoder;
->>>>>>> develop
 
     /**
      * 신규 회원을 등록하는 메서드.

@@ -9,7 +9,6 @@ import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.entity.MemberAddress;
 import com.nhnacademy.bookstore.user.member.mapper.MemberAddressMapper;
 import com.nhnacademy.bookstore.user.member.repository.MemberAddressRepository;
-import com.nhnacademy.bookstore.user.member.repository.MemberAddressRepositroy;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.member.service.MemberAddressService;
 import lombok.RequiredArgsConstructor;
