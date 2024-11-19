@@ -22,6 +22,7 @@ import java.util.List;
  * @date : 2024-11-07
  */
 @RestController
+@RequestMapping("api/v1/")
 @RequiredArgsConstructor
 public class CategoryController {
 
