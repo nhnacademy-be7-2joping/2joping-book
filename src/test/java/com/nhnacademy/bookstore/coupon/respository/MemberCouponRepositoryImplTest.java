@@ -17,6 +17,7 @@ import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.memberStatus.entity.MemberStatus;
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
+import com.nhnacademy.bookstore.user.tier.enums.Tier;
 import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -84,11 +85,11 @@ class MemberCouponRepositoryImplTest {
 
         // 빈 Member 객체 생성 후 toEntity로 초기화
         Member member = new Member();
-        member.toEntity(requestDto);
+        member.toEntity(requestDto, "password");
 
         // 추가 필드 설정 (status, tier 등)
         member.setStatus(new MemberStatus(1L, "Active")); // 예시용 MemberStatus
-        member.setTier(new MemberTier(1L, "Gold", true, 1, 1)); // 예시용 MemberTier
+        member.setTier(new MemberTier(1L, Tier.골드, true, 1, 1, 1)); // 예시용 MemberTier
 
         Member testMember = memberRepository.save(member);
 
