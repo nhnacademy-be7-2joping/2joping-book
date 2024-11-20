@@ -18,6 +18,7 @@ import com.nhnacademy.bookstore.user.member.service.impl.MemberServiceImpl;
 import com.nhnacademy.bookstore.user.memberStatus.entity.MemberStatus;
 import com.nhnacademy.bookstore.user.memberStatus.repository.MemberStatusRepository;
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
+import com.nhnacademy.bookstore.user.tier.enums.Tier;
 import com.nhnacademy.bookstore.user.tier.repository.MemberTierRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,7 +67,7 @@ class MemberServiceImplTest {
     void testRegisterNewMember_Success() {
         // Given
         MemberStatus defaultStatus = new MemberStatus(1L, "가입");
-        MemberTier defaultTier = new MemberTier(1L, "일반", true, 1, 10000);
+        MemberTier defaultTier = new MemberTier(1L, Tier.골드, true, 1, 10000, 100000);
         when(memberRepository.existsByLoginId(memberCreateRequestDto.loginId())).thenReturn(false);
         when(memberRepository.existsByEmail(memberCreateRequestDto.email())).thenReturn(false);
         when(memberRepository.existsByPhone(memberCreateRequestDto.phone())).thenReturn(false);
@@ -392,7 +393,7 @@ class MemberServiceImplTest {
 
         // 추가 Mock 설정
         when(statusRepository.findById(1L)).thenReturn(Optional.of(new MemberStatus(1L, "가입")));
-        when(tierRepository.findById(1L)).thenReturn(Optional.of(new MemberTier(1L, "일반", true, 1, 10000)));
+        when(tierRepository.findById(1L)).thenReturn(Optional.of(new MemberTier(1L, Tier.골드, true, 1, 10000, 200000)));
         when(memberRepository.save(any(Member.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
@@ -430,7 +431,7 @@ class MemberServiceImplTest {
 
         // Mock 설정
         when(statusRepository.findById(1L)).thenReturn(Optional.of(new MemberStatus(1L, "가입")));
-        when(tierRepository.findById(1L)).thenReturn(Optional.of(new MemberTier(1L, "일반", true, 1, 10000)));
+        when(tierRepository.findById(1L)).thenReturn(Optional.of(new MemberTier(1L, Tier.골드, true, 1, 10000, 200000)));
         when(memberRepository.save(any(Member.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
