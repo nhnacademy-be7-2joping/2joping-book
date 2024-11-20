@@ -1,7 +1,10 @@
 package com.nhnacademy.bookstore.bookset.book.controller;
 
+import com.nhnacademy.bookstore.bookset.book.dto.request.BookUpdateRequestDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
+import com.nhnacademy.bookstore.bookset.book.dto.response.BookUpdateResponseDto;
+import com.nhnacademy.bookstore.bookset.book.dto.response.BookUpdateResultResponseDto;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +29,6 @@ import org.springframework.web.bind.annotation.*;
 public class BookController {
 
     private final BookService bookService;
-
-
 
     /**
      * 전체 도서를 조회하는 controller
@@ -78,7 +79,28 @@ public class BookController {
         BookResponseDto book = bookService.getBookById(bookId);
         return ResponseEntity.status(HttpStatus.OK).body(book);
     }
+
+    /**
+     * 특정 도서 수정 controller
+     * @param bookId 조회하려는 도서 id
+     * @return 특정 도서와 상태 코드를 담은 응답
+     */
+    @Operation(summary = "특정 도서 수정 정보 조회", description = "특정 도서 정보를 수정을 위해 기존 정보를 조회합니다.")
+    @GetMapping("/books/update/{bookId}")
+    public ResponseEntity<BookUpdateResponseDto> getUpdateBookByBookId(@PathVariable("bookId") Long bookId) {
+        BookUpdateResponseDto book = bookService.getUpdateBookByBookId(bookId);
+        return ResponseEntity.status(HttpStatus.OK).body(book);
+    }
+
+    /**
+     * 특정 도서 수정 controller
+     * @param bookId 조회하려는 도서 id
+     * @return 특정 도서와 상태 코드를 담은 응답
+     */
+    @Operation(summary = "특정 도서 수정", description = "특정 도서 정보를 수정합니다.")
+    @PostMapping("/books/update/{bookId}")
+    public ResponseEntity<BookUpdateResultResponseDto> updateBook(@PathVariable("bookId") Long bookId, @RequestBody BookUpdateRequestDto bookUpdateRequestDto) {
+        BookUpdateResultResponseDto book = bookService.updateBook(bookId, bookUpdateRequestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(book);
+    }
 }
-
-
-

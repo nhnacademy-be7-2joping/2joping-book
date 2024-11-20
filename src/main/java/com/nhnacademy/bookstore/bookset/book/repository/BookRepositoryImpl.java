@@ -1,11 +1,8 @@
 package com.nhnacademy.bookstore.bookset.book.repository;
 
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookContributorResponseDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
+import com.nhnacademy.bookstore.bookset.book.dto.response.*;
 
 
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookTagResponseDto;
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.bookset.book.entity.QBook;
 import com.nhnacademy.bookstore.bookset.book.entity.QBookCategory;
@@ -49,6 +46,11 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     private final QTag qTag = QTag.tag;
     private final QBookImage qBookImage = QBookImage.bookImage;
     private final QImage qImage = QImage.image;
+
+    QBookImage qBookImageThumbnail = new QBookImage("thumbnail");
+    QBookImage qBookImageDetail = new QBookImage("detail");
+    QImage qImageThumbnail = new QImage("thumbnailImage");
+    QImage qImageDetail = new QImage("detailImage");
 
     /**
      * 전체 도서를 페이지 단위로 조회
@@ -312,5 +314,122 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                         qTag.tagId,
                         qTag.name))
                 .fetch();
+    }
+
+    private String convertContributorsToString(List<BookContributorResponseDto> contributors) {
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < contributors.size(); i++) {
+            BookContributorResponseDto contributor = contributors.get(i);
+            result.append(contributor.contributorName())
+                    .append(" (")
+                    .append(contributor.roleName())
+                    .append(")");
+
+            if (i < contributors.size() - 1) {
+                result.append(", ");
+            }
+        }
+
+        return result.toString();
+    }
+
+    private String convertCategoriesToString(List<String> categories) {
+        if (categories == null || categories.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < categories.size(); i++) {
+            result.append(categories.get(i));
+
+            if (i < categories.size() - 1) {
+                result.append(">");
+            }
+        }
+
+        return result.toString();
+    }
+
+    private String convertTagsToString(List<BookTagResponseDto> tags) {
+        if (tags == null || tags.isEmpty()) {
+            return ""; // 태그가 비어있으면 빈 문자열 반환
+        }
+
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < tags.size(); i++) {
+            result.append(tags.get(i).tagName()); // 태그 이름 추가
+
+            // 마지막 항목이 아니라면 ',' 추가
+            if (i < tags.size() - 1) {
+                result.append(", ");
+            }
+        }
+
+        return result.toString();
+    }
+
+
+    /**
+     * 특정 도서의 상세 정보를 조회합니다.
+     *
+     * @param bookId 조회할 도서의 ID
+     * @return 도서의 상세 정보를 담은 BookResponseDto 객체
+     */
+    @Override
+    public Optional<BookUpdateResponseDto> findUpdateBookByBookId(Long bookId) {
+        Tuple bookTuple = from(qBook)
+                .leftJoin(qBookImageThumbnail).on(
+                        qBook.bookId.eq(qBookImageThumbnail.book.bookId)
+                                .and(qBookImageThumbnail.imageType.eq("썸네일"))
+                )
+                .leftJoin(qImageThumbnail).on(
+                        qBookImageThumbnail.image.imageId.eq(qImageThumbnail.imageId)
+                )
+                .leftJoin(qBookImageDetail).on(
+                        qBook.bookId.eq(qBookImageDetail.book.bookId)
+                                .and(qBookImageDetail.imageType.eq("상세"))
+                )
+                .leftJoin(qImageDetail).on(
+                        qBookImageDetail.image.imageId.eq(qImageDetail.imageId)
+                )
+                .where(qBook.bookId.eq(bookId))
+                .select(qBook, qImageThumbnail.url, qImageDetail.url)
+                .fetchOne();
+
+        if (bookTuple == null) {
+            return Optional.empty();
+        }
+
+        Book book = bookTuple.get(qBook);
+        String thumbnailUrl = bookTuple.get(qImageThumbnail.url) != null ? bookTuple.get(qImageThumbnail.url) : "default-thumbnail.jpg";
+        String detailUrl = bookTuple.get(qImageDetail.url) != null ? bookTuple.get(qImageDetail.url) : "default-detail.jpg";
+
+        String contributorList = convertContributorsToString(getContributorsByBook(book.getBookId()));
+        String categoryList = convertCategoriesToString(getCategoriesByBook(book.getBookId()));
+        String tagList = convertTagsToString(getTagsByBook(book.getBookId()));
+
+        BookUpdateResponseDto bookUpdateResponseDto = new BookUpdateResponseDto(
+                book.getBookId(),
+                book.getPublisher().getName(),
+                book.getTitle(),
+                book.getDescription(),
+                book.getPublishedDate(),
+                book.getIsbn(),
+                book.getRetailPrice(),
+                book.getSellingPrice(),
+                book.isGiftWrappable(),
+                book.isActive(),
+                book.getRemainQuantity(),
+                contributorList,
+                categoryList,
+                tagList,
+                thumbnailUrl,
+                detailUrl
+        );
+
+        return Optional.of(bookUpdateResponseDto);
     }
 }

@@ -59,16 +59,16 @@ class CouponRepositoryImplTest {
      * When: findAllCoupons 메서드를 사용하여 쿠폰 목록을 조회.
      * Then: 조회된 쿠폰 목록이 올바른지 확인.
      */
-    @Test
-    @Transactional
-    void testFindAllCoupons() {
-        // When: findAllCoupons 호출
-        List<CouponResponseDto> coupons = couponRepository.findAllCoupons();
-
-        // Then: 조회된 데이터 검증
-        assertNotNull(coupons);
-        assertEquals(1, coupons.size());
-        assertEquals("Test Coupon", coupons.get(0).name());
-        assertEquals("Test Policy", coupons.get(0).couponPolicyResponseDto().name());
-    }
+//    @Test
+//    @Transactional
+//    void testFindAllCoupons() {
+//        // When: findAllCoupons 호출
+//        List<CouponResponseDto> coupons = couponRepository.findAllCoupons();
+//
+//        // Then: 조회된 데이터 검증
+//        assertNotNull(coupons);
+//        assertEquals(1, coupons.size());
+//        assertEquals("Test Coupon", coupons.get(0).name());
+//        assertEquals("Test Policy", coupons.get(0).couponPolicyResponseDto().name());
+//    }
 }

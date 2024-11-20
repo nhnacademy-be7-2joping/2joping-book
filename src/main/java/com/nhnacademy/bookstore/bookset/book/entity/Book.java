@@ -2,7 +2,6 @@ package com.nhnacademy.bookstore.bookset.book.entity;
 
 import com.nhnacademy.bookstore.bookset.publisher.entity.Publisher;
 import jakarta.persistence.*;
-//import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -63,4 +62,18 @@ public class Book {
     @Column(nullable = false, columnDefinition = "INT default 0")
     private int likes;
 
+    public void updateBook(String title, String description, Publisher publisher, LocalDate publishedDate,
+                           String isbn, int retailPrice, int sellingPrice, boolean giftWrappable,
+                           boolean isActive, int remainQuantity) {
+        this.title = title;
+        this.description = description;
+        this.publisher = publisher;
+        this.publishedDate = publishedDate;
+        this.isbn = isbn;
+        this.retailPrice = retailPrice;
+        this.sellingPrice = sellingPrice;
+        this.giftWrappable = giftWrappable;
+        this.isActive = isActive;
+        this.remainQuantity = remainQuantity;
+    }
 }
