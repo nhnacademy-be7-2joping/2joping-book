@@ -2,10 +2,14 @@ package com.nhnacademy.bookstore.user.member.service.impl;
 
 import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberDuplicateException;
+import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberNothingToUpdateException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberStatusNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.tier.MemberTierNotFoundException;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
+import com.nhnacademy.bookstore.user.member.dto.request.MemberUpdateRequesteDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.member.service.MemberService;
@@ -13,8 +17,12 @@ import com.nhnacademy.bookstore.user.memberStatus.entity.MemberStatus;
 import com.nhnacademy.bookstore.user.memberStatus.repository.MemberStatusRepository;
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.repository.MemberTierRepository;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * MemberServiceImpl
@@ -32,6 +40,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final MemberStatusRepository statusRepository;
     private final MemberTierRepository tierRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * 신규 회원을 등록하는 메서드.
@@ -45,9 +54,10 @@ public class MemberServiceImpl implements MemberService {
      * @throws MemberTierNotFoundException 기본 회원 등급이 존재하지 않을 경우 예외
      */
     @Override
+    @Transactional
     public MemberCreateSuccessResponseDto registerNewMember(MemberCreateRequestDto memberDto) {
 
-        if (memberRepository.existsByLoginId(memberDto.getLoginId())) {
+        if (memberRepository.existsByLoginId(memberDto.loginId())) {
             throw new MemberDuplicateException(
                     "이미 사용 중인 아이디입니다.",
                     RedirectType.REDIRECT,
@@ -56,7 +66,7 @@ public class MemberServiceImpl implements MemberService {
             );
         }
 
-        if (memberRepository.existsByEmail(memberDto.getEmail())) {
+        if (memberRepository.existsByEmail(memberDto.email())) {
             throw new MemberDuplicateException(
                     "이미 존재하는 이메일입니다.",
                     RedirectType.REDIRECT,
@@ -65,7 +75,7 @@ public class MemberServiceImpl implements MemberService {
             );
         }
 
-        if (memberRepository.existsByPhone(memberDto.getPhone())) {
+        if (memberRepository.existsByPhone(memberDto.phone())) {
             throw new MemberDuplicateException(
                     "이미 존재하는 전화번호입니다.",
                     RedirectType.REDIRECT,
@@ -91,11 +101,92 @@ public class MemberServiceImpl implements MemberService {
                 ));
 
         Member requestMember = new Member();
-        requestMember.toEntity(memberDto);
+        String encodedPassword = passwordEncoder.encode(memberDto.password());
+        requestMember.toEntity(memberDto, encodedPassword);
         requestMember.setStatus(defaultStatus);
         requestMember.setTier(defaultTier);
+
         Member member = memberRepository.save(requestMember);
 
         return new MemberCreateSuccessResponseDto(member.getNickname());
+    }
+
+    /**
+     * 회원 정보를 업데이트하고, 업데이트된 정보를 반환합니다.
+     *
+     * @param customerId 수정할 회원의 고유 ID
+     * @param memberDto 수정 요청 데이터를 담은 DTO
+     * @return 업데이트된 회원 정보를 담은 DTO
+     * @throws MemberNotFoundException 회원 ID가 존재하지 않을 경우 발생
+     * @throws MemberDuplicateException 중복된 이메일 또는 전화번호가 존재할 경우 발생
+     */
+    @Transactional
+    @Override
+    public MemberUpdateResponseDto updateMember(long customerId, MemberUpdateRequesteDto memberDto) {
+        Member member = memberRepository.findById(customerId)
+                .orElseThrow(() -> new MemberNotFoundException("해당 멤버가 존재하지 않습니다." + customerId, RedirectType.REDIRECT, "/mypage/edit-profile"));
+
+        String phone = null;
+        String email = null;
+        String nickName = null;
+        boolean isUpdated = false;
+
+        if (!member.getPhone().equals(memberDto.phone()) ) {
+
+            if(memberRepository.existsByPhone(memberDto.phone())){
+                throw new MemberDuplicateException(
+                        "이미 존재하는 전화번호입니다.",
+                        RedirectType.REDIRECT,
+                        "/mypage/edit-profile",
+                        memberDto
+                );
+            }
+            phone = memberDto.phone();
+            isUpdated = true;
+
+        }
+
+        if (!member.getEmail().equals(memberDto.email())) {
+
+            if(memberRepository.existsByEmail(memberDto.email())){
+                throw new MemberDuplicateException(
+                        "이미 존재하는 이메일입니다.",
+                        RedirectType.REDIRECT,
+                        "/mypage/edit-profile",
+                        memberDto
+                );
+            }
+            email = memberDto.email();
+            isUpdated = true;
+
+
+        }
+        if (!member.getNickname().equals(memberDto.nickName()) ) {
+            nickName = memberDto.nickName();
+            isUpdated = true;
+
+        }
+        if (!isUpdated) {
+            throw new MemberNothingToUpdateException("업데이트할 데이터가 없습니다.", RedirectType.REDIRECT, "/mypage/edit-profile");
+        }
+        MemberUpdateRequesteDto realUpdateDto = new MemberUpdateRequesteDto(phone, email, nickName);
+
+        MemberUpdateResponseDto responseDto = memberRepository.updateMemberDetails(realUpdateDto, customerId);
+
+        return responseDto;
+    }
+
+    /**
+     * 회원 정보를 조회합니다.
+     *
+     * @param customerId 조회할 회원의 고유 ID
+     * @return 조회된 회원 정보를 담은 DTO
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public MemberUpdateResponseDto getMemberInfo(long customerId) {
+        MemberUpdateResponseDto responseDto = memberRepository.getMemberInfo(customerId);
+
+        return responseDto;
     }
 }

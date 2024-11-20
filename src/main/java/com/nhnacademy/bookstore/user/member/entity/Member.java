@@ -39,6 +39,7 @@ public class Member extends Customer {
     @Column(nullable = false, length = 255)
     private String password;
 
+    @Setter
     @Column(nullable = false, length = 20)
     private String nickname;
 
@@ -83,13 +84,13 @@ public class Member extends Customer {
      *
      * @param requestDto 회원 가입 시 필요한 정보를 담은 DTO 객체
      */
-    public void toEntity(MemberCreateRequestDto requestDto) {
-        this.initializeCustomerFields(requestDto.getName(), requestDto.getPhone(), requestDto.getEmail());
-        this.loginId = requestDto.getLoginId();
-        this.password = requestDto.getPassword();
-        this.nickname = requestDto.getNickName();
-        this.gender = requestDto.getGender();
-        this.birthday = requestDto.getBirthday();
+    public void toEntity(MemberCreateRequestDto requestDto, String password) {
+        this.initializeCustomerFields(requestDto.name(), requestDto.phone(), requestDto.email());
+        this.loginId = requestDto.loginId();
+        this.password = password;
+        this.nickname = requestDto.nickName();
+        this.gender = requestDto.gender();
+        this.birthday = requestDto.birthday();
         this.joinDate = LocalDate.now();
         this.isPaycoLogin = false;
         this.point = 0;
