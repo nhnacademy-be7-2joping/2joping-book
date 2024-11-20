@@ -1,7 +1,7 @@
 package com.nhnacademy.bookstore.point.service.impl;
 
 import com.nhnacademy.bookstore.common.error.exception.point.PointPolicyNotFoundException;
-import com.nhnacademy.bookstore.point.dto.request.PointTypeDto;
+import com.nhnacademy.bookstore.point.dto.response.PointTypeDto;
 import com.nhnacademy.bookstore.point.entity.PointType;
 import com.nhnacademy.bookstore.point.repository.PointTypeRepository;
 import com.nhnacademy.bookstore.point.service.PointTypeService;

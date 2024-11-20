@@ -8,6 +8,7 @@ import com.nhnacademy.bookstore.bookset.category.dto.response.GetParentCategoryR
 import com.nhnacademy.bookstore.bookset.category.dto.response.UpdateCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.service.CategoryService;
 import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class CategoryController {
      * @return 카테고리 생성 완료 상태 코드
      */
     @PostMapping("/categories")
-    public ResponseEntity<Void> createCategory(@RequestBody CategoryCreateRequest request) {
+    public ResponseEntity<Void> createCategory(@Valid @RequestBody CategoryCreateRequest request) {
         Long categoryId = categoryService.createCategory(request);
         return ResponseEntity.created(URI.create("/" + categoryId)).build();
     }

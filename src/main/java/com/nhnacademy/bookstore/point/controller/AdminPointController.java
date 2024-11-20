@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstore.point.controller;
 
-import com.nhnacademy.bookstore.point.dto.request.PointTypeDto;
+import com.nhnacademy.bookstore.point.dto.response.PointTypeDto;
 import com.nhnacademy.bookstore.point.service.impl.PointTypeServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
