@@ -83,17 +83,11 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         //주소 저장
         memberAddressRepositroy.save(address);
         //변경 후 주소 조회
-        List<MemberAddress> memberAddresses = memberAddressRepositroy.findByMember_Id(customerId);
+        List<MemberAddressResponseDto> memberAddresses = memberAddressRepositroy.findAddressesByMemberId(customerId);
 
-        //dto 변환
-        List<MemberAddressResponseDto> memberAddressResponse = new ArrayList<>();
 
-        for (MemberAddress memberAddress : memberAddresses) {
-
-            memberAddressResponse.add(MemberAddressMapper.INSTANCE.toResponseDto(memberAddress));
-        }
         //주소 조회
-        return memberAddressResponse;
+        return memberAddresses;
     }
 
     /**
@@ -117,14 +111,11 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 
         List<MemberAddressResponseDto> memberAddressResponse = new ArrayList<>();
 
-        List<MemberAddress> memberAddresses = memberAddressRepositroy.findByMember_Id(customerId);
+        List<MemberAddressResponseDto> memberAddresses = memberAddressRepositroy.findAddressesByMemberId(customerId);
 
-        for (MemberAddress memberAddress : memberAddresses) {
 
-            memberAddressResponse.add(MemberAddressMapper.INSTANCE.toResponseDto(memberAddress));
-        }
 
-        return memberAddressResponse;
+        return memberAddresses;
     }
 
 
