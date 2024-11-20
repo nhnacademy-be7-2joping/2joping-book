@@ -17,6 +17,4 @@ public interface BookRepositoryCustom {
     Page<BookSimpleResponseDto> findBooksByContributorId(Pageable pageable, Long contributorId);
     Page<BookSimpleResponseDto> findBooksByCategoryId(Pageable pageable, Long categoryId);
     Optional<BookResponseDto> findBookByBookId(Long bookId);
-    Book findBookById(Long bookId);
-    List<BookResponseDto> findBooksById(List<Long> bookId);
 }

@@ -10,7 +10,6 @@ import java.util.List;
 public interface BookService {
     Page<BookSimpleResponseDto> getAllBooks(Pageable pageable);
     BookResponseDto getBookById(Long bookId);
-    List<BookResponseDto> getBooksById(List<Long> bookIds);
     Page<BookSimpleResponseDto> getBooksByCategoryId(Pageable pageable, Long categoryId);
     Page<BookSimpleResponseDto> getBooksByContributorId(Pageable pageable, Long contributorId);
 }

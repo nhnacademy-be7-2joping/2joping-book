@@ -61,16 +61,16 @@ public class BookServiceImpl implements BookService {
         return book;
     }
 
-    /**
-     * Id 리스트를 받아 도서리스트를 조회하는 메서드
-     * @param bookIds 특정 도서 아이디 리스트
-     * @return 도서목록
-     */
-    @Override
-    public List<BookResponseDto> getBooksById(List<Long> bookIds) {
-        // TODO 장바구니에서 도서 정보 조회 필요.
-        return List.of();
-    }
+//    /**
+//     * Id 리스트를 받아 도서리스트를 조회하는 메서드
+//     * @param bookIds 특정 도서 아이디 리스트
+//     * @return 도서목록
+//     */
+//    @Override
+//    public List<BookResponseDto> getBooksById(List<Long> bookIds) {
+//        // TODO 장바구니에서 도서 정보 조회 필요.
+//        return List.of();
+//    }
 
 
 }
