@@ -16,6 +16,7 @@ import com.nhnacademy.bookstore.point.service.PointService;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
+import com.nhnacademy.bookstore.user.tier.enums.Tier;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -71,14 +72,14 @@ public class PointServiceImpl implements PointService {
                 ));
 
         MemberTier memberTier = member.getTier();
-        String tierName = memberTier.getTierName();
+        Tier name = memberTier.getName();
 
         // 주문 정보를 통해서 총 가격 구하기
         // 해당 주문 정보에 대한 가격으로 구매 적립 포인트 추가
         // 순수금액 = 주문금액 - (쿠폰 + 배송비 + 취소금액 + 포장비)
         Order order = orderRepository.findByOrderId(orderId);
 
-        int pointAmount = getPointAmount(order, tierName, member);
+        int pointAmount = getPointAmount(order, String.valueOf(name), member);
 
         member.addPoint(pointAmount);
     }

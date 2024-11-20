@@ -43,6 +43,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
+    private static final int INITIAL_PAGE_SIZE = 10;
+
     private final MemberRepository memberRepository;
     private final MemberStatusRepository statusRepository;
     private final MemberTierRepository tierRepository;
@@ -115,6 +117,21 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.save(requestMember);
 
         return new MemberCreateSuccessResponseDto(member.getNickname());
+    }
+
+    /**
+     * @param page
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public List<GetAllMembersResponse> getAllMembers(
+            final int page
+    ) {
+        final Pageable pageable = PageRequest.of(page, INITIAL_PAGE_SIZE);
+        return memberRepository.findAllByOrderByNicknameDesc(pageable).stream()
+                .map(GetAllMembersResponse::from)
+                .toList();
     }
 
     /**
