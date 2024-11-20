@@ -7,6 +7,7 @@ import com.nhnacademy.bookstore.user.member.dto.request.MemberAddressRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberAddressResponseDto;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.entity.MemberAddress;
+import com.nhnacademy.bookstore.user.member.mapper.MemberAddressMapper;
 import com.nhnacademy.bookstore.user.member.repository.MemberAddressRepository;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.member.service.MemberAddressService;
@@ -82,6 +83,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         //주소 저장
         memberAddressRepository.save(address);
         //변경 후 주소 조회
+
         List<MemberAddressResponseDto> memberAddresses = memberAddressRepository.findAddressesByMemberId(customerId);
 
 
@@ -108,7 +110,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
                         "/member/addresses")
                 );
 
-        List<MemberAddressResponseDto> memberAddressResponse = new ArrayList<>();
+
 
         List<MemberAddressResponseDto> memberAddresses = memberAddressRepository.findAddressesByMemberId(customerId);
 
