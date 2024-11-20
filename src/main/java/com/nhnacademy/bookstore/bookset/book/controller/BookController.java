@@ -1,9 +1,13 @@
 package com.nhnacademy.bookstore.bookset.book.controller;
 
+import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateRequestDto;
+import com.nhnacademy.bookstore.bookset.book.dto.response.BookCreateResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +31,25 @@ public class BookController {
 
     private final BookService bookService;
 
-
+    /**
+     * 도서를 단독으로 등록하는 controller
+     * @return 등록한 도서와 상태 코드를 담은 응답
+     */
+    @Operation(summary = "도서 단독 등록", description = "새로운 도서를 등록합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "도서 생성 성공"),
+            @ApiResponse(responseCode = "404", description = "리소스를 찾을 수 없음"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
+    })
+    @PostMapping(value = "/books/register")
+    public ResponseEntity<BookCreateResponseDto> createBook(@RequestBody BookCreateRequestDto bookCreateRequestDto) {
+        try {
+            BookCreateResponseDto book = bookService.createBook(bookCreateRequestDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(book);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
     /**
      * 전체 도서를 조회하는 controller

@@ -39,6 +39,7 @@ public class Member extends Customer {
     @Column(nullable = false, length = 255)
     private String password;
 
+    @Setter
     @Column(nullable = false, length = 20)
     private String nickname;
 

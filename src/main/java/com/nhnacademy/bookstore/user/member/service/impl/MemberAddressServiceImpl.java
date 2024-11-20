@@ -7,7 +7,6 @@ import com.nhnacademy.bookstore.user.member.dto.request.MemberAddressRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberAddressResponseDto;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.entity.MemberAddress;
-import com.nhnacademy.bookstore.user.member.mapper.MemberAddressMapper;
 import com.nhnacademy.bookstore.user.member.repository.MemberAddressRepository;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.member.service.MemberAddressService;
@@ -32,7 +31,7 @@ import java.util.List;
 public class MemberAddressServiceImpl implements MemberAddressService {
 
     private final MemberRepository memberRepository;
-    private final MemberAddressRepository memberAddressRepository;
+    private final MemberAddressRepository memberAddressRepository ;
 
     /**
      * 회원의 주소를 추가하는 메서드입니다.
@@ -83,17 +82,11 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         //주소 저장
         memberAddressRepository.save(address);
         //변경 후 주소 조회
-        List<MemberAddress> memberAddresses = memberAddressRepository.findByMember_Id(customerId);
+        List<MemberAddressResponseDto> memberAddresses = memberAddressRepository.findAddressesByMemberId(customerId);
 
-        //dto 변환
-        List<MemberAddressResponseDto> memberAddressResponse = new ArrayList<>();
 
-        for (MemberAddress memberAddress : memberAddresses) {
-
-            memberAddressResponse.add(MemberAddressMapper.INSTANCE.toResponseDto(memberAddress));
-        }
         //주소 조회
-        return memberAddressResponse;
+        return memberAddresses;
     }
 
     /**
@@ -117,14 +110,11 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 
         List<MemberAddressResponseDto> memberAddressResponse = new ArrayList<>();
 
-        List<MemberAddress> memberAddresses = memberAddressRepository.findByMember_Id(customerId);
+        List<MemberAddressResponseDto> memberAddresses = memberAddressRepository.findAddressesByMemberId(customerId);
 
-        for (MemberAddress memberAddress : memberAddresses) {
 
-            memberAddressResponse.add(MemberAddressMapper.INSTANCE.toResponseDto(memberAddress));
-        }
 
-        return memberAddressResponse;
+        return memberAddresses;
     }
 
 
