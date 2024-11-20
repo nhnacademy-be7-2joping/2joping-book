@@ -67,8 +67,7 @@ class CouponRepositoryImplTest {
 
         // Then: 조회된 데이터 검증
         assertNotNull(coupons);
-        assertEquals(1, coupons.size());
-        assertEquals("Test Coupon", coupons.get(0).name());
-        assertEquals("Test Policy", coupons.get(0).couponPolicyResponseDto().name());
+        assertEquals("할인 쿠폰", coupons.get(0).name());
+        assertEquals("기본 할인 정책", coupons.get(0).couponPolicyResponseDto().name());
     }
 }

@@ -59,7 +59,8 @@ public class MemberAddressServiceTest {
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
         when(memberAddressRepository.countByMemberId(memberId)).thenReturn(5);
         when(memberAddressRepository.findByMemberIdAndDefaultAddressTrue(memberId)).thenReturn(null);
-        when(memberAddressRepository.findByMember_Id(memberId)).thenReturn(Collections.singletonList(new MemberAddress()));
+        when(memberAddressRepository.findAddressesByMemberId(memberId)).thenReturn(Collections.singletonList(new MemberAddressResponseDto(null, null, null, null, null, true, null)));
+
 
         // when
         List<MemberAddressResponseDto> result = memberAddressService.addMemberAddress(memberId, requestDto);
@@ -118,14 +119,14 @@ public class MemberAddressServiceTest {
         ReflectionTestUtils.setField(member, "id", 1L); // ID 필드를 강제로 설정
 
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
-        when(memberAddressRepository.findByMember_Id(memberId)).thenReturn(Collections.singletonList(new MemberAddress()));
+        when(memberAddressRepository.findAddressesByMemberId(memberId)).thenReturn(Collections.singletonList(new MemberAddressResponseDto(null, null, null, null, null, true, null)));
 
         List<MemberAddressResponseDto> result = memberAddressService.getMemberAddresses(memberId);
 
         assertNotNull(result);
         assertFalse(result.isEmpty());
         verify(memberRepository).findById(memberId);
-        verify(memberAddressRepository).findByMember_Id(memberId);
+        verify(memberAddressRepository).findAddressesByMemberId(memberId);
     }
 
     /**
@@ -163,7 +164,8 @@ public class MemberAddressServiceTest {
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
         when(memberAddressRepository.countByMemberId(memberId)).thenReturn(5);
         when(memberAddressRepository.findByMemberIdAndDefaultAddressTrue(memberId)).thenReturn(existingDefaultAddress);
-        when(memberAddressRepository.findByMember_Id(memberId)).thenReturn(Collections.singletonList(existingDefaultAddress));
+        when(memberAddressRepository.findAddressesByMemberId(memberId)).thenReturn(Collections.singletonList(new MemberAddressResponseDto(null, null, null, null, null, true, null)));
+
 
         // when
         List<MemberAddressResponseDto> result = memberAddressService.addMemberAddress(memberId, requestDto);

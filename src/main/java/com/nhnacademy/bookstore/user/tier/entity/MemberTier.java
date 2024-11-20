@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.user.tier.entity;
 
 
+import com.nhnacademy.bookstore.user.tier.enums.Tier;
 import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
@@ -28,15 +29,14 @@ public class MemberTier {
     @Column(name = "member_tier_id")
     private Long id;
 
-    @Column(name = "tier_name", nullable = false, length = 20)
-    private String tierName = "일반"; // 기본값 설정
+    @Enumerated(EnumType.STRING)
+    private Tier name;
 
     @Column(nullable = false)
     private boolean status; // true: 활성, false: 비활성
 
-    @Column(name = "acc_rate", nullable = false)
     private int accRate;
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private int promotion;
+    private int minPromotion;
+    private int maxPromotion;
 }

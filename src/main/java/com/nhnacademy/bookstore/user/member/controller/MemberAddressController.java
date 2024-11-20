@@ -68,7 +68,8 @@ public class MemberAddressController {
      */
     @GetMapping("/addresses")
     public ResponseEntity<List<MemberAddressResponseDto>> getAllMemberAddress(
-            @RequestHeader("X-Customer-Id") String customerId) {
+            @RequestHeader("X-Customer-Id") String customerId ) {
+
 
         List<MemberAddressResponseDto> addresses = memberAddressService.getMemberAddresses(Long.parseLong(customerId));
 

@@ -22,6 +22,7 @@ import com.nhnacademy.bookstore.imageset.entity.QBookImage;
 import com.nhnacademy.bookstore.imageset.entity.QImage;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -272,7 +273,6 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
 
         return Optional.of(bookResponseDto);
     }
-
 
     /**
      * 특정 도서의 기여자 정보를 조회하여 반환
