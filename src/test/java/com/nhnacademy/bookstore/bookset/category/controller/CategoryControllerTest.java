@@ -64,6 +64,7 @@ public class CategoryControllerTest {
         // when & then
         mockMvc.perform(post("/api/v1/bookstore/categories")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Customer-Id", "test-customer-id") // 추가된 부분
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isCreated())
@@ -79,6 +80,7 @@ public class CategoryControllerTest {
         // when & then
         mockMvc.perform(post("/api/v1/bookstore/categories")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Customer-Id", "test-customer-id") // 추가된 부분
                         .content(objectMapper.writeValueAsString(requestWithParent)))
                 .andDo(print())
                 .andExpect(status().isCreated())
@@ -94,8 +96,9 @@ public class CategoryControllerTest {
         // when & then
         mockMvc.perform(post("/api/v1/bookstore/categories")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Customer-Id", "test-customer-id") // 추가된 부분
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andDo(print())
-                .andExpect(status().isCreated());
+                .andExpect(status().isBadRequest()); // 잘못된 요청에 대한 상태 코드는 400이어야 함
     }
 }
