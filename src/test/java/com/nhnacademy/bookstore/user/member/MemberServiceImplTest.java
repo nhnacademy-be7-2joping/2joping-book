@@ -1,7 +1,6 @@
 package com.nhnacademy.bookstore.user.member;
 
 
-import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberDuplicateException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberNothingToUpdateException;
@@ -34,6 +33,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+/**
+ * 회원 서비스 테스트
+ * 회원 등록 및 중복 확인, 예외 처리를 테스트하는 클래스입니다.
+ */
 @ExtendWith(MockitoExtension.class)
 class MemberServiceImplTest {
 
