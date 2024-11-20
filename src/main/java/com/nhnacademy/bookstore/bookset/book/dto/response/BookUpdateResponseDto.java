@@ -1,7 +1,6 @@
 package com.nhnacademy.bookstore.bookset.book.dto.response;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public record BookUpdateResponseDto (
         Long bookId,
@@ -15,12 +14,6 @@ public record BookUpdateResponseDto (
         boolean giftWrappable,
         boolean isActive,
         int remainQuantity,
-//        List<ContributorResponseDto> contributorList,
-//        CategoryResponseDto category,
-//        List<TagResponseDto> tagList,
-//        List<BookContributorResponseDto> contributorList,
-//        List<String> categoryList,
-//        List<BookTagResponseDto> tagList,
         String contributorList,
         String categoryList,
         String tagList,

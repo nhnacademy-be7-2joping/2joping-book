@@ -208,12 +208,25 @@ public class BookServiceImpl implements BookService {
         return book;
     }
 
+    /**
+     * 특정 도서를 업데이트용으로 조회하는 메서드
+     *
+     * @param bookId
+     * @return 도서 객체
+     */
     @Override
     public BookUpdateResponseDto getUpdateBookByBookId(Long bookId) {
         BookUpdateResponseDto book = bookRepository.findUpdateBookByBookId(bookId).orElseThrow(()-> new BookNotFoundException("도서를 찾을 수 없습니다."));
         return book;
     }
 
+    /**
+     * 특정 도서를 업데이트하는 메서드
+     *
+     * @param bookId
+     * @param bookUpdateRequestDto   도서 업데이트 요청 데이터가 담긴 DTO
+     * @return 업데이트된 도서의 결과 정보가 담긴 DTO
+     */
     @Override
     public BookUpdateResultResponseDto updateBook(Long bookId, BookUpdateRequestDto bookUpdateRequestDto) {
         Book book = bookRepository.findById(bookId)
@@ -321,6 +334,15 @@ public class BookServiceImpl implements BookService {
         );
     }
 
+    /**
+     * 특정 도서에 연결된 기존 이미지를 제거하는 메서드
+     *
+     * @param book
+     * @param imageType
+     *
+     * 이미지 유형에 해당하는 도서의 기존 이미지를 모두 삭제합니다.
+     * 이미지가 더 이상 다른 도서와 연결되어 있지 않을 경우 이미지 데이터를 완전히 삭제합니다.
+     */
     private void removeExistingImages(Book book, String imageType) {
         bookImageRepository.findByBookAndImageType(book, imageType)
                 .forEach(existing -> {

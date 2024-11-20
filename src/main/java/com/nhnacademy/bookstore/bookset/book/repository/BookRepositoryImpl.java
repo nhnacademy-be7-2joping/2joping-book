@@ -316,6 +316,12 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .fetch();
     }
 
+    /**
+     * 도서에 연결된 기여자 정보를 문자열 형식으로 변환
+     *
+     * @param contributors
+     * @return 기여자 정보가 포함된 문자열
+     */
     private String convertContributorsToString(List<BookContributorResponseDto> contributors) {
         StringBuilder result = new StringBuilder();
 
@@ -334,6 +340,12 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         return result.toString();
     }
 
+    /**
+     * 도서에 연결된 카테고리 정보를 문자열 형식으로 변환
+     *
+     * @param categories
+     * @return 카테고리 정보가 포함된 문자열
+     */
     private String convertCategoriesToString(List<String> categories) {
         if (categories == null || categories.isEmpty()) {
             return "";
@@ -352,17 +364,22 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         return result.toString();
     }
 
+    /**
+     * 도서에 연결된 태그 정보를 문자열 형식으로 변환
+     *
+     * @param tags
+     * @return 태그 정보가 포함된 문자열
+     */
     private String convertTagsToString(List<BookTagResponseDto> tags) {
         if (tags == null || tags.isEmpty()) {
-            return ""; // 태그가 비어있으면 빈 문자열 반환
+            return "";
         }
 
         StringBuilder result = new StringBuilder();
 
         for (int i = 0; i < tags.size(); i++) {
-            result.append(tags.get(i).tagName()); // 태그 이름 추가
+            result.append(tags.get(i).tagName());
 
-            // 마지막 항목이 아니라면 ',' 추가
             if (i < tags.size() - 1) {
                 result.append(", ");
             }
@@ -373,9 +390,9 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
 
 
     /**
-     * 특정 도서의 상세 정보를 조회합니다.
+     * 업데이트를 위해 특정 도서의 상세 정보를 조회
      *
-     * @param bookId 조회할 도서의 ID
+     * @param bookId
      * @return 도서의 상세 정보를 담은 BookResponseDto 객체
      */
     @Override
