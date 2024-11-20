@@ -3,7 +3,6 @@ package com.nhnacademy.bookstore.point.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstore.point.dto.request.CreatePointTypeRequestDto;
 import com.nhnacademy.bookstore.point.dto.request.UpdatePointTypeRequestDto;
-import com.nhnacademy.bookstore.point.dto.response.CreatePointTypeResponseDto;
 import com.nhnacademy.bookstore.point.dto.response.ReadPointTypeResponseDto;
 import com.nhnacademy.bookstore.point.dto.response.UpdatePointTypeResponseDto;
 import com.nhnacademy.bookstore.point.enums.PointTypeEnum;
@@ -48,18 +47,14 @@ class PointTypeControllerTest {
     @DisplayName("포인트 타입 생성 테스트")
     void createPointType() throws Exception {
         CreatePointTypeRequestDto requestDto = new CreatePointTypeRequestDto(PointTypeEnum.PERCENT, 10, "구매 포인트", true);
-        CreatePointTypeResponseDto responseDto = new CreatePointTypeResponseDto(1L, PointTypeEnum.PERCENT, 10, "구매 포인트", true);
 
-        Mockito.when(pointTypeServiceImpl.createPointType(any(CreatePointTypeRequestDto.class))).thenReturn(responseDto);
+        Mockito.when(pointTypeServiceImpl.createPointType(any(CreatePointTypeRequestDto.class))).thenReturn(1L);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/admin/pointtypes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.type").value(PointTypeEnum.PERCENT.toString()))
-                .andExpect(jsonPath("$.accVal").value(10))
-                .andExpect(jsonPath("$.name").value("구매 포인트"))
-                .andExpect(jsonPath("$.isActive").value(true));
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "/api/v1/admin/pointtypes/1"));
     }
 
     /**

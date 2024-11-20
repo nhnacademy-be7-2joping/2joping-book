@@ -2,7 +2,6 @@ package com.nhnacademy.bookstore.point.controller;
 
 import com.nhnacademy.bookstore.point.dto.request.CreatePointTypeRequestDto;
 import com.nhnacademy.bookstore.point.dto.request.UpdatePointTypeRequestDto;
-import com.nhnacademy.bookstore.point.dto.response.CreatePointTypeResponseDto;
 import com.nhnacademy.bookstore.point.dto.response.ReadPointTypeResponseDto;
 import com.nhnacademy.bookstore.point.dto.response.UpdatePointTypeResponseDto;
 import com.nhnacademy.bookstore.point.service.impl.PointTypeServiceImpl;
@@ -13,6 +12,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -48,9 +49,11 @@ public class AdminPointController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
     })
     @PostMapping
-    public ResponseEntity<CreatePointTypeResponseDto> createPointType(
-            @RequestBody @Valid CreatePointTypeRequestDto request) {
-        return ResponseEntity.ok(pointTypeServiceImpl.createPointType(request));
+    public ResponseEntity<Void> createPointType(
+            @RequestBody @Valid CreatePointTypeRequestDto request
+    ) {
+        Long pointTypeId = pointTypeServiceImpl.createPointType(request);
+        return ResponseEntity.created(URI.create("/api/v1/admin/pointtypes/" + pointTypeId)).build();
     }
 
     /**

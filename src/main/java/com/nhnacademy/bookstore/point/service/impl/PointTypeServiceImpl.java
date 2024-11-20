@@ -3,7 +3,6 @@ package com.nhnacademy.bookstore.point.service.impl;
 import com.nhnacademy.bookstore.common.error.exception.point.PointTypeNotFoundException;
 import com.nhnacademy.bookstore.point.dto.request.CreatePointTypeRequestDto;
 import com.nhnacademy.bookstore.point.dto.request.UpdatePointTypeRequestDto;
-import com.nhnacademy.bookstore.point.dto.response.CreatePointTypeResponseDto;
 import com.nhnacademy.bookstore.point.dto.response.ReadPointTypeResponseDto;
 import com.nhnacademy.bookstore.point.dto.response.UpdatePointTypeResponseDto;
 import com.nhnacademy.bookstore.point.entity.PointType;
@@ -24,10 +23,9 @@ public class PointTypeServiceImpl implements PointTypeService {
     private final PointTypeMapper pointTypeMapper;
 
     @Transactional
-    public CreatePointTypeResponseDto createPointType(CreatePointTypeRequestDto dto) {
+    public Long createPointType(CreatePointTypeRequestDto dto) {
         PointType pointType = pointTypeMapper.toEntity(dto);
-        PointType savedPointType = pointTypeRepository.save(pointType);
-        return pointTypeMapper.toCreateResponseDto(savedPointType);
+        return pointTypeRepository.save(pointType).getId();
     }
 
     @Transactional

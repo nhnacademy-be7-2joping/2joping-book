@@ -3,7 +3,6 @@ package com.nhnacademy.bookstore.point.service;
 import com.nhnacademy.bookstore.common.error.exception.point.PointTypeNotFoundException;
 import com.nhnacademy.bookstore.point.dto.request.CreatePointTypeRequestDto;
 import com.nhnacademy.bookstore.point.dto.request.UpdatePointTypeRequestDto;
-import com.nhnacademy.bookstore.point.dto.response.CreatePointTypeResponseDto;
 import com.nhnacademy.bookstore.point.dto.response.ReadPointTypeResponseDto;
 import com.nhnacademy.bookstore.point.dto.response.UpdatePointTypeResponseDto;
 import com.nhnacademy.bookstore.point.entity.PointType;
@@ -18,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,21 +43,16 @@ class PointTypeServiceTest {
     void createPointType() {
         CreatePointTypeRequestDto requestDto = new CreatePointTypeRequestDto(PointTypeEnum.PERCENT, 10, "구매 포인트", true);
         PointType savedPointType = new PointType(1L, PointTypeEnum.PERCENT, 10, "구매 포인트", true);
-        CreatePointTypeResponseDto expectedResponse = new CreatePointTypeResponseDto(1L, PointTypeEnum.PERCENT, 10, "구매 포인트", true);
 
         when(pointTypeMapper.toEntity(requestDto)).thenReturn(savedPointType);
         when(pointTypeRepository.save(any(PointType.class))).thenReturn(savedPointType);
-        when(pointTypeMapper.toCreateResponseDto(savedPointType)).thenReturn(expectedResponse);
 
-        CreatePointTypeResponseDto responseDto = pointTypeService.createPointType(requestDto);
+        Long id = pointTypeService.createPointType(requestDto);
 
-        assertNotNull(responseDto);
-        assertEquals(1L, responseDto.id());
-        assertEquals("구매 포인트", responseDto.name());
-        assertEquals(PointTypeEnum.PERCENT, responseDto.type());
-        assertEquals(10, responseDto.accVal());
-
+        assertNotNull(id);
+        assertEquals(1L, id);
     }
+
 
     @Test
     @DisplayName("포인트 타입 수정 테스트")
