@@ -1,15 +1,15 @@
 package com.nhnacademy.bookstore.point.controller;
 
 import com.nhnacademy.bookstore.point.dto.request.PointHistoryDto;
-import com.nhnacademy.bookstore.point.dto.request.PointTypeDto;
+import com.nhnacademy.bookstore.point.dto.request.CreatePointTypeRequestDto;
 import com.nhnacademy.bookstore.point.dto.request.PointUseRequest;
+import com.nhnacademy.bookstore.point.dto.response.ReadPointTypeResponseDto;
 import com.nhnacademy.bookstore.point.service.impl.PointServiceImpl;
 import com.nhnacademy.bookstore.point.service.impl.PointTypeServiceImpl;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class PointController {
     }
 
     @GetMapping("/types")
-    public ResponseEntity<List<PointTypeDto>> getActivePointTypes() {
+    public ResponseEntity<List<ReadPointTypeResponseDto>> getActivePointTypes() {
         return ResponseEntity.ok(pointTypeServiceImpl.getAllActivePointTypes());
     }
 }

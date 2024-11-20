@@ -36,11 +36,11 @@ public class PointType {
         this.name = name;
     }
 
-    public void updateAccVal(Integer accVal) {
+    public void updatePointType(PointTypeEnum type, Integer accVal, String name, boolean isActive) {
+        this.type = type;
         this.accVal = accVal;
+        this.name = name;
+        this.isActive = isActive;
     }
 
-    public void deactivate() {
-        this.isActive = false;
-    }
 }
