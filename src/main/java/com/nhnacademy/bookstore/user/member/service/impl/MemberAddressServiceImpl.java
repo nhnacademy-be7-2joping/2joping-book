@@ -83,8 +83,9 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         //주소 저장
         memberAddressRepository.save(address);
         //변경 후 주소 조회
-        List<MemberAddressResponseDto> memberAddresses = memberAddressRepository.findAddressesByMemberId(customerId);
 
+        List<MemberAddressResponseDto> memberAddresses = memberAddressRepository.findAddressesByMemberId(customerId);
+      
 
         //주소 조회
         return memberAddresses;
@@ -108,6 +109,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
                         RedirectType.REDIRECT,
                         "/member/addresses")
                 );
+
 
 
         List<MemberAddressResponseDto> memberAddresses = memberAddressRepository.findAddressesByMemberId(customerId);
