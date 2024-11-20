@@ -93,7 +93,7 @@ public class MemberController {
 
     }
 
-    @GetMapping("")
+    @GetMapping("/detatils")
     public ResponseEntity<List<GetAllMembersResponse>> getAllMembers(
             @RequestParam(name = "page", defaultValue = "0") @PositiveOrZero final int page
     ) {
