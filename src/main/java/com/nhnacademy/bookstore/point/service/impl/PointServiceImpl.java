@@ -1,11 +1,10 @@
 package com.nhnacademy.bookstore.point.service.impl;
 
 import com.nhnacademy.bookstore.common.error.enums.RedirectType;
-import com.nhnacademy.bookstore.common.error.exception.point.SignUpPointPolicyNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
 import com.nhnacademy.bookstore.orderset.order.entity.Order;
 import com.nhnacademy.bookstore.orderset.order.repository.OrderRepository;
-import com.nhnacademy.bookstore.point.dto.request.PointHistoryDto;
+import com.nhnacademy.bookstore.point.dto.response.*;
 import com.nhnacademy.bookstore.point.dto.request.PointUseRequest;
 import com.nhnacademy.bookstore.point.entity.PointHistory;
 import com.nhnacademy.bookstore.point.entity.PointType;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -103,13 +101,48 @@ public class PointServiceImpl implements PointService {
                 request.customerId(), -request.pointAmount());
     }
 
+    /**
+     * @param customerId
+     * @return 회원 페이지 포인트 간략 정보
+     */
     @Override
-    public List<PointHistoryDto> getPointHistory(Long customerId) {
-        return pointHistoryRepository.findByCustomerId(customerId)
+    public GetMyPageSimplePointHistoriesResponse getMyPageSimplePointHistories(Long customerId) {
+        Member member = memberRepository.findById(customerId)
+                .orElseThrow(() -> new MemberNotFoundException(
+                        "회원을 찾을 수 없습니다.",
+                        RedirectType.NONE,
+                        null
+                ));
+
+        List<GetSimplePointHistoriesResponse> responses = pointHistoryRepository.findByCustomerIdOrderByRegisterDateDesc(customerId)
                 .stream()
-                .map(PointHistoryDto::from)
+                .map(GetSimplePointHistoriesResponse::from)
                 .toList();
+
+        return GetMyPageSimplePointHistoriesResponse.of(member, responses);
     }
+
+    /**
+     * @param customerId
+     * @return 회원 페이지 포인트 상세 정보
+     */
+    @Override
+    public GetMyPageDetailPointHistoriesResponse getMyPageDetailPointHistories(Long customerId) {
+        Member member = memberRepository.findById(customerId)
+                .orElseThrow(() -> new MemberNotFoundException(
+                        "회원을 찾을 수 없습니다.",
+                        RedirectType.NONE,
+                        null
+                ));
+
+        List<GetDetailPointHistoriesResponse> responses = pointHistoryRepository.findByCustomerIdOrderByRegisterDateDesc(customerId)
+                .stream()
+                .map(GetDetailPointHistoriesResponse::from)
+                .toList();
+
+        return GetMyPageDetailPointHistoriesResponse.of(member, responses);
+    }
+
 
     private Integer calculatePurchasePoint(Integer totalPrice, PointType pointType) {
         if (pointType.getType() == PointTypeEnum.PERCENT) {

@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstore.point.dto.request;
+package com.nhnacademy.bookstore.point.dto.response;
 
 import com.nhnacademy.bookstore.point.entity.PointType;
 import com.nhnacademy.bookstore.point.enums.PointTypeEnum;

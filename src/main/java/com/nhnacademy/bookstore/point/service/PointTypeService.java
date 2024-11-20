@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstore.point.service;
 
-import com.nhnacademy.bookstore.point.dto.request.PointTypeDto;
+import com.nhnacademy.bookstore.point.dto.response.PointTypeDto;
 
 import java.util.List;
 

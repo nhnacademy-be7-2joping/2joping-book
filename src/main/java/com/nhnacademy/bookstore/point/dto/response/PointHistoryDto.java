@@ -1,25 +1,20 @@
-package com.nhnacademy.bookstore.point.dto.request;
+package com.nhnacademy.bookstore.point.dto.response;
 
 import com.nhnacademy.bookstore.point.entity.PointHistory;
 
 import java.time.LocalDateTime;
 
 public record PointHistoryDto(
-        Long id,
-        Long pointTypeId,
-        String pointTypeName,
-        Long orderId,
-        Long customerId,
+
+        String name,
+        Integer accVal,
         Integer pointVal,
         LocalDateTime registerDate
 ) {
     public static PointHistoryDto from(PointHistory entity) {
         return new PointHistoryDto(
-                entity.getId(),
-                entity.getPointType().getId(),
                 entity.getPointType().getName(),
-                entity.getOrderId(),
-                entity.getCustomerId(),
+                entity.getPointType().getAccVal(),
                 entity.getPointVal(),
                 entity.getRegisterDate()
         );

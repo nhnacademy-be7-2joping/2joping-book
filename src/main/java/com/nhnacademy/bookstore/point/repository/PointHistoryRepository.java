@@ -15,4 +15,6 @@ public interface PointHistoryRepository extends JpaRepository<PointHistory, Long
 
     @Query("select sum(p.pointVal) from PointHistory p where p.customerId =: customerId")
     Integer getTotalPointByCustomerId(@Param("customerId") Long customerId);
+
+    List<PointHistory> findByCustomerIdOrderByRegisterDateDesc(Long customerId);
 }
