@@ -12,6 +12,8 @@ import com.nhnacademy.bookstore.bookset.book.entity.BookCategory;
 import com.nhnacademy.bookstore.bookset.book.entity.BookContributor;
 import com.nhnacademy.bookstore.bookset.book.repository.BookCategoryRepository;
 import com.nhnacademy.bookstore.bookset.book.repository.BookContributorRepository;
+import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
+import com.nhnacademy.bookstore.bookset.book.service.BookService;
 import com.nhnacademy.bookstore.bookset.category.dto.response.GetCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import com.nhnacademy.bookstore.bookset.category.repository.CategoryRepository;
@@ -28,8 +30,6 @@ import com.nhnacademy.bookstore.bookset.tag.entity.Tag;
 import com.nhnacademy.bookstore.bookset.tag.repository.BookTagRepository;
 import com.nhnacademy.bookstore.bookset.tag.repository.TagRepository;
 import com.nhnacademy.bookstore.common.error.exception.bookset.book.BookNotFoundException;
-import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
-import com.nhnacademy.bookstore.bookset.book.service.BookService;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.publisher.PublisherNotFoundException;
@@ -49,9 +49,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import java.util.List;
-
 
 @Service
 @RequiredArgsConstructor

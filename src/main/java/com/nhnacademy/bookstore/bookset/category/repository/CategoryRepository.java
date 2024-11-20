@@ -18,6 +18,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     Optional<Category> findByParentCategory(Category parentCategory);
 
+    Optional<Category> findByName(String name);
+
     List<Category> findAllByOrderByNameAsc();
 
     List<Category> findAllByParentCategory(Category parentCategory);
