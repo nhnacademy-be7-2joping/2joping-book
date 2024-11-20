@@ -6,7 +6,7 @@ import com.nhnacademy.bookstore.user.member.dto.request.MemberAddressRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberAddressResponseDto;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.entity.MemberAddress;
-import com.nhnacademy.bookstore.user.member.repository.MemberAddressRepositroy;
+import com.nhnacademy.bookstore.user.member.repository.MemberAddressRepository;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.member.service.impl.MemberAddressServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ public class MemberAddressServiceTest {
     private MemberRepository memberRepository;
 
     @Mock
-    private MemberAddressRepositroy memberAddressRepositroy;
+    private MemberAddressRepository memberAddressRepository;
 
 
 
@@ -57,9 +57,9 @@ public class MemberAddressServiceTest {
         MemberAddressRequestDto requestDto = new MemberAddressRequestDto("12345", "도로명 주소", "상세 주소", "주소 별칭", true, "수신인");
 
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
-        when(memberAddressRepositroy.countByMemberId(memberId)).thenReturn(5);
-        when(memberAddressRepositroy.findByMemberIdAndDefaultAddressTrue(memberId)).thenReturn(null);
-        when(memberAddressRepositroy.findAddressesByMemberId(memberId)).thenReturn(Collections.singletonList(new MemberAddressResponseDto(null, null, null, null, null, true, null)));
+        when(memberAddressRepository.countByMemberId(memberId)).thenReturn(5);
+        when(memberAddressRepository.findByMemberIdAndDefaultAddressTrue(memberId)).thenReturn(null);
+        when(memberAddressRepository.findAddressesByMemberId(memberId)).thenReturn(Collections.singletonList(new MemberAddressResponseDto(null, null, null, null, null, true, null)));
 
 
         // when
@@ -69,9 +69,9 @@ public class MemberAddressServiceTest {
         assertNotNull(result);
         assertFalse(result.isEmpty());
         verify(memberRepository).findById(memberId);
-        verify(memberAddressRepositroy).countByMemberId(memberId);
-        verify(memberAddressRepositroy).findByMemberIdAndDefaultAddressTrue(memberId);
-        verify(memberAddressRepositroy).save(any(MemberAddress.class));
+        verify(memberAddressRepository).countByMemberId(memberId);
+        verify(memberAddressRepository).findByMemberIdAndDefaultAddressTrue(memberId);
+        verify(memberAddressRepository).save(any(MemberAddress.class));
     }
 
     /**
@@ -102,7 +102,7 @@ public class MemberAddressServiceTest {
         MemberAddressRequestDto requestDto = new MemberAddressRequestDto("12345", "도로명 주소", "상세 주소", "주소 별칭", true, "수신인");
 
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
-        when(memberAddressRepositroy.countByMemberId(memberId)).thenReturn(10);
+        when(memberAddressRepository.countByMemberId(memberId)).thenReturn(10);
 
         assertThrows(AddressLimitToTenException.class, () -> memberAddressService.addMemberAddress(memberId, requestDto));
     }
@@ -119,14 +119,14 @@ public class MemberAddressServiceTest {
         ReflectionTestUtils.setField(member, "id", 1L); // ID 필드를 강제로 설정
 
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
-        when(memberAddressRepositroy.findAddressesByMemberId(memberId)).thenReturn(Collections.singletonList(new MemberAddressResponseDto(null, null, null, null, null, true, null)));
+        when(memberAddressRepository.findAddressesByMemberId(memberId)).thenReturn(Collections.singletonList(new MemberAddressResponseDto(null, null, null, null, null, true, null)));
 
         List<MemberAddressResponseDto> result = memberAddressService.getMemberAddresses(memberId);
 
         assertNotNull(result);
         assertFalse(result.isEmpty());
         verify(memberRepository).findById(memberId);
-        verify(memberAddressRepositroy).findAddressesByMemberId(memberId);
+        verify(memberAddressRepository).findAddressesByMemberId(memberId);
     }
 
     /**
@@ -162,9 +162,9 @@ public class MemberAddressServiceTest {
         existingDefaultAddress.setDefaultAddress(true);
 
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
-        when(memberAddressRepositroy.countByMemberId(memberId)).thenReturn(5);
-        when(memberAddressRepositroy.findByMemberIdAndDefaultAddressTrue(memberId)).thenReturn(existingDefaultAddress);
-        when(memberAddressRepositroy.findAddressesByMemberId(memberId)).thenReturn(Collections.singletonList(new MemberAddressResponseDto(null, null, null, null, null, true, null)));
+        when(memberAddressRepository.countByMemberId(memberId)).thenReturn(5);
+        when(memberAddressRepository.findByMemberIdAndDefaultAddressTrue(memberId)).thenReturn(existingDefaultAddress);
+        when(memberAddressRepository.findAddressesByMemberId(memberId)).thenReturn(Collections.singletonList(new MemberAddressResponseDto(null, null, null, null, null, true, null)));
 
 
         // when
@@ -175,9 +175,9 @@ public class MemberAddressServiceTest {
         assertFalse(result.isEmpty());
         assertFalse(existingDefaultAddress.isDefaultAddress()); // 기존 주소의 기본 설정이 해제되었는지 확인
         verify(memberRepository).findById(memberId);
-        verify(memberAddressRepositroy).countByMemberId(memberId);
-        verify(memberAddressRepositroy).findByMemberIdAndDefaultAddressTrue(memberId);
-        verify(memberAddressRepositroy).save(any(MemberAddress.class));
+        verify(memberAddressRepository).countByMemberId(memberId);
+        verify(memberAddressRepository).findByMemberIdAndDefaultAddressTrue(memberId);
+        verify(memberAddressRepository).save(any(MemberAddress.class));
     }
 
     /**
@@ -196,11 +196,11 @@ public class MemberAddressServiceTest {
                 "12345", "도로명 주소", "상세 주소", "주소 별칭", false, "수신인");
 
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
-        when(memberAddressRepositroy.countByMemberId(memberId)).thenReturn(5);
+        when(memberAddressRepository.countByMemberId(memberId)).thenReturn(5);
 
         List<MemberAddressResponseDto> result = memberAddressService.addMemberAddress(memberId, requestDto);
 
         assertNotNull(result);
-        verify(memberAddressRepositroy, never()).findByMemberIdAndDefaultAddressTrue(memberId);
+        verify(memberAddressRepository, never()).findByMemberIdAndDefaultAddressTrue(memberId);
     }
 }
