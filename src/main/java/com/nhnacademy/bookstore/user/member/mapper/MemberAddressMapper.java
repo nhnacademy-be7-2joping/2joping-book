@@ -25,6 +25,7 @@ public interface MemberAddressMapper {
 
     @Mapping(source = "id",  target = "memberAddressId")
     @Mapping(target = "isDefaultAddress", source = "defaultAddress", defaultValue = "false")
+
     MemberAddressResponseDto toResponseDto(MemberAddress memberAddress);
 
 }

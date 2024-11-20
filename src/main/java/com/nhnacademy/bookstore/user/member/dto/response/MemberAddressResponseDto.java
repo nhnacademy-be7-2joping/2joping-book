@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 public record MemberAddressResponseDto(
         Long memberAddressId,       // 주소 ID (DB에서 생성된 ID)
         String postalCode,          // 우편번호
@@ -19,3 +20,4 @@ public record MemberAddressResponseDto(
 ) {  @QueryProjection
 public MemberAddressResponseDto {}
 }
+

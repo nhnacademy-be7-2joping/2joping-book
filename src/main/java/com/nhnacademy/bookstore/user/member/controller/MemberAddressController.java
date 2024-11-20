@@ -70,6 +70,7 @@ public class MemberAddressController {
     public ResponseEntity<List<MemberAddressResponseDto>> getAllMemberAddress(
             @RequestHeader("X-Customer-Id") String customerId ) {
 
+
         List<MemberAddressResponseDto> addresses = memberAddressService.getMemberAddresses(Long.parseLong(customerId));
 
         return ResponseEntity.ok(addresses);
