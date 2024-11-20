@@ -27,8 +27,6 @@ import java.util.UUID;
 public class CartController {
 
     private final CartService cartService;
-    private final MemberService memberService;
-    private final BookService bookService;
 
     private final RedisTemplate<Object, Object> redisTemplate;
 
@@ -72,9 +70,13 @@ public class CartController {
             }
         } else {
             // 회원 로직
-
+            cartService.addCart(cartRequestDto, customerId);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    // DELETE
+
+    // UPDATE
 }

@@ -4,6 +4,7 @@ import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberUpdateRequesteDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto;
+import org.springframework.stereotype.Service;
 
 /**
  * MemberService
@@ -14,6 +15,7 @@ import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto
  * @since 1.0
  * @author Luha
  */
+@Service
 public interface MemberService {
     MemberCreateSuccessResponseDto registerNewMember(MemberCreateRequestDto memberDto);
     MemberUpdateResponseDto updateMember(long customerId, MemberUpdateRequesteDto memberDto);

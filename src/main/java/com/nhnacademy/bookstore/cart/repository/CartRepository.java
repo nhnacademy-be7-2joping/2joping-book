@@ -14,8 +14,8 @@ import java.util.List;
 public interface CartRepository extends JpaRepository<Cart, CartId> {
 
     @Query("SELECT c FROM Cart c " +
-            "JOIN FETCH c.id.book b " +
-            "JOIN FETCH c.id.member m " +
-            "WHERE m.id = :customerId")
+            "JOIN FETCH c.id.bookId b " +
+            "JOIN FETCH c.id.customerId m " +
+            "WHERE c.id.customerId = :customerId")
     List<Cart> findCartsByCustomerId(@Param("customerId")long customerId);
 }
