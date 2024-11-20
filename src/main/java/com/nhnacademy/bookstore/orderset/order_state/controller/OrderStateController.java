@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstore.orderset.order_state.controller;
 
-import com.nhnacademy.bookstore.orderset.order_state.repository.OrderStateRepository;
+import com.nhnacademy.bookstore.orderset.order_state.service.OrderStateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class OrderStateController {
 
-    private final OrderStateRepository orderStateRepository;
+    private final OrderStateService orderStateService;
 
 
 }
