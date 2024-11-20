@@ -35,8 +35,11 @@ public class TierServiceImpl implements TierService {
         MemberTier tier = member.getTier();
         int usage = member.getAccPurchase();
         int promotion = tier.getMaxPromotion();
+        int remaining = promotion - usage;
 
-        MemberTierResponse response = new MemberTierResponse(usage, tier.getName(), promotion - usage, tier.getAccRate());
-        return response;
+        if(remaining <= 0) {
+            remaining = 0;
+        }
+        return new MemberTierResponse(usage, tier.getName(), remaining, tier.getAccRate());
     }
 }
