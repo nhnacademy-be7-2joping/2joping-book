@@ -200,7 +200,5 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewMapper.toModifyResponseDto(updatedReview);
     }
 
-
-
 }
 
