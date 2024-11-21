@@ -22,7 +22,10 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     List<Category> findAllByOrderByNameAsc();
 
+    Optional<Category> findByName(String name);
+
     List<Category> findAllByParentCategory(Category parentCategory);
 
     List<Category> findAllByOrderByCategoryId();
+
 }
