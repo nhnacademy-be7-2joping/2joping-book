@@ -60,7 +60,7 @@ class CouponPolicyRepositoryImplTest {
 
         // Then: 조회된 데이터 검증
         assertTrue(activePolicies.size() > 0);
-        assertEquals("Active Policy", activePolicies.get(0).name());
-        assertEquals("Test active policy", activePolicies.get(0).detail());
+        assertEquals("기본 할인 정책", activePolicies.get(0).name());
+        assertEquals("10% 할인 쿠폰입니다.", activePolicies.get(0).detail());
     }
 }

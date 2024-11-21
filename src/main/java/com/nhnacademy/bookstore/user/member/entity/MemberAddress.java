@@ -40,7 +40,8 @@ public class MemberAddress {
     private String addressAlias;
 
     @Setter
-    @Column(name = "is_default_address", columnDefinition = "TINYINT(1)")
+    @Column(name="is_default_address", columnDefinition = "TINYINT(1)")
+
     private boolean defaultAddress;
 
     private String receiver;

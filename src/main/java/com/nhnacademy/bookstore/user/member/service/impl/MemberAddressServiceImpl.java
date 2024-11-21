@@ -83,17 +83,12 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         //주소 저장
         memberAddressRepository.save(address);
         //변경 후 주소 조회
-        List<MemberAddress> memberAddresses = memberAddressRepository.findByMember_Id(customerId);
 
-        //dto 변환
-        List<MemberAddressResponseDto> memberAddressResponse = new ArrayList<>();
+        List<MemberAddressResponseDto> memberAddresses = memberAddressRepository.findAddressesByMemberId(customerId);
 
-        for (MemberAddress memberAddress : memberAddresses) {
 
-            memberAddressResponse.add(MemberAddressMapper.INSTANCE.toResponseDto(memberAddress));
-        }
         //주소 조회
-        return memberAddressResponse;
+        return memberAddresses;
     }
 
     /**
@@ -115,16 +110,13 @@ public class MemberAddressServiceImpl implements MemberAddressService {
                         "/member/addresses")
                 );
 
-        List<MemberAddressResponseDto> memberAddressResponse = new ArrayList<>();
 
-        List<MemberAddress> memberAddresses = memberAddressRepository.findByMember_Id(customerId);
 
-        for (MemberAddress memberAddress : memberAddresses) {
+        List<MemberAddressResponseDto> memberAddresses = memberAddressRepository.findAddressesByMemberId(customerId);
 
-            memberAddressResponse.add(MemberAddressMapper.INSTANCE.toResponseDto(memberAddress));
-        }
 
-        return memberAddressResponse;
+
+        return memberAddresses;
     }
 
 
