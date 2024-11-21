@@ -27,13 +27,12 @@ import static org.hamcrest.Matchers.*;
 
 /**
  * CouponControllerTest
- *
  * 이 클래스는 CouponController의 REST API를 테스트합니다.
  *
  * @author Luha
  * @since 1.0
  */
-public class CouponControllerTest {
+ class CouponControllerTest {
 
     private MockMvc mockMvc;
 
@@ -60,7 +59,6 @@ public class CouponControllerTest {
     @Test
     void createCoupon_Success() throws Exception {
         // given
-        CouponRequestDto requestDto = new CouponRequestDto(1L, "New Coupon", LocalDate.now());
         CouponResponseDto responseDto = new CouponResponseDto(1L, "New Coupon", LocalDate.now(), LocalDate.now().plusDays(30), 10, null);
 
         when(couponService.create(any(CouponRequestDto.class))).thenReturn(responseDto);
@@ -86,7 +84,6 @@ public class CouponControllerTest {
     @Test
     void createCoupon_BadRequest() throws Exception {
         // given
-        CouponRequestDto requestDto = new CouponRequestDto(null, "", LocalDate.now());
 
         // when & then
         mockMvc.perform(post("/api/v1/coupons")

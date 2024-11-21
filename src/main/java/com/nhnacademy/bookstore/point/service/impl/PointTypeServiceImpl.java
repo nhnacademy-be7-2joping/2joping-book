@@ -1,7 +1,7 @@
 package com.nhnacademy.bookstore.point.service.impl;
 
 import com.nhnacademy.bookstore.common.error.exception.point.PointPolicyNotFoundException;
-import com.nhnacademy.bookstore.point.dto.request.PointTypeDto;
+import com.nhnacademy.bookstore.point.dto.response.PointTypeDto;
 import com.nhnacademy.bookstore.point.entity.PointType;
 import com.nhnacademy.bookstore.point.repository.PointTypeRepository;
 import com.nhnacademy.bookstore.point.service.PointTypeService;
@@ -18,7 +18,6 @@ public class PointTypeServiceImpl implements PointTypeService {
 
     private final PointTypeRepository pointTypeRepository;
 
-    @Transactional
     public PointTypeDto createPointType(PointTypeDto dto) {
         PointType pointType = PointType.builder()
                 .type(dto.type())
@@ -29,7 +28,6 @@ public class PointTypeServiceImpl implements PointTypeService {
         return PointTypeDto.from(pointTypeRepository.save(pointType));
     }
 
-    @Transactional
     public PointTypeDto updatePointType(Long id, PointTypeDto dto) {
         PointType pointType = pointTypeRepository.findById(id)
                 .orElseThrow(() -> new PointPolicyNotFoundException("포인트 정책을 찾을 수 없습니다."));
@@ -39,7 +37,6 @@ public class PointTypeServiceImpl implements PointTypeService {
         return PointTypeDto.from(pointType);
     }
 
-    @Transactional
     public List<PointTypeDto> getAllActivePointTypes() {
         return pointTypeRepository.findAllByIsActiveTrue().stream()
                 .map(PointTypeDto::from)

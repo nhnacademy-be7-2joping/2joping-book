@@ -11,10 +11,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,7 +30,7 @@ import static org.mockito.Mockito.when;
  * @since 1.0
  */
 @ExtendWith(MockitoExtension.class)
-public class MemberAddressControllerTest {
+class MemberAddressControllerTest {
     @InjectMocks
     private MemberAddressController memberAddressController;
 
@@ -40,7 +42,7 @@ public class MemberAddressControllerTest {
      * 예상 결과: 200 OK 응답 코드와 함께, 추가된 주소 정보를 포함한 리스트 반환
      */
     @Test
-    public void testAddMemberAddress_Success() {
+    void testAddMemberAddress_Success() {
         // given
         long memberId = 1L;
         MemberAddressRequestDto requestDto = new MemberAddressRequestDto("12345", "도로명 주소", "상세 주소", "별칭", true, "수신인");
@@ -52,9 +54,9 @@ public class MemberAddressControllerTest {
         ResponseEntity<List<MemberAddressResponseDto>> response = memberAddressController.addMemberAddress(memberId, requestDto);
 
         // then
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(1, response.getBody().size());
-        assertEquals("12345", response.getBody().get(0).getPostalCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, Objects.requireNonNull(response.getBody()).size());
+        assertEquals("12345", response.getBody().getFirst().postalCode());
     }
 
     /**
@@ -62,19 +64,19 @@ public class MemberAddressControllerTest {
      * 예상 결과: 200 OK 응답 코드와 함께, 조회된 주소 정보를 포함한 리스트 반환
      */
     @Test
-    public void testGetAllMemberAddress_Success() {
+    void testGetAllMemberAddress_Success() {
         // given
         long memberId = 1L;
         MemberAddressResponseDto responseDto = new MemberAddressResponseDto(1L, "12345", "도로명 주소", "상세 주소", "별칭", true, "수신인");
         when(memberAddressService.getMemberAddresses(memberId)).thenReturn(Collections.singletonList(responseDto));
 
         // when
-        ResponseEntity<List<MemberAddressResponseDto>> response = memberAddressController.getAllMemberAddress(memberId);
+        ResponseEntity<List<MemberAddressResponseDto>> response = memberAddressController.getAllMemberAddress(String.valueOf(memberId));
 
         // then
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(1, response.getBody().size());
-        assertEquals("도로명 주소", response.getBody().get(0).getRoadAddress());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, Objects.requireNonNull(response.getBody()).size());
+        assertEquals("도로명 주소", response.getBody().getFirst().roadAddress());
     }
 
     /**
@@ -82,7 +84,7 @@ public class MemberAddressControllerTest {
      * 예상 결과: AddressLimitToTenException 발생
      */
     @Test
-    public void testAddMemberAddress_AddressLimitExceededException() {
+    void testAddMemberAddress_AddressLimitExceededException() {
         // given
         long memberId = 1L;
         MemberAddressRequestDto requestDto = new MemberAddressRequestDto("12345", "도로명 주소", "상세 주소", "별칭", true, "수신인");

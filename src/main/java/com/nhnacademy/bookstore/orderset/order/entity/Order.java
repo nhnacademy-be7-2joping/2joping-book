@@ -11,7 +11,6 @@ package com.nhnacademy.bookstore.orderset.order.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -40,7 +39,7 @@ public class Order {
     private Customer customer;
 
     @OneToOne
-    @JoinColumn(name = "coupon_usage_id", nullable = false)
+    @JoinColumn(name = "coupon_usage_id")
     private Coupon couponUsage;*/
 
     @Column(name = "order_date", nullable = false)
@@ -52,8 +51,8 @@ public class Order {
     @Column(name = "receiver", length = 20, nullable = false)
     private String receiver;
 
-    @Column(name = "zipcode", length = 5, nullable = false)
-    private String zipcode;
+    @Column(name = "postal_code", length = 5, nullable = false)
+    private String postalCode;
 
     @Column(name = "road_address", length = 100, nullable = false)
     private String roadAddress;

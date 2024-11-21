@@ -14,7 +14,7 @@ public class PointType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "point_type_id")
-    private Long id;
+    private Long pointTypeId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
