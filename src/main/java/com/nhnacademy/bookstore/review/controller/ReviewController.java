@@ -29,9 +29,6 @@ import java.util.Optional;
 @Tag(name = "Review API", description = "리뷰 관련 CRUD API")
 public class ReviewController {
 
-    // TODO 필수 ->생성,수정,조회
-    // TODO 해야하나? -> 유저가 작성한 모든 리뷰 조회, 유저가 작성한 특정 리뷰 조회, 책에 달린 별점의 평균
-
     private final ReviewService reviewService;
 
     /**
@@ -83,7 +80,6 @@ public class ReviewController {
     @GetMapping("/book/{bookId}")
     public ResponseEntity<Page<ReviewResponseDto>> getReviewsByBookId(@PathVariable Long bookId,
                                                                       @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        ReviewRequestDto reviewRequestDto = new ReviewRequestDto(bookId);
         Page<ReviewResponseDto> responseDtoPage = reviewService.getReviewsByBookId(pageable,bookId);
         return ResponseEntity.ok(responseDtoPage);
 
@@ -98,7 +94,6 @@ public class ReviewController {
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<Page<ReviewResponseDto>> getReviewsByCustomerId(@PathVariable Long customerId,
                                                                       @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        ReviewRequestDto reviewRequestDto = new ReviewRequestDto(customerId);
         Page<ReviewResponseDto> responseDtoPage = reviewService.getReviewsByCustomerId(pageable,customerId);
         return ResponseEntity.ok(responseDtoPage);
 

@@ -39,6 +39,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
@@ -50,13 +51,12 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewImageRepository reviewImageRepository;
 
 
-    @Transactional
+
     /**
      * 리뷰 등록
      *
      * @param reviewCreateRequestDto 리뷰 생성을 위한 DTO.
      * @return 생성된 리뷰 정보가 포함된 ReviewCreateResponseDto.
-     * @throws BookNotFoundException 지정된 도서를 찾을 수 없는 경우 발생.
      * @throws MemberNotFoundException 지정된 회원을 찾을 수 없는 경우 발생.
      * @throws OrderNotFoundException 지정된 주문 상세를 찾을 수 없는 경우 발생.
      * @throws ReviewAlreadyExistException 동일한 ID의 리뷰가 이미 존재하는 경우 발생.
@@ -64,8 +64,11 @@ public class ReviewServiceImpl implements ReviewService {
      */
     @Override
     public ReviewCreateResponseDto registerReview(ReviewCreateRequestDto reviewCreateRequestDto) {
-        Book book = bookRepository.findById(reviewCreateRequestDto.reviewDetailRequestDto().bookId()).orElseThrow(() ->
-                new BookNotFoundException("해당 도서가 없습니다."));
+
+        Long bookId = orderDetailRepository.findBookIdByOrderDetailId(reviewCreateRequestDto.reviewDetailRequestDto().orderDetailId())
+                .orElseThrow();
+
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("해당 도서를 찾을 수 없습니다."));
 
         Member member = memberRepository.findById(reviewCreateRequestDto.reviewDetailRequestDto().customerId()).orElseThrow(() ->
                 new MemberNotFoundException(("해당 회원이 없습니다."), RedirectType.REDIRECT, "url")); // TODO url 수정
@@ -119,6 +122,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @return 조회된 리뷰 정보가 포함된 ReviewResponseDto.
      * @throws ReviewNotFoundException 지정된 ID의 리뷰를 찾을 수 없는 경우 발생.
      */
+    @Transactional(readOnly = true)
     @Override
     public Optional<ReviewResponseDto> getReviews(ReviewRequestDto reviewRequestDto) {
         Optional<ReviewResponseDto> review = Optional.of(reviewRepository.getReviewByreviewId(reviewRequestDto.reviewId()).orElseThrow(()-> new ReviewNotFoundException("리뷰가 존재하지 않습니다.")));
@@ -134,6 +138,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param bookId 도서의 ID.
      * @return 조회된 리뷰 목록과 페이징 정보를 포함한 Page<ReviewResponseDto>.
      */
+    @Transactional(readOnly = true)
     @Override
     public Page<ReviewResponseDto> getReviewsByBookId(Pageable pageable, Long bookId) {
         return reviewRepository.getReviewsByBookId(pageable,bookId);
@@ -146,6 +151,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param customerId 회원의 ID.
      * @return 조회된 리뷰 목록과 페이징 정보를 포함한 Page<ReviewResponseDto>.
      */
+    @Transactional(readOnly = true)
     @Override
     public Page<ReviewResponseDto> getReviewsByCustomerId(Pageable pageable, Long customerId) {
         return reviewRepository.getReviewsByCustomerId(pageable,customerId);

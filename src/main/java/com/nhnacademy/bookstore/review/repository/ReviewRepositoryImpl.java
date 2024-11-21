@@ -32,7 +32,7 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
     @Override
     public Page<ReviewResponseDto> getReviewsByBookId(Pageable pageable, Long bookId) {
         List<ReviewResponseDto> content = from(qReview)
-                .where(qReview.book.bookId.eq(bookId)) // bookId로 필터링
+                .where(qReview.book.bookId.eq(bookId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .select(Projections.constructor(
@@ -89,24 +89,21 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
 
     @Override
     public Optional<ReviewResponseDto> getReviewByreviewId(Long reviewId) {
-        // 리뷰와 이미지를 조인하여 최신 이미지를 가져오기
         Tuple reviewTuple = from(qReview)
                 .leftJoin(qReviewImage).on(qReview.reviewId.eq(qReviewImage.review.reviewId))
                 .leftJoin(qImage).on(qReviewImage.image.imageId.eq(qImage.imageId))
                 .where(qReview.reviewId.eq(reviewId))
-                .orderBy(qReviewImage.reviewImageId.desc()) // 최신 이미지 우선 정렬
+                .orderBy(qReviewImage.reviewImageId.desc())
                 .select(qReview, qImage.url)
-                .fetchFirst(); // 가장 최신의 한 개의 데이터만 가져옴
+                .fetchFirst();
 
         if (reviewTuple == null) {
             return Optional.empty();
         }
 
-        // 리뷰 정보 추출
         Review review = reviewTuple.get(qReview);
         String imageUrl = reviewTuple.get(qImage.url) != null ? reviewTuple.get(qImage.url) : "default-image.jpg";
 
-        // ReviewResponseDto 생성
         ReviewResponseDto reviewResponseDto = new ReviewResponseDto(
                 review.getReviewId(),
                 review.getOrderDetail().getOrderDetailId(),
@@ -121,21 +118,6 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
         );
 
         return Optional.of(reviewResponseDto);
-    }
-
-
-    @Override
-    public Optional<String> getLatestReviewImageByReviewId(Long reviewId) {
-        QReviewImage qReviewImage = QReviewImage.reviewImage;
-        QImage qImage = QImage.image;
-
-        // 최신 review_image 데이터를 가져오는 쿼리
-        return Optional.ofNullable(from(qReviewImage)
-                .leftJoin(qReviewImage.image, qImage)
-                .where(qReviewImage.review.reviewId.eq(reviewId))
-                .orderBy(qReviewImage.reviewImageId.desc()) // review_image_id 기준 내림차순 정렬
-                .select(qImage.url) // URL만 선택
-                .fetchFirst());
     }
 }
 

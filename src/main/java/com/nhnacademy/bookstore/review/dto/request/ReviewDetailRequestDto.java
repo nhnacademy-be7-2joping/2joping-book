@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Positive;
 public record ReviewDetailRequestDto (
         @Positive Long orderDetailId,
         @Positive Long customerId,
-        @Positive Long bookId,
         @Min(1) @Max(5)int ratingValue,
         String title,
         String text
