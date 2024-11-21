@@ -21,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/bookstore/reviews")
@@ -65,9 +67,9 @@ public class ReviewController {
      */
     @Operation(summary = "리뷰 조회", description = "등록된 리뷰를 조회합니다.")
     @GetMapping("/{reviewId}")
-    public ResponseEntity<ReviewResponseDto> getReview(@PathVariable Long reviewId) {
+    public ResponseEntity<Optional<ReviewResponseDto>> getReview(@PathVariable Long reviewId) {
         ReviewRequestDto reviewRequestDto = new ReviewRequestDto(reviewId);
-        ReviewResponseDto responseDto = reviewService.getReviews(reviewRequestDto);
+        Optional<ReviewResponseDto> responseDto = reviewService.getReviews(reviewRequestDto);
         return ResponseEntity.ok(responseDto);
 
     }

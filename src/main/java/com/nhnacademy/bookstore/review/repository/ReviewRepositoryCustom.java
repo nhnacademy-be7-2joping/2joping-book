@@ -7,9 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 @NoRepositoryBean
 public interface ReviewRepositoryCustom {
 
         Page<ReviewResponseDto> getReviewsByBookId(Pageable pageable, @Param("bookId") Long bookId);
         Page<ReviewResponseDto> getReviewsByCustomerId(Pageable pageable,@Param("customerId") Long customerId);
+        Optional<ReviewResponseDto> getReviewByreviewId(Long reviewId);
 }

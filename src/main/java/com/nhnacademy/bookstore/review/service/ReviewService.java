@@ -9,13 +9,15 @@ import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 public interface ReviewService {
 
     //생성 C
     ReviewCreateResponseDto registerReview(ReviewCreateRequestDto reviewCreateRequestDto);
 
     // 조회 R
-    ReviewResponseDto getReviews(ReviewRequestDto reviewRequestDto);
+    Optional<ReviewResponseDto> getReviews(ReviewRequestDto reviewRequestDto);
 
     Page<ReviewResponseDto> getReviewsByBookId(Pageable pageable,Long bookId);
 

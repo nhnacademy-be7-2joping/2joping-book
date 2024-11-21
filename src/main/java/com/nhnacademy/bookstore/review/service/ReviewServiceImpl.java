@@ -10,6 +10,10 @@ import com.nhnacademy.bookstore.common.error.exception.review.RatingValueNotVali
 import com.nhnacademy.bookstore.common.error.exception.review.ReviewAlreadyExistException;
 import com.nhnacademy.bookstore.common.error.exception.review.ReviewNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
+import com.nhnacademy.bookstore.imageset.entity.Image;
+import com.nhnacademy.bookstore.imageset.entity.ReviewImage;
+import com.nhnacademy.bookstore.imageset.repository.ImageRepository;
+import com.nhnacademy.bookstore.imageset.repository.ReviewImageRepository;
 import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
 import com.nhnacademy.bookstore.orderset.order_detail.repository.OrderDetailRepository;
 import com.nhnacademy.bookstore.review.dto.request.ReviewCreateRequestDto;
@@ -31,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +46,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final MemberRepository memberRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final ReviewMapper reviewMapper;
-
+    private final ImageRepository imageRepository;
+    private final ReviewImageRepository reviewImageRepository;
 
 
     @Transactional
@@ -75,6 +81,9 @@ public class ReviewServiceImpl implements ReviewService {
         int ratingValue = reviewCreateRequestDto.reviewDetailRequestDto().ratingValue();
 
         String reviewImage = reviewCreateRequestDto.reviewImageUrlRequestDto().reviewImage() != null ? reviewCreateRequestDto.reviewImageUrlRequestDto().reviewImage() : " ";
+
+
+
         if (ratingValue < 1 || ratingValue > 5) {
             throw new RatingValueNotValidException("평점 " + ratingValue + " 은 유효하지 않습니다. 1~5 사이의 값만 입력 가능합니다.", ratingValue);
         }
@@ -93,6 +102,13 @@ public class ReviewServiceImpl implements ReviewService {
 
         Review savedReview = reviewRepository.save(review);
 
+
+        if (reviewCreateRequestDto.reviewImageUrlRequestDto().reviewImage() != null) {
+            Image imageUrl = imageRepository.save(new Image(reviewImage));
+            reviewImageRepository.save(new ReviewImage(review,imageUrl));
+        }
+
+
         return reviewMapper.toCreateResponseDto(savedReview);
     }
 
@@ -104,9 +120,11 @@ public class ReviewServiceImpl implements ReviewService {
      * @throws ReviewNotFoundException 지정된 ID의 리뷰를 찾을 수 없는 경우 발생.
      */
     @Override
-    public ReviewResponseDto getReviews(ReviewRequestDto reviewRequestDto) {
-        Review review = reviewRepository.findById(reviewRequestDto.reviewId()).orElseThrow(()-> new ReviewNotFoundException("리뷰가 존재하지 않습니다."));
-        return reviewMapper.toResponseDto(review);
+    public Optional<ReviewResponseDto> getReviews(ReviewRequestDto reviewRequestDto) {
+        Optional<ReviewResponseDto> review = Optional.of(reviewRepository.getReviewByreviewId(reviewRequestDto.reviewId()).orElseThrow(()-> new ReviewNotFoundException("리뷰가 존재하지 않습니다.")));
+
+        return review;
+
     }
 
     /**
@@ -144,14 +162,17 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewModifyResponseDto modifyReview(ReviewModifyRequestDto reviewModifyRequestDto) {
 
-        Review review = reviewRepository.findById(reviewModifyRequestDto.reviewId()).orElseThrow(()-> new ReviewNotFoundException("리뷰가 존재하지 않습니다."));
+        Review review = reviewRepository.findById(reviewModifyRequestDto.reviewModifyDetailRequestDto().reviewId()).orElseThrow(()-> new ReviewNotFoundException("리뷰가 존재하지 않습니다."));
 
         // TODO 사용자 관련 예외처리는 어떻게 하지?
-        int ratingValue = reviewModifyRequestDto.ratingValue();
+        int ratingValue = reviewModifyRequestDto.reviewModifyDetailRequestDto().ratingValue();
         if (ratingValue < 1 || ratingValue > 5) {
             throw new RatingValueNotValidException("평점 " + ratingValue + " 은 유효하지 않습니다. 1~5 사이의 값만 입력 가능합니다.", ratingValue);
         }
-        review.update(ratingValue,reviewModifyRequestDto.title(),reviewModifyRequestDto.text(),reviewModifyRequestDto.imageUrl(),Timestamp.valueOf(LocalDateTime.now()));
+        review.update(ratingValue,reviewModifyRequestDto.reviewModifyDetailRequestDto().title(),
+                reviewModifyRequestDto.reviewModifyDetailRequestDto().text(),
+                reviewModifyRequestDto.reviewImageUrlRequestDto().reviewImage(),
+                Timestamp.valueOf(LocalDateTime.now()));
 
         Review updatedReview = reviewRepository.save(review);
 

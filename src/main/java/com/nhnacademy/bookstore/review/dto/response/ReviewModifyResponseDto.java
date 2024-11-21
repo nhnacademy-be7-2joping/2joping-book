@@ -8,7 +8,7 @@ public record ReviewModifyResponseDto(
         int ratingValue,
         String title,
         String text,
-        String imageUrl,
+        String reviewImage,
         Timestamp createdAt,
         Timestamp updatedAt
 )
