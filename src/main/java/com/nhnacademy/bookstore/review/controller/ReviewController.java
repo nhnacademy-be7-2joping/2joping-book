@@ -57,7 +57,7 @@ public class ReviewController {
                                                                 BindingResult bindingResult) {
 
         ReviewModifyResponseDto modifyDto = reviewService.modifyReview(reviewModifyRequestDto);
-        return ResponseEntity.ok(modifyDto);
+        return ResponseEntity.status(HttpStatus.OK).body(modifyDto);
     }
 
     /**

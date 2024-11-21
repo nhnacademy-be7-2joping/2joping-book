@@ -164,18 +164,29 @@ public class ReviewServiceImpl implements ReviewService {
 
         Review review = reviewRepository.findById(reviewModifyRequestDto.reviewModifyDetailRequestDto().reviewId()).orElseThrow(()-> new ReviewNotFoundException("리뷰가 존재하지 않습니다."));
 
-        // TODO 사용자 관련 예외처리는 어떻게 하지?
+        String reviewImage = reviewModifyRequestDto.reviewImageUrlRequestDto().reviewImage() != null ? reviewModifyRequestDto.reviewImageUrlRequestDto().reviewImage() : " ";
+
         int ratingValue = reviewModifyRequestDto.reviewModifyDetailRequestDto().ratingValue();
         if (ratingValue < 1 || ratingValue > 5) {
             throw new RatingValueNotValidException("평점 " + ratingValue + " 은 유효하지 않습니다. 1~5 사이의 값만 입력 가능합니다.", ratingValue);
         }
-        review.update(ratingValue,reviewModifyRequestDto.reviewModifyDetailRequestDto().title(),
+
+        String latestImageUrl = reviewRepository.getLatestReviewImageByReviewId(review.getReviewId()).orElse("default-image.jpg");
+
+
+        review.update(ratingValue,
+                reviewModifyRequestDto.reviewModifyDetailRequestDto().title(),
                 reviewModifyRequestDto.reviewModifyDetailRequestDto().text(),
-                reviewModifyRequestDto.reviewImageUrlRequestDto().reviewImage(),
+                reviewModifyRequestDto.reviewImageUrlRequestDto().reviewImage() != null
+                        ? reviewModifyRequestDto.reviewImageUrlRequestDto().reviewImage()
+                        : latestImageUrl, // 기존 이미지 유지
                 Timestamp.valueOf(LocalDateTime.now()));
 
         Review updatedReview = reviewRepository.save(review);
-
+        if (reviewModifyRequestDto.reviewImageUrlRequestDto().reviewImage() != null) {
+            Image imageUrl = imageRepository.save(new Image(reviewImage));
+            reviewImageRepository.save(new ReviewImage(review,imageUrl));
+        }
         return reviewMapper.toModifyResponseDto(updatedReview);
     }
 }

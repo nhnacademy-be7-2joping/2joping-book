@@ -15,4 +15,5 @@ public interface ReviewRepositoryCustom {
         Page<ReviewResponseDto> getReviewsByBookId(Pageable pageable, @Param("bookId") Long bookId);
         Page<ReviewResponseDto> getReviewsByCustomerId(Pageable pageable,@Param("customerId") Long customerId);
         Optional<ReviewResponseDto> getReviewByreviewId(Long reviewId);
+        Optional<String> getLatestReviewImageByReviewId(Long reviewId);
 }
