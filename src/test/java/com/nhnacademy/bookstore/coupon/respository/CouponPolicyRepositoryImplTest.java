@@ -52,15 +52,15 @@ class CouponPolicyRepositoryImplTest {
      * When: findActivePolicy 메서드를 사용하여 정책 목록을 조회.
      * Then: 조회된 정책 목록이 올바른지 확인.
      */
-//    @Test
-//    @Transactional
-//    void testFindActivePolicy() {
-//        // When: findActivePolicy 호출
-//        List<CouponPolicyResponseDto> activePolicies = couponPolicyRepository.findActivePolicy();
-//
-//        // Then: 조회된 데이터 검증
-//        assertTrue(activePolicies.size() > 0);
-//        assertEquals("Active Policy", activePolicies.get(0).name());
-//        assertEquals("Test active policy", activePolicies.get(0).detail());
-//    }
+    @Test
+    @Transactional
+    void testFindActivePolicy() {
+        // When: findActivePolicy 호출
+        List<CouponPolicyResponseDto> activePolicies = couponPolicyRepository.findActivePolicy();
+
+        // Then: 조회된 데이터 검증
+        assertTrue(activePolicies.size() > 0);
+        assertEquals("기본 할인 정책", activePolicies.get(0).name());
+        assertEquals("10% 할인 쿠폰입니다.", activePolicies.get(0).detail());
+    }
 }

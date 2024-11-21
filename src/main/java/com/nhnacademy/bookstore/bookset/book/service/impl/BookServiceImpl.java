@@ -1,12 +1,14 @@
 package com.nhnacademy.bookstore.bookset.book.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateHtmlRequestDto;
+import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateRequestDto;
+import com.nhnacademy.bookstore.bookset.book.dto.request.ImageUrlRequestDto;
+import com.nhnacademy.bookstore.bookset.book.dto.response.BookCreateResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.request.BookUpdateHtmlRequestDto;
 import com.nhnacademy.bookstore.bookset.book.dto.request.BookUpdateRequestDto;
-import com.nhnacademy.bookstore.bookset.book.dto.request.ImageUrlRequestDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookUpdateResponseDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookUpdateResultResponseDto;
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.bookset.book.entity.BookCategory;
 import com.nhnacademy.bookstore.bookset.book.entity.BookContributor;
@@ -21,16 +23,18 @@ import com.nhnacademy.bookstore.bookset.contributor.entity.ContributorRole;
 import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorRepository;
 import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorRoleRepository;
 import com.nhnacademy.bookstore.bookset.publisher.entity.Publisher;
-import com.nhnacademy.bookstore.bookset.publisher.exception.PublisherNotFoundException;
-import com.nhnacademy.bookstore.bookset.tag.repository.BookTagRepository;
-import com.nhnacademy.bookstore.bookset.tag.repository.TagRepository;
-import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorNotFoundException;
-import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
-import com.nhnacademy.bookstore.common.error.exception.bookset.tag.TagNotFoundException;
 import com.nhnacademy.bookstore.bookset.publisher.repository.PublisherRepository;
 import com.nhnacademy.bookstore.bookset.tag.dto.TagResponseDto;
 import com.nhnacademy.bookstore.bookset.tag.entity.BookTag;
 import com.nhnacademy.bookstore.bookset.tag.entity.Tag;
+import com.nhnacademy.bookstore.bookset.tag.repository.BookTagRepository;
+import com.nhnacademy.bookstore.bookset.tag.repository.TagRepository;
+import com.nhnacademy.bookstore.bookset.book.dto.response.BookUpdateResponseDto;
+import com.nhnacademy.bookstore.bookset.book.dto.response.BookUpdateResultResponseDto;
+import com.nhnacademy.bookstore.bookset.publisher.exception.PublisherNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.tag.TagNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.book.BookNotFoundException;
 import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
@@ -40,35 +44,33 @@ import com.nhnacademy.bookstore.imageset.entity.Image;
 import com.nhnacademy.bookstore.imageset.repository.BookImageRepository;
 import com.nhnacademy.bookstore.imageset.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final PublisherRepository publisherRepository;
     private final ContributorRepository contributorRepository;
     private final ContributorRoleRepository contributorRoleRepository;
-    private final BookCategoryRepository bookCategoryRepository;
     private final BookContributorRepository bookContributorRepository;
     private final CategoryRepository categoryRepository;
-    private final BookTagRepository bookTagRepository;
-    private final TagRepository tagRepository;
+    private final BookCategoryRepository bookCategoryRepository;
     private final ImageRepository imageRepository;
     private final BookImageRepository bookImageRepository;
+    private final BookTagRepository bookTagRepository;
+    private final ObjectMapper objectMapper;
+    private final TagRepository tagRepository;
+    private final RestTemplate restTemplate = new RestTemplate();
 
     /**
      * 텍스트를 파싱하여 기여자를 생성하고 반환하는 메서드
@@ -168,6 +170,99 @@ public class BookServiceImpl implements BookService {
     }
 
     /**
+     * 도서를 단독으로 등록하는 메서드
+     *
+     * @param bookCreateRequestDto 도서 등록 요청 정보 (BookCreateRequestDto)
+     * @return 등록된 도서에 대한 응답 정보 (BookCreateResponseDto)
+     */
+    @Override
+    public BookCreateResponseDto createBook(BookCreateRequestDto bookCreateRequestDto) {
+
+        BookCreateHtmlRequestDto bookCreateHtmlRequestDto = bookCreateRequestDto.bookCreateHtmlRequestDto();
+        ImageUrlRequestDto imageUrlRequestDto = bookCreateRequestDto.imageUrlRequestDto();
+
+        Publisher publisher = publisherRepository.findByName(bookCreateHtmlRequestDto.publisherName())
+                .orElseThrow(PublisherNotFoundException::new);
+
+        Book book = new Book(
+                null,
+                publisher,
+                bookCreateHtmlRequestDto.title(),
+                bookCreateHtmlRequestDto.description(),
+                bookCreateHtmlRequestDto.publishedDate(),
+                bookCreateHtmlRequestDto.isbn(),
+                bookCreateHtmlRequestDto.retailPrice(),
+                bookCreateHtmlRequestDto.sellingPrice(),
+                bookCreateHtmlRequestDto.giftWrappable(),
+                bookCreateHtmlRequestDto.isActive(),
+                bookCreateHtmlRequestDto.remainQuantity(),
+                0,
+                0
+        );
+        bookRepository.save(book);
+
+        List<ContributorResponseDto> contributorResponseDtos = getContributorList(bookCreateHtmlRequestDto.contributorList());
+        contributorResponseDtos.forEach(dto -> {
+            Contributor contributor = contributorRepository.findById(dto.contributorId())
+                    .orElseThrow(ContributorNotFoundException::new);
+
+            bookContributorRepository.save(new BookContributor(
+                    new BookContributor.BookContributorId(book.getBookId(), contributor.getContributorId()),
+                    book,
+                    contributor
+            ));
+        });
+
+        Category category = getLowestLevelCategory(bookCreateHtmlRequestDto.category());
+        bookCategoryRepository.save(new BookCategory(
+                new BookCategory.BookCategoryId(book.getBookId(), category.getCategoryId()),
+                book,
+                category
+        ));
+
+        GetCategoryResponse categoryResponseDto = new GetCategoryResponse(
+                category.getCategoryId(),
+                category.getName(),
+                category.getParentCategory() != null ? category.getParentCategory().getCategoryId() : null
+        );
+
+        List<TagResponseDto> tagResponseDtos;
+        tagResponseDtos = associateBookWithTag(book, bookCreateHtmlRequestDto.tagList());
+
+        String thumbnailImageUrl = imageUrlRequestDto.thumbnailImageUrl() != null ? imageUrlRequestDto.thumbnailImageUrl() : "default-thumbnail-url";
+        String detailImageUrl = imageUrlRequestDto.detailImageUrl() != null ? imageUrlRequestDto.detailImageUrl() : "default-detail-url";
+
+        if (imageUrlRequestDto.thumbnailImageUrl() != null) {
+            Image thumbnailImage = imageRepository.save(new Image(thumbnailImageUrl));
+            bookImageRepository.save(new BookImage(book, thumbnailImage, "썸네일"));
+        }
+
+        if (imageUrlRequestDto.detailImageUrl() != null) {
+            Image detailImage = imageRepository.save(new Image(detailImageUrl));
+            bookImageRepository.save(new BookImage(book, detailImage, "상세"));
+        }
+
+        return new BookCreateResponseDto(
+                book.getBookId(),
+                book.getTitle(),
+                book.getDescription(),
+                book.getPublisher().getName(),
+                book.getPublishedDate(),
+                book.getIsbn(),
+                book.getRetailPrice(),
+                book.getSellingPrice(),
+                book.isGiftWrappable(),
+                book.isActive(),
+                book.getRemainQuantity(),
+                contributorResponseDtos,
+                categoryResponseDto,
+                tagResponseDtos,
+                imageUrlRequestDto.thumbnailImageUrl(),
+                imageUrlRequestDto.detailImageUrl()
+        );
+    }
+
+    /**
      * 전체 도서를 조회하는 메서드
      * @return 도서 객체
      */
@@ -207,6 +302,19 @@ public class BookServiceImpl implements BookService {
         BookResponseDto book = bookRepository.findBookByBookId(bookId).orElseThrow(()-> new BookNotFoundException("도서를 찾을 수 없습니다."));
         return book;
     }
+
+//    /**
+//     * Id 리스트를 받아 도서리스트를 조회하는 메서드
+//     * @param bookIds 특정 도서 아이디 리스트
+//     * @return 도서목록
+//     */
+//    @Override
+//    public List<BookResponseDto> getBooksById(List<Long> bookIds) {
+//        // TODO 장바구니에서 도서 정보 조회 필요.
+//        return List.of();
+//    }
+
+
 
     /**
      * 특정 도서를 업데이트용으로 조회하는 메서드

@@ -43,8 +43,9 @@ public class MemberAddress {
     private String addressAlias;
 
     @Setter
-    @Column(nullable = false)
-    private boolean isDefaultAddress;
+    @Column(name="is_default_address", columnDefinition = "TINYINT(1)")
+
+    private boolean defaultAddress;
 
     @Column(nullable = false, length = 20)
     private String receiver;
@@ -65,7 +66,7 @@ public class MemberAddress {
         this.roadAddress = requestDto.getRoadAddress();
         this.detailAddress = requestDto.getDetailAddress();
         this.addressAlias = requestDto.getAddressAlias();
-        this.isDefaultAddress = requestDto.isDefaultAddress();
+        this.defaultAddress = requestDto.isDefaultAddress();
         this.receiver = requestDto.getReceiver();
         this.member = member;
     }
