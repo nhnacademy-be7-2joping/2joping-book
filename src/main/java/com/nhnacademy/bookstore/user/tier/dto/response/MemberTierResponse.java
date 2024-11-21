@@ -10,7 +10,8 @@ import com.nhnacademy.bookstore.user.tier.enums.Tier;
  *
  * @author Luha
  * @since 1.0
- */public record MemberTierResponse(
+ */
+public record MemberTierResponse(
         int usage,
         Tier tier,
         int nextTierPrice,

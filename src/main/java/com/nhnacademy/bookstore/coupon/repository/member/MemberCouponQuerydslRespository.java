@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.coupon.repository.member;
 
 import com.nhnacademy.bookstore.coupon.dto.response.MemberCouponResponseDto;
+import com.nhnacademy.bookstore.coupon.dto.response.OrderCouponResponse;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
 public interface MemberCouponQuerydslRespository{
 
     List<MemberCouponResponseDto> getAllMemberCoupons(Long customerId);
+    List<OrderCouponResponse> getAllMemberOrderCoupons(Long customerId);
 
 
 }
