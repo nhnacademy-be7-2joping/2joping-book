@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.user.member.dto.response;
 
 import com.nhnacademy.bookstore.user.member.entity.Member;
+import com.nhnacademy.bookstore.user.memberstatus.entity.MemberStatus;
 import com.nhnacademy.bookstore.user.tier.enums.Tier;
 
 import java.time.LocalDate;
@@ -19,7 +20,7 @@ public record GetAllMembersResponse(
         LocalDate recentLoginDate,
         int point,
         int accPurchase,
-        String statusName,
+        MemberStatus statusName,
         Tier tierName
 ) {
     public static GetAllMembersResponse from(Member member) {
@@ -35,7 +36,7 @@ public record GetAllMembersResponse(
                 member.getRecentLoginDate(),
                 member.getPoint(),
                 member.getAccPurchase(),
-                member.getStatus().getStatus(),
+                member.getStatus(),
                 member.getTier().getName()
         );
     }
