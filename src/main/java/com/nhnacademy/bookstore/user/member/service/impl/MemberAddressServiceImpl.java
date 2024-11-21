@@ -110,11 +110,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
                         "/member/addresses")
                 );
 
-
-
         List<MemberAddressResponseDto> memberAddresses = memberAddressRepository.findAddressesByMemberId(customerId);
-
-
 
         return memberAddresses;
     }
