@@ -21,11 +21,6 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface MemberAddressMapper {
 
-    MemberAddressMapper INSTANCE = Mappers.getMapper(MemberAddressMapper.class);
 
-    @Mapping(source = "id",  target = "memberAddressId")
-    @Mapping(target = "isDefaultAddress", source = "defaultAddress", defaultValue = "false")
-
-    MemberAddressResponseDto toResponseDto(MemberAddress memberAddress);
 
 }

@@ -1,10 +1,12 @@
 package com.nhnacademy.bookstore.coupon.service.impl;
 
 import com.nhnacademy.bookstore.coupon.dto.response.MemberCouponResponseDto;
+import com.nhnacademy.bookstore.coupon.dto.response.OrderCouponResponse;
 import com.nhnacademy.bookstore.coupon.repository.member.MemberCouponRepository;
 import com.nhnacademy.bookstore.coupon.service.MemberCouponService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,10 +31,20 @@ public class MemberCouponServiceImpl implements MemberCouponService {
      * @param customerId 조회할 회원의 ID
      * @return 회원이 보유한 쿠폰 정보를 담은 MemberCouponResponseDto 목록
      */
+    @Transactional(readOnly = true)
     @Override
     public List<MemberCouponResponseDto> getAllMemberCoupons(long customerId) {
 
         List<MemberCouponResponseDto> memberCoupons = memberCouponRepository.getAllMemberCoupons(customerId);
+
+        return memberCoupons;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<OrderCouponResponse> getAllMemberOrderCoupons(long customerId) {
+
+        List<OrderCouponResponse> memberCoupons = memberCouponRepository.getAllMemberOrderCoupons(customerId);
 
         return memberCoupons;
     }
