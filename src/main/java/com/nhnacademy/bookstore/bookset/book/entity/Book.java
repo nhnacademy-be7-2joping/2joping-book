@@ -2,7 +2,6 @@ package com.nhnacademy.bookstore.bookset.book.entity;
 
 import com.nhnacademy.bookstore.bookset.publisher.entity.Publisher;
 import jakarta.persistence.*;
-//import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +23,7 @@ import java.time.LocalDate;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "book_id")
     private Long bookId;
 
     @ManyToOne

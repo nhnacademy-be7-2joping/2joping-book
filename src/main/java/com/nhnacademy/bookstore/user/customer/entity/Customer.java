@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Entity
@@ -22,9 +23,11 @@ public class Customer {
     @Column(nullable = false, length = 50)
     private String name;
 
+    @Setter
     @Column(nullable = false, length = 20, unique = true)
     private String phone;
 
+    @Setter
     @Column(nullable = false, length = 50, unique = true)
     private String email;
 

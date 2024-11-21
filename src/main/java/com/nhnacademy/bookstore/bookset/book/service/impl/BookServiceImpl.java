@@ -50,6 +50,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -299,4 +301,17 @@ public class BookServiceImpl implements BookService {
         BookResponseDto book = bookRepository.findBookByBookId(bookId).orElseThrow(()-> new BookNotFoundException("도서를 찾을 수 없습니다."));
         return book;
     }
+
+//    /**
+//     * Id 리스트를 받아 도서리스트를 조회하는 메서드
+//     * @param bookIds 특정 도서 아이디 리스트
+//     * @return 도서목록
+//     */
+//    @Override
+//    public List<BookResponseDto> getBooksById(List<Long> bookIds) {
+//        // TODO 장바구니에서 도서 정보 조회 필요.
+//        return List.of();
+//    }
+
+
 }
