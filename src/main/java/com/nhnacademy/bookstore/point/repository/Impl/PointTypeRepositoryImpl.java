@@ -21,7 +21,7 @@ public class PointTypeRepositoryImpl implements PointTypeRepositoryCustom {
 
         return queryFactory
                 .select(Projections.constructor(PointTypeDto.class,
-                        pointType.id,
+                        pointType.pointTypeId,
                         pointType.type,
                         pointType.accVal,
                         pointType.name,
