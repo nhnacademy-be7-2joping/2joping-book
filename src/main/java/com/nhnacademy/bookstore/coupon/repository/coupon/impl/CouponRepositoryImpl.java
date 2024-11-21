@@ -9,6 +9,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.nhnacademy.bookstore.coupon.entity.QCoupon.coupon;
@@ -38,6 +40,7 @@ public class CouponRepositoryImpl implements CouponQuerydslRepository {
      */
     @Override
     public List<CouponResponseDto> findAllCoupons() {
+        LocalDateTime invalidTime = LocalDateTime.now();
         return queryFactory.select(Projections.constructor(CouponResponseDto.class,
                         coupon.id,
                         coupon.name,
