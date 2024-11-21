@@ -16,7 +16,6 @@ import static com.nhnacademy.bookstore.coupon.entity.QCouponPolicy.couponPolicy;
 
 /**
  * CouponRepositoryImpl
- *
  * 이 클래스는 Querydsl을 사용하여 쿠폰 데이터를 조회하는 커스텀 레포지토리의 구현체입니다.
  * Coupon과 CouponPolicy 엔티티를 조인하여 CouponResponseDto와 CouponPolicyResponseDto로 매핑된 결과를 반환합니다.
  * JPAQueryFactory를 사용하여 효율적인 데이터베이스 접근을 제공합니다.

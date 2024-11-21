@@ -1,6 +1,10 @@
 package com.nhnacademy.bookstore.point.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum PointActionType {
+
     SIGN_UP("회원가입 포인트"),
     REVIEW("리뷰작성 포인트"),
     PURCHASE("구매 적립"),
@@ -13,7 +17,4 @@ public enum PointActionType {
         this.description = description;
     }
 
-    public String getDescription() {
-        return description;
-    }
 }

@@ -21,7 +21,6 @@ import java.util.Optional;
 
 /**
  * CouponServiceImpl
- *
  * 이 클래스는 쿠폰 생성 및 조회에 대한 비즈니스 로직을 구현하는 서비스 클래스입니다.
  * 쿠폰 이름 중복 검사, 쿠폰 생성 및 모든 쿠폰 조회 기능을 제공합니다.
  *
@@ -54,9 +53,7 @@ public class CouponServiceImpl implements CouponService {
         coupon.setCouponPolicy(couponPolicy.orElseThrow(() ->
                 new CouponPolicyNotFoundException("존재하지 않는 쿠폰 정책입니다: " + couponRequestDto.couponPolicyId(), RedirectType.REDIRECT, "/admin/coupons")
         ));
-        CouponResponseDto responseDto = couponMapper.toCouponResponseDto(couponRepository.save(coupon));
-
-        return responseDto;
+        return couponMapper.toCouponResponseDto(couponRepository.save(coupon));
 
     }
 

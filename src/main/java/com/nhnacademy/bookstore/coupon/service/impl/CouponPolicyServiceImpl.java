@@ -15,7 +15,6 @@ import java.util.List;
 
 /**
  * CouponPolicyServiceImpl
- *
  * 이 클래스는 쿠폰 정책에 대한 비즈니스 로직을 구현하는 서비스 클래스입니다.
  * 활성화된 모든 쿠폰 정책을 조회하는 기능을 제공합니다.
  *

@@ -8,11 +8,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberAddressRequestDto {
+public class MemberAddressRequestDto implements Serializable {
 
     @NotBlank(message = "우편번호는 필수 입력사항입니다.")
     @Pattern(regexp = "\\d{5}", message = "우편번호는 5자리 숫자여야 합니다.")

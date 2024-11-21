@@ -19,7 +19,7 @@ public record UpdatePointTypeResponseDto (
 ) {
     public static UpdatePointTypeResponseDto from(PointType entity) {
         return new UpdatePointTypeResponseDto(
-                entity.getId(),
+                entity.getPointTypeId(),
                 entity.getType(),
                 entity.getAccVal(),
                 entity.getName(),

@@ -15,8 +15,8 @@ public record PointHistoryDto(
 ) {
     public static PointHistoryDto from(PointHistory entity) {
         return new PointHistoryDto(
-                entity.getId(),
-                entity.getPointType().getId(),
+                entity.getPointTypeHistoryId(),
+                entity.getPointType().getPointTypeId(),
                 entity.getPointType().getName(),
                 entity.getOrderId(),
                 entity.getCustomerId(),

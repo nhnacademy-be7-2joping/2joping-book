@@ -2,6 +2,7 @@ package com.nhnacademy.bookstore.point.controller;
 
 import com.nhnacademy.bookstore.point.dto.request.CreatePointTypeRequestDto;
 import com.nhnacademy.bookstore.point.dto.request.UpdatePointTypeRequestDto;
+import com.nhnacademy.bookstore.point.dto.response.PointTypeDto;
 import com.nhnacademy.bookstore.point.dto.response.ReadPointTypeResponseDto;
 import com.nhnacademy.bookstore.point.dto.response.UpdatePointTypeResponseDto;
 import com.nhnacademy.bookstore.point.service.impl.PointTypeServiceImpl;
@@ -91,8 +92,8 @@ public class AdminPointController {
     @Operation(summary = "활성화된 포인트 타입 목록 조회", description = "활성화된 모든 포인트 타입 목록을 조회합니다.")
     @ApiResponse(responseCode = "200", description = "포인트 타입 목록 조회 성공")
     @GetMapping
-    public ResponseEntity<List<ReadPointTypeResponseDto>> readPointType() {
-        List<ReadPointTypeResponseDto> activePointTypes = pointTypeServiceImpl.getAllActivePointTypes();
+    public ResponseEntity<List<PointTypeDto>> readPointType() {
+        List<PointTypeDto> activePointTypes = pointTypeServiceImpl.getAllActivePointTypes();
         return ResponseEntity.ok(activePointTypes);
     }
 

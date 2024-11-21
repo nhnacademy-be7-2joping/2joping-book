@@ -14,7 +14,7 @@ public class PointType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "point_type_id")
-    private Long id;
+    private Long pointTypeId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
@@ -36,6 +36,13 @@ public class PointType {
         this.name = name;
     }
 
+    public void updateAccVal(Integer accVal) {
+        this.accVal = accVal;
+    }
+
+    public void deactivate() {
+        this.isActive = false;
+    }
     public void updatePointType(PointTypeEnum type, Integer accVal, String name, boolean isActive) {
         this.type = type;
         this.accVal = accVal;

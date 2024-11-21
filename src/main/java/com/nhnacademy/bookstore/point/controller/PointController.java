@@ -1,13 +1,12 @@
 package com.nhnacademy.bookstore.point.controller;
 
-import com.nhnacademy.bookstore.point.dto.request.PointHistoryDto;
-import com.nhnacademy.bookstore.point.dto.request.CreatePointTypeRequestDto;
 import com.nhnacademy.bookstore.point.dto.request.PointUseRequest;
-import com.nhnacademy.bookstore.point.dto.response.ReadPointTypeResponseDto;
+import com.nhnacademy.bookstore.point.dto.response.GetMyPageDetailPointHistoriesResponse;
+import com.nhnacademy.bookstore.point.dto.response.GetMyPageSimplePointHistoriesResponse;
+import com.nhnacademy.bookstore.point.dto.response.PointTypeDto;
 import com.nhnacademy.bookstore.point.service.impl.PointServiceImpl;
 import com.nhnacademy.bookstore.point.service.impl.PointTypeServiceImpl;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/points")
+@RequestMapping("/api/v1/points")
 @RequiredArgsConstructor
 public class PointController {
 
@@ -28,13 +27,26 @@ public class PointController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/histories/{customerId}")
-    public ResponseEntity<List<PointHistoryDto>> getPointHistory(@Positive @PathVariable Long customerId) {
-        return ResponseEntity.ok(pointServiceImpl.getPointHistory(customerId));
+    // TODO: 포인트 간략 정보
+    @GetMapping("/histories")
+    public ResponseEntity<GetMyPageSimplePointHistoriesResponse> getSimplePointHistories(
+            @RequestHeader("X-Customer-Id") String customerId
+    ) {
+        GetMyPageSimplePointHistoriesResponse response = pointServiceImpl.getMyPageSimplePointHistories(Long.parseLong(customerId));
+        return ResponseEntity.ok(response);
+    }
+
+    // TODO: 포인트 상세 정보
+    @GetMapping("/histories/details/")
+    public ResponseEntity<GetMyPageDetailPointHistoriesResponse> getDetailPointHistories(
+            @RequestHeader("X-Customer-Id") String customerId
+    ) {
+        GetMyPageDetailPointHistoriesResponse response = pointServiceImpl.getMyPageDetailPointHistories(Long.parseLong(customerId));
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/types")
-    public ResponseEntity<List<ReadPointTypeResponseDto>> getActivePointTypes() {
+    public ResponseEntity<List<PointTypeDto>> getActivePointTypes() {
         return ResponseEntity.ok(pointTypeServiceImpl.getAllActivePointTypes());
     }
 }

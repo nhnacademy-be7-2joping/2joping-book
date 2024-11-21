@@ -19,7 +19,7 @@ public record ReadPointTypeResponseDto(
 ) {
     public static ReadPointTypeResponseDto from(PointType entity) {
         return new ReadPointTypeResponseDto(
-                entity.getId(),
+                entity.getPointTypeId(),
                 entity.getType(),
                 entity.getAccVal(),
                 entity.getName(),

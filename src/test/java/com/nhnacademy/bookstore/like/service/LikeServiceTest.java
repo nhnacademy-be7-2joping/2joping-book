@@ -10,7 +10,7 @@ import com.nhnacademy.bookstore.like.repository.LikeRepository;
 import com.nhnacademy.bookstore.user.enums.Gender;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
-import com.nhnacademy.bookstore.user.memberStatus.entity.MemberStatus;
+import com.nhnacademy.bookstore.user.memberstatus.entity.MemberStatus;
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

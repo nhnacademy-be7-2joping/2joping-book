@@ -7,7 +7,14 @@ import lombok.Getter;
 @AllArgsConstructor
 public class MemberCreateSuccessResponseDto {
     private String nickname;
-    private final String MESSAGE = "님 회원가입을 축하드립니다. 로그인해주세요" ;
+    private String message;
+
+    public MemberCreateSuccessResponseDto(String nickname) {
+        this.nickname = nickname;
+        this.message = "님 회원가입을 축하드립니다. 로그인해주세요" ;
+    }
+
+
 
 
 
