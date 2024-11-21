@@ -23,7 +23,6 @@ import static org.hamcrest.Matchers.*;
 
 /**
  * CouponPolicyControllerTest
- *
  * 이 클래스는 CouponPolicyController의 REST API를 테스트합니다.
  * 쿠폰 정책 조회 기능에 대한 테스트를 포함합니다.
  *

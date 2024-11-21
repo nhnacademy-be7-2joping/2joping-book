@@ -21,7 +21,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * MemberCouponServiceImplTest
- *
  * 이 클래스는 MemberCouponServiceImpl의 비즈니스 로직을 테스트하여 회원이 보유한 쿠폰 조회 기능의 동작을 검증합니다.
  *
  * @since 1.0
@@ -55,8 +54,8 @@ class MemberCouponServiceImplTest {
 
         // then
         assertEquals(1, result.size());
-        assertEquals(1L, result.get(0).couponUsageId());
-        assertEquals(2L, result.get(0).couponId());
+        assertEquals(1L, result.getFirst().couponUsageId());
+        assertEquals(2L, result.getFirst().couponId());
     }
 
     /**
@@ -66,7 +65,7 @@ class MemberCouponServiceImplTest {
     @Test
     void getAllMemberCoupons_EmptyList() {
         // given
-        when(memberCouponRepository.getAllMemberCoupons(Long.valueOf(1L))).thenReturn(Collections.emptyList());
+        when(memberCouponRepository.getAllMemberCoupons(1L)).thenReturn(Collections.emptyList());
 
         // when
         List<MemberCouponResponseDto> result = memberCouponService.getAllMemberCoupons(1L);
@@ -100,12 +99,12 @@ class MemberCouponServiceImplTest {
 
         // then
         assertEquals(1, result.size());
-        assertEquals(1L, result.get(0).couponUsageId());
-        assertEquals("Test Coupon", result.get(0).name());
-        assertEquals(DiscountType.ACTUAL, result.get(0).discountType());
-        assertEquals(10, result.get(0).discountValue());
-        assertEquals("Policy Detail", result.get(0).detail());
-        assertEquals(100, result.get(0).maxDiscount());
+        assertEquals(1L, result.getFirst().couponUsageId());
+        assertEquals("Test Coupon", result.getFirst().name());
+        assertEquals(DiscountType.ACTUAL, result.getFirst().discountType());
+        assertEquals(10, result.getFirst().discountValue());
+        assertEquals("Policy Detail", result.getFirst().detail());
+        assertEquals(100, result.getFirst().maxDiscount());
     }
 
     /**

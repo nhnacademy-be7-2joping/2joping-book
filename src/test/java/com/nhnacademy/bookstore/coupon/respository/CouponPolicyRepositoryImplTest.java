@@ -14,12 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * CouponPolicyRepositoryImplTest
- *
  * 이 클래스는 CouponPolicyRepositoryImpl의 findActivePolicy 메서드를 테스트합니다.
  * 활성화된 쿠폰 정책이 데이터베이스에 올바르게 저장되고 조회되는지 확인하는 테스트입니다.
  *
@@ -47,7 +45,6 @@ class CouponPolicyRepositoryImplTest {
 
     /**
      * findActivePolicy 메서드 테스트.
-     *
      * Given: 활성화된 쿠폰 정책을 저장.
      * When: findActivePolicy 메서드를 사용하여 정책 목록을 조회.
      * Then: 조회된 정책 목록이 올바른지 확인.
@@ -59,8 +56,8 @@ class CouponPolicyRepositoryImplTest {
         List<CouponPolicyResponseDto> activePolicies = couponPolicyRepository.findActivePolicy();
 
         // Then: 조회된 데이터 검증
-        assertTrue(activePolicies.size() > 0);
-        assertEquals("기본 할인 정책", activePolicies.get(0).name());
-        assertEquals("10% 할인 쿠폰입니다.", activePolicies.get(0).detail());
+        assertFalse(activePolicies.isEmpty());
+        assertEquals("기본 할인 정책", activePolicies.getFirst().name());
+        assertEquals("10% 할인 쿠폰입니다.", activePolicies.getFirst().detail());
     }
 }

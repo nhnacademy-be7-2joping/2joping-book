@@ -27,7 +27,6 @@ import static org.hamcrest.Matchers.*;
 
 /**
  * MemberCouponControllerTest
- *
  * 이 클래스는 MemberCouponController의 REST API를 테스트합니다.
  * 회원이 보유한 쿠폰 목록 조회 기능에 대한 테스트를 포함합니다.
  *

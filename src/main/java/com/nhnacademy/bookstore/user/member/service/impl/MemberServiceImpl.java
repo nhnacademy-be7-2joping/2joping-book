@@ -13,18 +13,18 @@ import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.member.service.MemberService;
-import com.nhnacademy.bookstore.user.memberStatus.entity.MemberStatus;
-import com.nhnacademy.bookstore.user.memberStatus.repository.MemberStatusRepository;
+import com.nhnacademy.bookstore.user.memberstatus.entity.MemberStatus;
+import com.nhnacademy.bookstore.user.memberstatus.repository.MemberStatusRepository;
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.repository.MemberTierRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * MemberServiceImpl
- *
  * 회원 서비스 구현 클래스입니다. 회원 가입 시, ID, 이메일, 전화번호 중복 여부를 검사하고
  * 기본 회원 상태 및 등급을 설정합니다. 회원 가입 성공 시, 환영 메시지를 포함한 DTO를 반환합니다.
  *
@@ -39,10 +39,10 @@ public class MemberServiceImpl implements MemberService {
     private final MemberStatusRepository statusRepository;
     private final MemberTierRepository tierRepository;
     private final PasswordEncoder passwordEncoder;
-
+    static final String MEMBER_SIGNUP_URL = "/members";
+    static final String MEMBER_EDIT_PROFILE_URL = "/mypage/edit-profile";
     /**
      * 신규 회원을 등록하는 메서드.
-     *
      * ID, 이메일, 전화번호 중복 여부를 검증하고, 기본 회원 상태 및 등급을 설정하여 저장합니다.
      *
      * @param memberDto 신규 회원 정보가 담긴 DTO
@@ -59,7 +59,7 @@ public class MemberServiceImpl implements MemberService {
             throw new MemberDuplicateException(
                     "이미 사용 중인 아이디입니다.",
                     RedirectType.REDIRECT,
-                    "/members",
+                    MEMBER_SIGNUP_URL,
                     memberDto
             );
         }
@@ -68,7 +68,7 @@ public class MemberServiceImpl implements MemberService {
             throw new MemberDuplicateException(
                     "이미 존재하는 이메일입니다.",
                     RedirectType.REDIRECT,
-                    "/members",
+                    MEMBER_SIGNUP_URL,
                     memberDto
             );
         }
@@ -77,7 +77,7 @@ public class MemberServiceImpl implements MemberService {
             throw new MemberDuplicateException(
                     "이미 존재하는 전화번호입니다.",
                     RedirectType.REDIRECT,
-                    "/members",
+                    MEMBER_SIGNUP_URL,
                     memberDto
             );
         }
@@ -86,7 +86,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new MemberStatusNotFoundException(
                         "기본 상태를 찾을 수 없습니다.",
                         RedirectType.REDIRECT,
-                        "/members",
+                        MEMBER_SIGNUP_URL,
                         memberDto
                 ));
 
@@ -94,7 +94,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new MemberTierNotFoundException(
                         "기본 회원등급을 찾을 수 없습니다.",
                         RedirectType.REDIRECT,
-                        "/members",
+                        MEMBER_SIGNUP_URL,
                         memberDto
                 ));
 
@@ -122,7 +122,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberUpdateResponseDto updateMember(long customerId, MemberUpdateRequesteDto memberDto) {
         Member member = memberRepository.findById(customerId)
-                .orElseThrow(() -> new MemberNotFoundException("해당 멤버가 존재하지 않습니다." + customerId, RedirectType.REDIRECT, "/mypage/edit-profile"));
+                .orElseThrow(() -> new MemberNotFoundException("해당 멤버가 존재하지 않습니다." + customerId, RedirectType.REDIRECT, MEMBER_EDIT_PROFILE_URL));
 
         String phone = null;
         String email = null;
@@ -135,7 +135,7 @@ public class MemberServiceImpl implements MemberService {
                 throw new MemberDuplicateException(
                         "이미 존재하는 전화번호입니다.",
                         RedirectType.REDIRECT,
-                        "/mypage/edit-profile",
+                        MEMBER_EDIT_PROFILE_URL,
                         memberDto
                 );
             }
@@ -150,7 +150,7 @@ public class MemberServiceImpl implements MemberService {
                 throw new MemberDuplicateException(
                         "이미 존재하는 이메일입니다.",
                         RedirectType.REDIRECT,
-                        "/mypage/edit-profile",
+                        MEMBER_EDIT_PROFILE_URL,
                         memberDto
                 );
             }
@@ -165,13 +165,11 @@ public class MemberServiceImpl implements MemberService {
 
         }
         if (!isUpdated) {
-            throw new MemberNothingToUpdateException("업데이트할 데이터가 없습니다.", RedirectType.REDIRECT, "/mypage/edit-profile");
+            throw new MemberNothingToUpdateException("업데이트할 데이터가 없습니다.", RedirectType.REDIRECT, MEMBER_EDIT_PROFILE_URL);
         }
         MemberUpdateRequesteDto realUpdateDto = new MemberUpdateRequesteDto(phone, email, nickName);
 
-        MemberUpdateResponseDto responseDto = memberRepository.updateMemberDetails(realUpdateDto, customerId);
-
-        return responseDto;
+        return memberRepository.updateMemberDetails(realUpdateDto, customerId);
     }
 
     /**
@@ -183,8 +181,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public MemberUpdateResponseDto getMemberInfo(long customerId) {
-        MemberUpdateResponseDto responseDto = memberRepository.getMemberInfo(customerId);
-
-        return responseDto;
+        return memberRepository.getMemberInfo(customerId);
     }
 }

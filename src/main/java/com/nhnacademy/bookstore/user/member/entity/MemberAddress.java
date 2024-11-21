@@ -10,7 +10,6 @@ import org.hibernate.annotations.DynamicUpdate;
 
 /**
  * MemberAddress
- *
  * 이 클래스는 회원의 주소 정보를 나타내는 엔티티 클래스입니다. 회원이 소유할 수 있는 주소의 기본 정보를 포함하며,
  * 여러 개의 주소를 관리하고, 기본 주소 여부를 설정할 수 있습니다.
  *
