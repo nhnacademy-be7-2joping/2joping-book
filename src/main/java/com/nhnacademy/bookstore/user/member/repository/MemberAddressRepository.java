@@ -11,5 +11,4 @@ public interface MemberAddressRepository  extends JpaRepository<MemberAddress, L
     int countByMemberId(Long memberId);
     MemberAddress findByMemberIdAndDefaultAddressTrue(Long memberId);
 
-
 }

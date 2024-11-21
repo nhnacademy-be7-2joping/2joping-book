@@ -61,7 +61,6 @@ public class MemberAddressServiceTest {
         when(memberAddressRepository.findByMemberIdAndDefaultAddressTrue(memberId)).thenReturn(null);
         when(memberAddressRepository.findAddressesByMemberId(memberId)).thenReturn(Collections.singletonList(new MemberAddressResponseDto(null, null, null, null, null, true, null)));
 
-
         // when
         List<MemberAddressResponseDto> result = memberAddressService.addMemberAddress(memberId, requestDto);
 
@@ -165,7 +164,6 @@ public class MemberAddressServiceTest {
         when(memberAddressRepository.countByMemberId(memberId)).thenReturn(5);
         when(memberAddressRepository.findByMemberIdAndDefaultAddressTrue(memberId)).thenReturn(existingDefaultAddress);
         when(memberAddressRepository.findAddressesByMemberId(memberId)).thenReturn(Collections.singletonList(new MemberAddressResponseDto(null, null, null, null, null, true, null)));
-
 
         // when
         List<MemberAddressResponseDto> result = memberAddressService.addMemberAddress(memberId, requestDto);
