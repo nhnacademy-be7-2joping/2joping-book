@@ -4,6 +4,7 @@ import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryCreateReque
 import com.nhnacademy.bookstore.bookset.category.dto.request.UpdateCategoryRequest;
 import com.nhnacademy.bookstore.bookset.category.dto.response.GetAllCategoriesResponse;
 import com.nhnacademy.bookstore.bookset.category.dto.response.GetCategoryResponse;
+import com.nhnacademy.bookstore.bookset.category.dto.response.GetParentCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.dto.response.UpdateCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.service.CategoryService;
 import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
@@ -21,6 +22,7 @@ import java.util.List;
  * @date : 2024-11-07
  */
 @RestController
+@RequestMapping("/api/v1/bookstore")
 @RequiredArgsConstructor
 public class CategoryController {
 
@@ -48,6 +50,18 @@ public class CategoryController {
     }
 
     /**
+     * 부모 카테고리 조회
+     * @return 조회한 부모 카테고리 리스트 DTO
+     */
+    @GetMapping("/categories/{categoryId}/parents/")
+    public ResponseEntity<GetParentCategoryResponse> getParentCategory(
+            @ValidPathVariable @PathVariable Long categoryId
+    ) {
+        GetParentCategoryResponse response = categoryService.getParentCategory(categoryId);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
      * 카테고리 전체 조회 메서드
      * @return 조회한 전체 카테고리 리스트 DTO
      */
@@ -63,8 +77,10 @@ public class CategoryController {
      * @return 수정된 카테고리 DTO 객체
      */
     @PutMapping("/categories/{categoryId}")
-    public ResponseEntity<UpdateCategoryResponse> updateCategory(@ValidPathVariable @PathVariable Long categoryId,
-                                           @RequestBody UpdateCategoryRequest request) {
+    public ResponseEntity<UpdateCategoryResponse> updateCategory(
+        @ValidPathVariable @PathVariable Long categoryId,
+        @RequestBody UpdateCategoryRequest request
+    ) {
         UpdateCategoryResponse response = categoryService.updateCategory(categoryId, request);
         return ResponseEntity.ok(response);
     }
