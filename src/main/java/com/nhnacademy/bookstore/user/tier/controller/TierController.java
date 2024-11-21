@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * TierController
- *
  * 회원의 등급 정보를 제공하는 API 컨트롤러 클래스입니다.
  *
  * @author Luha

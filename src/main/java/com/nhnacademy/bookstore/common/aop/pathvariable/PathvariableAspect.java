@@ -41,7 +41,7 @@ public class PathvariableAspect {
      * @throws InvalidPathVariableException 경로 변수에 음수 값이 전달될 경우 발생하는 예외
      */
     @Before("validPathVariableMethods()")
-    public void checkPathVariable(JoinPoint joinPoint) throws Throwable {
+    public void checkPathVariable(JoinPoint joinPoint){
 
         Object[] args = joinPoint.getArgs();
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
@@ -64,16 +64,22 @@ public class PathvariableAspect {
      * @throws InvalidPathVariableException 음수 값이 전달될 경우 발생하는 예외
      */
     private <T> void checkValue(T value) {
-        if (value instanceof Long) {
-            long pathVarValue = (Long) value;
-            if (pathVarValue <= 0) {
-                throw new InvalidPathVariableException("0 또는 음수 값은 허용되지 않습니다.");
+        if (value != null) {
+            Class<?> valueType = value.getClass();
+
+            if (valueType == Long.class) {
+                long pathVarValue = (Long) value;
+                if (pathVarValue <= 0) {
+                    throw new InvalidPathVariableException("0 또는 음수 값은 허용되지 않습니다.");
+                }
+            } else if (valueType == Integer.class) {
+                int pathVarValue = (Integer) value;
+                if (pathVarValue <= 0) {
+                    throw new InvalidPathVariableException("0 또는 음수 값은 허용되지 않습니다.");
+                }
             }
-        } else if (value instanceof Integer) {
-            int pathVarValue = (Integer) value;
-            if (pathVarValue <= 0) {
-                throw new InvalidPathVariableException("0 또는 음수 값은 허용되지 않습니다.");
-            }
+        } else {
+            throw new InvalidPathVariableException("값이 null입니다.");
         }
     }
 }

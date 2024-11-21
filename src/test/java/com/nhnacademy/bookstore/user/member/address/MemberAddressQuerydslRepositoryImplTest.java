@@ -13,13 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("dev")
 @SpringBootTest
-public class MemberAddressQuerydslRepositoryImplTest {
+ class MemberAddressQuerydslRepositoryImplTest {
 
     @Autowired
     @Qualifier("memberAddressQuerydslRepositoryImpl") // 정확한 빈 이름으로 변경
@@ -47,7 +45,7 @@ public class MemberAddressQuerydslRepositoryImplTest {
 
         // Then
         assertNotNull(addressList);
-        assertTrue(addressList.size() > 0, "멤버의 주소가 조회되어야 합니다.");
+        assertFalse(addressList.isEmpty(), "멤버의 주소가 조회되어야 합니다.");
     }
 
     @Test
