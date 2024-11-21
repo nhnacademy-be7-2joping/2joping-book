@@ -8,6 +8,7 @@ import com.nhnacademy.bookstore.common.error.exception.user.member.status.Member
 import com.nhnacademy.bookstore.common.error.exception.user.member.tier.MemberTierNotFoundException;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberUpdateRequesteDto;
+import com.nhnacademy.bookstore.user.member.dto.response.GetAllMembersResponse;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto;
 import com.nhnacademy.bookstore.user.member.entity.Member;
@@ -18,10 +19,13 @@ import com.nhnacademy.bookstore.user.memberstatus.repository.MemberStatusReposit
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.repository.MemberTierRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * MemberServiceImpl
@@ -35,6 +39,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
+    private final static int INITIAL_PAGE_SIZE = 10;
+
     private final MemberRepository memberRepository;
     private final MemberStatusRepository statusRepository;
     private final MemberTierRepository tierRepository;
@@ -43,6 +49,7 @@ public class MemberServiceImpl implements MemberService {
     static final String MEMBER_EDIT_PROFILE_URL = "/mypage/edit-profile";
     /**
      * 신규 회원을 등록하는 메서드.
+     *
      * ID, 이메일, 전화번호 중복 여부를 검증하고, 기본 회원 상태 및 등급을 설정하여 저장합니다.
      *
      * @param memberDto 신규 회원 정보가 담긴 DTO
@@ -107,6 +114,21 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.save(requestMember);
 
         return new MemberCreateSuccessResponseDto(member.getNickname());
+    }
+
+    /**
+     * @param page
+     * @return
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public List<GetAllMembersResponse> getAllMembers(
+            final int page
+    ) {
+        final Pageable pageable = PageRequest.of(page, INITIAL_PAGE_SIZE);
+        return memberRepository.findAllByOrderByNicknameDesc(pageable).stream()
+                .map(GetAllMembersResponse::from)
+                .toList();
     }
 
     /**

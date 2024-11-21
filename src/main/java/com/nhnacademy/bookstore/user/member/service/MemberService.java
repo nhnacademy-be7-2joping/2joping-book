@@ -2,9 +2,12 @@ package com.nhnacademy.bookstore.user.member.service;
 
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberUpdateRequesteDto;
+import com.nhnacademy.bookstore.user.member.dto.response.GetAllMembersResponse;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * MemberService
@@ -17,6 +20,9 @@ import org.springframework.stereotype.Service;
 @Service
 public interface MemberService {
     MemberCreateSuccessResponseDto registerNewMember(MemberCreateRequestDto memberDto);
+
+    // TODO: 전체 회원 조회 메서드
+    List<GetAllMembersResponse> getAllMembers(final int page);
     MemberUpdateResponseDto updateMember(long customerId, MemberUpdateRequesteDto memberDto);
     MemberUpdateResponseDto getMemberInfo(long customerId);
 }
