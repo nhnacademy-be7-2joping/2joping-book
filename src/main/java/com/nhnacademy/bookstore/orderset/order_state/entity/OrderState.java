@@ -8,6 +8,7 @@ package com.nhnacademy.bookstore.orderset.order_state.entity;
  */
 import com.nhnacademy.bookstore.orderset.order_state.entity.vo.OrderStateType;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,4 +27,16 @@ public class OrderState {
     @Enumerated(EnumType.STRING)
     @Column(name = "name", length = 20, nullable = false)
     private OrderStateType name;
+
+    @Builder
+    public OrderState(final OrderStateType name) {
+        this.name = name;
+    }
+
+    public void updateName(OrderStateType newName) {
+        if (newName == null) {
+            throw new IllegalArgumentException("주문 상태가 없습니다.");
+        }
+        this.name = newName;
+    }
 }

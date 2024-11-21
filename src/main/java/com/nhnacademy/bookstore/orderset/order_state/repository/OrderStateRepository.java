@@ -9,5 +9,4 @@ import java.util.Optional;
 public interface OrderStateRepository extends JpaRepository<OrderState, Long> {
 
     Optional<OrderState> findByOrderStateId(Long id);
-    Optional<OrderState> findByName(OrderStateType name);
 }

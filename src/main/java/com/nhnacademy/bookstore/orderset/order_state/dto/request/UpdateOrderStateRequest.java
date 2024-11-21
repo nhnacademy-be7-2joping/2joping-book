@@ -5,9 +5,6 @@ import jakarta.validation.constraints.NotNull;
 
 public record UpdateOrderStateRequest(
 
-        @NotNull(message = "주문 상태 ID가 존재하지 않습니다.")
-        Long orderStateId,
-
         @NotNull(message = "주문 상태가 존재하지 않습니다.")
         OrderStateType newName
 ) {
