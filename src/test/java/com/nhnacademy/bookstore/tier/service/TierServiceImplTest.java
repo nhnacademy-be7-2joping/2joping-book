@@ -41,7 +41,7 @@ class TierServiceImplTest {
     @Test
     void getMemberTier_Success() {
         // given
-        MemberTier mockTier = new MemberTier(1L, Tier.골드, true, 10, 10, 20);
+        MemberTier mockTier = new MemberTier(1L, Tier.GOLD, true, 10, 10, 20);
         Member mockMember = new Member();
         mockMember.setTier(mockTier);
 
@@ -52,7 +52,7 @@ class TierServiceImplTest {
 
         // then
         assertNotNull(result);
-        assertEquals(Tier.골드, result.tier());
+        assertEquals(Tier.GOLD, result.tier());
         assertEquals(20, result.nextTierPrice());
         assertEquals(10, result.accRate());
     }
@@ -79,7 +79,7 @@ class TierServiceImplTest {
     @Test
     void getMemberTier_RemainingZeroOrBelow() {
         // given
-        MemberTier mockTier = new MemberTier(1L, Tier.골드, true, 10, 0, 0);
+        MemberTier mockTier = new MemberTier(1L, Tier.GOLD, true, 10, 0, 0);
         Member mockMember = new Member();
         mockMember.setTier(mockTier);
 
@@ -91,7 +91,7 @@ class TierServiceImplTest {
         // then
         assertNotNull(result);
         assertEquals(0, result.nextTierPrice()); // remaining 값이 0으로 설정되는지 확인
-        assertEquals(Tier.골드, result.tier());
+        assertEquals(Tier.GOLD, result.tier());
         assertEquals(10, result.accRate());
     }
 }

@@ -12,7 +12,6 @@ import java.util.List;
 
 /**
  * MemberCouponServiceImpl
- *
  * 이 클래스는 회원이 보유한 쿠폰을 조회하는 비즈니스 로직을 구현하는 서비스 클래스입니다.
  * 특정 회원의 모든 쿠폰을 조회하는 기능을 제공합니다.
  *
@@ -35,18 +34,14 @@ public class MemberCouponServiceImpl implements MemberCouponService {
     @Override
     public List<MemberCouponResponseDto> getAllMemberCoupons(long customerId) {
 
-        List<MemberCouponResponseDto> memberCoupons = memberCouponRepository.getAllMemberCoupons(customerId);
-
-        return memberCoupons;
+        return memberCouponRepository.getAllMemberCoupons(customerId);
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<OrderCouponResponse> getAllMemberOrderCoupons(long customerId) {
 
-        List<OrderCouponResponse> memberCoupons = memberCouponRepository.getAllMemberOrderCoupons(customerId);
-
-        return memberCoupons;
+        return memberCouponRepository.getAllMemberOrderCoupons(customerId);
     }
 
 

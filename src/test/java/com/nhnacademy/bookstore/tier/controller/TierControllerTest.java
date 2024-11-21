@@ -43,7 +43,7 @@ class TierControllerTest {
     @Test
     void memberTier_Success() throws Exception {
         // given
-        MemberTierResponse responseDto = new MemberTierResponse(10, Tier.골드, 15, 1);
+        MemberTierResponse responseDto = new MemberTierResponse(10, Tier.GOLD, 15, 1);
         when(tierService.getMemberTier(1L)).thenReturn(responseDto);
 
         // when & then
@@ -56,9 +56,5 @@ class TierControllerTest {
                 .andExpect(jsonPath("$.accRate", is(1)));
     }
 
-    /**
-     * 회원 등급 조회 실패 테스트 - 잘못된 회원 ID
-     * 존재하지 않는 회원 ID로 요청 시 예외가 발생하는지 확인합니다.
-     */
 
 }
