@@ -6,15 +6,17 @@ package com.nhnacademy.bookstore.orderset.order_state.entity;
  * @author : 이유현
  * @date : 2024-10-22
  */
+import com.nhnacademy.bookstore.orderset.order_state.entity.vo.OrderStateType;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "order_state")
 @Getter
 @Setter
+@Entity
+@Table(name = "order_state")
 @NoArgsConstructor
 public class OrderState {
 
@@ -22,6 +24,19 @@ public class OrderState {
     @Column(name = "order_state_id", nullable = false)
     private Long orderStateId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "name", length = 20, nullable = false)
-    private String name;
+    private OrderStateType name;
+
+    @Builder
+    public OrderState(final OrderStateType name) {
+        this.name = name;
+    }
+
+    public void updateName(OrderStateType newName) {
+        if (newName == null) {
+            throw new IllegalArgumentException("주문 상태가 없습니다.");
+        }
+        this.name = newName;
+    }
 }

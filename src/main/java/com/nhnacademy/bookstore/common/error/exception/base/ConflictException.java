@@ -3,9 +3,10 @@ package com.nhnacademy.bookstore.common.error.exception.base;
 import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import lombok.Getter;
 
+import java.io.Serializable;
+
 /**
  * ConflictException
- *
  * 이 예외는 애플리케이션에서 발생하는 충돌 오류(HTTP 409)를 나타냅니다.
  * 리다이렉션 처리 및 추가 데이터를 전달하기 위한 필드를 제공합니다.
  *
@@ -14,9 +15,10 @@ import lombok.Getter;
  */
 @Getter
 public class ConflictException extends RuntimeException{
-    private RedirectType redirectType;
-    private String url;
-    private Object data;
+
+    private final RedirectType redirectType;
+    private final String url;
+    private final Serializable data;
 
     /**
      * 기본 생성자.
@@ -42,6 +44,8 @@ public class ConflictException extends RuntimeException{
         super(message);
         this.redirectType = redirectType;
         this.url = url;
+        this.data = null;
+
     }
 
     /**
@@ -52,7 +56,7 @@ public class ConflictException extends RuntimeException{
      * @param url 리다이렉트될 URL
      * @param data 추가 데이터
      */
-    public ConflictException(String message, RedirectType redirectType, String url, Object data) {
+    public ConflictException(String message, RedirectType redirectType, String url, Serializable data) {
         super(message);
         this.redirectType = redirectType;
         this.url = url;

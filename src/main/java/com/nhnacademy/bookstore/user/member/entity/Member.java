@@ -4,7 +4,7 @@ import com.nhnacademy.bookstore.coupon.entity.member.MemberCoupon;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import com.nhnacademy.bookstore.user.enums.Gender;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
-import com.nhnacademy.bookstore.user.memberStatus.entity.MemberStatus;
+import com.nhnacademy.bookstore.user.memberstatus.entity.MemberStatus;
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,6 @@ import java.util.List;
 
 /**
  * Member
- *
  * 회원 정보를 나타내는 엔티티 클래스입니다. 고객 정보를 상속받으며, 회원의 로그인 정보, 포인트, 적립금, 회원 상태 및 등급 등 다양한 정보를 포함합니다.
  * 추가적으로, 회원 가입 시 필요한 정보를 DTO를 통해 엔티티로 변환할 수 있습니다.
  *
@@ -39,6 +38,7 @@ public class Member extends Customer {
     @Column(nullable = false, length = 255)
     private String password;
 
+    @Setter
     @Column(nullable = false, length = 20)
     private String nickname;
 
@@ -83,13 +83,13 @@ public class Member extends Customer {
      *
      * @param requestDto 회원 가입 시 필요한 정보를 담은 DTO 객체
      */
-    public void toEntity(MemberCreateRequestDto requestDto) {
-        this.initializeCustomerFields(requestDto.getName(), requestDto.getPhone(), requestDto.getEmail());
-        this.loginId = requestDto.getLoginId();
-        this.password = requestDto.getPassword();
-        this.nickname = requestDto.getNickName();
-        this.gender = requestDto.getGender();
-        this.birthday = requestDto.getBirthday();
+    public void toEntity(MemberCreateRequestDto requestDto, String password) {
+        this.initializeCustomerFields(requestDto.name(), requestDto.phone(), requestDto.email());
+        this.loginId = requestDto.loginId();
+        this.password = password;
+        this.nickname = requestDto.nickName();
+        this.gender = requestDto.gender();
+        this.birthday = requestDto.birthday();
         this.joinDate = LocalDate.now();
         this.isPaycoLogin = false;
         this.point = 0;
@@ -97,4 +97,14 @@ public class Member extends Customer {
 
     }
 
+    public void addPoint(int amount) {
+        this.point += amount;
+    }
+
+    // TODO:
+    //  사용량만큼 포인트 차감 기능 구현
+    //  포인트가 부족할 경우 에러 메시지
+    public void usePoint(int amount) {
+        this.point -= amount;
+    }
 }

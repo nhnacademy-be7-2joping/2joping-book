@@ -4,6 +4,7 @@ import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryCreateReque
 import com.nhnacademy.bookstore.bookset.category.dto.request.UpdateCategoryRequest;
 import com.nhnacademy.bookstore.bookset.category.dto.response.GetAllCategoriesResponse;
 import com.nhnacademy.bookstore.bookset.category.dto.response.GetCategoryResponse;
+import com.nhnacademy.bookstore.bookset.category.dto.response.GetParentCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.dto.response.UpdateCategoryResponse;
 import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import com.nhnacademy.bookstore.bookset.category.repository.CategoryRepository;
@@ -60,17 +61,27 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findByCategoryId(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다."));
 
-        return new GetCategoryResponse(
-                category.getCategoryId(),
-                category.getName(),
-                category.getParentCategory() != null ? category.getParentCategory().getCategoryId() : null
-        );
+        return GetCategoryResponse.from(category);
     }
 
-    // TODO: GetAllCategoryResponse 구현
+    @Override
+    public GetParentCategoryResponse getParentCategory(Long categoryId) {
+        Category childCategory = categoryRepository.findByCategoryId(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다."));
+
+        return GetParentCategoryResponse.from(childCategory);
+    }
+
+    // TODO: 모든 부모 카테고리 반환할 수 있도록 구현
+    public List<Category> getAllParentCategories() {
+        return null;
+    }
+
     @Override
     public List<GetAllCategoriesResponse> getAllCategories() {
-        return null;
+        return categoryRepository.findAllByOrderByCategoryId().stream()
+                .map(GetAllCategoriesResponse::from)
+                .toList();
     }
 
     /**

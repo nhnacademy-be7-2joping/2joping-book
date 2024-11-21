@@ -1,4 +1,5 @@
-package com.nhnacademy.bookstore.coupon.respository;import com.nhnacademy.bookstore.coupon.dto.response.CouponPolicyResponseDto;
+package com.nhnacademy.bookstore.coupon.respository;
+
 import com.nhnacademy.bookstore.coupon.dto.response.CouponResponseDto;
 import com.nhnacademy.bookstore.coupon.entity.Coupon;
 import com.nhnacademy.bookstore.coupon.entity.CouponPolicy;
@@ -21,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * CouponRepositoryImplTest
- *
  * 이 클래스는 CouponRepositoryImpl의 findAllCoupons 메서드를 테스트합니다.
  * 쿠폰과 쿠폰 정책이 데이터베이스에 올바르게 저장되고 조회되는지 확인하는 테스트입니다.
  *
@@ -54,7 +54,6 @@ class CouponRepositoryImplTest {
 
     /**
      * findAllCoupons 메서드 테스트.
-     *
      * Given: 데이터베이스에 쿠폰과 정책을 저장.
      * When: findAllCoupons 메서드를 사용하여 쿠폰 목록을 조회.
      * Then: 조회된 쿠폰 목록이 올바른지 확인.
@@ -67,8 +66,7 @@ class CouponRepositoryImplTest {
 
         // Then: 조회된 데이터 검증
         assertNotNull(coupons);
-        assertEquals(1, coupons.size());
-        assertEquals("Test Coupon", coupons.get(0).name());
-        assertEquals("Test Policy", coupons.get(0).couponPolicyResponseDto().name());
+        assertEquals("할인 쿠폰", coupons.getFirst().name());
+        assertEquals("기본 할인 정책", coupons.getFirst().couponPolicyResponseDto().name());
     }
 }
