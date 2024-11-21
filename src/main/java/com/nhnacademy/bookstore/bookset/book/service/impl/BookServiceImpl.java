@@ -31,7 +31,7 @@ import com.nhnacademy.bookstore.bookset.tag.repository.BookTagRepository;
 import com.nhnacademy.bookstore.bookset.tag.repository.TagRepository;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookUpdateResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookUpdateResultResponseDto;
-import com.nhnacademy.bookstore.bookset.publisher.exception.PublisherNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.publisher.PublisherNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.tag.TagNotFoundException;
@@ -344,7 +344,7 @@ public class BookServiceImpl implements BookService {
         ImageUrlRequestDto imageUrlRequestDto = bookUpdateRequestDto.imageUrlRequestDto();
 
         Publisher publisher = publisherRepository.findByName(updateDto.publisherName())
-                .orElseThrow(() -> new PublisherNotFoundException("출판사를 찾을 수 없습니다."));
+                .orElseThrow(PublisherNotFoundException::new);
 
         book.updateBook(
                 updateDto.title(),
