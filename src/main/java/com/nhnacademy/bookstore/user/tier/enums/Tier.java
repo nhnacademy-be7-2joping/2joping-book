@@ -10,8 +10,8 @@ package com.nhnacademy.bookstore.user.tier.enums;
  * @author Luha
  * @since 1.0
  */public enum Tier {
-    일반,
-    로얄,
-    골드,
-    플래티넘
+    NORMAL,
+    ROYAL,
+    GOLD,
+    PLATINUM
 }

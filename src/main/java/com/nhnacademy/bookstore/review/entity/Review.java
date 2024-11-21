@@ -78,4 +78,10 @@ public class Review {
         this.updatedAt = updatedAt;
     }
 
+    public void clearImage() {
+        this.imageUrl = null;
+    }
+    public void updateImage(String newUrl) {
+        this.imageUrl = newUrl;
+    }
 }

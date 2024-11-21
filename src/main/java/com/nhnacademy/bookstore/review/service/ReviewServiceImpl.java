@@ -162,32 +162,39 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewModifyResponseDto modifyReview(ReviewModifyRequestDto reviewModifyRequestDto) {
 
-        Review review = reviewRepository.findById(reviewModifyRequestDto.reviewModifyDetailRequestDto().reviewId()).orElseThrow(()-> new ReviewNotFoundException("리뷰가 존재하지 않습니다."));
-
-        String reviewImage = reviewModifyRequestDto.reviewImageUrlRequestDto().reviewImage() != null ? reviewModifyRequestDto.reviewImageUrlRequestDto().reviewImage() : " ";
+        Review review = reviewRepository.findById(reviewModifyRequestDto.reviewModifyDetailRequestDto().reviewId())
+                .orElseThrow(() -> new ReviewNotFoundException("리뷰가 존재하지 않습니다."));
 
         int ratingValue = reviewModifyRequestDto.reviewModifyDetailRequestDto().ratingValue();
         if (ratingValue < 1 || ratingValue > 5) {
-            throw new RatingValueNotValidException("평점 " + ratingValue + " 은 유효하지 않습니다. 1~5 사이의 값만 입력 가능합니다.", ratingValue);
+            throw new RatingValueNotValidException("평점 " + ratingValue + " 은 유효하지 않습니다.", ratingValue);
         }
 
-        String latestImageUrl = reviewRepository.getLatestReviewImageByReviewId(review.getReviewId()).orElse("default-image.jpg");
+        String updatedImageUrl = review.getImageUrl(); // 기존 URL 기본값
 
+        if (reviewModifyRequestDto.deleteImage()) {
+            reviewImageRepository.deleteByReview_ReviewId(review.getReviewId());
+            updatedImageUrl = null;
 
-        review.update(ratingValue,
+        } else if (reviewModifyRequestDto.reviewImageUrlRequestDto().reviewImage() != null) {
+            Image newImage = imageRepository.save(new Image(reviewModifyRequestDto.reviewImageUrlRequestDto().reviewImage()));
+            reviewImageRepository.save(new ReviewImage(review, newImage));
+            updatedImageUrl = newImage.getUrl();
+        }
+
+        review.update(
+                ratingValue,
                 reviewModifyRequestDto.reviewModifyDetailRequestDto().title(),
                 reviewModifyRequestDto.reviewModifyDetailRequestDto().text(),
-                reviewModifyRequestDto.reviewImageUrlRequestDto().reviewImage() != null
-                        ? reviewModifyRequestDto.reviewImageUrlRequestDto().reviewImage()
-                        : latestImageUrl, // 기존 이미지 유지
-                Timestamp.valueOf(LocalDateTime.now()));
+                updatedImageUrl,
+                Timestamp.valueOf(LocalDateTime.now())
+        );
 
         Review updatedReview = reviewRepository.save(review);
-        if (reviewModifyRequestDto.reviewImageUrlRequestDto().reviewImage() != null) {
-            Image imageUrl = imageRepository.save(new Image(reviewImage));
-            reviewImageRepository.save(new ReviewImage(review,imageUrl));
-        }
         return reviewMapper.toModifyResponseDto(updatedReview);
     }
+
+
+
 }
 

@@ -34,4 +34,5 @@ public class ReviewImage {
         this.review = review;
         this.image = image;
     }
+
 }
