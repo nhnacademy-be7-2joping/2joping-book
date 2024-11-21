@@ -1,9 +1,9 @@
-package com.nhnacademy.bookstore.bookset.category.service;
+package com.nhnacademy.bookstore.bookset.category.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nhnacademy.bookstore.bookset.category.controller.CategoryController;
 import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryCreateRequest;
 import com.nhnacademy.bookstore.bookset.category.entity.Category;
+import com.nhnacademy.bookstore.bookset.category.service.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,8 +62,9 @@ public class CategoryControllerTest {
         given(categoryService.createCategory(any(CategoryCreateRequest.class))).willReturn(1L);
 
         // when & then
-        mockMvc.perform(post("/categories")
+        mockMvc.perform(post("/api/v1/bookstore/categories")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Customer-Id", "test-customer-id") // 추가된 부분
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isCreated())
@@ -77,8 +78,9 @@ public class CategoryControllerTest {
         given(categoryService.createCategory(any(CategoryCreateRequest.class))).willReturn(2L);
 
         // when & then
-        mockMvc.perform(post("/categories")
+        mockMvc.perform(post("/api/v1/bookstore/categories")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Customer-Id", "test-customer-id") // 추가된 부분
                         .content(objectMapper.writeValueAsString(requestWithParent)))
                 .andDo(print())
                 .andExpect(status().isCreated())
@@ -92,10 +94,11 @@ public class CategoryControllerTest {
         CategoryCreateRequest invalidRequest = new CategoryCreateRequest(null, "");
 
         // when & then
-        mockMvc.perform(post("/categories")
+        mockMvc.perform(post("/api/v1/bookstore/categories")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Customer-Id", "test-customer-id") // 추가된 부분
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andDo(print())
-                .andExpect(status().isCreated());
+                .andExpect(status().isBadRequest()); // 잘못된 요청에 대한 상태 코드는 400이어야 함
     }
 }

@@ -17,11 +17,11 @@ import com.nhnacademy.bookstore.user.memberstatus.entity.MemberStatus;
 import com.nhnacademy.bookstore.user.memberstatus.repository.MemberStatusRepository;
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.repository.MemberTierRepository;
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * MemberServiceImpl
