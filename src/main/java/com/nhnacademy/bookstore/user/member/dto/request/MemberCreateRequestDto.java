@@ -2,10 +2,6 @@ package com.nhnacademy.bookstore.user.member.dto.request;
 
 import com.nhnacademy.bookstore.user.enums.Gender;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDate;
 

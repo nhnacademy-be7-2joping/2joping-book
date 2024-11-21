@@ -1,10 +1,6 @@
 package com.nhnacademy.bookstore.user.member.mapper;
 
-import com.nhnacademy.bookstore.user.member.dto.response.MemberAddressResponseDto;
-import com.nhnacademy.bookstore.user.member.entity.MemberAddress;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 /**
  * MemberAddressMapper

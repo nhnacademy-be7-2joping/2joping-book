@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -84,7 +83,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         //변경 후 주소 조회
 
         List<MemberAddressResponseDto> memberAddresses = memberAddressRepository.findAddressesByMemberId(customerId);
-      
+
 
         //주소 조회
         return memberAddresses;

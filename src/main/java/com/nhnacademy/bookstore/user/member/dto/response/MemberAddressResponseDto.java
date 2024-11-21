@@ -2,10 +2,6 @@ package com.nhnacademy.bookstore.user.member.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 
 public record MemberAddressResponseDto(
