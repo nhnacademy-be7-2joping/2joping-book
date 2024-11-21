@@ -13,7 +13,7 @@ public record PointTypeDto(
 ) {
     public static PointTypeDto from(PointType entity) {
         return new PointTypeDto(
-                entity.getId(),
+                entity.getPointTypeId(),
                 entity.getType(),
                 entity.getAccVal(),
                 entity.getName(),
