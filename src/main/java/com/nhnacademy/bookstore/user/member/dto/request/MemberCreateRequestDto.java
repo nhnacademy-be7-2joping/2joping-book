@@ -2,11 +2,7 @@ package com.nhnacademy.bookstore.user.member.dto.request;
 
 import com.nhnacademy.bookstore.user.enums.Gender;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
+import java.io.Serializable;
 import java.time.LocalDate;
 
 public record MemberCreateRequestDto(
@@ -43,4 +39,4 @@ public record MemberCreateRequestDto(
         @Past(message = "생년월일은 과거 날짜만 가능합니다.")
         LocalDate birthday
 
-) {}
+) implements Serializable {}

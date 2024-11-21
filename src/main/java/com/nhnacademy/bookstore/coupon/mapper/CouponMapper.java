@@ -10,7 +10,6 @@ import org.mapstruct.Mapping;
 
 /**
  * CouponMapper
- *
  * 이 매퍼 인터페이스는 Coupon과 CouponPolicy 엔티티를 각각 CouponResponseDto와
  * CouponPolicyResponseDto로 변환하는 기능을 제공합니다. MapStruct를 사용하여 매핑을 자동화하며,
  * 스프링 컴포넌트로 등록되어 의존성 주입을 통해 사용됩니다.
