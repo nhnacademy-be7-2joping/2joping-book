@@ -1,13 +1,7 @@
 package com.nhnacademy.bookstore.bookset.book.controller;
 
-import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateHtmlRequestDto;
-import com.nhnacademy.bookstore.bookset.book.dto.request.ImageUrlRequestDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookContributorResponseDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookTagResponseDto;
-import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateRequestDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookCreateResponseDto;
+import com.nhnacademy.bookstore.bookset.book.dto.request.*;
+import com.nhnacademy.bookstore.bookset.book.dto.response.*;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
 import com.nhnacademy.bookstore.bookset.category.dto.response.GetCategoryResponse;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
@@ -93,12 +87,10 @@ class BookControllerTest {
                 "detail-url"
         );
 
-        // BookContributorResponseDto 리스트 생성
         List<BookContributorResponseDto> contributors = List.of(
                 new BookContributorResponseDto(1L, "Contributor 1", 1L, "Author")
         );
 
-        // BookSimpleResponseDto 및 BookResponseDto 객체 초기화
         bookSimpleDto = new BookSimpleResponseDto(
                 1L, "thumbnail1", "Book Title 1", 15000, "Publisher 1", 20000, true,
                 contributors, List.of("Category 1", "Category 2")
@@ -183,5 +175,77 @@ class BookControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(bookResponseDto, response.getBody());
+    }
+
+
+    @Test
+    @DisplayName("도서 수정 정보 조회 - 성공")
+    void testGetUpdateBookByBookIdSuccess() {
+        BookUpdateResponseDto updateResponseDto = new BookUpdateResponseDto(
+                1L, "Publisher Name", "Book Title", "Book Description", LocalDate.of(2023, 10, 29),
+                "1234567890123", 20000, 15000, true, true, 10,
+                "김지은 (지은이)", "국내도서 > 소설 > 현대소설", "따뜻한, 웃긴", "thumbnail.jpg", "detail.jpg"
+        );
+
+        when(bookService.getUpdateBookByBookId(1L)).thenReturn(updateResponseDto);
+
+        ResponseEntity<BookUpdateResponseDto> response = bookController.getUpdateBookByBookId(1L);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(updateResponseDto, response.getBody());
+    }
+
+    @Test
+    @DisplayName("도서 수정 - 성공")
+    void testUpdateBookSuccess() {
+        BookUpdateHtmlRequestDto htmlRequestDto = new BookUpdateHtmlRequestDto(
+                "Updated Book Title",
+                "Updated Description",
+                "Updated Publisher",
+                LocalDate.of(2023, 10, 29),
+                "1234567890123",
+                20000,
+                15000,
+                true,
+                true,
+                10,
+                "김지은 (지은이)",
+                "국내도서 > 소설 > 현대소설",
+                "따뜻한, 웃긴",
+                false,
+                false
+        );
+
+        BookUpdateRequestDto requestDto = new BookUpdateRequestDto(
+                htmlRequestDto,
+                null
+        );
+
+        BookUpdateResultResponseDto resultResponseDto = new BookUpdateResultResponseDto(
+                1L,
+                "Updated Publisher",
+                "Updated Book Title",
+                "Updated Description",
+                LocalDate.of(2023, 10, 29),
+                "1234567890123",
+                20000,
+                15000,
+                true,
+                true,
+                10,
+                List.of(new ContributorResponseDto(1L, 1L, "김지은")),
+                new GetCategoryResponse(1L, "현대소설", 2L),
+                List.of(new TagResponseDto(1L, "따뜻한"), new TagResponseDto(2L, "웃긴")),
+                "updated-thumbnail-url",
+                "updated-detail-url"
+        );
+
+        when(bookService.updateBook(anyLong(), any(BookUpdateRequestDto.class)))
+                .thenReturn(resultResponseDto);
+
+        ResponseEntity<BookUpdateResultResponseDto> response = bookController.updateBook(1L, requestDto);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(resultResponseDto, response.getBody());
     }
 }
