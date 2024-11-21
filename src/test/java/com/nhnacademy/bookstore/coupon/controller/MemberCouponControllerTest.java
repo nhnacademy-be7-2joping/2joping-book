@@ -2,6 +2,8 @@ package com.nhnacademy.bookstore.coupon.controller;
 
 
 import com.nhnacademy.bookstore.coupon.dto.response.MemberCouponResponseDto;
+import com.nhnacademy.bookstore.coupon.dto.response.OrderCouponResponse;
+import com.nhnacademy.bookstore.coupon.enums.DiscountType;
 import com.nhnacademy.bookstore.coupon.service.MemberCouponService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -24,7 +27,6 @@ import static org.hamcrest.Matchers.*;
 
 /**
  * MemberCouponControllerTest
- *
  * 이 클래스는 MemberCouponController의 REST API를 테스트합니다.
  * 회원이 보유한 쿠폰 목록 조회 기능에 대한 테스트를 포함합니다.
  *
@@ -62,7 +64,8 @@ class MemberCouponControllerTest {
         when(memberCouponService.getAllMemberCoupons(1L)).thenReturn(Collections.singletonList(responseDto));
 
         // when & then
-        mockMvc.perform(get("/api/v1/coupons/1")
+        mockMvc.perform(get("/api/v1/coupons/mypage")
+                        .header("X-Customer-Id", "1") // 헤더로 customerId 전달
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -85,10 +88,51 @@ class MemberCouponControllerTest {
         when(memberCouponService.getAllMemberCoupons(1L)).thenReturn(Collections.emptyList());
 
         // when & then
-        mockMvc.perform(get("/api/v1/coupons/1")
+        mockMvc.perform(get("/api/v1/coupons/mypage")
+                        .header("X-Customer-Id", "1") // 헤더로 customerId 전달
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(0)));
     }
+    @Test
+    void orderCouponsByMemberId_Success() throws Exception {
+        // given
+        OrderCouponResponse responseDto = new OrderCouponResponse(1L, null, LocalDateTime.now(), DiscountType.ACTUAL, 5, 22, "쿠폰", 1);
+        when(memberCouponService.getAllMemberOrderCoupons(1L)).thenReturn(List.of(responseDto));
+
+        // when & then
+        mockMvc.perform(get("/api/v1/coupons/order")
+                        .header("X-Customer-Id", "1") // 헤더로 customerId 전달
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].couponUsageId", is(1)))
+                .andExpect(jsonPath("$[0].discountType", is( "ACTUAL")))
+                .andExpect(jsonPath("$[0].discountValue", is(5)))
+                .andExpect(jsonPath("$[0].maxDiscount", is(1)));
+    }
+
+    @Test
+    void orderCouponsByMemberId_EmptyList() throws Exception {
+        // given
+        when(memberCouponService.getAllMemberOrderCoupons(1L)).thenReturn(Collections.emptyList());
+
+        // when & then
+        mockMvc.perform(get("/api/v1/coupons/order")
+                        .header("X-Customer-Id", "1") // 헤더로 customerId 전달
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(0))); // 빈 리스트 검증
+    }
+
+    @Test
+    void orderCouponsByMemberId_InvalidHeader() throws Exception {
+        // when & then
+        mockMvc.perform(get("/api/v1/coupons/order")
+                        .contentType(MediaType.APPLICATION_JSON)) // 헤더 없이 요청
+                .andExpect(status().isBadRequest()); // 400 상태 코드 확인
+    }
+
 }

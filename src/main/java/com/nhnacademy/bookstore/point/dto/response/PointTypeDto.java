@@ -5,7 +5,7 @@ import com.nhnacademy.bookstore.point.enums.PointTypeEnum;
 
 public record PointTypeDto(
 
-        Long id,
+        Long pointTypeId,
         PointTypeEnum type,
         Integer accVal,
         String name,
@@ -13,7 +13,7 @@ public record PointTypeDto(
 ) {
     public static PointTypeDto from(PointType entity) {
         return new PointTypeDto(
-                entity.getId(),
+                entity.getPointTypeId(),
                 entity.getType(),
                 entity.getAccVal(),
                 entity.getName(),

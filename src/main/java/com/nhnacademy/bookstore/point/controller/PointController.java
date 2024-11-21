@@ -1,7 +1,9 @@
 package com.nhnacademy.bookstore.point.controller;
 
-import com.nhnacademy.bookstore.point.dto.response.*;
 import com.nhnacademy.bookstore.point.dto.request.PointUseRequest;
+import com.nhnacademy.bookstore.point.dto.response.GetMyPageDetailPointHistoriesResponse;
+import com.nhnacademy.bookstore.point.dto.response.GetMyPageSimplePointHistoriesResponse;
+import com.nhnacademy.bookstore.point.dto.response.PointTypeDto;
 import com.nhnacademy.bookstore.point.service.impl.PointServiceImpl;
 import com.nhnacademy.bookstore.point.service.impl.PointTypeServiceImpl;
 import jakarta.validation.Valid;

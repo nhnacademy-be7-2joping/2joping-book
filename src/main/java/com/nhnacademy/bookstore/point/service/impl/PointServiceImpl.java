@@ -4,8 +4,11 @@ import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
 import com.nhnacademy.bookstore.orderset.order.entity.Order;
 import com.nhnacademy.bookstore.orderset.order.repository.OrderRepository;
-import com.nhnacademy.bookstore.point.dto.response.*;
 import com.nhnacademy.bookstore.point.dto.request.PointUseRequest;
+import com.nhnacademy.bookstore.point.dto.response.GetDetailPointHistoriesResponse;
+import com.nhnacademy.bookstore.point.dto.response.GetMyPageDetailPointHistoriesResponse;
+import com.nhnacademy.bookstore.point.dto.response.GetMyPageSimplePointHistoriesResponse;
+import com.nhnacademy.bookstore.point.dto.response.GetSimplePointHistoriesResponse;
 import com.nhnacademy.bookstore.point.entity.PointHistory;
 import com.nhnacademy.bookstore.point.entity.PointType;
 import com.nhnacademy.bookstore.point.enums.PointTypeEnum;
@@ -33,7 +36,6 @@ public class PointServiceImpl implements PointService {
     private final MemberRepository memberRepository;
     private final OrderRepository orderRepository;
 
-    @Transactional
     @Override
     public void awardReviewPoint(Long customerId, Long orderDetailId) {
         Member member = memberRepository.findById(customerId)
@@ -59,7 +61,6 @@ public class PointServiceImpl implements PointService {
     // 어떤 주문인지 주문 정보를 찾고
     // 해당 주문에 대해서 구매 적립 포인트 추가
     // 추가 완료 return
-    @Transactional
     @Override
     public void awardOrderPoint(Long customerId, Long orderId) {
         Member member = memberRepository.findById(customerId)
@@ -82,7 +83,6 @@ public class PointServiceImpl implements PointService {
         member.addPoint(pointAmount);
     }
 
-    @Transactional
     @Override
     public void usePoint(PointUseRequest request) {
         Member member = memberRepository.findById(request.customerId())

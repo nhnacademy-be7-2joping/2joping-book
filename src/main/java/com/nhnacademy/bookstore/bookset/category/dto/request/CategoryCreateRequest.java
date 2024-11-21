@@ -3,7 +3,6 @@ package com.nhnacademy.bookstore.bookset.category.dto.request;
 import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 /**
  * 카테고리 생성 DTO
