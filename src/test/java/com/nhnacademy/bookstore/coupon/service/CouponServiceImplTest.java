@@ -1,7 +1,7 @@
 package com.nhnacademy.bookstore.coupon.service;
 
 
-import com.nhnacademy.bookstore.common.error.enums.RedirectType;
+import com.nhnacademy.bookstore.common.error.exception.coupon.CouponPolicyNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.coupon.DuplicateCouponNameException;
 import com.nhnacademy.bookstore.coupon.dto.request.CouponRequestDto;
 import com.nhnacademy.bookstore.coupon.dto.response.CouponResponseDto;
@@ -29,7 +29,6 @@ import static org.mockito.Mockito.verify;
 
 /**
  * CouponServiceImplTest
- *
  * 이 클래스는 CouponServiceImpl의 비즈니스 로직을 테스트하여 쿠폰 생성과 조회 기능을 검증합니다.
  *
  * @since 1.0
@@ -110,7 +109,7 @@ class CouponServiceImplTest {
 
         // then
         assertEquals(1, result.size());
-        assertEquals("Sample Coupon", result.get(0).name());
+        assertEquals("Sample Coupon", result.getFirst().name());
     }
 
     /**
@@ -127,5 +126,21 @@ class CouponServiceImplTest {
 
         // then
         assertTrue(result.isEmpty());
+    }
+    /**
+     * 쿠폰 생성 시 존재하지 않는 쿠폰 정책으로 인한 예외 발생 테스트
+     * 존재하지 않는 쿠폰 정책 ID로 요청 시 CouponPolicyNotFoundException이 발생하는지 확인합니다.
+     */
+
+    @Test
+    void createCoupon_CouponPolicyNotFoundException() {
+        // given
+        CouponRequestDto requestDto = new CouponRequestDto(999L, "New Coupon", LocalDate.now()); // 없는 정책 ID
+        when(couponRepository.existsByName(requestDto.name())).thenReturn(false);
+        when(couponPolicyRepository.findById(requestDto.couponPolicyId())).thenReturn(Optional.empty()); // 정책이 없음
+
+        // when & then
+        CouponPolicyNotFoundException exception = assertThrows(CouponPolicyNotFoundException.class, () -> couponService.create(requestDto));
+        assertEquals("존재하지 않는 쿠폰 정책입니다: 999", exception.getMessage());
     }
 }

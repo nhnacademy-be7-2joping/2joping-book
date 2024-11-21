@@ -39,8 +39,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-    private static final int INITIAL_PAGE_SIZE = 10;
-
     private final MemberRepository memberRepository;
     private final MemberStatusRepository statusRepository;
     private final MemberTierRepository tierRepository;
@@ -49,6 +47,7 @@ public class MemberServiceImpl implements MemberService {
     static final String MEMBER_EDIT_PROFILE_URL = "/mypage/edit-profile";
     /**
      * 신규 회원을 등록하는 메서드.
+     *
      * ID, 이메일, 전화번호 중복 여부를 검증하고, 기본 회원 상태 및 등급을 설정하여 저장합니다.
      *
      * @param memberDto 신규 회원 정보가 담긴 DTO

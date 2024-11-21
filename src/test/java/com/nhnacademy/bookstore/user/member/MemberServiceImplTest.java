@@ -2,7 +2,6 @@ package com.nhnacademy.bookstore.user.member;
 
 
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberDuplicateException;
-import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberNothingToUpdateException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberStatusNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.tier.MemberTierNotFoundException;
@@ -14,8 +13,8 @@ import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.member.service.impl.MemberServiceImpl;
-import com.nhnacademy.bookstore.user.memberStatus.entity.MemberStatus;
-import com.nhnacademy.bookstore.user.memberStatus.repository.MemberStatusRepository;
+import com.nhnacademy.bookstore.user.memberstatus.entity.MemberStatus;
+import com.nhnacademy.bookstore.user.memberstatus.repository.MemberStatusRepository;
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.enums.Tier;
 import com.nhnacademy.bookstore.user.tier.repository.MemberTierRepository;
@@ -70,7 +69,7 @@ class MemberServiceImplTest {
     void testRegisterNewMember_Success() {
         // Given
         MemberStatus defaultStatus = new MemberStatus(1L, "가입");
-        MemberTier defaultTier = new MemberTier(1L, Tier.골드, true, 1, 10000, 100000);
+        MemberTier defaultTier = new MemberTier(1L, Tier.GOLD, true, 1, 10000, 100000);
         when(memberRepository.existsByLoginId(memberCreateRequestDto.loginId())).thenReturn(false);
         when(memberRepository.existsByEmail(memberCreateRequestDto.email())).thenReturn(false);
         when(memberRepository.existsByPhone(memberCreateRequestDto.phone())).thenReturn(false);
@@ -396,7 +395,7 @@ class MemberServiceImplTest {
 
         // 추가 Mock 설정
         when(statusRepository.findById(1L)).thenReturn(Optional.of(new MemberStatus(1L, "가입")));
-        when(tierRepository.findById(1L)).thenReturn(Optional.of(new MemberTier(1L, Tier.골드, true, 1, 10000, 200000)));
+        when(tierRepository.findById(1L)).thenReturn(Optional.of(new MemberTier(1L, Tier.GOLD, true, 1, 10000, 200000)));
         when(memberRepository.save(any(Member.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
@@ -425,24 +424,5 @@ class MemberServiceImplTest {
         verify(memberRepository, never()).save(any(Member.class));
     }
 
-    @Test
-    void testRegisterNewMember_PhoneDoesNotExist() {
-        // Given
-        when(memberRepository.existsByLoginId(memberCreateRequestDto.loginId())).thenReturn(false);
-        when(memberRepository.existsByEmail(memberCreateRequestDto.email())).thenReturn(false);
-        when(memberRepository.existsByPhone(memberCreateRequestDto.phone())).thenReturn(false);
 
-        // Mock 설정
-        when(statusRepository.findById(1L)).thenReturn(Optional.of(new MemberStatus(1L, "가입")));
-        when(tierRepository.findById(1L)).thenReturn(Optional.of(new MemberTier(1L, Tier.골드, true, 1, 10000, 200000)));
-        when(memberRepository.save(any(Member.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        // When
-        MemberCreateSuccessResponseDto response = memberService.registerNewMember(memberCreateRequestDto);
-
-        // Then
-        assertNotNull(response);
-        assertEquals("nickname", response.getNickname());
-        verify(memberRepository).save(any(Member.class));
-    }
 }
