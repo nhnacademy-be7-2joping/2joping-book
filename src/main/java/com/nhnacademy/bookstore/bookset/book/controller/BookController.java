@@ -41,7 +41,7 @@ public class BookController {
             @ApiResponse(responseCode = "404", description = "리소스를 찾을 수 없음"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
     })
-    @PostMapping(value = "/books/register")
+    @PostMapping(value = "/admin/books/register")
     public ResponseEntity<BookCreateResponseDto> createBook(@RequestBody BookCreateRequestDto bookCreateRequestDto) {
         try {
             BookCreateResponseDto book = bookService.createBook(bookCreateRequestDto);
