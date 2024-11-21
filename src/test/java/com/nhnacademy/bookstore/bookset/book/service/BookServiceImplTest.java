@@ -1,6 +1,5 @@
 package com.nhnacademy.bookstore.bookset.book.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstore.bookset.book.dto.request.*;
 import com.nhnacademy.bookstore.bookset.book.dto.response.*;
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
@@ -85,10 +84,6 @@ class BookServiceImplTest {
     private ImageRepository imageRepository;
     @Mock
     private BookImageRepository bookImageRepository;
-    @Mock
-    private ObjectMapper objectMapper;
-    @Mock
-    private RestTemplate restTemplate;
 
     private BookSimpleResponseDto bookSimpleDto;
     private BookResponseDto bookResponseDto;
@@ -236,7 +231,7 @@ class BookServiceImplTest {
     }
 
     @Test
-    @DisplayName("도서 생성 - 기여자와 카테고리, 태그 포함")
+    @DisplayName("도서 생성 (기여자와 카테고리, 태그 포함)")
     void testCreateBook() {
         BookCreateHtmlRequestDto bookHtmlRequest = mock(BookCreateHtmlRequestDto.class);
         ImageUrlRequestDto imageUrlRequest = mock(ImageUrlRequestDto.class);

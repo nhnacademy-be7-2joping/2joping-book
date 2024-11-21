@@ -179,7 +179,7 @@ class BookControllerTest {
 
 
     @Test
-    @DisplayName("도서 수정 정보 조회 - 성공")
+    @DisplayName("도서 수정 정보 조회 성공")
     void testGetUpdateBookByBookIdSuccess() {
         BookUpdateResponseDto updateResponseDto = new BookUpdateResponseDto(
                 1L, "Publisher Name", "Book Title", "Book Description", LocalDate.of(2023, 10, 29),
@@ -196,7 +196,7 @@ class BookControllerTest {
     }
 
     @Test
-    @DisplayName("도서 수정 - 성공")
+    @DisplayName("도서 수정 성공")
     void testUpdateBookSuccess() {
         BookUpdateHtmlRequestDto htmlRequestDto = new BookUpdateHtmlRequestDto(
                 "Updated Book Title",
