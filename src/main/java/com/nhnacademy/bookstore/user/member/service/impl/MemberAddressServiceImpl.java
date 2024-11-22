@@ -7,7 +7,6 @@ import com.nhnacademy.bookstore.user.member.dto.request.MemberAddressRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberAddressResponseDto;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.entity.MemberAddress;
-import com.nhnacademy.bookstore.user.member.mapper.MemberAddressMapper;
 import com.nhnacademy.bookstore.user.member.repository.MemberAddressRepository;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.member.service.MemberAddressService;
@@ -15,12 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * MemberAddressServiceImpl
- *
  * 이 클래스는 회원의 주소 정보를 관리하는 서비스 구현체입니다.
  * 회원 주소 추가와 조회 기능을 제공하며, 주소 개수 제한과 기본 배송지 설정 등 특수한 로직을 처리합니다.
  *
@@ -33,6 +30,8 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 
     private final MemberRepository memberRepository;
     private final MemberAddressRepository memberAddressRepository ;
+    private static final String MEMBER_MYPAGE_ADDRESS_URL = "/mypage/address-list";
+
 
     /**
      * 회원의 주소를 추가하는 메서드입니다.
@@ -52,7 +51,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
                 .orElseThrow(() -> new MemberNotFoundException(
                         "멤버" + customerId + "를 찾을 수 없습니다.",
                         RedirectType.REDIRECT,
-                        "/members",
+                        MEMBER_MYPAGE_ADDRESS_URL,
                         memberAddressRequestDto)
                 );
 
@@ -62,7 +61,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
             throw new AddressLimitToTenException(
                     "주소는 10개까지 저장할 수 있습니다.",
                     RedirectType.REDIRECT,
-                    "/members",
+                    MEMBER_MYPAGE_ADDRESS_URL,
                     memberAddressRequestDto
             );
         }
@@ -84,11 +83,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         memberAddressRepository.save(address);
         //변경 후 주소 조회
 
-        List<MemberAddressResponseDto> memberAddresses = memberAddressRepository.findAddressesByMemberId(customerId);
-      
-
-        //주소 조회
-        return memberAddresses;
+        return memberAddressRepository.findAddressesByMemberId(customerId);
     }
 
     /**
@@ -103,16 +98,10 @@ public class MemberAddressServiceImpl implements MemberAddressService {
     @Transactional(readOnly = true)
     public List<MemberAddressResponseDto> getMemberAddresses(long customerId) {
 
-        Member member = memberRepository.findById(customerId)
-                .orElseThrow(() -> new MemberNotFoundException(
-                        "멤버" + customerId + "를 찾을 수 없습니다.",
-                        RedirectType.REDIRECT,
-                        "/member/addresses")
-                );
+        Member member = memberRepository.findById(customerId).orElseThrow(() -> new MemberNotFoundException(
+                "멤버" + customerId + "를 찾을 수 없습니다.", RedirectType.REDIRECT, "/member/addresses"));
 
-        List<MemberAddressResponseDto> memberAddresses = memberAddressRepository.findAddressesByMemberId(customerId);
-
-        return memberAddresses;
+        return memberAddressRepository.findAddressesByMemberId(member.getId());
     }
 
 

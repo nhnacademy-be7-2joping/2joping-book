@@ -13,7 +13,7 @@ import com.nhnacademy.bookstore.bookset.book.entity.BookCategory;
 import com.nhnacademy.bookstore.bookset.book.entity.BookContributor;
 import com.nhnacademy.bookstore.bookset.book.repository.BookCategoryRepository;
 import com.nhnacademy.bookstore.bookset.book.repository.BookContributorRepository;
-import com.nhnacademy.bookstore.bookset.category.dto.response.GetCategoryResponse;
+import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
 import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import com.nhnacademy.bookstore.bookset.category.repository.CategoryRepository;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
@@ -35,7 +35,7 @@ import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.Contr
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.publisher.PublisherNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.tag.TagNotFoundException;
-import com.nhnacademy.bookstore.common.error.exception.category.CategoryNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.category.CategoryNotFoundException;
 import com.nhnacademy.bookstore.imageset.entity.BookImage;
 import com.nhnacademy.bookstore.imageset.entity.Image;
 import com.nhnacademy.bookstore.imageset.repository.BookImageRepository;
@@ -51,8 +51,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import java.util.List;
 
 
 @Service
@@ -134,7 +132,7 @@ public class BookServiceImpl implements BookService {
             String categoryName = categories[i].trim();
 
             Category category = categoryRepository.findByName(categoryName)
-                    .orElseThrow(() -> new CategoryNotFoundException("존재하지 않는 카테고리: " + categoryName));
+                    .orElseThrow(() -> new CategoryNotFoundException());
 
             parentCategory = category;
         }
@@ -324,7 +322,7 @@ public class BookServiceImpl implements BookService {
                 category
         ));
 
-        GetCategoryResponse categoryResponseDto = new GetCategoryResponse(
+        CategoryResponseDto categoryResponseDto = new CategoryResponseDto(
                 category.getCategoryId(),
                 category.getName(),
                 category.getParentCategory() != null ? category.getParentCategory().getCategoryId() : null

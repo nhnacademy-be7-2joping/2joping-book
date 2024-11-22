@@ -9,7 +9,7 @@ import com.nhnacademy.bookstore.bookset.book.dto.response.BookTagResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateRequestDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookCreateResponseDto;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
-import com.nhnacademy.bookstore.bookset.category.dto.response.GetCategoryResponse;
+import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.tag.dto.TagResponseDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -87,7 +87,7 @@ class BookControllerTest {
                 true,
                 10,
                 List.of(new ContributorResponseDto(1L, 1L, "김지은")),
-                new GetCategoryResponse(1L, "경제경영", null),
+                new CategoryResponseDto(1L,"경제경영", null),
                 List.of(new TagResponseDto(1L, "재밌는"), new TagResponseDto(2L, "따뜻한")),
                 "thumbnail-url",
                 "detail-url"

@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
  * @since 1.0
  */
 @ExtendWith(MockitoExtension.class)
-public class MemberAddressServiceTest {
+class MemberAddressServiceTest {
 
     @InjectMocks
     private MemberAddressServiceImpl memberAddressService;

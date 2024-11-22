@@ -30,13 +30,16 @@ public class Category {
     @Column(nullable = false, length = 50, unique = true)
     private String name;
 
-    @Builder
-    private Category(
-            Category parentCategory,
-            String name
-    ) {
-        this.parentCategory = parentCategory;
-        this.name = name;
+    @Column
+    private Boolean isActive;
+
+    public void deactivate() {
+        this.isActive = false;
+        this.parentCategory = null;
+    }
+
+    public void activate() {
+        this.isActive = true;
     }
 
     public void updateName(String name) {
