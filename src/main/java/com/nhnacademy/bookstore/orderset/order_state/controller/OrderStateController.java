@@ -30,7 +30,6 @@ public class OrderStateController {
     public ResponseEntity<GetAllOrderStatesResponse> getAllOrderStates() {
         GetAllOrderStatesResponse responses = orderStateService.getAllOrderStates();
         return ResponseEntity.ok(responses);
-
     }
 
     @GetMapping("/{order-state-id}")
