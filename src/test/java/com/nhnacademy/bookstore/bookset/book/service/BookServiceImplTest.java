@@ -176,9 +176,9 @@ class BookServiceImplTest {
     void testGetLowestLevelCategory() {
         String categoryText = "국내도서 > 경제경영 > 트렌드/미래전망";
 
-        Category domesticBooksCategory = new Category(1L, null, "국내도서");
-        Category businessEconomyCategory = new Category(2L, domesticBooksCategory, "경제경영");
-        Category trendFutureCategory = new Category(3L, businessEconomyCategory, "트렌드/미래전망");
+        Category domesticBooksCategory = new Category(1L, null, "국내도서", true);
+        Category businessEconomyCategory = new Category(2L, domesticBooksCategory, "경제경영", true);
+        Category trendFutureCategory = new Category(3L, businessEconomyCategory, "트렌드/미래전망", true);
 
         when(categoryRepository.findByName("국내도서")).thenReturn(Optional.of(domesticBooksCategory));
         when(categoryRepository.findByName("경제경영")).thenReturn(Optional.of(businessEconomyCategory));
@@ -272,9 +272,9 @@ class BookServiceImplTest {
         String categoryText = "국내도서 > 소설 > 현대소설";
         when(bookHtmlRequest.category()).thenReturn(categoryText);
 
-        Category category1 = new Category(1L, null, "국내도서");
-        Category category2 = new Category(2L, category1, "소설");
-        Category category3 = new Category(3L, category2, "현대소설");
+        Category category1 = new Category(1L, null, "국내도서", true);
+        Category category2 = new Category(2L, category1, "소설", true);
+        Category category3 = new Category(3L, category2, "현대소설", true);
 
         when(categoryRepository.findByName("국내도서")).thenReturn(Optional.of(category1));
         when(categoryRepository.findByName("소설")).thenReturn(Optional.of(category2));
