@@ -88,9 +88,9 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "전체 카테고리 조회", description = "모든 카테고리를 조회합니다.")
+    @Operation(summary = "전체 카테고리 조회", description = "모든 활성화된 카테고리를 조회합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "전체 카테고리 조회 성공")
+            @ApiResponse(responseCode = "200", description = "활성 카테고리 조회 성공")
     })
     @GetMapping("/categories")
     public ResponseEntity<List<CategoryResponseDto>> getAllCategories() {
@@ -98,9 +98,9 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "전체 카테고리 조회", description = "모든 카테고리를 페이징 조회합니다.")
+    @Operation(summary = "전체 카테고리 조회(페이징)", description = "모든 활성화된 카테고리를 조회합니다.(페이징)")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "전체 카테고리 조회 성공")
+            @ApiResponse(responseCode = "200", description = "활성 카테고리 조회 성공")
     })
     @GetMapping("/categories/pages")
     public ResponseEntity<Page<CategoryResponseDto>> getAllCategories(
