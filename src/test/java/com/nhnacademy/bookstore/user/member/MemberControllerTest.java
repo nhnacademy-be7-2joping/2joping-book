@@ -3,12 +3,15 @@ package com.nhnacademy.bookstore.user.member;
 import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberDuplicateException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.user.member.MemberPasswordNotEqualException;
 import com.nhnacademy.bookstore.user.enums.Gender;
 import com.nhnacademy.bookstore.user.member.controller.MemberController;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberUpdateRequesteDto;
+import com.nhnacademy.bookstore.user.member.dto.request.MemberWithdrawRequesteDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.MemberWithdrawResponseDto;
 import com.nhnacademy.bookstore.user.member.service.MemberService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -174,5 +177,39 @@ import static org.mockito.Mockito.when;
 
         assertEquals("해당 멤버가 존재하지 않습니다.", exception.getMessage());
     }
+   @Test
+   void testWithdrawMember_Success() {
+      // given
+      String customerId = "84";
+      MemberWithdrawRequesteDto requestDto = new MemberWithdrawRequesteDto("CorrectPassword");
 
+      MemberWithdrawResponseDto responseDto = new MemberWithdrawResponseDto("루하");
+      when(memberService.withdrawMember(Long.parseLong(customerId), requestDto))
+              .thenReturn(responseDto);
+
+      // when
+      ResponseEntity<MemberWithdrawResponseDto> response = memberController.withdrawMember(customerId, requestDto);
+
+      // then
+      assertEquals(HttpStatus.OK, response.getStatusCode());
+      assertEquals(responseDto, response.getBody());
+   }
+
+   /**
+    * 테스트: 회원 탈퇴 요청 실패 - 비밀번호 불일치
+    * 예상 결과: MemberPasswordNotEqualException 발생
+    */
+   @Test
+   void testWithdrawMember_Failure_PasswordNotEqual() {
+      // given
+      String customerId = "84";
+      MemberWithdrawRequesteDto requestDto = new MemberWithdrawRequesteDto("WrongPassword");
+
+      doThrow(MemberPasswordNotEqualException.class)
+              .when(memberService).withdrawMember(Long.parseLong(customerId), requestDto);
+
+      // when & then
+      assertThrows(MemberPasswordNotEqualException.class,
+              () -> memberController.withdrawMember(customerId, requestDto));
+   }
 }
