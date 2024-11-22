@@ -128,7 +128,7 @@ class ReviewServiceImplTest {
     @Test
     @DisplayName("리뷰 단일 조회 테스트")
     void getReviews() {
-        when(reviewRepository.getReviewByreviewId(anyLong())).thenReturn(Optional.of(reviewResponseDto));
+        when(reviewRepository.getReviewByReviewId(anyLong())).thenReturn(Optional.of(reviewResponseDto));
 
         Optional<ReviewResponseDto> response = reviewService.getReviews(new ReviewRequestDto(1L));
 

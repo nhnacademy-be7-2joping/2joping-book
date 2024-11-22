@@ -2,10 +2,14 @@ package com.nhnacademy.bookstore.review.repository;
 
 import com.nhnacademy.bookstore.imageset.entity.QImage;
 import com.nhnacademy.bookstore.imageset.entity.QReviewImage;
+import com.nhnacademy.bookstore.orderset.order.entity.QOrder;
+import com.nhnacademy.bookstore.orderset.order_detail.entity.QOrderDetail;
 import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
 import com.nhnacademy.bookstore.review.entity.QReview;
 import com.nhnacademy.bookstore.review.entity.Review;
 
+import com.nhnacademy.bookstore.user.customer.entity.QCustomer;
+import com.nhnacademy.bookstore.user.member.entity.QMember;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 
@@ -27,6 +31,10 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
     private final QReview qReview = QReview.review;
     private final QReviewImage qReviewImage = QReviewImage.reviewImage;
     private final QImage qImage = QImage.image;
+    private final QOrderDetail qOrderDetail = QOrderDetail.orderDetail;
+    private final QOrder qOrder = QOrder.order;
+    private final QMember qMember = QMember.member;
+    private final QCustomer qCustomer = QCustomer.customer;
 
 
     @Override
@@ -88,7 +96,7 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
     }
 
     @Override
-    public Optional<ReviewResponseDto> getReviewByreviewId(Long reviewId) {
+    public Optional<ReviewResponseDto> getReviewByReviewId(Long reviewId) {
         Tuple reviewTuple = from(qReview)
                 .leftJoin(qReviewImage).on(qReview.reviewId.eq(qReviewImage.review.reviewId))
                 .leftJoin(qImage).on(qReviewImage.image.imageId.eq(qImage.imageId))
@@ -119,6 +127,7 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
 
         return Optional.of(reviewResponseDto);
     }
+
 }
 
 
