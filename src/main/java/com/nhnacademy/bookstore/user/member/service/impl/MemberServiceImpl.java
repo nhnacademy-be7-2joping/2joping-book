@@ -3,14 +3,17 @@ package com.nhnacademy.bookstore.user.member.service.impl;
 import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberDuplicateException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.user.member.MemberPasswordNotEqualException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberNothingToUpdateException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberStatusNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.tier.MemberTierNotFoundException;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberUpdateRequesteDto;
+import com.nhnacademy.bookstore.user.member.dto.request.MemberWithdrawRequesteDto;
 import com.nhnacademy.bookstore.user.member.dto.response.GetAllMembersResponse;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.MemberWithdrawResponseDto;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.member.service.MemberService;
@@ -47,6 +50,7 @@ public class MemberServiceImpl implements MemberService {
     private final PasswordEncoder passwordEncoder;
     static final String MEMBER_SIGNUP_URL = "/members";
     static final String MEMBER_EDIT_PROFILE_URL = "/mypage/edit-profile";
+    static final String MEMBER_WITHDRAW_URL = "/mypage/withdraw";
     /**
      * 신규 회원을 등록하는 메서드.
      *
@@ -93,8 +97,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new MemberStatusNotFoundException(
                         "기본 상태를 찾을 수 없습니다.",
                         RedirectType.REDIRECT,
-                        MEMBER_SIGNUP_URL,
-                        memberDto
+                        MEMBER_SIGNUP_URL
                 ));
 
         MemberTier defaultTier = tierRepository.findById(1L)
@@ -204,5 +207,24 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public MemberUpdateResponseDto getMemberInfo(long customerId) {
         return memberRepository.getMemberInfo(customerId);
+    }
+
+    @Transactional
+    @Override
+    public MemberWithdrawResponseDto withdrawMember(long customerId, MemberWithdrawRequesteDto memberDto) {
+
+        Member member = memberRepository.findById(customerId)
+                .orElseThrow(() -> new MemberNotFoundException("해당 멤버가 존재하지 않습니다." , RedirectType.REDIRECT, MEMBER_WITHDRAW_URL));
+
+        if (!passwordEncoder.matches(memberDto.password(), member.getPassword())) {
+            throw new MemberPasswordNotEqualException("비밀번호가 일치하지 않습니다.", RedirectType.REDIRECT, MEMBER_WITHDRAW_URL);
+        }
+
+        MemberStatus status = statusRepository.findById(3L)
+                .orElseThrow(() -> new MemberStatusNotFoundException("회원 상태가 존재하지 않습니다." , RedirectType.REDIRECT, MEMBER_WITHDRAW_URL));
+        member.withdrawStatus(status);
+
+
+        return new MemberWithdrawResponseDto(member.getName());
     }
 }

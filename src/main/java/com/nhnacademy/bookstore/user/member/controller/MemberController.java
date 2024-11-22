@@ -3,9 +3,11 @@ package com.nhnacademy.bookstore.user.member.controller;
 
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberUpdateRequesteDto;
+import com.nhnacademy.bookstore.user.member.dto.request.MemberWithdrawRequesteDto;
 import com.nhnacademy.bookstore.user.member.dto.response.GetAllMembersResponse;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.MemberWithdrawResponseDto;
 import com.nhnacademy.bookstore.user.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -63,7 +65,7 @@ public class MemberController {
             summary = "회원 정보 수정",
             description = "기존 회원의 정보를 업데이트합니다. 수정할 데이터는 JSON 형식으로 요청 본문에 포함되어야 합니다."
     )
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<MemberUpdateResponseDto> updateMember(
             @RequestHeader("X-Customer-Id") String customerId,
             @Valid @RequestBody MemberUpdateRequesteDto requestDto){
@@ -93,6 +95,17 @@ public class MemberController {
 
     }
 
+    @PutMapping("/withdraw")
+    public ResponseEntity<MemberWithdrawResponseDto> withdrawMember(
+            @RequestHeader("X-Customer-Id") String customerId,
+            @Valid @RequestBody MemberWithdrawRequesteDto requestDto){
+
+        MemberWithdrawResponseDto responseDto = memberService.withdrawMember(Long.parseLong(customerId), requestDto);
+
+        return ResponseEntity.ok(responseDto);
+
+    }
+
     @GetMapping("/detatils")
     public ResponseEntity<List<GetAllMembersResponse>> getAllMembers(
             @RequestParam(name = "page", defaultValue = "0") @PositiveOrZero final int page
@@ -100,5 +113,9 @@ public class MemberController {
         List<GetAllMembersResponse> responses = memberService.getAllMembers(page);
         return ResponseEntity.ok(responses);
     }
+
+
+
+
 
 }

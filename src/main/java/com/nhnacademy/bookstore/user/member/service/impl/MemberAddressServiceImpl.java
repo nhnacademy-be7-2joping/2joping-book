@@ -30,6 +30,8 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 
     private final MemberRepository memberRepository;
     private final MemberAddressRepository memberAddressRepository ;
+    private static final String MEMBER_MYPAGE_ADDRESS_URL = "/mypage/address-list";
+
 
     /**
      * 회원의 주소를 추가하는 메서드입니다.
@@ -49,7 +51,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
                 .orElseThrow(() -> new MemberNotFoundException(
                         "멤버" + customerId + "를 찾을 수 없습니다.",
                         RedirectType.REDIRECT,
-                        "/members",
+                        MEMBER_MYPAGE_ADDRESS_URL,
                         memberAddressRequestDto)
                 );
 
@@ -59,7 +61,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
             throw new AddressLimitToTenException(
                     "주소는 10개까지 저장할 수 있습니다.",
                     RedirectType.REDIRECT,
-                    "/members",
+                    MEMBER_MYPAGE_ADDRESS_URL,
                     memberAddressRequestDto
             );
         }
