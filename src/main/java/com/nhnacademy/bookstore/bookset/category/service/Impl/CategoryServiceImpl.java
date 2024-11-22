@@ -51,6 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.toCategoryResponseDto(savedCategory);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public CategoryResponseDto getCategory(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
@@ -58,6 +59,7 @@ public class CategoryServiceImpl implements CategoryService {
         return  categoryMapper.toCategoryResponseDto(category);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public CategoryResponseDto getParentCategory(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
@@ -68,6 +70,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.toCategoryResponseDto(category.getParentCategory());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public CategoryResponseDto getGrandparentCategory(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
@@ -79,6 +82,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.toCategoryResponseDto(parentCategory.getParentCategory());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<CategoryResponseDto> getChildCategories(Long categoryId) {
         List<Category> childCategories = categoryRepository.findAllByParentCategory_CategoryId(categoryId);
@@ -87,6 +91,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<CategoryResponseDto> getAllCategories() {
         List<Category> categoryList = categoryRepository.findAllByIsActiveTrue();
@@ -95,6 +100,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<CategoryResponseDto> getAllCategoriesPage(Pageable pageable) {
         return categoryRepository.findAllByIsActiveTrue(pageable)
