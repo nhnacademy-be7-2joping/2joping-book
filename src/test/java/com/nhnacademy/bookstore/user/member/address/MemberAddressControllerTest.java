@@ -51,7 +51,7 @@ class MemberAddressControllerTest {
         when(memberAddressService.addMemberAddress(memberId, requestDto)).thenReturn(Collections.singletonList(responseDto));
 
         // when
-        ResponseEntity<List<MemberAddressResponseDto>> response = memberAddressController.addMemberAddress(memberId, requestDto);
+        ResponseEntity<List<MemberAddressResponseDto>> response = memberAddressController.addMemberAddress(String.valueOf(memberId), requestDto);
 
         // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -92,6 +92,6 @@ class MemberAddressControllerTest {
                 .when(memberAddressService).addMemberAddress(memberId, requestDto);
 
         // when & then
-        assertThrows(AddressLimitToTenException.class, () -> memberAddressController.addMemberAddress(memberId, requestDto));
+        assertThrows(AddressLimitToTenException.class, () -> memberAddressController.addMemberAddress(String.valueOf(memberId), requestDto));
     }
 }
