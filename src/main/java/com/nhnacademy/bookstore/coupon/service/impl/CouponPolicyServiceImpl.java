@@ -77,7 +77,6 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
                         "/api/v1/coupon/policies"
                 ));
 
-        // TODO: 쿠폰 정책 업데이트 로직
         couponPolicy.updateName(request.name());
         couponPolicy.updateDiscountValue(request.discountValue());
         couponPolicy.updateUsageLimit(request.usageLimit());
