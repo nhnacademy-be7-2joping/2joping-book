@@ -63,7 +63,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(CategoryNotFoundException::new);
         if (category.getParentCategory() == null) {
-            return null;
+            throw new CategoryNotFoundException();
         }
         return categoryMapper.toCategoryResponseDto(category.getParentCategory());
     }
@@ -74,7 +74,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(CategoryNotFoundException::new);
         Category parentCategory = category.getParentCategory();
         if (parentCategory == null || parentCategory.getParentCategory() == null) {
-            return null;
+            throw new CategoryNotFoundException();
         }
         return categoryMapper.toCategoryResponseDto(parentCategory.getParentCategory());
     }
