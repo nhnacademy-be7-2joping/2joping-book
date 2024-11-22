@@ -45,6 +45,8 @@ public class CouponPolicy {
 
         private Boolean isActive;
 
+
+
         @Builder
         private CouponPolicy(
                 final String name,
@@ -64,5 +66,33 @@ public class CouponPolicy {
                 this.detail = detail;
                 this.maxDiscount = maxDiscount;
                 this.isActive = isActive;
+        }
+
+        public void updateName(String name) {
+                this.name = name;
+        }
+
+        public void updateDiscountType(DiscountType discountType) {
+                this.discountType = discountType;
+        }
+
+        public void updateDiscountValue(Integer discountValue) {
+                this.discountValue = discountValue;
+        }
+
+        public void updateUsageLimit(Integer usageLimit) {
+                this.usageLimit = usageLimit;
+        }
+
+        public void updateDuration(Integer duration) {
+                this.duration = duration;
+        }
+
+        public void updateDetail(String detail) {
+                this.detail = detail;
+        }
+
+        public void updateMaxDiscount(Integer maxDiscount) {
+                this.maxDiscount = maxDiscount;
         }
 }

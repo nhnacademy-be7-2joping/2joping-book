@@ -78,8 +78,14 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
                 ));
 
         // TODO: 쿠폰 정책 업데이트 로직
+        couponPolicy.updateName(request.name());
+        couponPolicy.updateDiscountValue(request.discountValue());
+        couponPolicy.updateUsageLimit(request.usageLimit());
+        couponPolicy.updateDuration(request.duration());
+        couponPolicy.updateDetail(request.detail());
+        couponPolicy.updateMaxDiscount(request.maxDiscount());
 
-        return null;
+        return couponPolicyRepository.save(couponPolicy).getCouponPolicyId();
     }
 
     @Override
