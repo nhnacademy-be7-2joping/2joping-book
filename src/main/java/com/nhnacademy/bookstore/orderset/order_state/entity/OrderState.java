@@ -8,10 +8,7 @@ package com.nhnacademy.bookstore.orderset.order_state.entity;
  */
 import com.nhnacademy.bookstore.orderset.order_state.entity.vo.OrderStateType;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
