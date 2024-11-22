@@ -7,6 +7,7 @@ import com.nhnacademy.bookstore.bookset.book.dto.response.BookTagResponseDto;
 import com.nhnacademy.bookstore.common.error.exception.bookset.book.BookNotFoundException;
 import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
 import com.nhnacademy.bookstore.bookset.book.service.impl.BookServiceImpl;
+import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,7 +65,7 @@ class BookServiceImplTest {
         bookResponseDto = new BookResponseDto(
                 1L, "Publisher 1", "Book Title 1", "Description", LocalDate.of(2023, 10, 29),
                 "1234567890123", 20000, 15000, true, true, 10, 0, 0,
-                contributors, List.of("Category 1", "Category 2"), List.of(new BookTagResponseDto(1L,"Tag 1")),"thumbnail1"
+                contributors, List.of("Category 1", "Category 2"), List.of(new BookTagResponseDto(1L,"Tag 1")),"thumbnail1",List.of(new ReviewResponseDto(1L,1L,1L,1L,5,"제목","내용","이미지", Timestamp.valueOf(LocalDateTime.now()),null))
         );
     }
 
