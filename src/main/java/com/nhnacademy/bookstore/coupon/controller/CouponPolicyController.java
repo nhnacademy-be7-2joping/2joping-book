@@ -36,6 +36,14 @@ public class CouponPolicyController {
         return ResponseEntity.created(URI.create("/" + couponPolicyId)).build();
     }
 
+    @GetMapping("/policies/{coupon-policy-id}")
+    public ResponseEntity<CouponPolicyResponseDto> getCouponPolicy(
+            @ValidPathVariable @PathVariable("coupon-policy-id") Long couponPolicyId
+    ) {
+        CouponPolicyResponseDto response = couponPolicyService.getCouponPolicy(couponPolicyId);
+        return ResponseEntity.ok(response);
+    }
+
     /**
      * 모든 쿠폰 정책 조회 엔드포인트
      * 저장된 모든 쿠폰 정책의 목록을 조회하여 반환합니다.

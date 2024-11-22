@@ -47,8 +47,14 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
     }
 
     @Override
-    public CouponPolicyResponseDto getCouponPolicy(CouponPolicyResponseDto request) {
-        return null;
+    public CouponPolicyResponseDto getCouponPolicy(Long couponPolicyId) {
+        CouponPolicy couponPolicy = couponPolicyRepository.findByCouponPolicyId(couponPolicyId)
+                .orElseThrow(() -> new CouponPolicyNotFoundException(
+                        "쿠폰 정책을 찾을 수 없습니다.",
+                        RedirectType.REDIRECT,
+                        "/api/v1/coupon/policies"
+                ));
+        return CouponPolicyResponseDto.from(couponPolicy);
     }
 
     /**

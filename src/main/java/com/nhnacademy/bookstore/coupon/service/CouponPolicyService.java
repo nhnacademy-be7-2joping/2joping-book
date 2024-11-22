@@ -18,7 +18,7 @@ import java.util.List;
 public interface CouponPolicyService {
 
     Long createCouponPolicy(CreateCouponPolicyRequest request);
-    CouponPolicyResponseDto getCouponPolicy(CouponPolicyResponseDto request);
+    CouponPolicyResponseDto getCouponPolicy(Long couponPolicyId);
     List<CouponPolicyResponseDto> getAllCouponPolicies();
     Long updateCouponPolicy(Long id, UpdateCouponPolicyRequest request);
     void deleteCouponPolicy(Long id);
