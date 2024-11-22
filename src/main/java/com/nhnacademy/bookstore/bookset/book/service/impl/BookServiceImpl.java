@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.bookset.book.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateHtmlRequestDto;
 import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateRequestDto;
@@ -189,32 +190,83 @@ public class BookServiceImpl implements BookService {
         return tagResponseDtos;
     }
 
+//    @Override
+//    public List<ContributorResponseDto> getContributorList(List<Map<String, String>> contributorList) {
+//        List<ContributorResponseDto> contributorDtos = new ArrayList<>();
+//
+//        for (Map<String, String> contributorMap : contributorList) {
+//            String name = contributorMap.get("name");
+//            String roleName = contributorMap.get("role");
+//
+//            if (name == null || roleName == null) {
+//                throw new IllegalArgumentException();
+//            }
+//
+//            ContributorRole role = contributorRoleRepository.findByName(roleName)
+//                    .orElseThrow(ContributorRoleNotFoundException::new);
+//
+//            Contributor contributor = contributorRepository.findByName(name)
+//                    .orElseGet(() -> {
+//                        Contributor newContributor = new Contributor(null, role, name, true);
+//                        return contributorRepository.save(newContributor);
+//                    });
+//
+//            contributorDtos.add(new ContributorResponseDto(
+//                    contributor.getContributorId(),
+//                    contributor.getContributorRole().getContributorRoleId(),
+//                    contributor.getName()
+//            ));
+//        }
+//
+//        return contributorDtos;
+//    }
+
     @Override
-    public List<ContributorResponseDto> getContributorList(List<Map<String, String>> contributorList) {
+    public List<ContributorResponseDto> getContributorList(String contributorListJson) {
         List<ContributorResponseDto> contributorDtos = new ArrayList<>();
 
-        for (Map<String, String> contributorMap : contributorList) {
-            String name = contributorMap.get("name");
-            String roleName = contributorMap.get("role");
+        // contributorListJson이 비어 있으면 바로 반환
+        if (contributorListJson == null || contributorListJson.isEmpty()) {
+            return contributorDtos;
+        }
 
-            if (name == null || roleName == null) {
-                throw new IllegalArgumentException();
+        try {
+            // JSON 문자열을 List<Map<String, String>>으로 변환
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<Map<String, String>> contributorList = objectMapper.readValue(contributorListJson, new TypeReference<>() {
+            });
+
+            // contributorList를 순회하며 처리
+            for (Map<String, String> contributorMap : contributorList) {
+                String name = contributorMap.get("name");
+                String roleName = contributorMap.get("role");
+
+                if (name == null || roleName == null) {
+                    throw new IllegalArgumentException("Contributor name or role is missing");
+                }
+
+                // ContributorRole을 찾거나, 없으면 예외 처리
+                ContributorRole role = contributorRoleRepository.findByName(roleName)
+                        .orElseThrow(() -> new ContributorRoleNotFoundException());
+
+                // Contributor를 찾거나 없으면 새로 생성하여 저장
+                Contributor contributor = contributorRepository.findByName(name)
+                        .orElseGet(() -> {
+                            Contributor newContributor = new Contributor(null, role, name, true);
+                            return contributorRepository.save(newContributor);
+                        });
+
+                // Contributor 정보를 DTO로 변환하여 목록에 추가
+                contributorDtos.add(new ContributorResponseDto(
+                        contributor.getContributorId(),
+                        contributor.getContributorRole().getContributorRoleId(),
+                        contributor.getName()
+                ));
             }
-
-            ContributorRole role = contributorRoleRepository.findByName(roleName)
-                    .orElseThrow(ContributorRoleNotFoundException::new);
-
-            Contributor contributor = contributorRepository.findByName(name)
-                    .orElseGet(() -> {
-                        Contributor newContributor = new Contributor(null, role, name, true);
-                        return contributorRepository.save(newContributor);
-                    });
-
-            contributorDtos.add(new ContributorResponseDto(
-                    contributor.getContributorId(),
-                    contributor.getContributorRole().getContributorRoleId(),
-                    contributor.getName()
-            ));
+        } catch (Exception ex) {
+            // JSON 변환 중 발생한 예외 처리
+            ex.printStackTrace();
+            throw new RuntimeException("Error processing contributor list JSON");
         }
 
         return contributorDtos;
@@ -264,7 +316,7 @@ public class BookServiceImpl implements BookService {
                     contributor
             ));
         });
-
+//        List<ContributorResponseDto> contributorResponseDtos = List.of();
         Category category = getLowestLevelCategory(bookCreateHtmlRequestDto.category());
         bookCategoryRepository.save(new BookCategory(
                 new BookCategory.BookCategoryId(book.getBookId(), category.getCategoryId()),

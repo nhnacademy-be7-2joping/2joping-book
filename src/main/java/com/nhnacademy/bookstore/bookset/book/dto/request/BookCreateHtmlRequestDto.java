@@ -15,8 +15,8 @@ public record BookCreateHtmlRequestDto(
         boolean giftWrappable,
         boolean isActive,
         int remainQuantity,
-        // String contributorList,
-        List<Map<String, String>> contributorList,
+        String contributorList,
+        // List<Map<String, String>> contributorList,
         String category,
         List<String> tagList
 ) {}
