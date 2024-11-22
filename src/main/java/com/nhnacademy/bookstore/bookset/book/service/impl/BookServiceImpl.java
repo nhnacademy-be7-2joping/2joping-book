@@ -47,6 +47,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -78,7 +79,7 @@ public class BookServiceImpl implements BookService {
      * @return 기여자 리스트 객체 (ContributorResponseDto)
      */
     @Override
-    public List<ContributorResponseDto> getContributorList(String text) {
+    public List<ContributorResponseDto> getContributorListForAPI(String text) {
         String pattern = "([\\p{L}\\w\\s,]+) \\(([^)]+)\\)";
         Pattern regex = Pattern.compile(pattern);
         Matcher matcher = regex.matcher(text);
@@ -139,18 +140,38 @@ public class BookServiceImpl implements BookService {
         return parentCategory;
     }
 
-    /**
-     * 텍스트를 파싱하여 도서와 태그를 연관짓는 메서드
-     *
-     * @param book 태그를 연관시킬 도서 객체
-     * @param text 태그 목록 텍스트 (쉼표로 구분된 태그들)
-     * @return 태그 리스트 객체 (TagResponseDto)
-     */
-    public List<TagResponseDto> associateBookWithTag(Book book, String text) {
-        List<TagResponseDto> tagResponseDtos = new ArrayList<>();
-        String[] splitTags = text.split(",");
+//    /**
+//     * 텍스트를 파싱하여 도서와 태그를 연관짓는 메서드
+//     *
+//     * @param book 태그를 연관시킬 도서 객체
+//     * @param text 태그 목록 텍스트 (쉼표로 구분된 태그들)
+//     * @return 태그 리스트 객체 (TagResponseDto)
+//     */
+//    public List<TagResponseDto> associateBookWithTag(Book book, String text) {
+//        List<TagResponseDto> tagResponseDtos = new ArrayList<>();
+//        String[] splitTags = text.split(",");
+//
+//        for (String inputTag : splitTags) {
+//            String tagName = inputTag.trim();
+//            Tag tag = tagRepository.findByName(tagName)
+//                    .orElseThrow(TagNotFoundException::new);
+//
+//            BookTag bookTag = new BookTag(
+//                    new BookTag.BookTagId(book.getBookId(), tag.getTagId()),
+//                    book,
+//                    tag
+//            );
+//            bookTagRepository.save(bookTag);
+//
+//            tagResponseDtos.add(new TagResponseDto(tag.getTagId(), tag.getName()));
+//        }
+//
+//        return tagResponseDtos;
+//    }
 
-        for (String inputTag : splitTags) {
+    public List<TagResponseDto> associateBookWithTag(Book book, List<String> tagList) {
+        List<TagResponseDto> tagResponseDtos = new ArrayList<>();
+        for (String inputTag : tagList) {
             String tagName = inputTag.trim();
             Tag tag = tagRepository.findByName(tagName)
                     .orElseThrow(TagNotFoundException::new);
@@ -166,6 +187,37 @@ public class BookServiceImpl implements BookService {
         }
 
         return tagResponseDtos;
+    }
+
+    @Override
+    public List<ContributorResponseDto> getContributorList(List<Map<String, String>> contributorList) {
+        List<ContributorResponseDto> contributorDtos = new ArrayList<>();
+
+        for (Map<String, String> contributorMap : contributorList) {
+            String name = contributorMap.get("name");
+            String roleName = contributorMap.get("role");
+
+            if (name == null || roleName == null) {
+                throw new IllegalArgumentException();
+            }
+
+            ContributorRole role = contributorRoleRepository.findByName(roleName)
+                    .orElseThrow(ContributorRoleNotFoundException::new);
+
+            Contributor contributor = contributorRepository.findByName(name)
+                    .orElseGet(() -> {
+                        Contributor newContributor = new Contributor(null, role, name, true);
+                        return contributorRepository.save(newContributor);
+                    });
+
+            contributorDtos.add(new ContributorResponseDto(
+                    contributor.getContributorId(),
+                    contributor.getContributorRole().getContributorRoleId(),
+                    contributor.getName()
+            ));
+        }
+
+        return contributorDtos;
     }
 
     /**
@@ -201,6 +253,7 @@ public class BookServiceImpl implements BookService {
         bookRepository.save(book);
 
         List<ContributorResponseDto> contributorResponseDtos = getContributorList(bookCreateHtmlRequestDto.contributorList());
+
         contributorResponseDtos.forEach(dto -> {
             Contributor contributor = contributorRepository.findById(dto.contributorId())
                     .orElseThrow(ContributorNotFoundException::new);

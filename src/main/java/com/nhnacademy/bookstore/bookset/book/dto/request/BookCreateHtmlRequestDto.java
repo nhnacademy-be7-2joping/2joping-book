@@ -1,6 +1,8 @@
 package com.nhnacademy.bookstore.bookset.book.dto.request;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 public record BookCreateHtmlRequestDto(
         String title,
@@ -13,7 +15,8 @@ public record BookCreateHtmlRequestDto(
         boolean giftWrappable,
         boolean isActive,
         int remainQuantity,
-        String contributorList,
+        // String contributorList,
+        List<Map<String, String>> contributorList,
         String category,
-        String tagList
+        List<String> tagList
 ) {}

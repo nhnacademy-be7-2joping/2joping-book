@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 
 public interface BookService {
@@ -22,8 +23,9 @@ public interface BookService {
     BookResponseDto getBookById(Long bookId);
     Page<BookSimpleResponseDto> getBooksByCategoryId(Pageable pageable, Long categoryId);
     Page<BookSimpleResponseDto> getBooksByContributorId(Pageable pageable, Long contributorId);
-    List<ContributorResponseDto> getContributorList(String text);
+    List<ContributorResponseDto> getContributorListForAPI(String text);
+    List<ContributorResponseDto> getContributorList(List<Map<String, String>> contributorList);
     Category getLowestLevelCategory(String categoryText);
-    List<TagResponseDto> associateBookWithTag(Book book, String text);
+    // List<TagResponseDto> associateBookWithTag(Book book, String text);
 
 }
