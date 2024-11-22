@@ -24,8 +24,6 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class OrderStateService {
 
-    private static final int INITIAL_PAGE_SIZE = 10;
-
     private final OrderStateRepository orderStateRepository;
     private final OrderRepository orderRepository;
 
