@@ -1,11 +1,9 @@
 package com.nhnacademy.bookstore.bookset.category.service;
 
-import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryCreateRequest;
-import com.nhnacademy.bookstore.bookset.category.dto.request.UpdateCategoryRequest;
-import com.nhnacademy.bookstore.bookset.category.dto.response.GetAllCategoriesResponse;
-import com.nhnacademy.bookstore.bookset.category.dto.response.GetCategoryResponse;
-import com.nhnacademy.bookstore.bookset.category.dto.response.GetParentCategoryResponse;
-import com.nhnacademy.bookstore.bookset.category.dto.response.UpdateCategoryResponse;
+import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryRequestDto;
+import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,11 +16,23 @@ import java.util.List;
  */
 @Service
 public interface CategoryService {
+    CategoryResponseDto createCategory(CategoryRequestDto request);
 
-    Long createCategory(CategoryCreateRequest request);
-    GetCategoryResponse getCategory(Long categoryId);
-    GetParentCategoryResponse getParentCategory(Long categoryId);
-    List<GetAllCategoriesResponse> getAllCategories();
-    UpdateCategoryResponse updateCategory(Long categoryId, UpdateCategoryRequest request);
-    Long deleteCategory(Long categoryId);
+    CategoryResponseDto getCategory(Long categoryId);
+
+    CategoryResponseDto getParentCategory(Long categoryId);
+
+    CategoryResponseDto getGrandparentCategory(Long categoryId);
+
+    List<CategoryResponseDto> getChildCategories(Long categoryId);
+
+    List<CategoryResponseDto> getAllCategories();
+
+    Page<CategoryResponseDto> getAllCategoriesPage(Pageable pageable);
+
+    CategoryResponseDto updateCategory(Long categoryId, CategoryRequestDto request);
+
+    Long deactivateCategory(Long categoryId);
+
+    Long activateCategory(Long categoryId);
 }

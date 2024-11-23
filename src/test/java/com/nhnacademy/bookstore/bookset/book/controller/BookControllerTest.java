@@ -1,10 +1,17 @@
 package com.nhnacademy.bookstore.bookset.book.controller;
 
+import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateHtmlRequestDto;
+import com.nhnacademy.bookstore.bookset.book.dto.request.ImageUrlRequestDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookTagResponseDto;
+import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateRequestDto;
+import com.nhnacademy.bookstore.bookset.book.dto.response.BookCreateResponseDto;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
+import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
+import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
+import com.nhnacademy.bookstore.bookset.tag.dto.TagResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,10 +44,54 @@ class BookControllerTest {
     private BookSimpleResponseDto bookSimpleDto;
     private BookResponseDto bookResponseDto;
     private Page<BookSimpleResponseDto> bookPage;
+    private BookCreateRequestDto bookCreateRequestDto;
+    private BookCreateResponseDto bookCreateResponseDto;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        BookCreateHtmlRequestDto bookHtmlDto = new BookCreateHtmlRequestDto(
+                "Book Title",
+                "Description",
+                "Publisher Name",
+                LocalDate.of(2023, 10, 29),
+                "1234567890123",
+                20000,
+                15000,
+                true,
+                true,
+                10,
+                "김지은 (지은이)",
+                "국내도서 > 경제경영",
+                "재밌는, 따뜻한"
+        );
+
+        ImageUrlRequestDto imageUrlDto = new ImageUrlRequestDto(
+                "thumbnail-url",
+                "detail-url"
+        );
+
+        bookCreateRequestDto = new BookCreateRequestDto(bookHtmlDto, imageUrlDto);
+
+        bookCreateResponseDto = new BookCreateResponseDto(
+                1L,
+                "Book Title",
+                "Description",
+                "Publisher Name",
+                LocalDate.of(2023, 10, 29),
+                "1234567890123",
+                20000,
+                15000,
+                true,
+                true,
+                10,
+                List.of(new ContributorResponseDto(1L, 1L, "김지은")),
+                new CategoryResponseDto(1L,"경제경영", null),
+                List.of(new TagResponseDto(1L, "재밌는"), new TagResponseDto(2L, "따뜻한")),
+                "thumbnail-url",
+                "detail-url"
+        );
 
         // BookContributorResponseDto 리스트 생성
         List<BookContributorResponseDto> contributors = List.of(
@@ -60,6 +111,28 @@ class BookControllerTest {
                 "1234567890123", 20000, 15000, true, true, 10, 0, 0,
                 contributors, List.of("Category 1", "Category 2"), List.of(new BookTagResponseDto(1L,"Tag 1")),"thumbnail1"
         );
+    }
+
+    @Test
+    @DisplayName("도서 생성 성공")
+    void testCreateBookSuccess() {
+        when(bookService.createBook(any(BookCreateRequestDto.class))).thenReturn(bookCreateResponseDto);
+
+        ResponseEntity<BookCreateResponseDto> response = bookController.createBook(bookCreateRequestDto);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(bookCreateResponseDto, response.getBody());
+    }
+
+    @Test
+    @DisplayName("도서 생성 실패 - 내부 서버 오류")
+    void testCreateBookInternalServerError() {
+        when(bookService.createBook(any(BookCreateRequestDto.class))).thenThrow(new RuntimeException("Internal Server Error"));
+
+        ResponseEntity<BookCreateResponseDto> response = bookController.createBook(bookCreateRequestDto);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(null, response.getBody());
     }
 
     @Test

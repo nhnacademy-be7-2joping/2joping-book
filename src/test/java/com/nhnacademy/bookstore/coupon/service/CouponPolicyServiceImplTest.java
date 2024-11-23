@@ -18,7 +18,6 @@ import static org.mockito.Mockito.when;
 
 /**
  * CouponPolicyServiceImplTest
- *
  * 이 클래스는 CouponPolicyServiceImpl의 비즈니스 로직을 테스트하여
  * 활성화된 쿠폰 정책 조회 기능의 동작을 검증합니다.
  *
@@ -56,8 +55,8 @@ class CouponPolicyServiceImplTest {
 
         // then
         assertEquals(1, result.size());
-        assertEquals("Discount Policy", result.get(0).name());
-        assertEquals("PERCENTAGE", result.get(0).discountType());
+        assertEquals("Discount Policy", result.getFirst().name());
+        assertEquals("PERCENTAGE", result.getFirst().discountType());
     }
 
     /**
