@@ -33,7 +33,7 @@ public class Contributor {
     private String name;
 
     @Column
-    private Boolean isActive = true;
+    private Boolean isActive;
 
     public void deactivate() {
         this.isActive = false;
