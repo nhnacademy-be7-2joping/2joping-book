@@ -113,6 +113,3 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.OK).body(bookId);
     }
 }
-
-
-
