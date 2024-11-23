@@ -24,9 +24,7 @@ public interface BookService {
     Page<BookSimpleResponseDto> getBooksByCategoryId(Pageable pageable, Long categoryId);
     Page<BookSimpleResponseDto> getBooksByContributorId(Pageable pageable, Long contributorId);
     List<ContributorResponseDto> getContributorListForAPI(String text);
-//    List<ContributorResponseDto> getContributorList(List<Map<String, String>> contributorList);
     Category getLowestLevelCategory(String categoryText);
     List<ContributorResponseDto> getContributorList(String contributorListJson);
     // List<TagResponseDto> associateBookWithTag(Book book, String text);
-
 }
