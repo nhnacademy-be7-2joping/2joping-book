@@ -270,6 +270,22 @@ public class BookServiceImpl implements BookService {
         return contributorDtos;
     }
 
+    public Category getCategoryHierarchy(Long topCategoryId, Long middleCategoryId, Long bottomCategoryId) {
+        if (bottomCategoryId != null) {
+            return categoryRepository.findById(bottomCategoryId)
+                    .orElseThrow(CategoryNotFoundException::new);
+        }
+        if (middleCategoryId != null) {
+            return categoryRepository.findById(middleCategoryId)
+                    .orElseThrow(CategoryNotFoundException::new);
+        }
+        if (topCategoryId != null) {
+            return categoryRepository.findById(topCategoryId)
+                    .orElseThrow(CategoryNotFoundException::new);
+        }
+        throw new IllegalArgumentException("At least one category must be selected.");
+    }
+
     /**
      * 도서를 단독으로 등록하는 메서드
      *
@@ -315,7 +331,14 @@ public class BookServiceImpl implements BookService {
             ));
         });
 //        List<ContributorResponseDto> contributorResponseDtos = List.of();
-        Category category = getLowestLevelCategory(bookCreateHtmlRequestDto.category());
+
+        Category category = getCategoryHierarchy(
+                bookCreateRequestDto.bookCreateHtmlRequestDto().topCategoryId(),
+                bookCreateRequestDto.bookCreateHtmlRequestDto().middleCategoryId(),
+                bookCreateRequestDto.bookCreateHtmlRequestDto().bottomCategoryId()
+        );
+
+        // Category category = getLowestLevelCategory(bookCreateHtmlRequestDto.category());
         bookCategoryRepository.save(new BookCategory(
                 new BookCategory.BookCategoryId(book.getBookId(), category.getCategoryId()),
                 book,
