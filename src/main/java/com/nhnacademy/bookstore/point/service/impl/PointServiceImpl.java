@@ -55,12 +55,6 @@ public class PointServiceImpl implements PointService {
         createPointHistory(reviewPointType, orderDetailId, null, customerId, pointAmount);
     }
 
-    // TODO: 결제 시 적립 포인트 관련 메서드
-    // 멤버가 주문 완료했을 때
-    // 어떤 멤버인지 멤버 정보를 찾고
-    // 어떤 주문인지 주문 정보를 찾고
-    // 해당 주문에 대해서 구매 적립 포인트 추가
-    // 추가 완료 return
     @Override
     public void awardOrderPoint(Long customerId, Long orderId) {
         Member member = memberRepository.findById(customerId)
@@ -73,9 +67,6 @@ public class PointServiceImpl implements PointService {
         MemberTier memberTier = member.getTier();
         Tier tierName = memberTier.getName();
 
-        // 주문 정보를 통해서 총 가격 구하기
-        // 해당 주문 정보에 대한 가격으로 구매 적립 포인트 추가
-        // 순수금액 = 주문금액 - (쿠폰 + 배송비 + 취소금액 + 포장비)
         Order order = orderRepository.findByOrderId(orderId);
 
         int pointAmount = getPointAmount(order, String.valueOf(tierName), member);
@@ -92,7 +83,6 @@ public class PointServiceImpl implements PointService {
                         null
                 ));
 
-        // TODO: 주문 시에 포인트 사용할 경우 포인트 사용 요청에 담겨 들어온 포인트 양만큼 멤버 포인트 삭제
         member.usePoint(request.pointAmount());
 
         PointType usePointType = pointTypeRepository.findByNameAndIsActiveTrue("포인트사용")
