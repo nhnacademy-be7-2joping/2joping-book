@@ -63,4 +63,7 @@ public class Book {
     @Column(nullable = false, columnDefinition = "INT default 0")
     private int likes;
 
+    public void deactivate() {
+        this.isActive = false;
+    }
 }

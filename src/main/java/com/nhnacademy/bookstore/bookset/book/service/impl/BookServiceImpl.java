@@ -31,6 +31,7 @@ import com.nhnacademy.bookstore.bookset.tag.repository.TagRepository;
 import com.nhnacademy.bookstore.common.error.exception.bookset.book.BookNotFoundException;
 import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
+import com.nhnacademy.bookstore.common.error.exception.bookset.category.CannotDeactivateCategoryException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.publisher.PublisherNotFoundException;
@@ -44,6 +45,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -439,5 +441,15 @@ public class BookServiceImpl implements BookService {
 //        return List.of();
 //    }
 
-
+    /**
+     * 특정 도서를 비활성화하는 메서드
+     * @param bookId
+     */
+    @Transactional
+    @Override
+    public void deactivateBook(Long bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException("도서를 찾을 수 없습니다."));
+        book.deactivate();
+    }
 }
