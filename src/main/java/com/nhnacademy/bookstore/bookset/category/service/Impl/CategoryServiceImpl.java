@@ -1,20 +1,23 @@
 package com.nhnacademy.bookstore.bookset.category.service.Impl;
 
-import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryCreateRequest;
-import com.nhnacademy.bookstore.bookset.category.dto.request.UpdateCategoryRequest;
-import com.nhnacademy.bookstore.bookset.category.dto.response.GetAllCategoriesResponse;
-import com.nhnacademy.bookstore.bookset.category.dto.response.GetCategoryResponse;
-import com.nhnacademy.bookstore.bookset.category.dto.response.GetParentCategoryResponse;
-import com.nhnacademy.bookstore.bookset.category.dto.response.UpdateCategoryResponse;
+import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryRequestDto;
+import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
 import com.nhnacademy.bookstore.bookset.category.entity.Category;
+import com.nhnacademy.bookstore.bookset.category.mapper.CategoryMapper;
 import com.nhnacademy.bookstore.bookset.category.repository.CategoryRepository;
 import com.nhnacademy.bookstore.bookset.category.service.CategoryService;
-import com.nhnacademy.bookstore.common.error.exception.category.CategoryNotFoundException;
-import jakarta.transaction.Transactional;
+import com.nhnacademy.bookstore.common.error.exception.bookset.category.CannotDeactivateCategoryException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.category.CategoryNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.category.DuplicateCategoryNameException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 카테고리 서비스 구현 클래스
@@ -23,122 +26,132 @@ import java.util.List;
  * @date : 2024-11-07
  */
 @Service
-@Transactional
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private static final int MAX_DEPTH = 3;
+    private final CategoryMapper categoryMapper;
 
-    /**
-     * 카테고리 생성 메서드
-     * @param request
-     * @return 생성한 카테고리의 ID
-     */
+    @Transactional
     @Override
-    public Long createCategory(CategoryCreateRequest request) {
+    public CategoryResponseDto createCategory(CategoryRequestDto request) {
+        // 중복 이름 확인
+        categoryRepository.findByName(request.categoryName()).ifPresent(existing -> {
+            throw new DuplicateCategoryNameException();
+        });
+
         Category parentCategory = null;
-        if (request.parentCategory() != null) {
-            parentCategory = categoryRepository.findByCategoryId(request.parentCategory().getCategoryId())
-                    .orElse(null);
-        }
-
-        Category category = Category.builder()
-                .parentCategory(parentCategory)
-                .name(request.categoryName())
-                .build();
-
-        return categoryRepository.save(category).getCategoryId();
-    }
-
-    /**
-     * 카테고리 조회 메서드
-     * @param categoryId
-     * @return 조회한 단일 카테고리 DTO
-     */
-    @Override
-    public GetCategoryResponse getCategory(Long categoryId) {
-        Category category = categoryRepository.findByCategoryId(categoryId)
-                .orElseThrow(CategoryNotFoundException::new);
-
-        return GetCategoryResponse.from(category);
-    }
-
-    @Override
-    public GetParentCategoryResponse getParentCategory(Long categoryId) {
-        Category childCategory = categoryRepository.findByCategoryId(categoryId)
-                .orElseThrow(CategoryNotFoundException::new);
-
-        return GetParentCategoryResponse.from(childCategory);
-    }
-
-    // TODO: 모든 부모 카테고리 반환할 수 있도록 구현
-    public List<Category> getAllParentCategories() {
-        return null;
-    }
-
-    @Override
-    public List<GetAllCategoriesResponse> getAllCategories() {
-        return categoryRepository.findAllByOrderByCategoryId().stream()
-                .map(GetAllCategoriesResponse::from)
-                .toList();
-    }
-
-    /**
-     * 카테고리 수정 메서드
-     * @param categoryId, request
-     * @return 수정한 카테고리 DTO 객체
-     */
-    @Override
-    public UpdateCategoryResponse updateCategory(Long categoryId, UpdateCategoryRequest request) {
-        Category category = categoryRepository.findByCategoryId(categoryId)
-                .orElseThrow(CategoryNotFoundException::new);
-
-        if (request.parentCategory() != null) {
-            validateCategoryDepth(request.parentCategory());
-            Category newParent = categoryRepository.findByCategoryId(request.parentCategory().getCategoryId())
+        if (request.parentCategoryId() != null) {
+            parentCategory = categoryRepository.findById(request.parentCategoryId())
                     .orElseThrow(CategoryNotFoundException::new);
-            category.updateParentCategory(newParent);
         }
-
-        if (request.categoryName() != null) {
-            category.updateName(request.categoryName());
-        }
-
-        return UpdateCategoryResponse.from(category);
+        Category category = new Category(null, parentCategory, request.categoryName(), true);
+        Category savedCategory = categoryRepository.save(category);
+        return categoryMapper.toCategoryResponseDto(savedCategory);
     }
 
-    /**
-     * 카테고리 삭제 메서드
-     * @param categoryId
-     * @return 삭제한 카테고리의 ID
-     */
+    @Transactional(readOnly = true)
     @Override
-    public Long deleteCategory(Long categoryId) {
-        Category category = categoryRepository.findByCategoryId(categoryId)
+    public CategoryResponseDto getCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(CategoryNotFoundException::new);
+        return  categoryMapper.toCategoryResponseDto(category);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public CategoryResponseDto getParentCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(CategoryNotFoundException::new);
+        if (category.getParentCategory() == null) {
+            throw new CategoryNotFoundException();
+        }
+        return categoryMapper.toCategoryResponseDto(category.getParentCategory());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public CategoryResponseDto getGrandparentCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(CategoryNotFoundException::new);
+        Category parentCategory = category.getParentCategory();
+        if (parentCategory == null || parentCategory.getParentCategory() == null) {
+            throw new CategoryNotFoundException();
+        }
+        return categoryMapper.toCategoryResponseDto(parentCategory.getParentCategory());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<CategoryResponseDto> getChildCategories(Long categoryId) {
+        List<Category> childCategories = categoryRepository.findAllByParentCategory_CategoryId(categoryId);
+        return childCategories.stream()
+                .map(categoryMapper::toCategoryResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<CategoryResponseDto> getAllCategories() {
+        List<Category> categoryList = categoryRepository.findAllByIsActiveTrue();
+        return categoryList.stream()
+                .map(categoryMapper::toCategoryResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<CategoryResponseDto> getAllCategoriesPage(Pageable pageable) {
+        return categoryRepository.findAllByIsActiveTrue(pageable)
+                .map(categoryMapper::toCategoryResponseDto);
+    }
+
+    @Transactional
+    @Override
+    public CategoryResponseDto updateCategory(Long categoryId, CategoryRequestDto request) {
+        Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(CategoryNotFoundException::new);
 
-        if (categoryRepository.findByParentCategory(category).isPresent()) {
-            throw new IllegalStateException("하위 카테고리가 있는 카테고리는 삭제할 수 없습니다.");
+        // 이름 중복 확인 (현재 카테고리를 제외하고)
+        categoryRepository.findByName(request.categoryName()).ifPresent(existing -> {
+            if (!existing.getCategoryId().equals(categoryId)) {
+                throw new DuplicateCategoryNameException();
+            }
+        });
+
+        Category parentCategory = null;
+        if (request.parentCategoryId() != null) {
+            parentCategory = categoryRepository.findById(request.parentCategoryId())
+                    .orElseThrow(CategoryNotFoundException::new);
+        }
+        category.updateName(request.categoryName());
+        category.updateParentCategory(parentCategory);
+        return categoryMapper.toCategoryResponseDto(category);
+    }
+
+    @Transactional
+    @Override
+    public Long deactivateCategory(Long categoryId) {
+
+        // 하위 카테고리가 있는지 확인
+        boolean hasChildCategories = categoryRepository.existsByParentCategory_CategoryId(categoryId);
+        if (hasChildCategories) {
+            throw new CannotDeactivateCategoryException();
         }
 
-        categoryRepository.delete(category);
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(CategoryNotFoundException::new);
+        category.deactivate();
         return category.getCategoryId();
     }
 
-    private void validateCategoryDepth(Category parent) {
-        if (parent == null) {
-            return;
-        }
-
-        int depth = 1;
-        Category current = parent;
-        while (current.getParentCategory() != null) {
-            depth++;
-            if (depth >= MAX_DEPTH) {
-                throw new IllegalStateException("카테고리 깊이는 " + MAX_DEPTH + "를 초과할 수 없습니다.");
-            }
-            current = current.getParentCategory();
-        }
+    @Transactional
+    @Override
+    public Long activateCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(CategoryNotFoundException::new);
+        category.activate();
+        return category.getCategoryId();
     }
 }

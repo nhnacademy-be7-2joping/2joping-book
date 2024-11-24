@@ -3,19 +3,22 @@ package com.nhnacademy.bookstore.user.member;
 
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberDuplicateException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.user.member.MemberPasswordNotEqualException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberNothingToUpdateException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberStatusNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.tier.MemberTierNotFoundException;
 import com.nhnacademy.bookstore.user.enums.Gender;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberUpdateRequesteDto;
+import com.nhnacademy.bookstore.user.member.dto.request.MemberWithdrawRequesteDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.MemberWithdrawResponseDto;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.member.service.impl.MemberServiceImpl;
-import com.nhnacademy.bookstore.user.memberStatus.entity.MemberStatus;
-import com.nhnacademy.bookstore.user.memberStatus.repository.MemberStatusRepository;
+import com.nhnacademy.bookstore.user.memberstatus.entity.MemberStatus;
+import com.nhnacademy.bookstore.user.memberstatus.repository.MemberStatusRepository;
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.enums.Tier;
 import com.nhnacademy.bookstore.user.tier.repository.MemberTierRepository;
@@ -58,19 +61,25 @@ class MemberServiceImplTest {
 
     private MemberCreateRequestDto memberCreateRequestDto;
 
+    Member withdrawMember = new Member();
+    private MemberWithdrawRequesteDto withdrawRequestDto;
+
     @BeforeEach
     void setUp() {
         memberCreateRequestDto = new MemberCreateRequestDto(
                 "testuser", "password123", "John Doe", "010-1234-5678",
                 "email@example.com", "nickname", Gender.M, LocalDate.of(1990, 1, 1)
         );
+        withdrawMember.toEntity(memberCreateRequestDto, "EncodedPassword");
+        withdrawRequestDto = new MemberWithdrawRequesteDto("CorrectPassword");
+
     }
 
     @Test
     void testRegisterNewMember_Success() {
         // Given
         MemberStatus defaultStatus = new MemberStatus(1L, "가입");
-        MemberTier defaultTier = new MemberTier(1L, Tier.골드, true, 1, 10000, 100000);
+        MemberTier defaultTier = new MemberTier(1L, Tier.GOLD, true, 1, 10000, 100000);
         when(memberRepository.existsByLoginId(memberCreateRequestDto.loginId())).thenReturn(false);
         when(memberRepository.existsByEmail(memberCreateRequestDto.email())).thenReturn(false);
         when(memberRepository.existsByPhone(memberCreateRequestDto.phone())).thenReturn(false);
@@ -396,7 +405,7 @@ class MemberServiceImplTest {
 
         // 추가 Mock 설정
         when(statusRepository.findById(1L)).thenReturn(Optional.of(new MemberStatus(1L, "가입")));
-        when(tierRepository.findById(1L)).thenReturn(Optional.of(new MemberTier(1L, Tier.골드, true, 1, 10000, 200000)));
+        when(tierRepository.findById(1L)).thenReturn(Optional.of(new MemberTier(1L, Tier.GOLD, true, 1, 10000, 200000)));
         when(memberRepository.save(any(Member.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
@@ -426,23 +435,90 @@ class MemberServiceImplTest {
     }
 
     @Test
-    void testRegisterNewMember_PhoneDoesNotExist() {
+    void testWithdrawMember_Success() {
         // Given
-        when(memberRepository.existsByLoginId(memberCreateRequestDto.loginId())).thenReturn(false);
-        when(memberRepository.existsByEmail(memberCreateRequestDto.email())).thenReturn(false);
-        when(memberRepository.existsByPhone(memberCreateRequestDto.phone())).thenReturn(false);
+        MemberStatus withdrawnStatus = new MemberStatus(3L, "탈퇴");
 
-        // Mock 설정
-        when(statusRepository.findById(1L)).thenReturn(Optional.of(new MemberStatus(1L, "가입")));
-        when(tierRepository.findById(1L)).thenReturn(Optional.of(new MemberTier(1L, Tier.골드, true, 1, 10000, 200000)));
-        when(memberRepository.save(any(Member.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(memberRepository.findById(1L)).thenReturn(Optional.of(withdrawMember));
+        when(passwordEncoder.matches("CorrectPassword", "EncodedPassword")).thenReturn(true);
+        when(statusRepository.findById(3L)).thenReturn(Optional.of(withdrawnStatus));
 
         // When
-        MemberCreateSuccessResponseDto response = memberService.registerNewMember(memberCreateRequestDto);
+        MemberWithdrawResponseDto response = memberService.withdrawMember(1L, withdrawRequestDto);
 
         // Then
         assertNotNull(response);
-        assertEquals("nickname", response.getNickname());
-        verify(memberRepository).save(any(Member.class));
+        assertEquals("John Doe", response.name());
+        verify(memberRepository).findById(1L);
+        verify(passwordEncoder).matches("CorrectPassword", "EncodedPassword");
+        verify(statusRepository).findById(3L);
     }
+
+    /**
+     * 테스트: 회원이 존재하지 않을 때 예외 발생
+     * 예상 결과: MemberNotFoundException 발생
+     */
+    @Test
+    void testWithdrawMember_MemberNotFound() {
+        // Given
+        when(memberRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // When & Then
+        MemberNotFoundException exception = assertThrows(
+                MemberNotFoundException.class,
+                () -> memberService.withdrawMember(1L, withdrawRequestDto)
+        );
+
+        assertEquals("해당 멤버가 존재하지 않습니다.", exception.getMessage());
+        verify(memberRepository).findById(1L);
+        verify(passwordEncoder, never()).matches(anyString(), anyString());
+        verify(statusRepository, never()).findById(anyLong());
+    }
+
+    /**
+     * 테스트: 비밀번호가 일치하지 않을 때 예외 발생
+     * 예상 결과: MemberPasswordNotEqualException 발생
+     */
+    @Test
+    void testWithdrawMember_PasswordNotEqual() {
+        // Given
+        when(memberRepository.findById(1L)).thenReturn(Optional.of(withdrawMember));
+        when(passwordEncoder.matches("CorrectPassword", "EncodedPassword")).thenReturn(false);
+
+        // When & Then
+        MemberPasswordNotEqualException exception = assertThrows(
+                MemberPasswordNotEqualException.class,
+                () -> memberService.withdrawMember(1L, withdrawRequestDto)
+        );
+
+        assertEquals("비밀번호가 일치하지 않습니다.", exception.getMessage());
+        verify(memberRepository).findById(1L);
+        verify(passwordEncoder).matches("CorrectPassword", "EncodedPassword");
+        verify(statusRepository, never()).findById(anyLong());
+    }
+
+    /**
+     * 테스트: 회원 상태를 찾지 못했을 때 예외 발생
+     * 예상 결과: MemberStatusNotFoundException 발생
+     */
+    @Test
+    void testWithdrawMember_StatusNotFound() {
+        // Given
+        when(memberRepository.findById(1L)).thenReturn(Optional.of(withdrawMember));
+        when(passwordEncoder.matches("CorrectPassword", "EncodedPassword")).thenReturn(true);
+        when(statusRepository.findById(3L)).thenReturn(Optional.empty());
+
+        // When & Then
+        MemberStatusNotFoundException exception = assertThrows(
+                MemberStatusNotFoundException.class,
+                () -> memberService.withdrawMember(1L, withdrawRequestDto)
+        );
+
+        assertEquals("회원 상태가 존재하지 않습니다.", exception.getMessage());
+        verify(memberRepository).findById(1L);
+        verify(passwordEncoder).matches("CorrectPassword", "EncodedPassword");
+        verify(statusRepository).findById(3L);
+    }
+
+
 }

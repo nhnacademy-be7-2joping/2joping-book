@@ -1,14 +1,9 @@
 package com.nhnacademy.bookstore.common.error.dto;
 
 import com.nhnacademy.bookstore.common.error.enums.RedirectType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 /**
  * ErrorResponseDto
- *
  * 이 클래스는 API 응답에서 발생하는 오류에 대한 정보를 포함하는 DTO입니다.
  * 상태 코드, 오류 코드 및 메시지, 리디렉션 타입, URL, 그리고 관련 데이터를 담고 있습니다.
  *
