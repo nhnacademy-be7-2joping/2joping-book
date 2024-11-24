@@ -16,5 +16,4 @@ public enum PointActionType {
     PointActionType(String description) {
         this.description = description;
     }
-
 }

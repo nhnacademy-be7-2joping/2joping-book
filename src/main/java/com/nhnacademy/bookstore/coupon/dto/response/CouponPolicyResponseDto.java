@@ -1,5 +1,8 @@
 package com.nhnacademy.bookstore.coupon.dto.response;
 
+import com.nhnacademy.bookstore.coupon.entity.CouponPolicy;
+import com.nhnacademy.bookstore.coupon.enums.DiscountType;
+
 /**
  * CouponPolicyResponseDto
  * 이 클래스는 쿠폰 정책에 대한 응답 데이터를 담고 있는 DTO입니다.
@@ -19,4 +22,16 @@ public record CouponPolicyResponseDto(
         String detail,
         Integer maxDiscount
 ) {
+    public static CouponPolicyResponseDto from(CouponPolicy couponPolicy) {
+        return new CouponPolicyResponseDto(
+                couponPolicy.getCouponPolicyId(),
+                couponPolicy.getName(),
+                couponPolicy.getDiscountType().toString(),
+                couponPolicy.getDiscountValue(),
+                couponPolicy.getUsageLimit(),
+                couponPolicy.getDuration(),
+                couponPolicy.getDetail(),
+                couponPolicy.getMaxDiscount()
+        );
+    }
 }
