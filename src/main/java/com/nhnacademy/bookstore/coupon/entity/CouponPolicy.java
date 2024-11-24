@@ -3,6 +3,7 @@ package com.nhnacademy.bookstore.coupon.entity;
 import com.nhnacademy.bookstore.coupon.enums.DiscountType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -44,4 +45,56 @@ public class CouponPolicy {
 
         private Boolean isActive;
 
+        @Builder
+        private CouponPolicy(
+                final String name,
+                final DiscountType discountType,
+                final Integer discountValue,
+                final Integer usageLimit,
+                final Integer duration,
+                final String detail,
+                final Integer maxDiscount,
+                final Boolean isActive
+        ) {
+                this.name = name;
+                this.discountType = discountType;
+                this.discountValue = discountValue;
+                this.usageLimit = usageLimit;
+                this.duration = duration;
+                this.detail = detail;
+                this.maxDiscount = maxDiscount;
+                this.isActive = isActive;
+        }
+
+        public void updateName(String name) {
+                this.name = name;
+        }
+
+        public void updateDiscountType(DiscountType discountType) {
+                this.discountType = discountType;
+        }
+
+        public void updateDiscountValue(Integer discountValue) {
+                this.discountValue = discountValue;
+        }
+
+        public void updateUsageLimit(Integer usageLimit) {
+                this.usageLimit = usageLimit;
+        }
+
+        public void updateDuration(Integer duration) {
+                this.duration = duration;
+        }
+
+        public void updateDetail(String detail) {
+                this.detail = detail;
+        }
+
+        public void updateMaxDiscount(Integer maxDiscount) {
+                this.maxDiscount = maxDiscount;
+        }
+
+        public void deactivateCouponPolicy() {
+                this.isActive = false;
+        }
 }

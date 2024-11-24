@@ -1,14 +1,17 @@
 package com.nhnacademy.bookstore.coupon.controller;
 
 
+import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
+import com.nhnacademy.bookstore.coupon.dto.request.CreateCouponPolicyRequest;
+import com.nhnacademy.bookstore.coupon.dto.request.UpdateCouponPolicyRequest;
 import com.nhnacademy.bookstore.coupon.dto.response.CouponPolicyResponseDto;
 import com.nhnacademy.bookstore.coupon.service.CouponPolicyService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -26,6 +29,20 @@ public class CouponPolicyController {
 
     private final CouponPolicyService couponPolicyService;
 
+    @PostMapping("/policies")
+    public ResponseEntity<Void> createConcernPost(@Valid @RequestBody CreateCouponPolicyRequest request) {
+        Long couponPolicyId = couponPolicyService.createCouponPolicy(request);
+        return ResponseEntity.created(URI.create("/" + couponPolicyId)).build();
+    }
+
+    @GetMapping("/policies/{coupon-policy-id}")
+    public ResponseEntity<CouponPolicyResponseDto> getCouponPolicy(
+            @ValidPathVariable @PathVariable("coupon-policy-id") Long couponPolicyId
+    ) {
+        CouponPolicyResponseDto response = couponPolicyService.getCouponPolicy(couponPolicyId);
+        return ResponseEntity.ok(response);
+    }
+
     /**
      * 모든 쿠폰 정책 조회 엔드포인트
      * 저장된 모든 쿠폰 정책의 목록을 조회하여 반환합니다.
@@ -38,5 +55,20 @@ public class CouponPolicyController {
         List<CouponPolicyResponseDto> responseDtos = couponPolicyService.getAllCouponPolicies();
 
         return ResponseEntity.ok(responseDtos);
+    }
+
+    @PutMapping("/policies/{coupon-policy-id}")
+    public ResponseEntity<Long> updateCouponPolicy(
+            @ValidPathVariable @PathVariable("coupon-policy-id") Long id,
+            @RequestBody UpdateCouponPolicyRequest request
+    ) {
+        Long updatedCouponPolicyId = couponPolicyService.updateCouponPolicy(id, request);
+        return ResponseEntity.ok(updatedCouponPolicyId);
+    }
+
+    @PutMapping("/policies/{coupon-policy-id}/deactivated")
+    public ResponseEntity<Void> deleteCouponPolicy(@ValidPathVariable @PathVariable("coupon-policy-id") Long id) {
+        couponPolicyService.deleteCouponPolicy(id);
+        return ResponseEntity.noContent().build();
     }
 }
