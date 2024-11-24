@@ -6,7 +6,6 @@ import com.nhnacademy.bookstore.common.dto.response.MysqlKeyResponseDto;
 import com.nhnacademy.bookstore.common.dto.response.SecretResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 @Service

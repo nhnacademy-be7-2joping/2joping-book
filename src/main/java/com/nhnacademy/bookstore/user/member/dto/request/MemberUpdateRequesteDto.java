@@ -1,6 +1,11 @@
 package com.nhnacademy.bookstore.user.member.dto.request;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
+import java.io.Serializable;
 
 
 /**
@@ -25,5 +30,5 @@ public record MemberUpdateRequesteDto(
         @Size(min = 2, max = 20, message = "닉네임은 최소 2자 이상, 최대 20자까지 입력 가능합니다.")
         String nickName
 
-) {
+) implements Serializable {
 }

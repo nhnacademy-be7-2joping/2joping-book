@@ -6,7 +6,6 @@ import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.tier.dto.response.MemberTierResponse;
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
-import com.nhnacademy.bookstore.user.tier.enums.Tier;
 import com.nhnacademy.bookstore.user.tier.service.TierService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * TierServiceImpl
- *
  * 회원의 등급 정보를 처리하는 서비스 구현체.
  * TierService 인터페이스를 구현하며, 회원 등급 조회 로직을 제공합니다.
  * @author Luha

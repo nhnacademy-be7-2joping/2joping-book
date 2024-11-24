@@ -1,11 +1,6 @@
 package com.nhnacademy.bookstore.user.member.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.querydsl.core.annotations.QueryProjection;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 
 public record MemberAddressResponseDto(
@@ -17,7 +12,6 @@ public record MemberAddressResponseDto(
         @JsonProperty("isDefaultAddress")
         boolean isDefaultAddress,   // 기본 주소 여부
         String receiver             // 수신인
-) {  @QueryProjection
-public MemberAddressResponseDto {}
+) {
 }
 
