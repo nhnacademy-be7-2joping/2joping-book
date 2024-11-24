@@ -66,12 +66,15 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
     @Override
     @Transactional(readOnly = true)
     public List<CouponPolicyResponseDto> getAllCouponPolicies() {
-        List<CouponPolicyResponseDto> responseDtos = couponPolicyRepository.findActivePolicy();
+        List<CouponPolicy> responseDtos = couponPolicyRepository.findByIsActiveTrue();
 
         if (responseDtos.isEmpty()) {
             responseDtos = Collections.emptyList();
         }
-        return responseDtos;
+
+        return responseDtos.stream()
+                .map(CouponPolicyResponseDto::from)
+                .toList();
     }
 
     @Override
@@ -90,6 +93,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
         couponPolicy.updateDuration(request.duration());
         couponPolicy.updateDetail(request.detail());
         couponPolicy.updateMaxDiscount(request.maxDiscount());
+        couponPolicy.updateActive(request.isActive());
 
         return couponPolicyRepository.save(couponPolicy).getCouponPolicyId();
     }

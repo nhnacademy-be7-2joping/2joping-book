@@ -10,6 +10,7 @@ public record UpdateCouponPolicyRequest(
         Integer usageLimit,
         Integer duration,
         String detail,
-        Integer maxDiscount
+        Integer maxDiscount,
+        Boolean isActive
 ) {
 }
