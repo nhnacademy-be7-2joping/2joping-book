@@ -37,23 +37,20 @@ public class MemberAddressController {
      * @author Luha
      * @since 1.0
      *
-     * @param memberId 회원 ID
      * @param requestDto 회원 주소 정보 DTO
      * @return 회원의 전체 주소 목록이 포함된 ResponseEntity
      * @throws AddressLimitToTenException 주소 개수가 10개 이상일 경우 발생
      * @throws MemberNotFoundException 회원이 존재하지 않을 경우 발생
      */
     @Operation(summary = "새 주소 추가", description = "특정 회원의 새 주소를 추가합니다. 주소는 최대 10개까지 저장할 수 있습니다.")
-    @PostMapping("/{memberId}/address")
+    @PostMapping("/addresses")
     public ResponseEntity<List<MemberAddressResponseDto>> addMemberAddress(
-            @Parameter(description = "회원 ID", required = true)
-            @PathVariable
-            @ValidPathVariable long memberId,
+            @RequestHeader("X-Customer-Id") String customerId,
             @Parameter(description = "회원 주소 정보", required = true)
             @Valid
             @RequestBody MemberAddressRequestDto requestDto) {
 
-        List<MemberAddressResponseDto> addresses = memberAddressService.addMemberAddress(memberId, requestDto);
+        List<MemberAddressResponseDto> addresses = memberAddressService.addMemberAddress(Long.parseLong(customerId), requestDto);
 
         return ResponseEntity.ok(addresses);
     }

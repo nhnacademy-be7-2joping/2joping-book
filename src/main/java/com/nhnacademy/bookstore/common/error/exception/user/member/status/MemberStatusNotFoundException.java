@@ -22,11 +22,10 @@ public class MemberStatusNotFoundException extends NotFoundException {
      * @param message       예외 메시지
      * @param redirectType  리다이렉션 타입 (예: REDIRECT, FORWARD 등)
      * @param url           리다이렉션 대상 URL
-     * @param data          추가 데이터 (필요한 경우)
      * @since 1.0
      * @see NotFoundException
      */
-    public MemberStatusNotFoundException(String message, RedirectType redirectType, String url, Serializable data) {
-        super(message, redirectType, url, data);
+    public MemberStatusNotFoundException(String message, RedirectType redirectType, String url) {
+        super(message, redirectType, url);
     }
 }

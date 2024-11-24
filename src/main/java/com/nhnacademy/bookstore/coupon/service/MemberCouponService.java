@@ -14,7 +14,7 @@ import java.util.List;
  * @author Luha
  */
 public interface MemberCouponService {
-
     List<MemberCouponResponseDto> getAllMemberCoupons(long customerId);
+    List<MemberCouponResponseDto> getAllMemberUsedCoupons(long customerId);
     List<OrderCouponResponse> getAllMemberOrderCoupons(long customerId);
 }

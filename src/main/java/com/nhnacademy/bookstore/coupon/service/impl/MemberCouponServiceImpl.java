@@ -37,6 +37,12 @@ public class MemberCouponServiceImpl implements MemberCouponService {
         return memberCouponRepository.getAllMemberCoupons(customerId);
     }
 
+    @Override
+    public List<MemberCouponResponseDto> getAllMemberUsedCoupons(long customerId) {
+
+        return memberCouponRepository.getExpiredOrUsedMemberCoupons(customerId);
+    }
+
     @Transactional(readOnly = true)
     @Override
     public List<OrderCouponResponse> getAllMemberOrderCoupons(long customerId) {

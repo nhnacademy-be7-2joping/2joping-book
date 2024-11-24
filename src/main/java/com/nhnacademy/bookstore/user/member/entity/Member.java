@@ -107,4 +107,8 @@ public class Member extends Customer {
     public void usePoint(int amount) {
         this.point -= amount;
     }
+
+    public void withdrawStatus(MemberStatus status) {
+        this.status = status;
+    }
 }

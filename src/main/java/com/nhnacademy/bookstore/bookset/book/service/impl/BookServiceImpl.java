@@ -12,7 +12,7 @@ import com.nhnacademy.bookstore.bookset.book.entity.BookCategory;
 import com.nhnacademy.bookstore.bookset.book.entity.BookContributor;
 import com.nhnacademy.bookstore.bookset.book.repository.BookCategoryRepository;
 import com.nhnacademy.bookstore.bookset.book.repository.BookContributorRepository;
-import com.nhnacademy.bookstore.bookset.category.dto.response.GetCategoryResponse;
+import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
 import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import com.nhnacademy.bookstore.bookset.category.repository.CategoryRepository;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
@@ -34,7 +34,7 @@ import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.Contr
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.publisher.PublisherNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.tag.TagNotFoundException;
-import com.nhnacademy.bookstore.common.error.exception.category.CategoryNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.category.CategoryNotFoundException;
 import com.nhnacademy.bookstore.imageset.entity.BookImage;
 import com.nhnacademy.bookstore.imageset.entity.Image;
 import com.nhnacademy.bookstore.imageset.repository.BookImageRepository;
@@ -44,13 +44,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import java.util.List;
 
 
 @Service
@@ -132,7 +131,7 @@ public class BookServiceImpl implements BookService {
             String categoryName = categories[i].trim();
 
             Category category = categoryRepository.findByName(categoryName)
-                    .orElseThrow(() -> new CategoryNotFoundException("존재하지 않는 카테고리: " + categoryName));
+                    .orElseThrow(() -> new CategoryNotFoundException());
 
             parentCategory = category;
         }
@@ -219,7 +218,7 @@ public class BookServiceImpl implements BookService {
                 category
         ));
 
-        GetCategoryResponse categoryResponseDto = new GetCategoryResponse(
+        CategoryResponseDto categoryResponseDto = new CategoryResponseDto(
                 category.getCategoryId(),
                 category.getName(),
                 category.getParentCategory() != null ? category.getParentCategory().getCategoryId() : null
@@ -265,6 +264,7 @@ public class BookServiceImpl implements BookService {
      * 전체 도서를 조회하는 메서드
      * @return 도서 객체
      */
+    @Transactional(readOnly = true)
     @Override
     public Page<BookSimpleResponseDto> getAllBooks(Pageable pageable) {
         Page<BookSimpleResponseDto> books = bookRepository.findAllBooks(pageable);
@@ -276,6 +276,8 @@ public class BookServiceImpl implements BookService {
      * @param categoryId
      * @return 도서 객체
      */
+
+    @Transactional(readOnly = true)
     @Override
     public Page<BookSimpleResponseDto> getBooksByCategoryId(Pageable pageable, Long categoryId) {
         return bookRepository.findBooksByCategoryId(pageable, categoryId);
@@ -286,6 +288,8 @@ public class BookServiceImpl implements BookService {
      * @param contributorId
      * @return 도서 객체
      */
+
+    @Transactional(readOnly = true)
     @Override
     public Page<BookSimpleResponseDto> getBooksByContributorId(Pageable pageable, Long contributorId) {
         return bookRepository.findBooksByContributorId(pageable, contributorId);
@@ -296,6 +300,8 @@ public class BookServiceImpl implements BookService {
      * @param bookId
      * @return 도서 객체
      */
+
+    @Transactional(readOnly = true)
     @Override
     public BookResponseDto getBookById(Long bookId) {
         BookResponseDto book = bookRepository.findBookByBookId(bookId).orElseThrow(()-> new BookNotFoundException("도서를 찾을 수 없습니다."));

@@ -2,9 +2,11 @@ package com.nhnacademy.bookstore.user.member.service;
 
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberUpdateRequesteDto;
+import com.nhnacademy.bookstore.user.member.dto.request.MemberWithdrawRequesteDto;
 import com.nhnacademy.bookstore.user.member.dto.response.GetAllMembersResponse;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.MemberWithdrawResponseDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,4 +27,5 @@ public interface MemberService {
     List<GetAllMembersResponse> getAllMembers(final int page);
     MemberUpdateResponseDto updateMember(long customerId, MemberUpdateRequesteDto memberDto);
     MemberUpdateResponseDto getMemberInfo(long customerId);
+    MemberWithdrawResponseDto withdrawMember(long customerId, MemberWithdrawRequesteDto memberDto);
 }
