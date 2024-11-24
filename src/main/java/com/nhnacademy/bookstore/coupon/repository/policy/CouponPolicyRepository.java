@@ -3,6 +3,7 @@ package com.nhnacademy.bookstore.coupon.repository.policy;
 import com.nhnacademy.bookstore.coupon.entity.CouponPolicy;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -17,4 +18,8 @@ public interface CouponPolicyRepository extends JpaRepository<CouponPolicy, Long
 
     Optional<CouponPolicy> findByCouponPolicyId(Long id);
     void deleteByCouponPolicyId(Long id);
+
+
+    // isActive가 true인 쿠폰 정책을 찾는 메서드 추가
+    List<CouponPolicy> findByIsActiveTrue();
 }
