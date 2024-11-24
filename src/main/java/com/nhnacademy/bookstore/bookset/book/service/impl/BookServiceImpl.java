@@ -48,6 +48,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -234,10 +235,7 @@ public class BookServiceImpl implements BookService {
 
                 // Contributor를 찾거나 없으면 새로 생성하여 저장
                 Contributor contributor = contributorRepository.findByName(name)
-                        .orElseGet(() -> {
-                            Contributor newContributor = new Contributor(null, role, name, true);
-                            return contributorRepository.save(newContributor);
-                        });
+                        .orElseThrow(() -> new ContributorNotFoundException());
 
                 // Contributor 정보를 DTO로 변환하여 목록에 추가
                 contributorDtos.add(new ContributorResponseDto(
@@ -428,8 +426,6 @@ public class BookServiceImpl implements BookService {
 //        return List.of();
 //    }
 
-
-
     /**
      * 특정 도서를 업데이트용으로 조회하는 메서드
      *
@@ -449,6 +445,7 @@ public class BookServiceImpl implements BookService {
      * @param bookUpdateRequestDto   도서 업데이트 요청 데이터가 담긴 DTO
      * @return 업데이트된 도서의 결과 정보가 담긴 DTO
      */
+    @Transactional
     @Override
     public BookUpdateResultResponseDto updateBook(Long bookId, BookUpdateRequestDto bookUpdateRequestDto) {
         Book book = bookRepository.findById(bookId)
@@ -571,6 +568,7 @@ public class BookServiceImpl implements BookService {
      * 이미지 유형에 해당하는 도서의 기존 이미지를 모두 삭제합니다.
      * 이미지가 더 이상 다른 도서와 연결되어 있지 않을 경우 이미지 데이터를 완전히 삭제합니다.
      */
+
     private void removeExistingImages(Book book, String imageType) {
         bookImageRepository.findByBookAndImageType(book, imageType)
                 .forEach(existing -> {
