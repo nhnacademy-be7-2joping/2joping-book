@@ -37,7 +37,7 @@ public record GetOrderStateResponse(
                 order.getOrderId(),
                 order.getOrderState().getOrderStateId(),
                 order.getCustomer().getId(),
-                order.getCouponUsage().getId(),
+                order.getCouponUsage().getCouponUsageId(),
                 order.getOrderDate(),
                 order.getReceiver(),
                 order.getPostalCode(),
