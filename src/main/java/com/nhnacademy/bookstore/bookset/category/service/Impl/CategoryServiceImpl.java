@@ -59,7 +59,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public GetCategoryResponse getCategory(Long categoryId) {
         Category category = categoryRepository.findByCategoryId(categoryId)
-                .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다."));
+                .orElseThrow(CategoryNotFoundException::new);
 
         return GetCategoryResponse.from(category);
     }
@@ -67,7 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public GetParentCategoryResponse getParentCategory(Long categoryId) {
         Category childCategory = categoryRepository.findByCategoryId(categoryId)
-                .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다."));
+                .orElseThrow(CategoryNotFoundException::new);
 
         return GetParentCategoryResponse.from(childCategory);
     }
@@ -92,12 +92,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public UpdateCategoryResponse updateCategory(Long categoryId, UpdateCategoryRequest request) {
         Category category = categoryRepository.findByCategoryId(categoryId)
-                .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다."));
+                .orElseThrow(CategoryNotFoundException::new);
 
         if (request.parentCategory() != null) {
             validateCategoryDepth(request.parentCategory());
             Category newParent = categoryRepository.findByCategoryId(request.parentCategory().getCategoryId())
-                    .orElseThrow(() -> new CategoryNotFoundException("상위 카테고리를 찾을 수 없습니다."));
+                    .orElseThrow(CategoryNotFoundException::new);
             category.updateParentCategory(newParent);
         }
 
@@ -116,7 +116,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Long deleteCategory(Long categoryId) {
         Category category = categoryRepository.findByCategoryId(categoryId)
-                .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다."));
+                .orElseThrow(CategoryNotFoundException::new);
 
         if (categoryRepository.findByParentCategory(category).isPresent()) {
             throw new IllegalStateException("하위 카테고리가 있는 카테고리는 삭제할 수 없습니다.");

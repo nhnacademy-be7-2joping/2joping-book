@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.bookset.book.dto.request;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public record BookUpdateHtmlRequestDto(
         String title,
@@ -14,8 +15,10 @@ public record BookUpdateHtmlRequestDto(
         boolean isActive,
         int remainQuantity,
         String contributorList,
-        String categoryList,
-        String tagList,
+        Long topCategoryId,
+        Long middleCategoryId,
+        Long bottomCategoryId,
+        List<String> tagList,
         boolean removeThumbnailImage,
         boolean removeDetailImage
 ) {}

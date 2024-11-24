@@ -110,7 +110,7 @@ public class BookController {
      * @return 특정 도서와 상태 코드를 담은 응답
      */
     @Operation(summary = "특정 도서 수정 정보 조회", description = "특정 도서 정보를 수정을 위해 기존 정보를 조회합니다.")
-    @GetMapping("/books/update/{bookId}")
+    @GetMapping("/books/{bookId}")
     public ResponseEntity<BookUpdateResponseDto> getUpdateBookByBookId(@PathVariable("bookId") Long bookId) {
         BookUpdateResponseDto book = bookService.getUpdateBookByBookId(bookId);
         return ResponseEntity.status(HttpStatus.OK).body(book);
@@ -122,7 +122,7 @@ public class BookController {
      * @return 특정 도서와 상태 코드를 담은 응답
      */
     @Operation(summary = "특정 도서 수정", description = "특정 도서 정보를 수정합니다.")
-    @PostMapping("/books/update/{bookId}")
+    @PutMapping("/books/{bookId}")
     public ResponseEntity<BookUpdateResultResponseDto> updateBook(@PathVariable("bookId") Long bookId, @RequestBody BookUpdateRequestDto bookUpdateRequestDto) {
         BookUpdateResultResponseDto book = bookService.updateBook(bookId, bookUpdateRequestDto);
         return ResponseEntity.status(HttpStatus.OK).body(book);

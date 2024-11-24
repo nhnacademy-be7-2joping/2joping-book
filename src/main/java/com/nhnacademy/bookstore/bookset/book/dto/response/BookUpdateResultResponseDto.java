@@ -10,9 +10,9 @@ import java.util.List;
 
 public record BookUpdateResultResponseDto(
         Long bookId,
-        String publisherName,
         String title,
         String description,
+        String publisherName,
         LocalDate publishedDate,
         String isbn,
         int retailPrice,
@@ -21,11 +21,8 @@ public record BookUpdateResultResponseDto(
         boolean isActive,
         int remainQuantity,
         List<ContributorResponseDto> contributorList,
-        GetCategoryResponse category,
+        CategoryResponseDto category,
         List<TagResponseDto> tagList,
-//        List<BookContributorResponseDto> contributorList,
-//        List<String> categoryList,
-//        List<BookTagResponseDto> tagList,
         String thumbnailImageUrl,
         String detailImageUrl
 ) {}
