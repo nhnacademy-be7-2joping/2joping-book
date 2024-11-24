@@ -32,6 +32,41 @@ public class MemberCouponRepositoryImpl implements MemberCouponQuerydslResposito
 
     private final JPAQueryFactory queryFactory;
 
+    @Override
+    public List<MemberCouponResponseDto> getExpiredOrUsedMemberCoupons(Long customerId) {
+        return queryFactory.select(Projections.constructor(MemberCouponResponseDto.class,
+                        memberCoupon.couponUsageId,
+                        memberCoupon.coupon.id,
+                        memberCoupon.receiveTime,
+                        memberCoupon.invalidTime,
+                        memberCoupon.isUsed,
+                        memberCoupon.usedDate,
+                        Projections.constructor(CouponResponseDto.class,
+                                memberCoupon.coupon.id,
+                                memberCoupon.coupon.name,
+                                memberCoupon.coupon.createdAt,
+                                memberCoupon.coupon.expiredAt,
+                                memberCoupon.coupon.quantity,
+                                Projections.constructor(CouponPolicyResponseDto.class,
+                                        memberCoupon.coupon.couponPolicy.couponPolicyId,
+                                        memberCoupon.coupon.couponPolicy.name,
+                                        memberCoupon.coupon.couponPolicy.discountType.stringValue(),
+                                        memberCoupon.coupon.couponPolicy.discountValue,
+                                        memberCoupon.coupon.couponPolicy.usageLimit,
+                                        memberCoupon.coupon.couponPolicy.duration,
+                                        memberCoupon.coupon.couponPolicy.detail,
+                                        memberCoupon.coupon.couponPolicy.maxDiscount)
+                        )))
+                .from(memberCoupon)
+                .leftJoin(memberCoupon.coupon, coupon)
+                .leftJoin(memberCoupon.coupon.couponPolicy, couponPolicy)
+                .where(
+                        memberCoupon.member.id.eq(customerId) // 특정 회원 필터링
+                                .and(memberCoupon.isUsed.eq(true) // 사용된 쿠폰
+                                        .or(memberCoupon.invalidTime.before(LocalDateTime.now()))) // 기간 만료된 쿠폰
+                )
+                .fetch();    }
+
     /**
      * 특정 회원의 모든 쿠폰을 조회하여 MemberCouponResponseDto 목록으로 반환합니다.
      * 쿠폰과 쿠폰 정책 정보가 포함된 상세 정보를 조회합니다.
@@ -75,6 +110,7 @@ public class MemberCouponRepositoryImpl implements MemberCouponQuerydslResposito
                 .fetch();
     }
 
+
     @Override
     public List<OrderCouponResponse> getAllMemberOrderCoupons(Long customerId) {
         return queryFactory.select(Projections.constructor(OrderCouponResponse.class,
@@ -97,4 +133,5 @@ public class MemberCouponRepositoryImpl implements MemberCouponQuerydslResposito
                 )
                 .fetch();
     }
+
 }

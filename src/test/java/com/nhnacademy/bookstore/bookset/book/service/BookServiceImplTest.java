@@ -26,6 +26,7 @@ import com.nhnacademy.bookstore.bookset.tag.repository.TagRepository;
 import com.nhnacademy.bookstore.common.error.exception.bookset.book.BookNotFoundException;
 import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
 import com.nhnacademy.bookstore.bookset.book.service.impl.BookServiceImpl;
+import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
 import com.nhnacademy.bookstore.imageset.repository.BookImageRepository;
 import com.nhnacademy.bookstore.imageset.repository.ImageRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,8 +40,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.sql.Timestamp;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -130,7 +133,7 @@ class BookServiceImplTest {
         bookResponseDto = new BookResponseDto(
                 1L, "Publisher 1", "Book Title 1", "Description", LocalDate.of(2023, 10, 29),
                 "1234567890123", 20000, 15000, true, true, 10, 0, 0,
-                contributors, List.of("Category 1", "Category 2"), List.of(new BookTagResponseDto(1L,"Tag 1")),"thumbnail1"
+                contributors, List.of("Category 1", "Category 2"), List.of(new BookTagResponseDto(1L,"Tag 1")),"thumbnail1",List.of(new ReviewResponseDto(1L,1L,1L,1L,5,"제목","내용","이미지", Timestamp.valueOf(LocalDateTime.now()),null))
         );
     }
 
@@ -176,9 +179,9 @@ class BookServiceImplTest {
     void testGetLowestLevelCategory() {
         String categoryText = "국내도서 > 경제경영 > 트렌드/미래전망";
 
-        Category domesticBooksCategory = new Category(1L, null, "국내도서");
-        Category businessEconomyCategory = new Category(2L, domesticBooksCategory, "경제경영");
-        Category trendFutureCategory = new Category(3L, businessEconomyCategory, "트렌드/미래전망");
+        Category domesticBooksCategory = new Category(1L, null, "국내도서", true);
+        Category businessEconomyCategory = new Category(2L, domesticBooksCategory, "경제경영", true);
+        Category trendFutureCategory = new Category(3L, businessEconomyCategory, "트렌드/미래전망", true);
 
         when(categoryRepository.findByName("국내도서")).thenReturn(Optional.of(domesticBooksCategory));
         when(categoryRepository.findByName("경제경영")).thenReturn(Optional.of(businessEconomyCategory));
@@ -272,9 +275,9 @@ class BookServiceImplTest {
         String categoryText = "국내도서 > 소설 > 현대소설";
         when(bookHtmlRequest.category()).thenReturn(categoryText);
 
-        Category category1 = new Category(1L, null, "국내도서");
-        Category category2 = new Category(2L, category1, "소설");
-        Category category3 = new Category(3L, category2, "현대소설");
+        Category category1 = new Category(1L, null, "국내도서", true);
+        Category category2 = new Category(2L, category1, "소설", true);
+        Category category3 = new Category(3L, category2, "현대소설", true);
 
         when(categoryRepository.findByName("국내도서")).thenReturn(Optional.of(category1));
         when(categoryRepository.findByName("소설")).thenReturn(Optional.of(category2));

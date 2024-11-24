@@ -9,7 +9,7 @@ package com.nhnacademy.bookstore.orderset.order.entity;
  */
 
 
-import com.nhnacademy.bookstore.coupon.entity.Coupon;
+import com.nhnacademy.bookstore.coupon.entity.member.MemberCoupon;
 import com.nhnacademy.bookstore.orderset.order_state.entity.OrderState;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import jakarta.persistence.*;
@@ -43,7 +43,7 @@ public class Order {
 
     @OneToOne
     @JoinColumn(name = "coupon_usage_id")
-    private Coupon couponUsage;
+    private MemberCoupon couponUsage;
 
     @Column(name = "order_date", nullable = false)
     private LocalDateTime orderDate;
