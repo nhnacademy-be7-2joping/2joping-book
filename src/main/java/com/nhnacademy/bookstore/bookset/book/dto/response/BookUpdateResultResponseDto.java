@@ -1,7 +1,6 @@
 package com.nhnacademy.bookstore.bookset.book.dto.response;
 
-import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryResponseDto;
-import com.nhnacademy.bookstore.bookset.category.dto.response.GetCategoryResponse;
+import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.tag.dto.TagResponseDto;
 

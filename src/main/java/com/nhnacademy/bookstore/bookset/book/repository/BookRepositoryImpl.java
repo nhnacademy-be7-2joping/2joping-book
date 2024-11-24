@@ -4,9 +4,11 @@ import com.nhnacademy.bookstore.bookset.book.dto.response.*;
 
 
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
+import com.nhnacademy.bookstore.bookset.book.entity.BookCategory;
 import com.nhnacademy.bookstore.bookset.book.entity.QBook;
 import com.nhnacademy.bookstore.bookset.book.entity.QBookCategory;
 import com.nhnacademy.bookstore.bookset.book.entity.QBookContributor;
+import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import com.nhnacademy.bookstore.bookset.category.entity.QCategory;
 import com.nhnacademy.bookstore.bookset.contributor.entity.Contributor;
 import com.nhnacademy.bookstore.bookset.contributor.entity.QContributor;
@@ -26,6 +28,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -424,15 +427,74 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         String thumbnailUrl = bookTuple.get(qImageThumbnail.url) != null ? bookTuple.get(qImageThumbnail.url) : "default-thumbnail.jpg";
         String detailUrl = bookTuple.get(qImageDetail.url) != null ? bookTuple.get(qImageDetail.url) : "default-detail.jpg";
 
-        String contributorList = convertContributorsToString(getContributorsByBook(book.getBookId()));
-        String categoryList = convertCategoriesToString(getCategoriesByBook(book.getBookId()));
-        String tagList = convertTagsToString(getTagsByBook(book.getBookId()));
+        List<Long> categoryIds = from(qBookCategory)
+                .join(qBookCategory.category, qCategory)
+                .where(qBookCategory.book.bookId.eq(bookId))
+                .select(qCategory.categoryId)
+                .fetch();
+
+        Long bottomCategoryId = categoryIds.isEmpty() ? null : categoryIds.get(0);
+        Long middleCategoryId = null;
+        Long topCategoryId = null;
+
+        if (bottomCategoryId == null && middleCategoryId == null) {
+            // bottomCategoryId와 middleCategoryId가 없는 경우
+            if (topCategoryId != null) {
+                // topCategoryId만 존재 -> 단일 카테고리로 간주
+                topCategoryId = topCategoryId; // 그대로 유지
+                middleCategoryId = null;
+                bottomCategoryId = null;
+            } else {
+                // 모든 카테고리 ID가 null인 경우 예외 처리
+                throw new IllegalArgumentException("카테고리 정보가 없습니다.");
+            }
+        } else if (bottomCategoryId == null) {
+            // 2단계 카테고리 처리
+            if (middleCategoryId != null) {
+                Long currentCategoryId = middleCategoryId;
+
+                QCategory qParentCategory = new QCategory("parentCategoryAlias"); // qParentCategory 선언
+
+                Tuple categoryTuple = from(qCategory)
+                        .leftJoin(qCategory.parentCategory, qParentCategory)
+                        .where(qCategory.categoryId.eq(currentCategoryId))
+                        .select(qCategory.categoryId, qParentCategory.categoryId)
+                        .fetchOne();
+
+                if (categoryTuple != null) {
+                    middleCategoryId = categoryTuple.get(qCategory.categoryId);
+                    topCategoryId = categoryTuple.get(qParentCategory.categoryId);
+                }
+            }
+        } else {
+            // 기존 3단계 카테고리 처리
+            Long currentCategoryId = bottomCategoryId;
+            QCategory qParentCategory = new QCategory("parentCategoryAlias"); // qParentCategory 선언
+            while (currentCategoryId != null) {
+                Tuple categoryTuple = from(qCategory)
+                        .leftJoin(qCategory.parentCategory, qParentCategory)
+                        .where(qCategory.categoryId.eq(currentCategoryId))
+                        .select(qCategory.categoryId, qParentCategory.categoryId)
+                        .fetchOne();
+
+                if (categoryTuple != null) {
+                    if (middleCategoryId == null) {
+                        middleCategoryId = categoryTuple.get(qCategory.categoryId);
+                    }
+                    currentCategoryId = categoryTuple.get(qParentCategory.categoryId);
+                    if (currentCategoryId != null) {
+                        topCategoryId = currentCategoryId;
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
 
         BookUpdateResponseDto bookUpdateResponseDto = new BookUpdateResponseDto(
-                book.getBookId(),
-                book.getPublisher().getName(),
                 book.getTitle(),
                 book.getDescription(),
+                book.getPublisher().getName(),
                 book.getPublishedDate(),
                 book.getIsbn(),
                 book.getRetailPrice(),
@@ -440,11 +502,15 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 book.isGiftWrappable(),
                 book.isActive(),
                 book.getRemainQuantity(),
-                contributorList,
-                categoryList,
-                tagList,
+                getContributorsByBook(book.getBookId()),
+                topCategoryId,
+                middleCategoryId,
+                bottomCategoryId,
+                getTagsByBook(book.getBookId()),
                 thumbnailUrl,
-                detailUrl
+                detailUrl,
+                false,
+                false
         );
 
         return Optional.of(bookUpdateResponseDto);
