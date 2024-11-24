@@ -95,6 +95,13 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
     @Override
     public void deleteCouponPolicy(Long id) {
-        couponPolicyRepository.deleteByCouponPolicyId(id);
+        CouponPolicy couponPolicy = couponPolicyRepository.findByCouponPolicyId(id)
+                .orElseThrow(() -> new CouponPolicyNotFoundException(
+                        "쿠폰 정책을 찾을 수 없습니다.",
+                        RedirectType.REDIRECT,
+                        "/api/v1/coupon/policies"
+                ));
+
+        couponPolicy.deactivateCouponPolicy();
     }
 }

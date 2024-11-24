@@ -57,7 +57,7 @@ public class CouponPolicyController {
         return ResponseEntity.ok(responseDtos);
     }
 
-    @PutMapping("policies/{coupon-policy-id}")
+    @PutMapping("/policies/{coupon-policy-id}")
     public ResponseEntity<Long> updateCouponPolicy(
             @ValidPathVariable @PathVariable("coupon-policy-id") Long id,
             @RequestBody UpdateCouponPolicyRequest request
@@ -66,7 +66,7 @@ public class CouponPolicyController {
         return ResponseEntity.ok(updatedCouponPolicyId);
     }
 
-    @DeleteMapping("/policies/{coupon-policy-id}")
+    @PutMapping("/policies/{coupon-policy-id}/deactivated")
     public ResponseEntity<Void> deleteCouponPolicy(@ValidPathVariable @PathVariable("coupon-policy-id") Long id) {
         couponPolicyService.deleteCouponPolicy(id);
         return ResponseEntity.noContent().build();

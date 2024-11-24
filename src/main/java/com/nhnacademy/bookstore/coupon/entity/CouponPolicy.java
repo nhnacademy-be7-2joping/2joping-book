@@ -45,8 +45,6 @@ public class CouponPolicy {
 
         private Boolean isActive;
 
-
-
         @Builder
         private CouponPolicy(
                 final String name,
@@ -94,5 +92,9 @@ public class CouponPolicy {
 
         public void updateMaxDiscount(Integer maxDiscount) {
                 this.maxDiscount = maxDiscount;
+        }
+
+        public void deactivateCouponPolicy() {
+                this.isActive = false;
         }
 }
