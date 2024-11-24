@@ -1,16 +1,15 @@
 package com.nhnacademy.bookstore.cart.controller;
 
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
-import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
+import com.nhnacademy.bookstore.cart.dto.CartDeleteDto;
 import com.nhnacademy.bookstore.cart.dto.CartRequestDto;
 import com.nhnacademy.bookstore.cart.dto.CartResponseDto;
-import com.nhnacademy.bookstore.cart.entity.Cart;
+import com.nhnacademy.bookstore.cart.dto.CartUpdateDto;
+import com.nhnacademy.bookstore.cart.entity.CartId;
 import com.nhnacademy.bookstore.cart.service.CartService;
-import com.nhnacademy.bookstore.user.member.entity.Member;
-import com.nhnacademy.bookstore.user.member.service.MemberService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +26,7 @@ import java.util.UUID;
 public class CartController {
 
     private final CartService cartService;
+    private final BookService bookService;
 
     private final RedisTemplate<Object, Object> redisTemplate;
 
@@ -36,34 +36,35 @@ public class CartController {
 
         if (customerId == 0) {
             List<CartResponseDto> cart = new ArrayList<>();
-            // TODO 비회원 로직, 비회원이면 cookie의 id를 확인해서 redis에서 list는 가져온다.
-            // TODO redis hash: k -> redisSession: cart: ->value , HK -> bookId, HV -> title/sellingPrice/quantity
             Map<Object, Object> cartMap = redisTemplate.opsForHash().entries(cartSessionId);
             for (Map.Entry<Object, Object> entry : cartMap.entrySet()) {
+                BookResponseDto book = bookService.getBookById(Long.parseLong(entry.getKey().toString()));
                 String[] values = entry.getValue().toString().split("/");
                 cart.add(new CartResponseDto(Long.parseLong(entry.getKey().toString()),
-                        values[0],
-                        Long.parseLong(values[1]),
+                        book.title(),
+                        book.sellingPrice(),
                         Integer.parseInt(values[2])));
             }
             return ResponseEntity.ok(cart);
         }
+
         return ResponseEntity.ok(cartService.getCartByCustomerId(customerId));
     }
 
     @PostMapping
-    public ResponseEntity<String> addToCart(@CookieValue(name = "cartSession", required = false) String cartSessionId,
-                                            @RequestHeader(name = "X-Customer-Id", required = false, defaultValue = "0") long customerId,
-                                            @RequestBody CartRequestDto cartRequestDto) {
+    public ResponseEntity<String> addToCart(HttpServletResponse response,
+                                          @CookieValue(name = "cartSession", required = false) String cartSessionId,
+                                          @RequestHeader(name = "X-Customer-Id", required = false, defaultValue = "0") long customerId,
+                                          @RequestBody CartRequestDto cartRequestDto) {
         if (customerId == 0) {
             // 비회원 로직
-            if (cartSessionId == null) {
+            if (cartSessionId.isEmpty()) {
                 String newCartSessionId = "cart:" + UUID.randomUUID();
-                redisTemplate.opsForHash().put(newCartSessionId, cartRequestDto.bookId(), cartRequestDto.quantity());
+                redisTemplate.opsForHash().put(newCartSessionId, String.valueOf(cartRequestDto.bookId()), cartRequestDto.title() + "/" + cartRequestDto.sellingPrice() + "/" + cartRequestDto.quantity());
+                return ResponseEntity.status(HttpStatus.CREATED).body(newCartSessionId);
             } else {
-                if (Boolean.TRUE.equals(redisTemplate.hasKey(cartSessionId))
-                        && !redisTemplate.opsForHash().hasKey(cartSessionId, cartRequestDto.bookId())) {
-                    redisTemplate.opsForHash().put(cartSessionId, cartRequestDto.bookId(), cartRequestDto.title() + "/" + cartRequestDto.sellingPrice() + "/" + cartRequestDto.quantity());
+                if (redisTemplate.opsForHash().get(cartSessionId, String.valueOf(cartRequestDto.bookId())) == null) {
+                    redisTemplate.opsForHash().put(cartSessionId, String.valueOf(cartRequestDto.bookId()), cartRequestDto.title() + "/" + cartRequestDto.sellingPrice() + "/" + cartRequestDto.quantity());
                 } else {
                     // TODO BAD_REQUEST
                 }
@@ -77,6 +78,34 @@ public class CartController {
     }
 
     // DELETE
+    @DeleteMapping
+    public ResponseEntity<Void> deleteFromCart(@RequestHeader(name = "X-Customer-Id", required = false, defaultValue = "0") long customerId,
+                                            @CookieValue(name = "cartSession", required = false) String cartSessionId,
+                                            @RequestBody CartDeleteDto cartDeleteDto) {
+
+        if (customerId == 0) {
+            // 비회원
+            redisTemplate.opsForHash().delete(cartSessionId, String.valueOf(cartDeleteDto.bookId()));
+        }
+        cartService.removeCart(new CartId(cartDeleteDto.bookId(), customerId));
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
     // UPDATE
+    @PutMapping
+    public ResponseEntity<CartUpdateDto> updateToCart(@RequestHeader(name = "X-Customer-Id", required = false, defaultValue = "0") long customerId,
+                                             @CookieValue(name = "cartSession", required = false) String cartSessionId,
+                                             @RequestBody CartRequestDto cartRequestDto) {
+
+        if (customerId == 0) {
+            String[] redisValue = redisTemplate.opsForHash().get(cartSessionId, String.valueOf(cartRequestDto.bookId())).toString().split("/");
+            redisValue[2] = String.valueOf(cartRequestDto.quantity());
+            redisTemplate.opsForHash().put(cartSessionId, String.valueOf(cartRequestDto.bookId()), redisValue[0] + "/" + redisValue[1] + "/" + redisValue[2]);
+
+        } else {
+            cartService.updateCart(cartRequestDto, customerId);
+        }
+        CartUpdateDto cartUpdateDto = new CartUpdateDto(cartRequestDto.bookId(), cartRequestDto.quantity());
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(cartUpdateDto);
+    }
 }
