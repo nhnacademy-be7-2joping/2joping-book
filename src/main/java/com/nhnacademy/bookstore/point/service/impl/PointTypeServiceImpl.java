@@ -1,14 +1,18 @@
 package com.nhnacademy.bookstore.point.service.impl;
 
-import com.nhnacademy.bookstore.common.error.exception.point.PointPolicyNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.point.PointTypeNotFoundException;
+import com.nhnacademy.bookstore.point.dto.request.CreatePointTypeRequestDto;
+import com.nhnacademy.bookstore.point.dto.request.UpdatePointTypeRequestDto;
 import com.nhnacademy.bookstore.point.dto.response.PointTypeDto;
+import com.nhnacademy.bookstore.point.dto.response.ReadPointTypeResponseDto;
+import com.nhnacademy.bookstore.point.dto.response.UpdatePointTypeResponseDto;
 import com.nhnacademy.bookstore.point.entity.PointType;
 import com.nhnacademy.bookstore.point.repository.PointTypeRepository;
 import com.nhnacademy.bookstore.point.service.PointTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.nhnacademy.bookstore.point.mapper.PointTypeMapper;
 import java.util.List;
 
 @Service
@@ -17,29 +21,34 @@ import java.util.List;
 public class PointTypeServiceImpl implements PointTypeService {
 
     private final PointTypeRepository pointTypeRepository;
+    private final PointTypeMapper pointTypeMapper;
 
-    public PointTypeDto createPointType(PointTypeDto dto) {
-        PointType pointType = PointType.builder()
-                .type(dto.type())
-                .accVal(dto.accVal())
-                .name(dto.name())
-                .build();
-
-        return PointTypeDto.from(pointTypeRepository.save(pointType));
+    @Transactional
+    public Long createPointType(CreatePointTypeRequestDto dto) {
+        PointType pointType = pointTypeMapper.toEntity(dto);
+        return pointTypeRepository.save(pointType).getPointTypeId();
     }
 
-    public PointTypeDto updatePointType(Long id, PointTypeDto dto) {
+    @Transactional
+    public UpdatePointTypeResponseDto updatePointType(Long id, UpdatePointTypeRequestDto dto) {
         PointType pointType = pointTypeRepository.findById(id)
-                .orElseThrow(() -> new PointPolicyNotFoundException("포인트 정책을 찾을 수 없습니다."));
-
-        pointType.updateAccVal(dto.accVal());
-
-        return PointTypeDto.from(pointType);
+                .orElseThrow(PointTypeNotFoundException::new);
+        pointType.updatePointType(dto.type(),dto.accVal(),dto.name(),dto.isActive());
+        PointType updatedPointType = pointTypeRepository.save(pointType);
+        return pointTypeMapper.toUpdateResponseDto(updatedPointType);
     }
 
+
+    @Transactional
+    @Override
     public List<PointTypeDto> getAllActivePointTypes() {
-        return pointTypeRepository.findAllByIsActiveTrue().stream()
-                .map(PointTypeDto::from)
-                .toList();
+        return pointTypeRepository.findAllActivePointTypes();
+    }
+
+    @Transactional
+    public ReadPointTypeResponseDto getPointTypeById(Long typeId) {
+        PointType pointType = pointTypeRepository.findById(typeId)
+                .orElseThrow(PointTypeNotFoundException::new);
+        return pointTypeMapper.toReadResponseDto(pointType);
     }
 }
