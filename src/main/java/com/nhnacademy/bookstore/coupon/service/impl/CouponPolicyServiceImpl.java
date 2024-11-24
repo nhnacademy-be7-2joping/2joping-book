@@ -84,6 +84,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
                 ));
 
         couponPolicy.updateName(request.name());
+        couponPolicy.updateDiscountType(request.discountType());
         couponPolicy.updateDiscountValue(request.discountValue());
         couponPolicy.updateUsageLimit(request.usageLimit());
         couponPolicy.updateDuration(request.duration());
