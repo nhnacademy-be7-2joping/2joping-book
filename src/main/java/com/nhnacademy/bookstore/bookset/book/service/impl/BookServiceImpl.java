@@ -44,6 +44,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -263,6 +264,7 @@ public class BookServiceImpl implements BookService {
      * 전체 도서를 조회하는 메서드
      * @return 도서 객체
      */
+    @Transactional(readOnly = true)
     @Override
     public Page<BookSimpleResponseDto> getAllBooks(Pageable pageable) {
         Page<BookSimpleResponseDto> books = bookRepository.findAllBooks(pageable);
@@ -274,6 +276,8 @@ public class BookServiceImpl implements BookService {
      * @param categoryId
      * @return 도서 객체
      */
+
+    @Transactional(readOnly = true)
     @Override
     public Page<BookSimpleResponseDto> getBooksByCategoryId(Pageable pageable, Long categoryId) {
         return bookRepository.findBooksByCategoryId(pageable, categoryId);
@@ -284,6 +288,8 @@ public class BookServiceImpl implements BookService {
      * @param contributorId
      * @return 도서 객체
      */
+
+    @Transactional(readOnly = true)
     @Override
     public Page<BookSimpleResponseDto> getBooksByContributorId(Pageable pageable, Long contributorId) {
         return bookRepository.findBooksByContributorId(pageable, contributorId);
@@ -294,6 +300,8 @@ public class BookServiceImpl implements BookService {
      * @param bookId
      * @return 도서 객체
      */
+
+    @Transactional(readOnly = true)
     @Override
     public BookResponseDto getBookById(Long bookId) {
         BookResponseDto book = bookRepository.findBookByBookId(bookId).orElseThrow(()-> new BookNotFoundException("도서를 찾을 수 없습니다."));

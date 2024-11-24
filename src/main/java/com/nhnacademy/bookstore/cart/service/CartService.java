@@ -50,9 +50,9 @@ public class CartService {
         return false;
     }
 
-    public boolean updateCart(Cart cart) {
-        if (cartRepository.existsById(new CartId(cart.getId().getBookId(), cart.getId().getCustomerId()))) {
-            cartRepository.save(cart);
+    public boolean updateCart(CartRequestDto cartRequestDto, long customerId) {
+        if (cartRepository.existsById(new CartId(cartRequestDto.bookId(), customerId))) {
+            cartRepository.updateQuantity(cartRequestDto.bookId(), cartRequestDto.quantity());
             return true;
         }
         return false;

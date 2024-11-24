@@ -12,6 +12,7 @@ import com.nhnacademy.bookstore.bookset.book.service.BookService;
 import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.tag.dto.TagResponseDto;
+import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -109,7 +112,7 @@ class BookControllerTest {
         bookResponseDto = new BookResponseDto(
                 1L, "Publisher 1", "Book Title 1", "Description", LocalDate.of(2023, 10, 29),
                 "1234567890123", 20000, 15000, true, true, 10, 0, 0,
-                contributors, List.of("Category 1", "Category 2"), List.of(new BookTagResponseDto(1L,"Tag 1")),"thumbnail1"
+                contributors, List.of("Category 1", "Category 2"), List.of(new BookTagResponseDto(1L,"Tag 1")),"thumbnail1",List.of(new ReviewResponseDto(1L,1L,1L,1L,5,"제목","내용","이미지", Timestamp.valueOf(LocalDateTime.now()),null))
         );
     }
 

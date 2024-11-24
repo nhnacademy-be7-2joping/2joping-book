@@ -9,6 +9,9 @@ package com.nhnacademy.bookstore.orderset.order.entity;
  */
 
 
+import com.nhnacademy.bookstore.coupon.entity.member.MemberCoupon;
+import com.nhnacademy.bookstore.orderset.order_state.entity.OrderState;
+import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,7 +33,7 @@ public class Order {
     @Column(name = "order_id", nullable = false)
     private Long orderId;
 
-    /*@ManyToOne
+    @ManyToOne
     @JoinColumn(name = "order_state_id", nullable = false)
     private OrderState orderState;
 
@@ -40,7 +43,7 @@ public class Order {
 
     @OneToOne
     @JoinColumn(name = "coupon_usage_id")
-    private Coupon couponUsage;*/
+    private MemberCoupon couponUsage;
 
     @Column(name = "order_date", nullable = false)
     private LocalDateTime orderDate;
@@ -51,7 +54,8 @@ public class Order {
     @Column(name = "receiver", length = 20, nullable = false)
     private String receiver;
 
-    @Column(name = "postal_code", length = 5, nullable = false)
+
+    @Column(name = "postal_code",  columnDefinition = "CHAR(5)")
     private String postalCode;
 
     @Column(name = "road_address", length = 100, nullable = false)
