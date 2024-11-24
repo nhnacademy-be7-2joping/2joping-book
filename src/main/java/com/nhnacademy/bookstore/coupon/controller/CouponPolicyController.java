@@ -57,7 +57,7 @@ public class CouponPolicyController {
         return ResponseEntity.ok(responseDtos);
     }
 
-    @PatchMapping("policies/{coupon-policy-id}")
+    @PutMapping("policies/{coupon-policy-id}")
     public ResponseEntity<Long> updateCouponPolicy(
             @ValidPathVariable @PathVariable("coupon-policy-id") Long id,
             @RequestBody UpdateCouponPolicyRequest request
