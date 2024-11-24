@@ -15,7 +15,7 @@ import com.nhnacademy.bookstore.coupon.enums.DiscountType;
 public record CouponPolicyResponseDto(
         Long couponPolicyId,
         String name,
-        DiscountType discountType,
+        String discountType,
         Integer discountValue,
         Integer usageLimit,
         Integer duration,
@@ -26,7 +26,7 @@ public record CouponPolicyResponseDto(
         return new CouponPolicyResponseDto(
                 couponPolicy.getCouponPolicyId(),
                 couponPolicy.getName(),
-                couponPolicy.getDiscountType(),
+                couponPolicy.getDiscountType().toString(),
                 couponPolicy.getDiscountValue(),
                 couponPolicy.getUsageLimit(),
                 couponPolicy.getDuration(),

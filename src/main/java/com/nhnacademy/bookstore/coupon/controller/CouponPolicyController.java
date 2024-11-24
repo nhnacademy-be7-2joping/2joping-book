@@ -5,7 +5,6 @@ import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
 import com.nhnacademy.bookstore.coupon.dto.request.CreateCouponPolicyRequest;
 import com.nhnacademy.bookstore.coupon.dto.request.UpdateCouponPolicyRequest;
 import com.nhnacademy.bookstore.coupon.dto.response.CouponPolicyResponseDto;
-import com.nhnacademy.bookstore.coupon.entity.CouponPolicy;
 import com.nhnacademy.bookstore.coupon.service.CouponPolicyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
