@@ -13,31 +13,17 @@ import org.mapstruct.factory.Mappers;
 public interface ReviewMapper {
     ReviewMapper INSTANCE = Mappers.getMapper(ReviewMapper.class);
 
-    @Mapping(source = "reviewId", target = "reviewId")
-    @Mapping(source = "ratingValue", target = "ratingValue")
-    @Mapping(source = "title", target = "title")
-    @Mapping(source = "text", target = "text")
+
     @Mapping(source = "imageUrl", target = "reviewImage")
-    @Mapping(source = "createdAt", target = "createdAt")
     ReviewCreateResponseDto toCreateResponseDto(Review review);
 
-    @Mapping(source = "reviewId", target = "reviewId")
-    @Mapping(source = "ratingValue", target = "ratingValue")
-    @Mapping(source = "title", target = "title")
-    @Mapping(source = "text", target = "text")
+
     @Mapping(source = "imageUrl", target = "reviewImage")
-    @Mapping(source = "updatedAt", target = "updatedAt")
     ReviewModifyResponseDto toModifyResponseDto(Review review);
 
-    @Mapping(source = "reviewId", target = "reviewId")
     @Mapping(source = "orderDetail.orderDetailId", target = "orderDetailId")
     @Mapping(source = "member.id", target = "customerId")
     @Mapping(source = "book.bookId", target = "bookId")
-    @Mapping(source = "ratingValue", target = "ratingValue")
-    @Mapping(source = "title", target = "title")
-    @Mapping(source = "text", target = "text")
     @Mapping(source = "imageUrl", target = "reviewImage")
-    @Mapping(source = "createdAt", target = "createdAt")
-    @Mapping(source = "updatedAt", target = "updatedAt")
     ReviewResponseDto toResponseDto(Review review);
 }

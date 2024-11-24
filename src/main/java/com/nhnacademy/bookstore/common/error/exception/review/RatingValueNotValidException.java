@@ -1,6 +1,5 @@
 package com.nhnacademy.bookstore.common.error.exception.review;
 
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 public class RatingValueNotValidException extends RuntimeException  {
     private final int invalidValue;

@@ -9,6 +9,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface ReviewImageRepository  extends JpaRepository<ReviewImage, Long> {
     @Modifying
-    @Transactional
     void deleteByReview_ReviewId(Long reviewId);
 }
