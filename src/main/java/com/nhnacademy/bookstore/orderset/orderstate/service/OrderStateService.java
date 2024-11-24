@@ -1,19 +1,16 @@
-package com.nhnacademy.bookstore.orderset.order_state.service;
+package com.nhnacademy.bookstore.orderset.orderstate.service;
 
 import com.nhnacademy.bookstore.common.error.exception.orderset.orderstate.OrderStateNotFoundException;
 import com.nhnacademy.bookstore.orderset.order.entity.Order;
 import com.nhnacademy.bookstore.orderset.order.repository.OrderRepository;
-import com.nhnacademy.bookstore.orderset.order_state.dto.request.CreateOrderStateRequest;
-import com.nhnacademy.bookstore.orderset.order_state.dto.request.UpdateOrderStateRequest;
-import com.nhnacademy.bookstore.orderset.order_state.dto.response.GetAllOrderStatesResponse;
-import com.nhnacademy.bookstore.orderset.order_state.dto.response.GetOrderStateResponse;
-import com.nhnacademy.bookstore.orderset.order_state.entity.OrderState;
-import com.nhnacademy.bookstore.orderset.order_state.repository.OrderStateRepository;
+import com.nhnacademy.bookstore.orderset.orderstate.dto.request.CreateOrderStateRequest;
+import com.nhnacademy.bookstore.orderset.orderstate.dto.request.UpdateOrderStateRequest;
+import com.nhnacademy.bookstore.orderset.orderstate.dto.response.GetAllOrderStatesResponse;
+import com.nhnacademy.bookstore.orderset.orderstate.dto.response.GetOrderStateResponse;
+import com.nhnacademy.bookstore.orderset.orderstate.entity.OrderState;
+import com.nhnacademy.bookstore.orderset.orderstate.repository.OrderStateRepository;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

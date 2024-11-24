@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstore.orderset.order_detail.entity;
+package com.nhnacademy.bookstore.orderset.orderdetail.entity;
 
 /**
  * 주문상세 Entity

@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstore.orderset.order_state.entity.vo;
+package com.nhnacademy.bookstore.orderset.orderstate.entity.vo;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

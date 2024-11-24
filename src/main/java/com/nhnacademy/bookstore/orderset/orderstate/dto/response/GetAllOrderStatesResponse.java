@@ -1,7 +1,7 @@
-package com.nhnacademy.bookstore.orderset.order_state.dto.response;
+package com.nhnacademy.bookstore.orderset.orderstate.dto.response;
 
-import com.nhnacademy.bookstore.orderset.order_state.entity.OrderState;
-import com.nhnacademy.bookstore.orderset.order_state.entity.vo.OrderStateType;
+import com.nhnacademy.bookstore.orderset.orderstate.entity.OrderState;
+import com.nhnacademy.bookstore.orderset.orderstate.entity.vo.OrderStateType;
 
 import java.util.List;
 

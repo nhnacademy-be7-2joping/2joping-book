@@ -1,6 +1,6 @@
-package com.nhnacademy.bookstore.orderset.order_state.dto.request;
+package com.nhnacademy.bookstore.orderset.orderstate.dto.request;
 
-import com.nhnacademy.bookstore.orderset.order_state.entity.vo.OrderStateType;
+import com.nhnacademy.bookstore.orderset.orderstate.entity.vo.OrderStateType;
 import jakarta.validation.constraints.NotNull;
 
 public record UpdateOrderStateRequest(

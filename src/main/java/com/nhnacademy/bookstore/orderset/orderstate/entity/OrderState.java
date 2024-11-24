@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstore.orderset.order_state.entity;
+package com.nhnacademy.bookstore.orderset.orderstate.entity;
 
 /**
  * 주문상태 Entity
@@ -6,7 +6,7 @@ package com.nhnacademy.bookstore.orderset.order_state.entity;
  * @author : 이유현
  * @date : 2024-10-22
  */
-import com.nhnacademy.bookstore.orderset.order_state.entity.vo.OrderStateType;
+import com.nhnacademy.bookstore.orderset.orderstate.entity.vo.OrderStateType;
 import jakarta.persistence.*;
 import lombok.*;
 

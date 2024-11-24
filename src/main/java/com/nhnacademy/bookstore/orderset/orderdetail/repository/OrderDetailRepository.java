@@ -1,6 +1,6 @@
-package com.nhnacademy.bookstore.orderset.order_detail.repository;
+package com.nhnacademy.bookstore.orderset.orderdetail.repository;
 
-import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
+import com.nhnacademy.bookstore.orderset.orderdetail.entity.OrderDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

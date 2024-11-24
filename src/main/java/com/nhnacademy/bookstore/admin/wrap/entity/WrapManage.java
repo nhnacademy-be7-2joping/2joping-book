@@ -5,7 +5,7 @@ package com.nhnacademy.bookstore.admin.wrap.entity;
  * @author : 이유현
  * @date : 2024-10-22
  */
-import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
+import com.nhnacademy.bookstore.orderset.orderdetail.entity.OrderDetail;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

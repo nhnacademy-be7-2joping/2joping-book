@@ -1,7 +1,7 @@
 package com.nhnacademy.bookstore.review.entity;
 
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
-import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
+import com.nhnacademy.bookstore.orderset.orderdetail.entity.OrderDetail;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
