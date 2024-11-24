@@ -8,16 +8,14 @@ package com.nhnacademy.bookstore.orderset.order_detail.entity;
  */
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import jakarta.persistence.*;
+import com.nhnacademy.bookstore.orderset.order.entity.Order;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import com.nhnacademy.bookstore.orderset.order.entity.Order;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Entity
 @Table(name = "order_detail")
 public class OrderDetail {
@@ -27,11 +25,11 @@ public class OrderDetail {
     @Column(name = "order_detail_id")
     private Long orderDetailId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
@@ -43,4 +41,5 @@ public class OrderDetail {
 
     @Column(name = "sell_price", nullable = false)
     private int sellPrice;
+
 }
