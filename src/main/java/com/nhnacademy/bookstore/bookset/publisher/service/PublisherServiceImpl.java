@@ -21,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -73,6 +75,23 @@ public class PublisherServiceImpl implements PublisherService{
     @Transactional(readOnly = true)
     public Page<PublisherResponseDto> getAllPublishers(Pageable pageable) {
         return publisherRepository.findAllBy(pageable);
+    }
+
+    /**
+     * 모든 출판사를 조회하는 메서드 (등록용)
+     * @return -> 출판사 객체
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<PublisherResponseDto> getAllPublishersForRegister() {
+        List<Publisher> publishers = publisherRepository.findAll();
+        List<PublisherResponseDto> responseDtoList = new ArrayList<>();
+
+        for (Publisher publisher : publishers) {
+            PublisherResponseDto dto = new PublisherResponseDto(publisher.getPublisherId(), publisher.getName());
+            responseDtoList.add(dto);
+        }
+        return responseDtoList;
     }
 
     /**
