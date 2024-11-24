@@ -391,6 +391,66 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         return result.toString();
     }
 
+    /**
+     *  최하위 카테고리 Id 기반으로 top, middle, bottom 카테고리 가져오기
+     *
+     * @param lowestCategoryId
+     * @return topCategoryId, middleCategoryId, bottomCategoryId 맵
+     */
+    private Map<String, Long> getCategoryHierarchy(Long lowestCategoryId) {
+        if (lowestCategoryId == null) {
+            throw new IllegalArgumentException("Category ID cannot be null");
+        }
+
+        Long bottomCategoryId = null;
+        Long middleCategoryId = null;
+        Long topCategoryId = null;
+
+        Long currentCategoryId = lowestCategoryId;
+        QCategory qParentCategory = new QCategory("parentCategoryAlias");
+
+        while (currentCategoryId != null) {
+            Tuple categoryTuple = from(qCategory)
+                    .leftJoin(qCategory.parentCategory, qParentCategory)
+                    .where(qCategory.categoryId.eq(currentCategoryId))
+                    .select(qCategory.categoryId, qParentCategory.categoryId)
+                    .fetchOne();
+
+            if (categoryTuple == null) {
+                break;
+            }
+
+            if (bottomCategoryId == null) {
+                bottomCategoryId = categoryTuple.get(qCategory.categoryId); // Set bottom first
+            } else if (middleCategoryId == null) {
+                middleCategoryId = categoryTuple.get(qCategory.categoryId); // Set middle second
+            } else {
+                topCategoryId = categoryTuple.get(qCategory.categoryId); // Set top last
+                break;
+            }
+
+            currentCategoryId = categoryTuple.get(qParentCategory.categoryId); // Move to the parent category
+        }
+
+        // Adjust hierarchy for 2-level and 1-level categories
+        if (middleCategoryId == null && bottomCategoryId != null) {
+            middleCategoryId = bottomCategoryId;
+            bottomCategoryId = null;
+        }
+
+        if (topCategoryId == null && middleCategoryId != null) {
+            topCategoryId = middleCategoryId;
+            middleCategoryId = null;
+        }
+
+        Map<String, Long> categoryHierarchy = new HashMap<>();
+        categoryHierarchy.put("topCategoryId", topCategoryId);
+        categoryHierarchy.put("middleCategoryId", middleCategoryId);
+        categoryHierarchy.put("bottomCategoryId", bottomCategoryId);
+
+        return categoryHierarchy;
+    }
+
 
     /**
      * 업데이트를 위해 특정 도서의 상세 정보를 조회
@@ -434,62 +494,8 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .fetch();
 
         Long bottomCategoryId = categoryIds.isEmpty() ? null : categoryIds.get(0);
-        Long middleCategoryId = null;
-        Long topCategoryId = null;
 
-        if (bottomCategoryId == null && middleCategoryId == null) {
-            // bottomCategoryId와 middleCategoryId가 없는 경우
-            if (topCategoryId != null) {
-                // topCategoryId만 존재 -> 단일 카테고리로 간주
-                topCategoryId = topCategoryId; // 그대로 유지
-                middleCategoryId = null;
-                bottomCategoryId = null;
-            } else {
-                // 모든 카테고리 ID가 null인 경우 예외 처리
-                throw new IllegalArgumentException("카테고리 정보가 없습니다.");
-            }
-        } else if (bottomCategoryId == null) {
-            // 2단계 카테고리 처리
-            if (middleCategoryId != null) {
-                Long currentCategoryId = middleCategoryId;
-
-                QCategory qParentCategory = new QCategory("parentCategoryAlias"); // qParentCategory 선언
-
-                Tuple categoryTuple = from(qCategory)
-                        .leftJoin(qCategory.parentCategory, qParentCategory)
-                        .where(qCategory.categoryId.eq(currentCategoryId))
-                        .select(qCategory.categoryId, qParentCategory.categoryId)
-                        .fetchOne();
-
-                if (categoryTuple != null) {
-                    middleCategoryId = categoryTuple.get(qCategory.categoryId);
-                    topCategoryId = categoryTuple.get(qParentCategory.categoryId);
-                }
-            }
-        } else {
-            // 기존 3단계 카테고리 처리
-            Long currentCategoryId = bottomCategoryId;
-            QCategory qParentCategory = new QCategory("parentCategoryAlias"); // qParentCategory 선언
-            while (currentCategoryId != null) {
-                Tuple categoryTuple = from(qCategory)
-                        .leftJoin(qCategory.parentCategory, qParentCategory)
-                        .where(qCategory.categoryId.eq(currentCategoryId))
-                        .select(qCategory.categoryId, qParentCategory.categoryId)
-                        .fetchOne();
-
-                if (categoryTuple != null) {
-                    if (middleCategoryId == null) {
-                        middleCategoryId = categoryTuple.get(qCategory.categoryId);
-                    }
-                    currentCategoryId = categoryTuple.get(qParentCategory.categoryId);
-                    if (currentCategoryId != null) {
-                        topCategoryId = currentCategoryId;
-                    }
-                } else {
-                    break;
-                }
-            }
-        }
+        Map<String, Long> categoryHierarchy = getCategoryHierarchy(bottomCategoryId);
 
         BookUpdateResponseDto bookUpdateResponseDto = new BookUpdateResponseDto(
                 book.getTitle(),
@@ -503,9 +509,9 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 book.isActive(),
                 book.getRemainQuantity(),
                 getContributorsByBook(book.getBookId()),
-                topCategoryId,
-                middleCategoryId,
-                bottomCategoryId,
+                categoryHierarchy.get("topCategoryId"),
+                categoryHierarchy.get("middleCategoryId"),
+                categoryHierarchy.get("bottomCategoryId"),
                 getTagsByBook(book.getBookId()),
                 thumbnailUrl,
                 detailUrl,
