@@ -121,7 +121,8 @@ class ReviewControllerTest {
         Page<ReviewResponseDto> responseDtoPage = new PageImpl<>(Collections.singletonList(reviewResponseDto), pageable, 1);
         when(reviewService.getReviewsByCustomerId(any(Pageable.class), any(Long.class))).thenReturn(responseDtoPage);
 
-        mockMvc.perform(get("/api/v1/bookstore/reviews/customer/1")
+        mockMvc.perform(get("/api/v1/bookstore/reviews/customer")
+                        .header("X-Customer-Id", "12345")
                         .param("page", "0")
                         .param("size", "10"))
                 .andExpect(status().isOk())

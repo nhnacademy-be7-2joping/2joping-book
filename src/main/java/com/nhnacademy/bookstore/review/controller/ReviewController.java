@@ -91,7 +91,7 @@ public class ReviewController {
      * @return 조회할 리뷰와 상태 코드를 담은 응답
      */
     @Operation(summary = "회원별 리뷰 조회", description = "특정 회원이 등록한 리뷰들을 조회합니다.")
-    @GetMapping("/customer/{customerId}")
+    @GetMapping("/customer")
     public ResponseEntity<Page<ReviewResponseDto>> getReviewsByCustomerId(@RequestHeader("X-Customer-Id") String customerId,
                                                                       @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<ReviewResponseDto> responseDtoPage = reviewService.getReviewsByCustomerId(pageable, Long.valueOf(customerId));
