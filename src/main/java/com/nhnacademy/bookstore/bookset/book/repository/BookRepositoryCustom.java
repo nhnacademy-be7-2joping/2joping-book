@@ -2,7 +2,7 @@ package com.nhnacademy.bookstore.bookset.book.repository;
 
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
-import com.nhnacademy.bookstore.bookset.book.entity.Book;
+import com.nhnacademy.bookstore.bookset.book.dto.response.BookUpdateResponseDto;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,4 +17,5 @@ public interface BookRepositoryCustom {
     Page<BookSimpleResponseDto> findBooksByContributorId(Pageable pageable, Long contributorId);
     Page<BookSimpleResponseDto> findBooksByCategoryId(Pageable pageable, Long categoryId);
     Optional<BookResponseDto> findBookByBookId(Long bookId);
+    Optional<BookUpdateResponseDto> findUpdateBookByBookId(Long bookId);
 }

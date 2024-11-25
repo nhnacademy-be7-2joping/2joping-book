@@ -22,6 +22,8 @@ public interface PublisherService {
 
     Page<PublisherResponseDto> getAllPublishers(Pageable pageable);
 
+    List<PublisherResponseDto> getAllPublishersForRegister();
+
     PublisherResponseDto updatePublisher(Long id, PublisherRequestDto publisherRequestDto);
 
     void deletePublisher(Long id);

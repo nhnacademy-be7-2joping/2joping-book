@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.bookset.contributor.controller;
 
 import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRequestDto;
+import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorNameRoleResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.service.ContributorService;
 import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
@@ -16,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 도서 기여자 Controller
@@ -125,4 +128,18 @@ public class ContributorController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * 기여자명과 역할 리스트를 반환합니다.
+     *
+     * @return HTTP 200 상태의 빈 ResponseEntity
+     */
+    @Operation(summary = "get contributors with their names and roles", description = "도서 기여자의 이름과 역할 리스트를 반환합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "도서 기여자의 이름 및 역할 리스트 반환 성공"),
+            @ApiResponse(responseCode = "404", description = "도서 기여자를 찾을 수 없음")
+    })
+    @GetMapping("/active")
+    public List<ContributorNameRoleResponseDto> getActiveContributors() {
+        return contributorService.getActiveContributorsWithRoles();
+    }
 }

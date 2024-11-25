@@ -1,15 +1,14 @@
 package com.nhnacademy.bookstore.bookset.book.repository;
 
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookContributorResponseDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
+import com.nhnacademy.bookstore.bookset.book.dto.response.*;
 
 
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookTagResponseDto;
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
+import com.nhnacademy.bookstore.bookset.book.entity.BookCategory;
 import com.nhnacademy.bookstore.bookset.book.entity.QBook;
 import com.nhnacademy.bookstore.bookset.book.entity.QBookCategory;
 import com.nhnacademy.bookstore.bookset.book.entity.QBookContributor;
+import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import com.nhnacademy.bookstore.bookset.category.entity.QCategory;
 import com.nhnacademy.bookstore.bookset.contributor.entity.Contributor;
 import com.nhnacademy.bookstore.bookset.contributor.entity.QContributor;
@@ -31,6 +30,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -53,6 +53,12 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     private final QBookImage qBookImage = QBookImage.bookImage;
     private final QImage qImage = QImage.image;
     private final QReview qReview = QReview.review;
+
+    QBookImage qBookImageThumbnail = new QBookImage("thumbnail");
+    QBookImage qBookImageDetail = new QBookImage("detail");
+    QImage qImageThumbnail = new QImage("thumbnailImage");
+    QImage qImageDetail = new QImage("detailImage");
+  
     /**
      * 전체 도서를 페이지 단위로 조회
      *
@@ -317,6 +323,208 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .fetch();
     }
 
+    /**
+     * 도서에 연결된 기여자 정보를 문자열 형식으로 변환
+     *
+     * @param contributors
+     * @return 기여자 정보가 포함된 문자열
+     */
+    private String convertContributorsToString(List<BookContributorResponseDto> contributors) {
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < contributors.size(); i++) {
+            BookContributorResponseDto contributor = contributors.get(i);
+            result.append(contributor.contributorName())
+                    .append(" (")
+                    .append(contributor.roleName())
+                    .append(")");
+
+            if (i < contributors.size() - 1) {
+                result.append(", ");
+            }
+        }
+
+        return result.toString();
+    }
+
+    /**
+     * 도서에 연결된 카테고리 정보를 문자열 형식으로 변환
+     *
+     * @param categories
+     * @return 카테고리 정보가 포함된 문자열
+     */
+    private String convertCategoriesToString(List<String> categories) {
+        if (categories == null || categories.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < categories.size(); i++) {
+            result.append(categories.get(i));
+
+            if (i < categories.size() - 1) {
+                result.append(">");
+            }
+        }
+
+        return result.toString();
+    }
+
+    /**
+     * 도서에 연결된 태그 정보를 문자열 형식으로 변환
+     *
+     * @param tags
+     * @return 태그 정보가 포함된 문자열
+     */
+    private String convertTagsToString(List<BookTagResponseDto> tags) {
+        if (tags == null || tags.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < tags.size(); i++) {
+            result.append(tags.get(i).tagName());
+
+            if (i < tags.size() - 1) {
+                result.append(", ");
+            }
+        }
+
+        return result.toString();
+    }
+
+    /**
+     *  최하위 카테고리 Id 기반으로 top, middle, bottom 카테고리 가져오기
+     *
+     * @param lowestCategoryId
+     * @return topCategoryId, middleCategoryId, bottomCategoryId 맵
+     */
+    private Map<String, Long> getCategoryHierarchy(Long lowestCategoryId) {
+        if (lowestCategoryId == null) {
+            throw new IllegalArgumentException("Category ID cannot be null");
+        }
+
+        Long bottomCategoryId = null;
+        Long middleCategoryId = null;
+        Long topCategoryId = null;
+
+        Long currentCategoryId = lowestCategoryId;
+        QCategory qParentCategory = new QCategory("parentCategoryAlias");
+
+        while (currentCategoryId != null) {
+            Tuple categoryTuple = from(qCategory)
+                    .leftJoin(qCategory.parentCategory, qParentCategory)
+                    .where(qCategory.categoryId.eq(currentCategoryId))
+                    .select(qCategory.categoryId, qParentCategory.categoryId)
+                    .fetchOne();
+
+            if (categoryTuple == null) {
+                break;
+            }
+
+            if (bottomCategoryId == null) {
+                bottomCategoryId = categoryTuple.get(qCategory.categoryId); 
+            } else if (middleCategoryId == null) {
+                middleCategoryId = categoryTuple.get(qCategory.categoryId); 
+            } else {
+                topCategoryId = categoryTuple.get(qCategory.categoryId); 
+                break;
+            }
+
+            currentCategoryId = categoryTuple.get(qParentCategory.categoryId); 
+        }
+
+        if (middleCategoryId == null && bottomCategoryId != null) {
+            middleCategoryId = bottomCategoryId;
+            bottomCategoryId = null;
+        }
+
+        if (topCategoryId == null && middleCategoryId != null) {
+            topCategoryId = middleCategoryId;
+            middleCategoryId = null;
+        }
+
+        Map<String, Long> categoryHierarchy = new HashMap<>();
+        categoryHierarchy.put("topCategoryId", topCategoryId);
+        categoryHierarchy.put("middleCategoryId", middleCategoryId);
+        categoryHierarchy.put("bottomCategoryId", bottomCategoryId);
+
+        return categoryHierarchy;
+    }
+
+    /**
+     * 업데이트를 위해 특정 도서의 상세 정보를 조회
+     *
+     * @param bookId
+     * @return 도서의 상세 정보를 담은 BookResponseDto 객체
+     */
+    @Override
+    public Optional<BookUpdateResponseDto> findUpdateBookByBookId(Long bookId) {
+        Tuple bookTuple = from(qBook)
+                .leftJoin(qBookImageThumbnail).on(
+                        qBook.bookId.eq(qBookImageThumbnail.book.bookId)
+                                .and(qBookImageThumbnail.imageType.eq("썸네일"))
+                )
+                .leftJoin(qImageThumbnail).on(
+                        qBookImageThumbnail.image.imageId.eq(qImageThumbnail.imageId)
+                )
+                .leftJoin(qBookImageDetail).on(
+                        qBook.bookId.eq(qBookImageDetail.book.bookId)
+                                .and(qBookImageDetail.imageType.eq("상세"))
+                )
+                .leftJoin(qImageDetail).on(
+                        qBookImageDetail.image.imageId.eq(qImageDetail.imageId)
+                )
+                .where(qBook.bookId.eq(bookId))
+                .select(qBook, qImageThumbnail.url, qImageDetail.url)
+                .fetchOne();
+
+        if (bookTuple == null) {
+            return Optional.empty();
+        }
+
+        Book book = bookTuple.get(qBook);
+        String thumbnailUrl = bookTuple.get(qImageThumbnail.url) != null ? bookTuple.get(qImageThumbnail.url) : "default-thumbnail.jpg";
+        String detailUrl = bookTuple.get(qImageDetail.url) != null ? bookTuple.get(qImageDetail.url) : "default-detail.jpg";
+
+        List<Long> categoryIds = from(qBookCategory)
+                .join(qBookCategory.category, qCategory)
+                .where(qBookCategory.book.bookId.eq(bookId))
+                .select(qCategory.categoryId)
+                .fetch();
+
+        Long bottomCategoryId = categoryIds.isEmpty() ? null : categoryIds.get(0);
+
+        Map<String, Long> categoryHierarchy = getCategoryHierarchy(bottomCategoryId);
+
+        BookUpdateResponseDto bookUpdateResponseDto = new BookUpdateResponseDto(
+                book.getBookId(),
+                book.getTitle(),
+                book.getDescription(),
+                book.getPublisher().getName(),
+                book.getPublishedDate(),
+                book.getIsbn(),
+                book.getRetailPrice(),
+                book.getSellingPrice(),
+                book.isGiftWrappable(),
+                book.isActive(),
+                book.getRemainQuantity(),
+                getContributorsByBook(book.getBookId()),
+                categoryHierarchy.get("topCategoryId"),
+                categoryHierarchy.get("middleCategoryId"),
+                categoryHierarchy.get("bottomCategoryId"),
+                getTagsByBook(book.getBookId()),
+                thumbnailUrl,
+                detailUrl,
+                false,
+                false
+        );
+
+        return Optional.of(bookUpdateResponseDto);
+    }
+  
     /**
      * 특정 도서의 리뷰 정보를 조회하여 반환
      */
