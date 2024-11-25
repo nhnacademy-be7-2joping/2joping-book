@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.bookset.book.service;
 
 import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateRequestDto;
+import com.nhnacademy.bookstore.bookset.book.dto.response.BookCreateAPIResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookCreateResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
@@ -19,6 +20,7 @@ import java.util.Map;
 
 public interface BookService {
     BookCreateResponseDto createBook(BookCreateRequestDto bookCreateRequestDto);
+    List<BookCreateAPIResponseDto> createBooks();
     Page<BookSimpleResponseDto> getAllBooks(Pageable pageable);
     BookResponseDto getBookById(Long bookId);
     Page<BookSimpleResponseDto> getBooksByCategoryId(Pageable pageable, Long categoryId);

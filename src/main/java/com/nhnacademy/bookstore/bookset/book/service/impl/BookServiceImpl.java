@@ -1,10 +1,13 @@
 package com.nhnacademy.bookstore.bookset.book.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateHtmlRequestDto;
 import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateRequestDto;
 import com.nhnacademy.bookstore.bookset.book.dto.request.ImageUrlRequestDto;
+import com.nhnacademy.bookstore.bookset.book.dto.response.BookCreateAPIResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookCreateResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
@@ -16,6 +19,8 @@ import com.nhnacademy.bookstore.bookset.book.repository.BookContributorRepositor
 import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
 import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import com.nhnacademy.bookstore.bookset.category.repository.CategoryRepository;
+import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRequestDto;
+import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRoleRequestDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.entity.Contributor;
 import com.nhnacademy.bookstore.bookset.contributor.entity.ContributorRole;
@@ -43,9 +48,11 @@ import com.nhnacademy.bookstore.imageset.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -98,7 +105,13 @@ public class BookServiceImpl implements BookService {
             String roleName = matcher.group(2).trim();
 
             ContributorRole role = contributorRoleRepository.findByName(roleName)
-                    .orElseThrow(ContributorRoleNotFoundException::new);
+                    .orElseGet(() -> {
+                        ContributorRole newRole = new ContributorRole();
+                        ContributorRoleRequestDto requestDto = new ContributorRoleRequestDto(roleName);
+                        newRole.toEntity(requestDto);
+                        return contributorRoleRepository.save(newRole);
+                    });
+
 
             for (String name : names) {
                 Contributor contributor = contributorRepository.findByName(name)
@@ -131,42 +144,21 @@ public class BookServiceImpl implements BookService {
         for (int i = 0; i < upperLimit; i++) {
             String categoryName = categories[i].trim();
 
+            Category finalParentCategory = parentCategory;
             Category category = categoryRepository.findByName(categoryName)
-                    .orElseThrow(() -> new CategoryNotFoundException());
+                    .orElseGet(() -> {
+                        Category newCategory = new Category();
+                        newCategory.updateName(categoryName);
+                        newCategory.activate();
+                        newCategory.updateParentCategory(finalParentCategory); // 상위 카테고리를 설정
+                        return categoryRepository.save(newCategory);
+                    });
 
+            // 현재 카테고리를 부모 카테고리로 설정
             parentCategory = category;
         }
         return parentCategory;
     }
-
-//    /**
-//     * 텍스트를 파싱하여 도서와 태그를 연관짓는 메서드
-//     *
-//     * @param book 태그를 연관시킬 도서 객체
-//     * @param text 태그 목록 텍스트 (쉼표로 구분된 태그들)
-//     * @return 태그 리스트 객체 (TagResponseDto)
-//     */
-//    public List<TagResponseDto> associateBookWithTag(Book book, String text) {
-//        List<TagResponseDto> tagResponseDtos = new ArrayList<>();
-//        String[] splitTags = text.split(",");
-//
-//        for (String inputTag : splitTags) {
-//            String tagName = inputTag.trim();
-//            Tag tag = tagRepository.findByName(tagName)
-//                    .orElseThrow(TagNotFoundException::new);
-//
-//            BookTag bookTag = new BookTag(
-//                    new BookTag.BookTagId(book.getBookId(), tag.getTagId()),
-//                    book,
-//                    tag
-//            );
-//            bookTagRepository.save(bookTag);
-//
-//            tagResponseDtos.add(new TagResponseDto(tag.getTagId(), tag.getName()));
-//        }
-//
-//        return tagResponseDtos;
-//    }
 
     public List<TagResponseDto> associateBookWithTag(Book book, List<String> tagList) {
         List<TagResponseDto> tagResponseDtos = new ArrayList<>();
@@ -187,37 +179,6 @@ public class BookServiceImpl implements BookService {
 
         return tagResponseDtos;
     }
-
-//    @Override
-//    public List<ContributorResponseDto> getContributorList(List<Map<String, String>> contributorList) {
-//        List<ContributorResponseDto> contributorDtos = new ArrayList<>();
-//
-//        for (Map<String, String> contributorMap : contributorList) {
-//            String name = contributorMap.get("name");
-//            String roleName = contributorMap.get("role");
-//
-//            if (name == null || roleName == null) {
-//                throw new IllegalArgumentException();
-//            }
-//
-//            ContributorRole role = contributorRoleRepository.findByName(roleName)
-//                    .orElseThrow(ContributorRoleNotFoundException::new);
-//
-//            Contributor contributor = contributorRepository.findByName(name)
-//                    .orElseGet(() -> {
-//                        Contributor newContributor = new Contributor(null, role, name, true);
-//                        return contributorRepository.save(newContributor);
-//                    });
-//
-//            contributorDtos.add(new ContributorResponseDto(
-//                    contributor.getContributorId(),
-//                    contributor.getContributorRole().getContributorRoleId(),
-//                    contributor.getName()
-//            ));
-//        }
-//
-//        return contributorDtos;
-//    }
 
     @Override
     public List<ContributorResponseDto> getContributorList(String contributorListJson) {
@@ -330,7 +291,6 @@ public class BookServiceImpl implements BookService {
                     contributor
             ));
         });
-//        List<ContributorResponseDto> contributorResponseDtos = List.of();
 
         Category category = getCategoryHierarchy(
                 bookCreateRequestDto.bookCreateHtmlRequestDto().topCategoryId(),
@@ -338,7 +298,6 @@ public class BookServiceImpl implements BookService {
                 bookCreateRequestDto.bookCreateHtmlRequestDto().bottomCategoryId()
         );
 
-        // Category category = getLowestLevelCategory(bookCreateHtmlRequestDto.category());
         bookCategoryRepository.save(new BookCategory(
                 new BookCategory.BookCategoryId(book.getBookId(), category.getCategoryId()),
                 book,
@@ -385,6 +344,115 @@ public class BookServiceImpl implements BookService {
                 imageUrlRequestDto.thumbnailImageUrl(),
                 imageUrlRequestDto.detailImageUrl()
         );
+    }
+
+    /**
+     * 알라딘 API를 통해 도서를 등록하는 메서드
+     *
+     * @return 등록된 도서 리스트 객체 (BookCreateAPIResponseDto)
+     * @throws ContributorNotFoundException 기여자를 찾을 수 없는 경우 발생
+     */
+    @Override
+    public List<BookCreateAPIResponseDto> createBooks() {
+
+        String apiKey = "ttbdlugus1759001";
+        // String url = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + apiKey + "&Query=company&QueryType=Title&MaxResults=50&Cover=Big&start=1&SearchTarget=Book&output=JS&Version=20131101";
+        String url = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + apiKey + "&Query=universe&QueryType=Title&MaxResults=50&start=1&SearchTarget=Book&output=JS&Version=20131101";
+
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        String jsonResponse = response.getBody();
+        List<BookCreateAPIResponseDto> bookCreateResponseDtos = new ArrayList<>();
+
+        try {
+            JsonNode rootNode = objectMapper.readTree(jsonResponse);
+            ArrayNode itemsNode = (ArrayNode) rootNode.path("item");
+
+            for (JsonNode itemNode : itemsNode) {
+                String publisherName = itemNode.path("publisher").asText();
+                Publisher publisher = publisherRepository.findByName(publisherName)
+                        .orElseGet(() -> publisherRepository.save(new Publisher(publisherName)));
+
+                String title = itemNode.path("title").asText();
+                String description = itemNode.path("description").asText();
+                LocalDate publishedDate = LocalDate.parse(itemNode.path("pubDate").asText());
+                String isbn = itemNode.path("isbn13").asText();
+                int retailPrice = itemNode.path("priceStandard").asInt();
+                int sellingPrice = itemNode.path("priceSales").asInt();
+                String contributors = itemNode.path("author").asText();
+                String categories = itemNode.path("categoryName").asText();
+                String thumbnail = itemNode.path("cover").asText();
+
+                Book book = new Book(
+                        null,
+                        publisher,
+                        title,
+                        description,
+                        publishedDate,
+                        isbn,
+                        retailPrice,
+                        sellingPrice,
+                        true,
+                        true,
+                        1000,
+                        0,
+                        0
+                );
+
+                bookRepository.save(book);
+                bookRepository.flush();
+
+                List<ContributorResponseDto> contributorResponseDtos = getContributorListForAPI(contributors);
+
+                contributorResponseDtos.forEach(dto -> {
+                    Contributor contributor = contributorRepository.findById(dto.contributorId())
+                            .orElseThrow(ContributorNotFoundException::new);
+
+                    bookContributorRepository.save(new BookContributor(
+                            new BookContributor.BookContributorId(book.getBookId(), contributor.getContributorId()),
+                            book,
+                            contributor
+                    ));
+                });
+
+                Category category = getLowestLevelCategory(categories);
+
+                bookCategoryRepository.save(new BookCategory(
+                        new BookCategory.BookCategoryId(book.getBookId(), category.getCategoryId()),
+                        book,
+                        category
+                ));
+
+                CategoryResponseDto categoryResponseDto = new CategoryResponseDto(
+                        category.getCategoryId(),
+                        category.getName(),
+                        category.getParentCategory() != null ? category.getParentCategory().getCategoryId() : null
+                );
+
+                Image image = imageRepository.save(new Image(thumbnail));
+                bookImageRepository.save(new BookImage(book, image, "썸네일"));
+
+                BookCreateAPIResponseDto bookCreateResponseDto = new BookCreateAPIResponseDto(
+                        book.getBookId(),
+                        book.getPublisher().getName(),
+                        book.getTitle(),
+                        book.getDescription(),
+                        book.getPublishedDate(),
+                        book.getIsbn(),
+                        book.getRetailPrice(),
+                        book.getSellingPrice(),
+                        book.isGiftWrappable(),
+                        book.isActive(),
+                        book.getRemainQuantity(),
+                        contributorResponseDtos,
+                        categoryResponseDto,
+                        thumbnail
+                );
+                bookCreateResponseDtos.add(bookCreateResponseDto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bookCreateResponseDtos;
     }
 
     /**
