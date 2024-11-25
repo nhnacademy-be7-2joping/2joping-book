@@ -333,7 +333,6 @@ public class BookServiceImpl implements BookService {
                     contributor
             ));
         });
-//        List<ContributorResponseDto> contributorResponseDtos = List.of();
 
         Category category = getCategoryHierarchy(
                 bookCreateRequestDto.bookCreateHtmlRequestDto().topCategoryId(),
@@ -341,7 +340,6 @@ public class BookServiceImpl implements BookService {
                 bookCreateRequestDto.bookCreateHtmlRequestDto().bottomCategoryId()
         );
 
-        // Category category = getLowestLevelCategory(bookCreateHtmlRequestDto.category());
         bookCategoryRepository.save(new BookCategory(
                 new BookCategory.BookCategoryId(book.getBookId(), category.getCategoryId()),
                 book,
@@ -357,8 +355,8 @@ public class BookServiceImpl implements BookService {
         List<TagResponseDto> tagResponseDtos;
         tagResponseDtos = associateBookWithTag(book, bookCreateHtmlRequestDto.tagList());
 
-        String thumbnailImageUrl = imageUrlRequestDto.thumbnailImageUrl() != null ? imageUrlRequestDto.thumbnailImageUrl() : "default-thumbnail-url";
-        String detailImageUrl = imageUrlRequestDto.detailImageUrl() != null ? imageUrlRequestDto.detailImageUrl() : "default-detail-url";
+        String thumbnailImageUrl = imageUrlRequestDto.thumbnailImageUrl() != null ? imageUrlRequestDto.thumbnailImageUrl() : "http://image.toast.com/aaaacko/ejoping/book/default/default-book-image.jpg";
+        String detailImageUrl = imageUrlRequestDto.detailImageUrl() != null ? imageUrlRequestDto.detailImageUrl() : "http://image.toast.com/aaaacko/ejoping/book/default/default-book-image.jpg";
 
         if (imageUrlRequestDto.thumbnailImageUrl() != null) {
             Image thumbnailImage = imageRepository.save(new Image(thumbnailImageUrl));
