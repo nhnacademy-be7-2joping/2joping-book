@@ -65,7 +65,8 @@ public class ContributorServiceImpl implements ContributorService {
         Contributor contributor = contributorRepository.findById(contributorId)
                 .orElseThrow(ContributorNotFoundException::new);
 
-        if (!contributor.getIsActive()) {
+        Boolean b = contributor.getIsActive();
+        if (Boolean.FALSE.equals(b)) {
             throw new ContributorIsDeactivateException();
         }
 
@@ -91,7 +92,8 @@ public class ContributorServiceImpl implements ContributorService {
         ContributorRole contributorRole = contributorRoleRepository.findById(dto.contributorRoleId())
                 .orElseThrow(ContributorRoleNotFoundException::new);
 
-        if (!contributor.getIsActive()) {
+        Boolean b = contributor.getIsActive();
+        if (Boolean.FALSE.equals(b)) {
             throw new ContributorIsDeactivateException();
         }
 

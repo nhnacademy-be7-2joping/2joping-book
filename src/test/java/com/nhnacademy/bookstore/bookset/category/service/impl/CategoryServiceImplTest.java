@@ -1,11 +1,10 @@
-package com.nhnacademy.bookstore.bookset.category.service;
+package com.nhnacademy.bookstore.bookset.category.service.impl;
 
 import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryRequestDto;
 import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
 import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import com.nhnacademy.bookstore.bookset.category.mapper.CategoryMapper;
 import com.nhnacademy.bookstore.bookset.category.repository.CategoryRepository;
-import com.nhnacademy.bookstore.bookset.category.service.Impl.CategoryServiceImpl;
 import com.nhnacademy.bookstore.common.error.exception.bookset.category.CannotDeactivateCategoryException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.category.CategoryNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.category.DuplicateCategoryNameException;

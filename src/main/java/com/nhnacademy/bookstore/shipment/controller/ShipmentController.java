@@ -6,7 +6,6 @@ import com.nhnacademy.bookstore.shipment.dto.response.ShipmentResponseDto;
 import com.nhnacademy.bookstore.shipment.service.ShipmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,10 +38,8 @@ public class ShipmentController {
      * @return 생성된 배송 정보를 포함한 ResponseEntity
      */
     @Operation(summary = "Create a new shipment", description = "새로운 배송을 생성합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "배송 생성 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
-    })
+    @ApiResponse(responseCode = "201", description = "배송 생성 성공")
+    @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
     @PostMapping
     public ResponseEntity<ShipmentResponseDto> createShipment(@Valid @RequestBody ShipmentRequestDto requestDto) {
         ShipmentResponseDto responseDto = shipmentService.createShipment(requestDto);
@@ -55,9 +52,7 @@ public class ShipmentController {
      * @return 모든 배송 목록을 포함한 ResponseEntity
      */
     @Operation(summary = "Get all shipments", description = "모든 배송을 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "배송 조회 성공")
-    })
+    @ApiResponse(responseCode = "200", description = "배송 조회 성공")
     @GetMapping
     public ResponseEntity<List<ShipmentResponseDto>> getAllShipments() {
         List<ShipmentResponseDto> responseDtos = shipmentService.getAllShipments();
@@ -71,10 +66,8 @@ public class ShipmentController {
      * @return 조회된 배송 정보를 포함한 ResponseEntity
      */
     @Operation(summary = "Get a shipment", description = "특정 배송을 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "배송 조회 성공"),
-            @ApiResponse(responseCode = "404", description = "배송을 찾을 수 없음")
-    })
+    @ApiResponse(responseCode = "200", description = "배송 조회 성공")
+    @ApiResponse(responseCode = "404", description = "배송을 찾을 수 없음")
     @GetMapping("/{shipmentId}")
     public ResponseEntity<ShipmentResponseDto> getShipment(@PathVariable @ValidPathVariable Long shipmentId) {
         ShipmentResponseDto responseDto = shipmentService.getShipment(shipmentId);
@@ -87,9 +80,7 @@ public class ShipmentController {
      * @return 배송 완료된 정보 목록을 포함한 ResponseEntity
      */
     @Operation(summary = "Get completed shipments", description = "배송 완료된 정보들을 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "배송 완료된 정보 조회 성공")
-    })
+    @ApiResponse(responseCode = "200", description = "배송 완료된 정보 조회 성공")
     @GetMapping("/completed")
     public ResponseEntity<List<ShipmentResponseDto>> getCompletedShipments() {
         List<ShipmentResponseDto> responseDtos = shipmentService.getCompletedShipments();
@@ -102,9 +93,7 @@ public class ShipmentController {
      * @return 배송 미완료 정보 목록을 포함한 ResponseEntity
      */
     @Operation(summary = "Get pending shipments", description = "아직 배송이 완료되지 않은 정보들을 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "배송 미완료 정보 조회 성공")
-    })
+    @ApiResponse(responseCode = "200", description = "배송 미완료 정보 조회 성공")
     @GetMapping("/pending")
     public ResponseEntity<List<ShipmentResponseDto>> getPendingShipments() {
         List<ShipmentResponseDto> responseDtos = shipmentService.getPendingShipments();
@@ -119,11 +108,9 @@ public class ShipmentController {
      * @return 수정된 배송 정보를 포함한 ResponseEntity
      */
     @Operation(summary = "Update a shipment", description = "특정 배송을 수정합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "배송 수정 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
-            @ApiResponse(responseCode = "404", description = "배송을 찾을 수 없음")
-    })
+    @ApiResponse(responseCode = "200", description = "배송 수정 성공")
+    @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
+    @ApiResponse(responseCode = "404", description = "배송을 찾을 수 없음")
     @PutMapping("/{shipmentId}")
     public ResponseEntity<ShipmentResponseDto> updateShipment(
             @PathVariable @ValidPathVariable Long shipmentId,
@@ -139,10 +126,8 @@ public class ShipmentController {
      * @return 삭제 성공 상태를 포함한 ResponseEntity
      */
     @Operation(summary = "Delete a shipment", description = "특정 배송을 삭제합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "배송 삭제 성공"),
-            @ApiResponse(responseCode = "404", description = "배송을 찾을 수 없음")
-    })
+    @ApiResponse(responseCode = "200", description = "배송 삭제 성공")
+    @ApiResponse(responseCode = "404", description = "배송을 찾을 수 없음")
     @DeleteMapping("/{shipmentId}")
     public ResponseEntity<Void> deleteShipment(@PathVariable @ValidPathVariable Long shipmentId) {
         shipmentService.deleteShipment(shipmentId);
