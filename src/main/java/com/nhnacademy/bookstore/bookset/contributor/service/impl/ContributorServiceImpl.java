@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.bookset.contributor.service.impl;
 
 import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRequestDto;
+import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorNameRoleResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.entity.Contributor;
 import com.nhnacademy.bookstore.bookset.contributor.entity.ContributorRole;
@@ -14,6 +15,8 @@ import com.nhnacademy.bookstore.bookset.contributor.service.ContributorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 도서 기여자 Service
@@ -127,5 +130,11 @@ public class ContributorServiceImpl implements ContributorService {
                 .orElseThrow(ContributorNotFoundException::new);
         contributor.activate();
         contributorRepository.save(contributor);
+    }
+
+    @Override
+    @Transactional
+    public List<ContributorNameRoleResponseDto> getActiveContributorsWithRoles() {
+        return contributorRepository.findContributorsWithRoles();
     }
 }

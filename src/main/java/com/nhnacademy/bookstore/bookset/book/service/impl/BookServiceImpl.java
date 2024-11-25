@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.bookset.book.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateHtmlRequestDto;
 import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateRequestDto;
@@ -30,6 +31,7 @@ import com.nhnacademy.bookstore.bookset.tag.repository.TagRepository;
 import com.nhnacademy.bookstore.common.error.exception.bookset.book.BookNotFoundException;
 import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
+import com.nhnacademy.bookstore.common.error.exception.bookset.category.CannotDeactivateCategoryException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.publisher.PublisherNotFoundException;
@@ -43,11 +45,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,7 +81,7 @@ public class BookServiceImpl implements BookService {
      * @return 기여자 리스트 객체 (ContributorResponseDto)
      */
     @Override
-    public List<ContributorResponseDto> getContributorList(String text) {
+    public List<ContributorResponseDto> getContributorListForAPI(String text) {
         String pattern = "([\\p{L}\\w\\s,]+) \\(([^)]+)\\)";
         Pattern regex = Pattern.compile(pattern);
         Matcher matcher = regex.matcher(text);
@@ -138,18 +142,38 @@ public class BookServiceImpl implements BookService {
         return parentCategory;
     }
 
-    /**
-     * 텍스트를 파싱하여 도서와 태그를 연관짓는 메서드
-     *
-     * @param book 태그를 연관시킬 도서 객체
-     * @param text 태그 목록 텍스트 (쉼표로 구분된 태그들)
-     * @return 태그 리스트 객체 (TagResponseDto)
-     */
-    public List<TagResponseDto> associateBookWithTag(Book book, String text) {
-        List<TagResponseDto> tagResponseDtos = new ArrayList<>();
-        String[] splitTags = text.split(",");
+//    /**
+//     * 텍스트를 파싱하여 도서와 태그를 연관짓는 메서드
+//     *
+//     * @param book 태그를 연관시킬 도서 객체
+//     * @param text 태그 목록 텍스트 (쉼표로 구분된 태그들)
+//     * @return 태그 리스트 객체 (TagResponseDto)
+//     */
+//    public List<TagResponseDto> associateBookWithTag(Book book, String text) {
+//        List<TagResponseDto> tagResponseDtos = new ArrayList<>();
+//        String[] splitTags = text.split(",");
+//
+//        for (String inputTag : splitTags) {
+//            String tagName = inputTag.trim();
+//            Tag tag = tagRepository.findByName(tagName)
+//                    .orElseThrow(TagNotFoundException::new);
+//
+//            BookTag bookTag = new BookTag(
+//                    new BookTag.BookTagId(book.getBookId(), tag.getTagId()),
+//                    book,
+//                    tag
+//            );
+//            bookTagRepository.save(bookTag);
+//
+//            tagResponseDtos.add(new TagResponseDto(tag.getTagId(), tag.getName()));
+//        }
+//
+//        return tagResponseDtos;
+//    }
 
-        for (String inputTag : splitTags) {
+    public List<TagResponseDto> associateBookWithTag(Book book, List<String> tagList) {
+        List<TagResponseDto> tagResponseDtos = new ArrayList<>();
+        for (String inputTag : tagList) {
             String tagName = inputTag.trim();
             Tag tag = tagRepository.findByName(tagName)
                     .orElseThrow(TagNotFoundException::new);
@@ -165,6 +189,104 @@ public class BookServiceImpl implements BookService {
         }
 
         return tagResponseDtos;
+    }
+
+//    @Override
+//    public List<ContributorResponseDto> getContributorList(List<Map<String, String>> contributorList) {
+//        List<ContributorResponseDto> contributorDtos = new ArrayList<>();
+//
+//        for (Map<String, String> contributorMap : contributorList) {
+//            String name = contributorMap.get("name");
+//            String roleName = contributorMap.get("role");
+//
+//            if (name == null || roleName == null) {
+//                throw new IllegalArgumentException();
+//            }
+//
+//            ContributorRole role = contributorRoleRepository.findByName(roleName)
+//                    .orElseThrow(ContributorRoleNotFoundException::new);
+//
+//            Contributor contributor = contributorRepository.findByName(name)
+//                    .orElseGet(() -> {
+//                        Contributor newContributor = new Contributor(null, role, name, true);
+//                        return contributorRepository.save(newContributor);
+//                    });
+//
+//            contributorDtos.add(new ContributorResponseDto(
+//                    contributor.getContributorId(),
+//                    contributor.getContributorRole().getContributorRoleId(),
+//                    contributor.getName()
+//            ));
+//        }
+//
+//        return contributorDtos;
+//    }
+
+    @Override
+    public List<ContributorResponseDto> getContributorList(String contributorListJson) {
+        List<ContributorResponseDto> contributorDtos = new ArrayList<>();
+
+        // contributorListJson이 비어 있으면 바로 반환
+        if (contributorListJson == null || contributorListJson.isEmpty()) {
+            return contributorDtos;
+        }
+
+        try {
+            // JSON 문자열을 List<Map<String, String>>으로 변환
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<Map<String, String>> contributorList = objectMapper.readValue(contributorListJson, new TypeReference<>() {
+            });
+
+            // contributorList를 순회하며 처리
+            for (Map<String, String> contributorMap : contributorList) {
+                String name = contributorMap.get("name");
+                String roleName = contributorMap.get("role");
+
+                if (name == null || roleName == null) {
+                    throw new IllegalArgumentException("Contributor name or role is missing");
+                }
+
+                // ContributorRole을 찾거나, 없으면 예외 처리
+                ContributorRole role = contributorRoleRepository.findByName(roleName)
+                        .orElseThrow(() -> new ContributorRoleNotFoundException());
+
+                // Contributor를 찾거나 없으면 새로 생성하여 저장
+                Contributor contributor = contributorRepository.findByName(name)
+                        .orElseGet(() -> {
+                            Contributor newContributor = new Contributor(null, role, name, true);
+                            return contributorRepository.save(newContributor);
+                        });
+
+                // Contributor 정보를 DTO로 변환하여 목록에 추가
+                contributorDtos.add(new ContributorResponseDto(
+                        contributor.getContributorId(),
+                        contributor.getContributorRole().getContributorRoleId(),
+                        contributor.getName()
+                ));
+            }
+        } catch (Exception ex) {
+            // JSON 변환 중 발생한 예외 처리
+            ex.printStackTrace();
+            throw new RuntimeException("Error processing contributor list JSON");
+        }
+
+        return contributorDtos;
+    }
+
+    public Category getCategoryHierarchy(Long topCategoryId, Long middleCategoryId, Long bottomCategoryId) {
+        if (bottomCategoryId != null) {
+            return categoryRepository.findById(bottomCategoryId)
+                    .orElseThrow(CategoryNotFoundException::new);
+        }
+        if (middleCategoryId != null) {
+            return categoryRepository.findById(middleCategoryId)
+                    .orElseThrow(CategoryNotFoundException::new);
+        }
+        if (topCategoryId != null) {
+            return categoryRepository.findById(topCategoryId)
+                    .orElseThrow(CategoryNotFoundException::new);
+        }
+        throw new IllegalArgumentException("At least one category must be selected.");
     }
 
     /**
@@ -200,6 +322,7 @@ public class BookServiceImpl implements BookService {
         bookRepository.save(book);
 
         List<ContributorResponseDto> contributorResponseDtos = getContributorList(bookCreateHtmlRequestDto.contributorList());
+
         contributorResponseDtos.forEach(dto -> {
             Contributor contributor = contributorRepository.findById(dto.contributorId())
                     .orElseThrow(ContributorNotFoundException::new);
@@ -210,8 +333,15 @@ public class BookServiceImpl implements BookService {
                     contributor
             ));
         });
+//        List<ContributorResponseDto> contributorResponseDtos = List.of();
 
-        Category category = getLowestLevelCategory(bookCreateHtmlRequestDto.category());
+        Category category = getCategoryHierarchy(
+                bookCreateRequestDto.bookCreateHtmlRequestDto().topCategoryId(),
+                bookCreateRequestDto.bookCreateHtmlRequestDto().middleCategoryId(),
+                bookCreateRequestDto.bookCreateHtmlRequestDto().bottomCategoryId()
+        );
+
+        // Category category = getLowestLevelCategory(bookCreateHtmlRequestDto.category());
         bookCategoryRepository.save(new BookCategory(
                 new BookCategory.BookCategoryId(book.getBookId(), category.getCategoryId()),
                 book,
@@ -319,5 +449,15 @@ public class BookServiceImpl implements BookService {
 //        return List.of();
 //    }
 
-
+    /**
+     * 특정 도서를 비활성화하는 메서드
+     * @param bookId
+     */
+    @Transactional
+    @Override
+    public void deactivateBook(Long bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException("도서를 찾을 수 없습니다."));
+        book.deactivate();
+    }
 }
