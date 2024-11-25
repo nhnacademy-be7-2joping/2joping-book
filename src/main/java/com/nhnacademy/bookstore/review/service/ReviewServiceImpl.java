@@ -83,7 +83,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         int ratingValue = reviewCreateRequestDto.reviewDetailRequestDto().ratingValue();
 
-        String reviewImage = reviewCreateRequestDto.reviewImageUrlRequestDto().reviewImage() != null ? reviewCreateRequestDto.reviewImageUrlRequestDto().reviewImage() : " ";
+        String reviewImage = reviewCreateRequestDto.reviewImageUrlRequestDto().reviewImage() != null ? reviewCreateRequestDto.reviewImageUrlRequestDto().reviewImage() : null;
 
 
 

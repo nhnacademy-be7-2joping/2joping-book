@@ -110,7 +110,7 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
         }
 
         Review review = reviewTuple.get(qReview);
-        String imageUrl = reviewTuple.get(qImage.url) != null ? reviewTuple.get(qImage.url) : "default-image.jpg";
+        String imageUrl = reviewTuple.get(qImage.url) != null ? reviewTuple.get(qImage.url) : null;
 
         ReviewResponseDto reviewResponseDto = new ReviewResponseDto(
                 review.getReviewId(),

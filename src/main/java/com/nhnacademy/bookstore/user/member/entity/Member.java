@@ -47,6 +47,7 @@ public class Member extends Customer {
 
     private LocalDate birthday;
 
+    private int birthdayMonth;
 
     @Column(nullable = false)
     private LocalDate joinDate;
