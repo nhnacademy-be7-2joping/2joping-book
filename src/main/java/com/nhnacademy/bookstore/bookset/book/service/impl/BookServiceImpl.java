@@ -36,6 +36,7 @@ import com.nhnacademy.bookstore.bookset.tag.repository.TagRepository;
 import com.nhnacademy.bookstore.common.error.exception.bookset.book.BookNotFoundException;
 import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
+import com.nhnacademy.bookstore.common.error.exception.bookset.category.CannotDeactivateCategoryException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.publisher.PublisherNotFoundException;
@@ -50,7 +51,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -480,6 +483,7 @@ public class BookServiceImpl implements BookService {
      * 전체 도서를 조회하는 메서드
      * @return 도서 객체
      */
+    @Transactional(readOnly = true)
     @Override
     public Page<BookSimpleResponseDto> getAllBooks(Pageable pageable) {
         Page<BookSimpleResponseDto> books = bookRepository.findAllBooks(pageable);
@@ -491,6 +495,8 @@ public class BookServiceImpl implements BookService {
      * @param categoryId
      * @return 도서 객체
      */
+
+    @Transactional(readOnly = true)
     @Override
     public Page<BookSimpleResponseDto> getBooksByCategoryId(Pageable pageable, Long categoryId) {
         return bookRepository.findBooksByCategoryId(pageable, categoryId);
@@ -501,6 +507,8 @@ public class BookServiceImpl implements BookService {
      * @param contributorId
      * @return 도서 객체
      */
+
+    @Transactional(readOnly = true)
     @Override
     public Page<BookSimpleResponseDto> getBooksByContributorId(Pageable pageable, Long contributorId) {
         return bookRepository.findBooksByContributorId(pageable, contributorId);
@@ -511,6 +519,8 @@ public class BookServiceImpl implements BookService {
      * @param bookId
      * @return 도서 객체
      */
+
+    @Transactional(readOnly = true)
     @Override
     public BookResponseDto getBookById(Long bookId) {
         BookResponseDto book = bookRepository.findBookByBookId(bookId).orElseThrow(()-> new BookNotFoundException("도서를 찾을 수 없습니다."));
@@ -527,4 +537,16 @@ public class BookServiceImpl implements BookService {
 //        // TODO 장바구니에서 도서 정보 조회 필요.
 //        return List.of();
 //    }
+
+    /**
+     * 특정 도서를 비활성화하는 메서드
+     * @param bookId
+     */
+    @Transactional
+    @Override
+    public void deactivateBook(Long bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException("도서를 찾을 수 없습니다."));
+        book.deactivate();
+    }
 }

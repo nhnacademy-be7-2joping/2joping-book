@@ -129,7 +129,16 @@ public class BookController {
         BookResponseDto book = bookService.getBookById(bookId);
         return ResponseEntity.status(HttpStatus.OK).body(book);
     }
+
+    /**
+     * 특정 도서를 삭제하는 controller
+     * @param bookId 삭제하려는 도서 id
+     * @return 삭제된 도서 ID와 상태 코드를 담은 응답
+     */
+    @Operation(summary = "특정 도서 삭제", description = "특정 도서를 삭제합니다.")
+    @PutMapping("/admin/books/{book-id}/deactivate")
+    public ResponseEntity<Long> deactivateBook(@PathVariable("book-id") Long bookId) {
+        bookService.deactivateBook(bookId);
+        return ResponseEntity.status(HttpStatus.OK).body(bookId);
+    }
 }
-
-
-

@@ -26,6 +26,7 @@ import com.nhnacademy.bookstore.bookset.tag.repository.TagRepository;
 import com.nhnacademy.bookstore.common.error.exception.bookset.book.BookNotFoundException;
 import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
 import com.nhnacademy.bookstore.bookset.book.service.impl.BookServiceImpl;
+import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
 import com.nhnacademy.bookstore.imageset.repository.BookImageRepository;
 import com.nhnacademy.bookstore.imageset.repository.ImageRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,8 +40,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.sql.Timestamp;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -130,7 +133,7 @@ class BookServiceImplTest {
         bookResponseDto = new BookResponseDto(
                 1L, "Publisher 1", "Book Title 1", "Description", LocalDate.of(2023, 10, 29),
                 "1234567890123", 20000, 15000, true, true, 10, 0, 0,
-                contributors, List.of("Category 1", "Category 2"), List.of(new BookTagResponseDto(1L,"Tag 1")),"thumbnail1"
+                contributors, List.of("Category 1", "Category 2"), List.of(new BookTagResponseDto(1L,"Tag 1")),"thumbnail1",List.of(new ReviewResponseDto(1L,1L,1L,1L,5,"제목","내용","이미지", Timestamp.valueOf(LocalDateTime.now()),null))
         );
     }
 
@@ -362,5 +365,38 @@ class BookServiceImplTest {
         when(bookRepository.findBookByBookId(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(BookNotFoundException.class, () -> bookService.getBookById(1L));
+    }
+
+    @Test
+    @DisplayName("도서 비활성화 - 성공")
+    void testDeactivateBookSuccess() {
+        Book mockBook = new Book(
+                1L,
+                new Publisher(1L, "Test Publisher"),
+                "Test Title",
+                "Test Description",
+                LocalDate.now(),
+                "1234567890123",
+                20000,
+                18000,
+                true,
+                true,
+                10,
+                0,
+                0
+        );
+
+        when(bookRepository.findById(1L)).thenReturn(Optional.of(mockBook));
+        bookService.deactivateBook(1L);
+        assertFalse(mockBook.isActive(), "도서가 비활성화되지 않았습니다.");
+        verify(bookRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    @DisplayName("도서 비활성화 - 실패 (도서 없음)")
+    void testDeactivateBookFailure() {
+        when(bookRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(BookNotFoundException.class, () -> bookService.deactivateBook(1L));
+        verify(bookRepository, times(1)).findById(1L);
     }
 }
