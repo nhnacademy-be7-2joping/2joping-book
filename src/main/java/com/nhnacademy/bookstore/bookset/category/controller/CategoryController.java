@@ -55,6 +55,17 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "최상위 카테고리 조회", description = "최상위 카테고리를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "카테고리 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "카테고리를 찾을 수 없음")
+    })
+    @GetMapping("/categories/top")
+    public ResponseEntity<List<CategoryResponseDto>> getTopCategories() {
+        List<CategoryResponseDto> response = categoryService.getTopCategories();
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "부모 카테고리 조회", description = "특정 카테고리의 부모 카테고리를 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "부모 카테고리 조회 성공"),

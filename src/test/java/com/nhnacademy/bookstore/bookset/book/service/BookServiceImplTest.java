@@ -366,4 +366,37 @@ class BookServiceImplTest {
 
         assertThrows(BookNotFoundException.class, () -> bookService.getBookById(1L));
     }
+
+    @Test
+    @DisplayName("도서 비활성화 - 성공")
+    void testDeactivateBookSuccess() {
+        Book mockBook = new Book(
+                1L,
+                new Publisher(1L, "Test Publisher"),
+                "Test Title",
+                "Test Description",
+                LocalDate.now(),
+                "1234567890123",
+                20000,
+                18000,
+                true,
+                true,
+                10,
+                0,
+                0
+        );
+
+        when(bookRepository.findById(1L)).thenReturn(Optional.of(mockBook));
+        bookService.deactivateBook(1L);
+        assertFalse(mockBook.isActive(), "도서가 비활성화되지 않았습니다.");
+        verify(bookRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    @DisplayName("도서 비활성화 - 실패 (도서 없음)")
+    void testDeactivateBookFailure() {
+        when(bookRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(BookNotFoundException.class, () -> bookService.deactivateBook(1L));
+        verify(bookRepository, times(1)).findById(1L);
+    }
 }

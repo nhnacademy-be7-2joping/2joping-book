@@ -97,4 +97,8 @@ public class CouponPolicy {
         public void deactivateCouponPolicy() {
                 this.isActive = false;
         }
+
+        public void updateActive(Boolean active) {
+                this.isActive = active;
+        }
 }

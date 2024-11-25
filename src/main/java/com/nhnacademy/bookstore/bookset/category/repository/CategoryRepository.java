@@ -5,6 +5,7 @@ import com.nhnacademy.bookstore.bookset.contributor.entity.ContributorRole;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,10 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findAllByParentCategory_CategoryId(Long categoryId);
     List<Category> findAllByIsActiveTrue();
     Page<Category> findAllByIsActiveTrue(Pageable pageable);
+
+    @Query("SELECT c FROM Category c WHERE c.parentCategory IS NULL AND c.isActive = true")
+    List<Category> findTopCategories();
+
     Optional<Category> findByName(String name);
     Boolean existsByParentCategory_CategoryId(Long categoryId);
 }
