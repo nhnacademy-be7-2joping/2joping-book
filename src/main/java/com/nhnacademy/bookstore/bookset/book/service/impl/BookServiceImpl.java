@@ -697,6 +697,7 @@ public class BookServiceImpl implements BookService {
                         imageRepository.delete(existing.getImage());
                     }
                 });
+    }
       
     /*
      * 특정 도서를 비활성화하는 메서드
