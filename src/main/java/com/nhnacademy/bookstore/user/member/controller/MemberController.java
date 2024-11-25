@@ -112,6 +112,17 @@ public class MemberController {
         return ResponseEntity.ok(responses);
     }
 
+    /**
+     * 회원의 포인트 조회
+     *
+     * @author 이승준
+     * @param customerId 회원 아이디
+     * @return 회원이 가진 포인트
+     */
+    @Operation(
+            summary = "회원이 가진 포인트를 조회",
+            description = "회원이 가진 포인트를 조회한다. 활용시 X-Customer-Id 헤더 추가 필요"
+    )
     @GetMapping("/points")
     public ResponseEntity<MemberPointResponse> getPoint(@RequestHeader("X-Customer-Id") Long customerId) {
         MemberPointResponse response = memberService.getPointsOfMember(customerId);
