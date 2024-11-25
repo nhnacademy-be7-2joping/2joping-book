@@ -77,7 +77,8 @@ public class AdminPointController {
     public ResponseEntity<UpdatePointTypeResponseDto> updatePointType(
             @PathVariable("type-id") Long typeId,
             @RequestBody @Valid UpdatePointTypeRequestDto request) {
-        return ResponseEntity.ok(pointTypeServiceImpl.updatePointType(typeId, request));
+        UpdatePointTypeResponseDto responseDto= pointTypeServiceImpl.updatePointType(typeId, request);
+        return ResponseEntity.ok(responseDto);
     }
 
 

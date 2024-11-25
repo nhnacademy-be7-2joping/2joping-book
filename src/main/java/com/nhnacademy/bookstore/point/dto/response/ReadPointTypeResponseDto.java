@@ -11,7 +11,7 @@ import com.nhnacademy.bookstore.point.enums.PointTypeEnum;
  */
 
 public record ReadPointTypeResponseDto(
-        Long id,
+        Long pointTypeId,
         PointTypeEnum type,
         Integer accVal,
         String name,
