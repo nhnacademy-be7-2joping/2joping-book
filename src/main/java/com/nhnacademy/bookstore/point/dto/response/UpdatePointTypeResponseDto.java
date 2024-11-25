@@ -11,19 +11,22 @@ import com.nhnacademy.bookstore.point.enums.PointTypeEnum;
  */
 
 public record UpdatePointTypeResponseDto (
-        Long id,
+        Long pointTypeId,
         PointTypeEnum type,
         Integer accVal,
         String name,
         boolean isActive
 ) {
-    public static UpdatePointTypeResponseDto from(PointType entity) {
-        return new UpdatePointTypeResponseDto(
-                entity.getPointTypeId(),
-                entity.getType(),
-                entity.getAccVal(),
-                entity.getName(),
-                entity.isActive()
-        );
-    }
+//    public UpdatePointTypeResponseDto toUpdateResponseDto(PointType entity) {
+//        System.out.println("Mapping ID: " + entity.getPointTypeId()); // 매핑 확인
+//        return new UpdatePointTypeResponseDto(
+//                entity.getPointTypeId(),
+//                entity.getType(),
+//                entity.getAccVal(),
+//                entity.getName(),
+//                entity.isActive()
+//        );
+//    }
+
+
 }
