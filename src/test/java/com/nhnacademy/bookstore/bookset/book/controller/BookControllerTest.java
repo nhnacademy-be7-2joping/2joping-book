@@ -53,48 +53,48 @@ class BookControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-
-        BookCreateHtmlRequestDto bookHtmlDto = new BookCreateHtmlRequestDto(
-                "Book Title",
-                "Description",
-                "Publisher Name",
-                LocalDate.of(2023, 10, 29),
-                "1234567890123",
-                20000,
-                15000,
-                true,
-                true,
-                10,
-                "김지은 (지은이)",
-                "국내도서 > 경제경영",
-                "재밌는, 따뜻한"
-        );
-
-        ImageUrlRequestDto imageUrlDto = new ImageUrlRequestDto(
-                "thumbnail-url",
-                "detail-url"
-        );
-
-        bookCreateRequestDto = new BookCreateRequestDto(bookHtmlDto, imageUrlDto);
-
-        bookCreateResponseDto = new BookCreateResponseDto(
-                1L,
-                "Book Title",
-                "Description",
-                "Publisher Name",
-                LocalDate.of(2023, 10, 29),
-                "1234567890123",
-                20000,
-                15000,
-                true,
-                true,
-                10,
-                List.of(new ContributorResponseDto(1L, 1L, "김지은")),
-                new CategoryResponseDto(1L,"경제경영", null),
-                List.of(new TagResponseDto(1L, "재밌는"), new TagResponseDto(2L, "따뜻한")),
-                "thumbnail-url",
-                "detail-url"
-        );
+//
+//        BookCreateHtmlRequestDto bookHtmlDto = new BookCreateHtmlRequestDto(
+//                "Book Title",
+//                "Description",
+//                "Publisher Name",
+//                LocalDate.of(2023, 10, 29),
+//                "1234567890123",
+//                20000,
+//                15000,
+//                true,
+//                true,
+//                10,
+//                "김지은 (지은이)",
+//                "국내도서 > 경제경영",
+//                "재밌는, 따뜻한"
+//        );
+//
+//        ImageUrlRequestDto imageUrlDto = new ImageUrlRequestDto(
+//                "thumbnail-url",
+//                "detail-url"
+//        );
+//
+//        bookCreateRequestDto = new BookCreateRequestDto(bookHtmlDto, imageUrlDto);
+//
+//        bookCreateResponseDto = new BookCreateResponseDto(
+//                1L,
+//                "Book Title",
+//                "Description",
+//                "Publisher Name",
+//                LocalDate.of(2023, 10, 29),
+//                "1234567890123",
+//                20000,
+//                15000,
+//                true,
+//                true,
+//                10,
+//                List.of(new ContributorResponseDto(1L, 1L, "김지은")),
+//                new CategoryResponseDto(1L,"경제경영", null),
+//                List.of(new TagResponseDto(1L, "재밌는"), new TagResponseDto(2L, "따뜻한")),
+//                "thumbnail-url",
+//                "detail-url"
+//        );
 
         // BookContributorResponseDto 리스트 생성
         List<BookContributorResponseDto> contributors = List.of(
