@@ -75,52 +75,6 @@ public class BookServiceImpl implements BookService {
     private final TagRepository tagRepository;
     private final RestTemplate restTemplate = new RestTemplate();
 
-//    /**
-//     * 텍스트를 파싱하여 기여자를 생성하고 반환하는 메서드
-//     *
-//     * @param text 파싱할 기여자 텍스트 (이름과 역할을 포함)
-//     * @return 기여자 리스트 객체 (ContributorResponseDto)
-//     */
-//    @Override
-//    public List<ContributorResponseDto> getContributorList(String text) {
-//        String pattern = "([\\p{L}\\w\\s,]+) \\(([^)]+)\\)";
-//        Pattern regex = Pattern.compile(pattern);
-//        Matcher matcher = regex.matcher(text);
-//
-//        List<ContributorResponseDto> contributorDtos = new ArrayList<>();
-//
-//        while (matcher.find()) {
-//            String[] rawNames = matcher.group(1).trim().split(",\\s*");
-//            List<String> names = new ArrayList<>();
-//
-//            for (String rawName : rawNames) {
-//                if (!rawName.isBlank()) {
-//                    names.add(rawName.trim());
-//                }
-//            }
-//
-//            String roleName = matcher.group(2).trim();
-//
-//            ContributorRole role = contributorRoleRepository.findByName(roleName)
-//                    .orElseThrow(ContributorRoleNotFoundException::new);
-//
-//            for (String name : names) {
-//                Contributor contributor = contributorRepository.findByName(name)
-//                        .orElseGet(() -> {
-//                            Contributor newContributor = new Contributor(null, role, name, true);
-//                            return contributorRepository.save(newContributor);
-//                        });
-//
-//                contributorDtos.add(new ContributorResponseDto(
-//                        contributor.getContributorId(),
-//                        contributor.getContributorRole().getContributorRoleId(),
-//                        contributor.getName()
-//                ));
-//            }
-//        }
-//        return contributorDtos;
-//    }
-
     /**
      * 텍스트를 파싱하여 최하위 레벨의 카테고리를 반환하는 메서드
      *
@@ -151,6 +105,11 @@ public class BookServiceImpl implements BookService {
      * @return 태그 리스트 객체 (TagResponseDto)
      */
     public List<TagResponseDto> associateBookWithTag(Book book, List<String> tagList) {
+        // "[]" 문자열 처리
+        if (tagList.size() == 1 && tagList.get(0).equals("[]")) {
+            tagList = new ArrayList<>(); // 빈 리스트로 대체
+        }
+
         List<TagResponseDto> tagResponseDtos = new ArrayList<>();
         for (String inputTag : tagList) {
             String tagName = inputTag.trim();
@@ -209,18 +168,15 @@ public class BookServiceImpl implements BookService {
     public List<ContributorResponseDto> getContributorList(String contributorListJson) {
         List<ContributorResponseDto> contributorDtos = new ArrayList<>();
 
-        // contributorListJson이 비어 있으면 바로 반환
         if (contributorListJson == null || contributorListJson.isEmpty()) {
             return contributorDtos;
         }
 
         try {
-            // JSON 문자열을 List<Map<String, String>>으로 변환
             ObjectMapper objectMapper = new ObjectMapper();
             List<Map<String, String>> contributorList = objectMapper.readValue(contributorListJson, new TypeReference<>() {
             });
 
-            // contributorList를 순회하며 처리
             for (Map<String, String> contributorMap : contributorList) {
                 String name = contributorMap.get("name");
                 String roleName = contributorMap.get("role");
@@ -229,15 +185,12 @@ public class BookServiceImpl implements BookService {
                     throw new IllegalArgumentException("Contributor name or role is missing");
                 }
 
-                // ContributorRole을 찾거나, 없으면 예외 처리
                 ContributorRole role = contributorRoleRepository.findByName(roleName)
                         .orElseThrow(() -> new ContributorRoleNotFoundException());
 
-                // Contributor를 찾거나 없으면 새로 생성하여 저장
                 Contributor contributor = contributorRepository.findByName(name)
                         .orElseThrow(() -> new ContributorNotFoundException());
 
-                // Contributor 정보를 DTO로 변환하여 목록에 추가
                 contributorDtos.add(new ContributorResponseDto(
                         contributor.getContributorId(),
                         contributor.getContributorRole().getContributorRoleId(),
