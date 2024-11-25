@@ -463,9 +463,12 @@ public class BookServiceImpl implements BookService {
 
         String thumbnailImageUrl = null;
         String detailImageUrl = null;
+        String defaultImageUrl = "http://image.toast.com/aaaacko/ejoping/book/default/default-book-image.jpg";
 
         if (bookUpdateHtmlRequestDto.removeThumbnailImage()) {
             removeExistingImages(book, "썸네일");
+            Image thumbnailImage = imageRepository.save(new Image(defaultImageUrl));
+            bookImageRepository.save(new BookImage(book, thumbnailImage, "썸네일"));
         } else if (imageUrlRequestDto.thumbnailImageUrl() != null && !imageUrlRequestDto.thumbnailImageUrl().isBlank()) {
             thumbnailImageUrl = imageUrlRequestDto.thumbnailImageUrl();
             removeExistingImages(book, "썸네일");
@@ -480,6 +483,8 @@ public class BookServiceImpl implements BookService {
 
         if (bookUpdateHtmlRequestDto.removeDetailImage()) {
             removeExistingImages(book, "상세");
+            Image detailImage = imageRepository.save(new Image(defaultImageUrl));
+            bookImageRepository.save(new BookImage(book, detailImage, "상세"));
         } else if (imageUrlRequestDto.detailImageUrl() != null && !imageUrlRequestDto.detailImageUrl().isBlank()) {
             detailImageUrl = imageUrlRequestDto.detailImageUrl();
             removeExistingImages(book, "상세");
@@ -521,7 +526,6 @@ public class BookServiceImpl implements BookService {
      * 이미지 유형에 해당하는 도서의 기존 이미지를 모두 삭제합니다.
      * 이미지가 더 이상 다른 도서와 연결되어 있지 않을 경우 이미지 데이터를 완전히 삭제합니다.
      */
-
     private void removeExistingImages(Book book, String imageType) {
         bookImageRepository.findByBookAndImageType(book, imageType)
                 .forEach(existing -> {
