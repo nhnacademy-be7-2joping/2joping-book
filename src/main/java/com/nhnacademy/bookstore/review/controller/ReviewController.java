@@ -92,9 +92,9 @@ public class ReviewController {
      */
     @Operation(summary = "회원별 리뷰 조회", description = "특정 회원이 등록한 리뷰들을 조회합니다.")
     @GetMapping("/customer/{customerId}")
-    public ResponseEntity<Page<ReviewResponseDto>> getReviewsByCustomerId(@PathVariable Long customerId,
+    public ResponseEntity<Page<ReviewResponseDto>> getReviewsByCustomerId(@RequestHeader("X-Customer-Id") String customerId,
                                                                       @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<ReviewResponseDto> responseDtoPage = reviewService.getReviewsByCustomerId(pageable,customerId);
+        Page<ReviewResponseDto> responseDtoPage = reviewService.getReviewsByCustomerId(pageable, Long.valueOf(customerId));
         return ResponseEntity.ok(responseDtoPage);
 
     }

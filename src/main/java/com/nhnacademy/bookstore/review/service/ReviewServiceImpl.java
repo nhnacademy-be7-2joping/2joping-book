@@ -111,7 +111,6 @@ public class ReviewServiceImpl implements ReviewService {
             reviewImageRepository.save(new ReviewImage(review,imageUrl));
         }
 
-
         return reviewMapper.toCreateResponseDto(savedReview);
     }
 
