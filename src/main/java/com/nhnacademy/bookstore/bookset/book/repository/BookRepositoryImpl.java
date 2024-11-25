@@ -19,6 +19,8 @@ import com.nhnacademy.bookstore.bookset.tag.entity.Tag;
 import com.nhnacademy.bookstore.imageset.entity.BookImage;
 import com.nhnacademy.bookstore.imageset.entity.QBookImage;
 import com.nhnacademy.bookstore.imageset.entity.QImage;
+import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
+import com.nhnacademy.bookstore.review.entity.QReview;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -50,12 +52,13 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     private final QTag qTag = QTag.tag;
     private final QBookImage qBookImage = QBookImage.bookImage;
     private final QImage qImage = QImage.image;
+    private final QReview qReview = QReview.review;
 
     QBookImage qBookImageThumbnail = new QBookImage("thumbnail");
     QBookImage qBookImageDetail = new QBookImage("detail");
     QImage qImageThumbnail = new QImage("thumbnailImage");
     QImage qImageDetail = new QImage("detailImage");
-
+  
     /**
      * 전체 도서를 페이지 단위로 조회
      *
@@ -273,7 +276,8 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 getContributorsByBook(book.getBookId()), // 기여자 리스트
                 getCategoriesByBook(book.getBookId()), // 카테고리 리스트
                 getTagsByBook(book.getBookId()), // 태그 리스트
-                thumbnailUrl
+                thumbnailUrl,
+                getReviewsByBook(book.getBookId()) // 리뷰 리스트 추가
         );
 
         return Optional.of(bookResponseDto);
@@ -421,18 +425,17 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
             }
 
             if (bottomCategoryId == null) {
-                bottomCategoryId = categoryTuple.get(qCategory.categoryId); // Set bottom first
+                bottomCategoryId = categoryTuple.get(qCategory.categoryId); 
             } else if (middleCategoryId == null) {
-                middleCategoryId = categoryTuple.get(qCategory.categoryId); // Set middle second
+                middleCategoryId = categoryTuple.get(qCategory.categoryId); 
             } else {
-                topCategoryId = categoryTuple.get(qCategory.categoryId); // Set top last
+                topCategoryId = categoryTuple.get(qCategory.categoryId); 
                 break;
             }
 
-            currentCategoryId = categoryTuple.get(qParentCategory.categoryId); // Move to the parent category
+            currentCategoryId = categoryTuple.get(qParentCategory.categoryId); 
         }
 
-        // Adjust hierarchy for 2-level and 1-level categories
         if (middleCategoryId == null && bottomCategoryId != null) {
             middleCategoryId = bottomCategoryId;
             bottomCategoryId = null;
@@ -450,7 +453,6 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
 
         return categoryHierarchy;
     }
-
 
     /**
      * 업데이트를 위해 특정 도서의 상세 정보를 조회
@@ -521,5 +523,26 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         );
 
         return Optional.of(bookUpdateResponseDto);
+    }
+  
+    /**
+     * 특정 도서의 리뷰 정보를 조회하여 반환
+     */
+    private List<ReviewResponseDto> getReviewsByBook(Long bookId) {
+        return from(qReview)
+                .where(qReview.book.bookId.eq(bookId))
+                .select(Projections.constructor(ReviewResponseDto.class,
+                        qReview.reviewId,
+                        qReview.orderDetail.orderDetailId,
+                        qReview.member.id,
+                        qReview.book.bookId,
+                        qReview.ratingValue,
+                        qReview.title,
+                        qReview.text,
+                        qReview.imageUrl,
+                        qReview.createdAt,
+                        qReview.updatedAt
+                        ))
+                .fetch();
     }
 }

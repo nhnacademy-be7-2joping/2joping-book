@@ -33,6 +33,10 @@ import com.nhnacademy.bookstore.bookset.tag.repository.TagRepository;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookUpdateResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookUpdateResultResponseDto;
 import com.nhnacademy.bookstore.common.error.exception.bookset.publisher.PublisherNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.book.BookNotFoundException;
+import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
+import com.nhnacademy.bookstore.bookset.book.service.BookService;
+import com.nhnacademy.bookstore.common.error.exception.bookset.category.CannotDeactivateCategoryException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.tag.TagNotFoundException;
@@ -50,6 +54,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +79,52 @@ public class BookServiceImpl implements BookService {
     private final ObjectMapper objectMapper;
     private final TagRepository tagRepository;
     private final RestTemplate restTemplate = new RestTemplate();
+
+    /**
+     * 텍스트를 파싱하여 기여자를 생성하고 반환하는 메서드
+     *
+     * @param text 파싱할 기여자 텍스트 (이름과 역할을 포함)
+     * @return 기여자 리스트 객체 (ContributorResponseDto)
+     */
+    @Override
+    public List<ContributorResponseDto> getContributorListForAPI(String text) {
+        String pattern = "([\\p{L}\\w\\s,]+) \\(([^)]+)\\)";
+        Pattern regex = Pattern.compile(pattern);
+        Matcher matcher = regex.matcher(text);
+
+        List<ContributorResponseDto> contributorDtos = new ArrayList<>();
+
+        while (matcher.find()) {
+            String[] rawNames = matcher.group(1).trim().split(",\\s*");
+            List<String> names = new ArrayList<>();
+
+            for (String rawName : rawNames) {
+                if (!rawName.isBlank()) {
+                    names.add(rawName.trim());
+                }
+            }
+
+            String roleName = matcher.group(2).trim();
+
+            ContributorRole role = contributorRoleRepository.findByName(roleName)
+                    .orElseThrow(ContributorRoleNotFoundException::new);
+
+            for (String name : names) {
+                Contributor contributor = contributorRepository.findByName(name)
+                        .orElseGet(() -> {
+                            Contributor newContributor = new Contributor(null, role, name, true);
+                            return contributorRepository.save(newContributor);
+                        });
+
+                contributorDtos.add(new ContributorResponseDto(
+                        contributor.getContributorId(),
+                        contributor.getContributorRole().getContributorRoleId(),
+                        contributor.getName()
+                ));
+            }
+        }
+        return contributorDtos;
+    }
 
     /**
      * 텍스트를 파싱하여 최하위 레벨의 카테고리를 반환하는 메서드
@@ -129,33 +180,132 @@ public class BookServiceImpl implements BookService {
         return tagResponseDtos;
     }
 
-    /**
-     * 텍스트를 파싱하여 도서와 태그를 연관짓는 메서드
-     *
-     * @param book 태그를 연관시킬 도서 객체
-     * @param text 태그 목록 텍스트 (쉼표로 구분된 태그들)
-     * @return 태그 리스트 객체 (TagResponseDto)
-     */
-    public List<TagResponseDto> associateBookWithTag(Book book, String text) {
-        List<TagResponseDto> tagResponseDtos = new ArrayList<>();
-        String[] splitTags = text.split(",");
+//    /**
+//     * 텍스트를 파싱하여 도서와 태그를 연관짓는 메서드
+//     *
+//     * @param book 태그를 연관시킬 도서 객체
+//     * @param text 태그 목록 텍스트 (쉼표로 구분된 태그들)
+//     * @return 태그 리스트 객체 (TagResponseDto)
+//     */
+//    public List<TagResponseDto> associateBookWithTag(Book book, String text) {
+//        List<TagResponseDto> tagResponseDtos = new ArrayList<>();
+//        String[] splitTags = text.split(",");
+//
+//        for (String inputTag : splitTags) {
+//            String tagName = inputTag.trim();
+//            Tag tag = tagRepository.findByName(tagName)
+//                    .orElseThrow(TagNotFoundException::new);
+//
+//            BookTag bookTag = new BookTag(
+//                    new BookTag.BookTagId(book.getBookId(), tag.getTagId()),
+//                    book,
+//                    tag
+//            );
+//            bookTagRepository.save(bookTag);
+//
+//            tagResponseDtos.add(new TagResponseDto(tag.getTagId(), tag.getName()));
+//        }
+//
+//        return tagResponseDtos;
+//    }
 
-        for (String inputTag : splitTags) {
-            String tagName = inputTag.trim();
-            Tag tag = tagRepository.findByName(tagName)
-                    .orElseThrow(TagNotFoundException::new);
 
-            BookTag bookTag = new BookTag(
-                    new BookTag.BookTagId(book.getBookId(), tag.getTagId()),
-                    book,
-                    tag
-            );
-            bookTagRepository.save(bookTag);
+//    @Override
+//    public List<ContributorResponseDto> getContributorList(List<Map<String, String>> contributorList) {
+//        List<ContributorResponseDto> contributorDtos = new ArrayList<>();
+//
+//        for (Map<String, String> contributorMap : contributorList) {
+//            String name = contributorMap.get("name");
+//            String roleName = contributorMap.get("role");
+//
+//            if (name == null || roleName == null) {
+//                throw new IllegalArgumentException();
+//            }
+//
+//            ContributorRole role = contributorRoleRepository.findByName(roleName)
+//                    .orElseThrow(ContributorRoleNotFoundException::new);
+//
+//            Contributor contributor = contributorRepository.findByName(name)
+//                    .orElseGet(() -> {
+//                        Contributor newContributor = new Contributor(null, role, name, true);
+//                        return contributorRepository.save(newContributor);
+//                    });
+//
+//            contributorDtos.add(new ContributorResponseDto(
+//                    contributor.getContributorId(),
+//                    contributor.getContributorRole().getContributorRoleId(),
+//                    contributor.getName()
+//            ));
+//        }
+//
+//        return contributorDtos;
+//    }
 
-            tagResponseDtos.add(new TagResponseDto(tag.getTagId(), tag.getName()));
+    @Override
+    public List<ContributorResponseDto> getContributorList(String contributorListJson) {
+        List<ContributorResponseDto> contributorDtos = new ArrayList<>();
+
+        // contributorListJson이 비어 있으면 바로 반환
+        if (contributorListJson == null || contributorListJson.isEmpty()) {
+            return contributorDtos;
         }
 
-        return tagResponseDtos;
+        try {
+            // JSON 문자열을 List<Map<String, String>>으로 변환
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<Map<String, String>> contributorList = objectMapper.readValue(contributorListJson, new TypeReference<>() {
+            });
+
+            // contributorList를 순회하며 처리
+            for (Map<String, String> contributorMap : contributorList) {
+                String name = contributorMap.get("name");
+                String roleName = contributorMap.get("role");
+
+                if (name == null || roleName == null) {
+                    throw new IllegalArgumentException("Contributor name or role is missing");
+                }
+
+                // ContributorRole을 찾거나, 없으면 예외 처리
+                ContributorRole role = contributorRoleRepository.findByName(roleName)
+                        .orElseThrow(() -> new ContributorRoleNotFoundException());
+
+                // Contributor를 찾거나 없으면 새로 생성하여 저장
+                Contributor contributor = contributorRepository.findByName(name)
+                        .orElseGet(() -> {
+                            Contributor newContributor = new Contributor(null, role, name, true);
+                            return contributorRepository.save(newContributor);
+                        });
+
+                // Contributor 정보를 DTO로 변환하여 목록에 추가
+                contributorDtos.add(new ContributorResponseDto(
+                        contributor.getContributorId(),
+                        contributor.getContributorRole().getContributorRoleId(),
+                        contributor.getName()
+                ));
+            }
+        } catch (Exception ex) {
+            // JSON 변환 중 발생한 예외 처리
+            ex.printStackTrace();
+            throw new RuntimeException("Error processing contributor list JSON");
+        }
+
+        return contributorDtos;
+    }
+
+    public Category getCategoryHierarchy(Long topCategoryId, Long middleCategoryId, Long bottomCategoryId) {
+        if (bottomCategoryId != null) {
+            return categoryRepository.findById(bottomCategoryId)
+                    .orElseThrow(CategoryNotFoundException::new);
+        }
+        if (middleCategoryId != null) {
+            return categoryRepository.findById(middleCategoryId)
+                    .orElseThrow(CategoryNotFoundException::new);
+        }
+        if (topCategoryId != null) {
+            return categoryRepository.findById(topCategoryId)
+                    .orElseThrow(CategoryNotFoundException::new);
+        }
+        throw new IllegalArgumentException("At least one category must be selected.");
     }
 
     /**
@@ -267,6 +417,7 @@ public class BookServiceImpl implements BookService {
         bookRepository.save(book);
 
         List<ContributorResponseDto> contributorResponseDtos = getContributorList(bookCreateHtmlRequestDto.contributorList());
+
         contributorResponseDtos.forEach(dto -> {
             Contributor contributor = contributorRepository.findById(dto.contributorId())
                     .orElseThrow(ContributorNotFoundException::new);
@@ -278,7 +429,12 @@ public class BookServiceImpl implements BookService {
             ));
         });
 
-        Category category = getLowestLevelCategory(bookCreateHtmlRequestDto.category());
+        Category category = getCategoryHierarchy(
+                bookCreateRequestDto.bookCreateHtmlRequestDto().topCategoryId(),
+                bookCreateRequestDto.bookCreateHtmlRequestDto().middleCategoryId(),
+                bookCreateRequestDto.bookCreateHtmlRequestDto().bottomCategoryId()
+        );
+
         bookCategoryRepository.save(new BookCategory(
                 new BookCategory.BookCategoryId(book.getBookId(), category.getCategoryId()),
                 book,
@@ -294,8 +450,8 @@ public class BookServiceImpl implements BookService {
         List<TagResponseDto> tagResponseDtos;
         tagResponseDtos = associateBookWithTag(book, bookCreateHtmlRequestDto.tagList());
 
-        String thumbnailImageUrl = imageUrlRequestDto.thumbnailImageUrl() != null ? imageUrlRequestDto.thumbnailImageUrl() : "default-thumbnail-url";
-        String detailImageUrl = imageUrlRequestDto.detailImageUrl() != null ? imageUrlRequestDto.detailImageUrl() : "default-detail-url";
+        String thumbnailImageUrl = imageUrlRequestDto.thumbnailImageUrl() != null ? imageUrlRequestDto.thumbnailImageUrl() : "http://image.toast.com/aaaacko/ejoping/book/default/default-book-image.jpg";
+        String detailImageUrl = imageUrlRequestDto.detailImageUrl() != null ? imageUrlRequestDto.detailImageUrl() : "http://image.toast.com/aaaacko/ejoping/book/default/default-book-image.jpg";
 
         if (imageUrlRequestDto.thumbnailImageUrl() != null) {
             Image thumbnailImage = imageRepository.save(new Image(thumbnailImageUrl));
@@ -331,6 +487,7 @@ public class BookServiceImpl implements BookService {
      * 전체 도서를 조회하는 메서드
      * @return 도서 객체
      */
+    @Transactional(readOnly = true)
     @Override
     public Page<BookSimpleResponseDto> getAllBooks(Pageable pageable) {
         Page<BookSimpleResponseDto> books = bookRepository.findAllBooks(pageable);
@@ -342,6 +499,8 @@ public class BookServiceImpl implements BookService {
      * @param categoryId
      * @return 도서 객체
      */
+
+    @Transactional(readOnly = true)
     @Override
     public Page<BookSimpleResponseDto> getBooksByCategoryId(Pageable pageable, Long categoryId) {
         return bookRepository.findBooksByCategoryId(pageable, categoryId);
@@ -352,6 +511,8 @@ public class BookServiceImpl implements BookService {
      * @param contributorId
      * @return 도서 객체
      */
+
+    @Transactional(readOnly = true)
     @Override
     public Page<BookSimpleResponseDto> getBooksByContributorId(Pageable pageable, Long contributorId) {
         return bookRepository.findBooksByContributorId(pageable, contributorId);
@@ -362,6 +523,8 @@ public class BookServiceImpl implements BookService {
      * @param bookId
      * @return 도서 객체
      */
+
+    @Transactional(readOnly = true)
     @Override
     public BookResponseDto getBookById(Long bookId) {
         BookResponseDto book = bookRepository.findBookByBookId(bookId).orElseThrow(()-> new BookNotFoundException("도서를 찾을 수 없습니다."));
@@ -534,5 +697,16 @@ public class BookServiceImpl implements BookService {
                         imageRepository.delete(existing.getImage());
                     }
                 });
+      
+    /*
+     * 특정 도서를 비활성화하는 메서드
+     * @param bookId
+     */
+    @Transactional
+    @Override
+    public void deactivateBook(Long bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException("도서를 찾을 수 없습니다."));
+        book.deactivate();
     }
 }

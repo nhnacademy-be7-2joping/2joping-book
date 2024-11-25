@@ -77,4 +77,9 @@ public class Book {
         this.isActive = isActive;
         this.remainQuantity = remainQuantity;
     }
+  
+    public void deactivate() {
+        this.isActive = false;
+    }
+  
 }

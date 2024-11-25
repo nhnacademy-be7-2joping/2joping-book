@@ -7,6 +7,6 @@ package com.nhnacademy.bookstore.bookset.contributor.dto.response;
  * @date : 2024-11-22
  */
 public record ContributorNameRoleResponseDto (
-        String contributorName,
-        String contributorRole
+    String contributorName,
+    String contributorRole
 ) {}

@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 
 public interface BookService {
@@ -29,4 +30,9 @@ public interface BookService {
     BookUpdateResponseDto getUpdateBookByBookId(Long bookId);
     BookUpdateResultResponseDto updateBook(Long bookId, BookUpdateRequestDto bookUpdateRequestDto);
     List<ContributorResponseDto> getContributorList(String contributorListJson);
+    List<ContributorResponseDto> getContributorListForAPI(String text);
+    Category getLowestLevelCategory(String categoryText);
+    List<ContributorResponseDto> getContributorList(String contributorListJson);
+    // List<TagResponseDto> associateBookWithTag(Book book, String text);
+    void deactivateBook(Long bookId);
 }
