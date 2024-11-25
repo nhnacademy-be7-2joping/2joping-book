@@ -29,16 +29,13 @@ public class MemberAddress {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 10)
+    @Column(name = "postal_code", columnDefinition = "CHAR(5)")
     private String postalCode;
 
-    @Column(nullable = false, length = 100)
     private String roadAddress;
 
-    @Column(length = 100)
     private String detailAddress;
 
-    @Column(length = 50)
     private String addressAlias;
 
     @Setter
@@ -46,7 +43,6 @@ public class MemberAddress {
 
     private boolean defaultAddress;
 
-    @Column(nullable = false, length = 20)
     private String receiver;
 
     @ManyToOne(fetch = FetchType.EAGER)

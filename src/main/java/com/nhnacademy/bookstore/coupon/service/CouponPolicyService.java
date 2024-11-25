@@ -1,6 +1,8 @@
 package com.nhnacademy.bookstore.coupon.service;
 
 
+import com.nhnacademy.bookstore.coupon.dto.request.CreateCouponPolicyRequest;
+import com.nhnacademy.bookstore.coupon.dto.request.UpdateCouponPolicyRequest;
 import com.nhnacademy.bookstore.coupon.dto.response.CouponPolicyResponseDto;
 
 import java.util.List;
@@ -14,5 +16,10 @@ import java.util.List;
  * @author Luha
  */
 public interface CouponPolicyService {
+
+    Long createCouponPolicy(CreateCouponPolicyRequest request);
+    CouponPolicyResponseDto getCouponPolicy(Long couponPolicyId);
     List<CouponPolicyResponseDto> getAllCouponPolicies();
+    Long updateCouponPolicy(Long id, UpdateCouponPolicyRequest request);
+    void deleteCouponPolicy(Long id);
 }

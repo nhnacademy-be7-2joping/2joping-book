@@ -10,5 +10,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @date : 2024-10-29
  */
 public interface BookRepository extends JpaRepository<Book, Long>, BookRepositoryCustom {
-
 }
