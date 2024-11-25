@@ -160,6 +160,13 @@ public class BookServiceImpl implements BookService {
         return parentCategory;
     }
 
+    /**
+     * 책과 태그를 연관짓고, 태그에 대한 응답 DTO 목록을 반환하는 메서드
+     *
+     * @param book
+     * @param tagList
+     * @return 태그와 연관된 TagResponseDto 객체 목록
+     */
     public List<TagResponseDto> associateBookWithTag(Book book, List<String> tagList) {
         List<TagResponseDto> tagResponseDtos = new ArrayList<>();
         for (String inputTag : tagList) {
@@ -180,6 +187,12 @@ public class BookServiceImpl implements BookService {
         return tagResponseDtos;
     }
 
+    /**
+     * JSON 문자열로 제공된 기여자 목록을 처리하고, ContributorResponseDto 목록을 반환하는 메서드
+     *
+     * @param contributorListJson
+     * @return 기여자 정보가 포함된 ContributorResponseDto 객체 목록
+     */
     @Override
     public List<ContributorResponseDto> getContributorList(String contributorListJson) {
         List<ContributorResponseDto> contributorDtos = new ArrayList<>();
@@ -231,6 +244,14 @@ public class BookServiceImpl implements BookService {
         return contributorDtos;
     }
 
+    /**
+     * 주어진 카테고리 ID를 기반으로 계층 구조에서 가장 하위 레벨의 카테고리를 반환하는 메서드
+     *
+     * @param topCategoryId
+     * @param middleCategoryId
+     * @param bottomCategoryId
+     * @return 계층 구조에서 가장 하위 레벨의 카테고리 객체
+     */
     public Category getCategoryHierarchy(Long topCategoryId, Long middleCategoryId, Long bottomCategoryId) {
         if (bottomCategoryId != null) {
             return categoryRepository.findById(bottomCategoryId)
