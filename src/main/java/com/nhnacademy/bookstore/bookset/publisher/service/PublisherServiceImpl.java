@@ -95,22 +95,6 @@ public class PublisherServiceImpl implements PublisherService{
         return responseDtoList;
     }
 
-    /**
-     * 모든 출판사를 조회하는 메서드 (등록용)
-     * @return -> 출판사 객체
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public List<PublisherResponseDto> getAllPublishersForRegister() {
-        List<Publisher> publishers = publisherRepository.findAll();
-        List<PublisherResponseDto> responseDtoList = new ArrayList<>();
-
-        for (Publisher publisher : publishers) {
-            PublisherResponseDto dto = new PublisherResponseDto(publisher.getPublisherId(), publisher.getName());
-            responseDtoList.add(dto);
-        }
-        return responseDtoList;
-    }
 
     /**
      * 특정 출판사를 삭제하는 메서드
