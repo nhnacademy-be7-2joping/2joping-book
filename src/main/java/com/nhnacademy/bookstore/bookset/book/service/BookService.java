@@ -31,8 +31,6 @@ public interface BookService {
     BookUpdateResultResponseDto updateBook(Long bookId, BookUpdateRequestDto bookUpdateRequestDto);
     List<ContributorResponseDto> getContributorList(String contributorListJson);
     List<ContributorResponseDto> getContributorListForAPI(String text);
-    Category getLowestLevelCategory(String categoryText);
-    List<ContributorResponseDto> getContributorList(String contributorListJson);
     // List<TagResponseDto> associateBookWithTag(Book book, String text);
     void deactivateBook(Long bookId);
 }

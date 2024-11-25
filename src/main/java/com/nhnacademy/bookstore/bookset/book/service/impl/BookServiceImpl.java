@@ -241,73 +241,6 @@ public class BookServiceImpl implements BookService {
 //        return contributorDtos;
 //    }
 
-    @Override
-    public List<ContributorResponseDto> getContributorList(String contributorListJson) {
-        List<ContributorResponseDto> contributorDtos = new ArrayList<>();
-
-        // contributorListJson이 비어 있으면 바로 반환
-        if (contributorListJson == null || contributorListJson.isEmpty()) {
-            return contributorDtos;
-        }
-
-        try {
-            // JSON 문자열을 List<Map<String, String>>으로 변환
-            ObjectMapper objectMapper = new ObjectMapper();
-            List<Map<String, String>> contributorList = objectMapper.readValue(contributorListJson, new TypeReference<>() {
-            });
-
-            // contributorList를 순회하며 처리
-            for (Map<String, String> contributorMap : contributorList) {
-                String name = contributorMap.get("name");
-                String roleName = contributorMap.get("role");
-
-                if (name == null || roleName == null) {
-                    throw new IllegalArgumentException("Contributor name or role is missing");
-                }
-
-                // ContributorRole을 찾거나, 없으면 예외 처리
-                ContributorRole role = contributorRoleRepository.findByName(roleName)
-                        .orElseThrow(() -> new ContributorRoleNotFoundException());
-
-                // Contributor를 찾거나 없으면 새로 생성하여 저장
-                Contributor contributor = contributorRepository.findByName(name)
-                        .orElseGet(() -> {
-                            Contributor newContributor = new Contributor(null, role, name, true);
-                            return contributorRepository.save(newContributor);
-                        });
-
-                // Contributor 정보를 DTO로 변환하여 목록에 추가
-                contributorDtos.add(new ContributorResponseDto(
-                        contributor.getContributorId(),
-                        contributor.getContributorRole().getContributorRoleId(),
-                        contributor.getName()
-                ));
-            }
-        } catch (Exception ex) {
-            // JSON 변환 중 발생한 예외 처리
-            ex.printStackTrace();
-            throw new RuntimeException("Error processing contributor list JSON");
-        }
-
-        return contributorDtos;
-    }
-
-    public Category getCategoryHierarchy(Long topCategoryId, Long middleCategoryId, Long bottomCategoryId) {
-        if (bottomCategoryId != null) {
-            return categoryRepository.findById(bottomCategoryId)
-                    .orElseThrow(CategoryNotFoundException::new);
-        }
-        if (middleCategoryId != null) {
-            return categoryRepository.findById(middleCategoryId)
-                    .orElseThrow(CategoryNotFoundException::new);
-        }
-        if (topCategoryId != null) {
-            return categoryRepository.findById(topCategoryId)
-                    .orElseThrow(CategoryNotFoundException::new);
-        }
-        throw new IllegalArgumentException("At least one category must be selected.");
-    }
-
     /**
      * 기여자 리스트를 가져오는 메서드
      *
@@ -697,7 +630,8 @@ public class BookServiceImpl implements BookService {
                         imageRepository.delete(existing.getImage());
                     }
                 });
-      
+    }
+
     /*
      * 특정 도서를 비활성화하는 메서드
      * @param bookId
