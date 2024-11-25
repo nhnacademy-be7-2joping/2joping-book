@@ -3,8 +3,11 @@ package com.nhnacademy.bookstore.bookset.book.controller;
 import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateRequestDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookCreateAPIResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookCreateResponseDto;
+import com.nhnacademy.bookstore.bookset.book.dto.request.BookUpdateRequestDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
+import com.nhnacademy.bookstore.bookset.book.dto.response.BookUpdateResponseDto;
+import com.nhnacademy.bookstore.bookset.book.dto.response.BookUpdateResultResponseDto;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
 import com.nhnacademy.bookstore.bookset.publisher.exception.PublisherNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.category.CategoryNotFoundException;
@@ -129,6 +132,29 @@ public class BookController {
         BookResponseDto book = bookService.getBookById(bookId);
         return ResponseEntity.status(HttpStatus.OK).body(book);
     }
+
+    /**
+     * 특정 도서 수정 controller
+     * @param bookId 조회하려는 도서 id
+     * @return 특정 도서와 상태 코드를 담은 응답
+     */
+    @Operation(summary = "특정 도서 수정 정보 조회", description = "특정 도서 정보를 수정을 위해 기존 정보를 조회합니다.")
+    @GetMapping("admin/books/{bookId}")
+    public ResponseEntity<BookUpdateResponseDto> getUpdateBookByBookId(@PathVariable("bookId") Long bookId) {
+        BookUpdateResponseDto book = bookService.getUpdateBookByBookId(bookId);
+        return ResponseEntity.status(HttpStatus.OK).body(book);
+    }
+
+    /**
+     * 특정 도서 수정 controller
+     * @param bookId 조회하려는 도서 id
+     * @return 특정 도서와 상태 코드를 담은 응답
+     */
+    @Operation(summary = "특정 도서 수정", description = "특정 도서 정보를 수정합니다.")
+    @PutMapping("admin/books/{bookId}")
+    public ResponseEntity<BookUpdateResultResponseDto> updateBook(@PathVariable("bookId") Long bookId, @RequestBody BookUpdateRequestDto bookUpdateRequestDto) {
+        BookUpdateResultResponseDto book = bookService.updateBook(bookId, bookUpdateRequestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(book);
 
     /**
      * 특정 도서를 삭제하는 controller
