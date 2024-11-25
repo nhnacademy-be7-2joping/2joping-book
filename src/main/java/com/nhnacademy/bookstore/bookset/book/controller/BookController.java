@@ -155,6 +155,7 @@ public class BookController {
     public ResponseEntity<BookUpdateResultResponseDto> updateBook(@PathVariable("bookId") Long bookId, @RequestBody BookUpdateRequestDto bookUpdateRequestDto) {
         BookUpdateResultResponseDto book = bookService.updateBook(bookId, bookUpdateRequestDto);
         return ResponseEntity.status(HttpStatus.OK).body(book);
+    }
 
     /**
      * 특정 도서를 삭제하는 controller

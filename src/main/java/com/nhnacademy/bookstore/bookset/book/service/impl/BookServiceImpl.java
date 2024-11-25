@@ -202,36 +202,6 @@ public class BookServiceImpl implements BookService {
         return tagResponseDtos;
     }
 
-//    /**
-//     * 텍스트를 파싱하여 도서와 태그를 연관짓는 메서드
-//     *
-//     * @param book 태그를 연관시킬 도서 객체
-//     * @param text 태그 목록 텍스트 (쉼표로 구분된 태그들)
-//     * @return 태그 리스트 객체 (TagResponseDto)
-//     */
-//    public List<TagResponseDto> associateBookWithTag(Book book, String text) {
-//        List<TagResponseDto> tagResponseDtos = new ArrayList<>();
-//        String[] splitTags = text.split(",");
-//
-//        for (String inputTag : splitTags) {
-//            String tagName = inputTag.trim();
-//            Tag tag = tagRepository.findByName(tagName)
-//                    .orElseThrow(TagNotFoundException::new);
-//
-//            BookTag bookTag = new BookTag(
-//                    new BookTag.BookTagId(book.getBookId(), tag.getTagId()),
-//                    book,
-//                    tag
-//            );
-//            bookTagRepository.save(bookTag);
-//
-//            tagResponseDtos.add(new TagResponseDto(tag.getTagId(), tag.getName()));
-//        }
-//
-//        return tagResponseDtos;
-//    }
-
-
     /**
      * 주어진 카테고리 ID를 기반으로 계층 구조에서 가장 하위 레벨의 카테고리를 반환하는 메서드
      *
@@ -726,6 +696,7 @@ public class BookServiceImpl implements BookService {
                         imageRepository.delete(existing.getImage());
                     }
                 });
+    }
 
     /*
      * 특정 도서를 비활성화하는 메서드
