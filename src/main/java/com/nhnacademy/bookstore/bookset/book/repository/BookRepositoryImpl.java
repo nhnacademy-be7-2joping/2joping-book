@@ -498,6 +498,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         Map<String, Long> categoryHierarchy = getCategoryHierarchy(bottomCategoryId);
 
         BookUpdateResponseDto bookUpdateResponseDto = new BookUpdateResponseDto(
+                book.getBookId(),
                 book.getTitle(),
                 book.getDescription(),
                 book.getPublisher().getName(),
