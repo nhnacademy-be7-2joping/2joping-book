@@ -56,7 +56,7 @@ class LikeServiceTest {
         // 회원 객체 생성
         Member member = new Member(
                 "user1", "password", "nickname", Gender.M,
-                LocalDate.of(2003, 4, 25), LocalDate.now(), LocalDate.now(), false,
+                LocalDate.of(2003, 4, 25), 1, LocalDate.now(), LocalDate.now(), false,
                 0, 0, List.of(), new MemberStatus(), new MemberTier(), null
         );
         ReflectionTestUtils.setField(member, "id", 1L);
@@ -91,7 +91,7 @@ class LikeServiceTest {
     void testSetBookLike_DeleteLike() {
         Member member = new Member(
                 "user1", "password", "nickname", Gender.F,
-                LocalDate.of(1995, 5, 5), LocalDate.now(), LocalDate.now(), false,
+                LocalDate.of(1995, 5, 5), 1, LocalDate.now(), LocalDate.now(), false,
                 0, 0, List.of(), new MemberStatus(), new MemberTier(), null
         );
         ReflectionTestUtils.setField(member, "id", 1L);
@@ -125,7 +125,7 @@ class LikeServiceTest {
     void testGetBooksLikedByCustomer() {
         Member member = new Member(
                 "user1", "password", "nickname", Gender.F,
-                LocalDate.of(1995, 5, 5), LocalDate.now(), LocalDate.now(), false,
+                LocalDate.of(1995, 5, 5), 1, LocalDate.now(), LocalDate.now(), false,
                 0, 0, List.of(), new MemberStatus(), new MemberTier(), null
         );
         ReflectionTestUtils.setField(member, "id", 1L);
