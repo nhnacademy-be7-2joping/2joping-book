@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.bookset.book.controller;
 
 import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateRequestDto;
+import com.nhnacademy.bookstore.bookset.book.dto.response.BookCreateAPIResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookCreateResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.request.BookUpdateRequestDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
@@ -8,6 +9,9 @@ import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookUpdateResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.BookUpdateResultResponseDto;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
+import com.nhnacademy.bookstore.bookset.publisher.exception.PublisherNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.category.CategoryNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -19,6 +23,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 도서 Controller
@@ -50,6 +56,29 @@ public class BookController {
             BookCreateResponseDto book = bookService.createBook(bookCreateRequestDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(book);
         } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    /**
+     * 알라딘 API 이용해 도서 등록하는 controller
+     * @return 등록한 도서와 상태 코드를 담은 응답
+     */
+    @Operation(summary = "알라딘 API 활용 도서 등록", description = "알라딘 API를 활용해 새로운 도서를 등록합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "도서 생성 성공"),
+            @ApiResponse(responseCode = "404", description = "리소스를 찾을 수 없음"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
+    })
+    @PostMapping("/admin/books/register/aladin")
+    public ResponseEntity<List<BookCreateAPIResponseDto>> createBooks() {
+        try {
+            List<BookCreateAPIResponseDto> books = bookService.createBooks();
+            return ResponseEntity.status(HttpStatus.CREATED).body(books);
+        } catch (PublisherNotFoundException | ContributorNotFoundException | CategoryNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception ex) {
+            ex.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
@@ -127,6 +156,7 @@ public class BookController {
         BookUpdateResultResponseDto book = bookService.updateBook(bookId, bookUpdateRequestDto);
         return ResponseEntity.status(HttpStatus.OK).body(book);
     }
+
     /**
      * 특정 도서를 삭제하는 controller
      * @param bookId 삭제하려는 도서 id
