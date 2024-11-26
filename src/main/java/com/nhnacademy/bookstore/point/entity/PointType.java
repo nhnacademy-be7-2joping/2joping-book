@@ -29,11 +29,13 @@ public class PointType {
     @Column(name = "is_active")
     private boolean isActive = true;
 
+
     @Builder
-    public PointType(PointTypeEnum type, Integer accVal, String name) {
+    public PointType(PointTypeEnum type, Integer accVal, String name, Boolean isActive) {
         this.type = type;
         this.accVal = accVal;
         this.name = name;
+        this.isActive = isActive;
     }
 
     public void updateAccVal(Integer accVal) {

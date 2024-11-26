@@ -12,7 +12,7 @@ import com.nhnacademy.bookstore.point.service.PointTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.nhnacademy.bookstore.point.mapper.PointTypeMapper;
+
 import java.util.List;
 
 @Service
@@ -21,23 +21,37 @@ import java.util.List;
 public class PointTypeServiceImpl implements PointTypeService {
 
     private final PointTypeRepository pointTypeRepository;
-    private final PointTypeMapper pointTypeMapper;
 
     @Transactional
     public Long createPointType(CreatePointTypeRequestDto dto) {
-        PointType pointType = pointTypeMapper.toEntity(dto);
+        PointType pointType = PointType.builder()
+                .type(dto.type())
+                .accVal(dto.accVal())
+                .name(dto.name())
+                .isActive(dto.isActive())
+                .build();
+
         return pointTypeRepository.save(pointType).getPointTypeId();
     }
 
     @Transactional
-    public UpdatePointTypeResponseDto updatePointType(Long id, UpdatePointTypeRequestDto dto) {
-        PointType pointType = pointTypeRepository.findById(id)
+    public UpdatePointTypeResponseDto updatePointType(Long pointTypeId, UpdatePointTypeRequestDto dto) {
+        PointType pointType = pointTypeRepository.findById(pointTypeId)
                 .orElseThrow(PointTypeNotFoundException::new);
-        pointType.updatePointType(dto.type(),dto.accVal(),dto.name(),dto.isActive());
-        PointType updatedPointType = pointTypeRepository.save(pointType);
-        return pointTypeMapper.toUpdateResponseDto(updatedPointType);
-    }
 
+        // 수동 업데이트
+        pointType.updatePointType(dto.type(), dto.accVal(), dto.name(), dto.isActive());
+        PointType updatedPointType = pointTypeRepository.save(pointType);
+
+        // 수동 매핑
+        return new UpdatePointTypeResponseDto(
+                updatedPointType.getPointTypeId(),
+                updatedPointType.getType(),
+                updatedPointType.getAccVal(),
+                updatedPointType.getName(),
+                updatedPointType.isActive()
+        );
+    }
 
     @Transactional
     @Override
@@ -49,6 +63,13 @@ public class PointTypeServiceImpl implements PointTypeService {
     public ReadPointTypeResponseDto getPointTypeById(Long typeId) {
         PointType pointType = pointTypeRepository.findById(typeId)
                 .orElseThrow(PointTypeNotFoundException::new);
-        return pointTypeMapper.toReadResponseDto(pointType);
+
+        return new ReadPointTypeResponseDto(
+                pointType.getPointTypeId(),
+                pointType.getType(),
+                pointType.getAccVal(),
+                pointType.getName(),
+                pointType.isActive()
+        );
     }
 }

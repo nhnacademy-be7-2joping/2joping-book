@@ -2,9 +2,8 @@ package com.nhnacademy.bookstore.bookset.book.dto.request;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
-public record BookCreateHtmlRequestDto(
+public record BookUpdateHtmlRequestDto(
         String title,
         String description,
         String publisherName,
@@ -16,10 +15,10 @@ public record BookCreateHtmlRequestDto(
         boolean isActive,
         int remainQuantity,
         String contributorList,
-        // List<Map<String, String>> contributorList,
-        // String category,
-        Long topCategoryId,        // 상위 카테고리
-        Long middleCategoryId,     // 중위 카테고리
+        Long topCategoryId,
+        Long middleCategoryId,
         Long bottomCategoryId,
-        List<String> tagList
+        List<String> tagList,
+        boolean removeThumbnailImage,
+        boolean removeDetailImage
 ) {}

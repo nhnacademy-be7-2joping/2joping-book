@@ -30,6 +30,8 @@ public interface CategoryService {
 
     Page<CategoryResponseDto> getAllCategoriesPage(Pageable pageable);
 
+    List<CategoryResponseDto> getTopCategories();
+
     CategoryResponseDto updateCategory(Long categoryId, CategoryRequestDto request);
 
     Long deactivateCategory(Long categoryId);

@@ -107,6 +107,14 @@ public class CategoryServiceImpl implements CategoryService {
                 .map(categoryMapper::toCategoryResponseDto);
     }
 
+    @Override
+    public List<CategoryResponseDto> getTopCategories() {
+        List<Category> topCategoryList = categoryRepository.findTopCategories();
+        return topCategoryList.stream()
+                .map(categoryMapper::toCategoryResponseDto)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     @Override
     public CategoryResponseDto updateCategory(Long categoryId, CategoryRequestDto request) {
