@@ -12,6 +12,7 @@ import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberUpdateRequesteDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberWithdrawRequesteDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.MemberPointResponse;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto;
 import com.nhnacademy.bookstore.user.member.dto.response.MemberWithdrawResponseDto;
 import com.nhnacademy.bookstore.user.member.entity.Member;
@@ -23,6 +24,7 @@ import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.enums.Tier;
 import com.nhnacademy.bookstore.user.tier.repository.MemberTierRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -520,5 +522,22 @@ class MemberServiceImplTest {
         verify(statusRepository).findById(3L);
     }
 
+    @Test
+    @DisplayName("회원의 포인트 조회")
+    void testGetPointsOfMember() {
+        MemberPointResponse mockPoint = new MemberPointResponse(100);
+        when(memberRepository.findPointById(1L)).thenReturn(Optional.of(mockPoint));
 
+        MemberPointResponse actual = memberService.getPointsOfMember(1L);
+        assertNotNull(actual);
+        assertEquals(mockPoint, actual);
+    }
+
+    @Test
+    @DisplayName("없는 회원의 포인트 조회")
+    void testGetPointsOfMember_NotFound() {
+        MemberPointResponse mockPoint = new MemberPointResponse(100);
+        when(memberRepository.findPointById(1L)).thenThrow(MemberNotFoundException.class);
+        assertThrows(MemberNotFoundException.class, () -> memberService.getPointsOfMember(1L));
+    }
 }
