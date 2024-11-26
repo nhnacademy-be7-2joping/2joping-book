@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.bookset.category.service.impl;
 
 import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryRequestDto;
+import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryIsActiveResponseDto;
 import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
 import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import com.nhnacademy.bookstore.bookset.category.mapper.CategoryMapper;
@@ -182,11 +183,11 @@ class CategoryServiceImplTest {
         // given
         Page<Category> page = new PageImpl<>(List.of(new Category(1L, null, "소설", true)));
         when(categoryRepository.findAll(any(PageRequest.class))).thenReturn(page);
-        when(categoryMapper.toCategoryResponseDto(any(Category.class)))
-                .thenReturn(new CategoryResponseDto(1L, "소설", null));
+        when(categoryMapper.toCategoryIsActiveResponseDto(any(Category.class)))
+                .thenReturn(new CategoryIsActiveResponseDto(1L, "소설", null, true));
 
         // when
-        Page<CategoryResponseDto> responsePage = categoryService.getAllCategoriesPage(PageRequest.of(0, 10));
+        Page<CategoryIsActiveResponseDto> responsePage = categoryService.getAllCategoriesPage(PageRequest.of(0, 10));
 
         // then
         assertNotNull(responsePage);

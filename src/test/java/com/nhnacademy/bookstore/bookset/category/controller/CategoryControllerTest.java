@@ -2,6 +2,7 @@ package com.nhnacademy.bookstore.bookset.category.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryRequestDto;
+import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryIsActiveResponseDto;
 import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
 import com.nhnacademy.bookstore.bookset.category.service.CategoryService;
 import org.junit.jupiter.api.DisplayName;
@@ -165,8 +166,8 @@ class CategoryControllerTest {
     @DisplayName("카테고리 조회 페이징 테스트")
     void getAllCategoriesPage() throws Exception {
         // given
-        Page<CategoryResponseDto> page = new PageImpl<>(
-                List.of(new CategoryResponseDto(1L, "소설", null)),
+        Page<CategoryIsActiveResponseDto> page = new PageImpl<>(
+                List.of(new CategoryIsActiveResponseDto(1L, "소설", null, true)),
                 PageRequest.of(0, 10),
                 1
         );

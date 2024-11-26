@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.bookset.category.service.impl;
 
 import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryRequestDto;
+import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryIsActiveResponseDto;
 import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
 import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import com.nhnacademy.bookstore.bookset.category.mapper.CategoryMapper;
@@ -101,9 +102,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<CategoryResponseDto> getAllCategoriesPage(Pageable pageable) {
+    public Page<CategoryIsActiveResponseDto> getAllCategoriesPage(Pageable pageable) {
         return categoryRepository.findAll(pageable)
-                .map(categoryMapper::toCategoryResponseDto);
+                .map(categoryMapper::toCategoryIsActiveResponseDto);
     }
 
     @Override

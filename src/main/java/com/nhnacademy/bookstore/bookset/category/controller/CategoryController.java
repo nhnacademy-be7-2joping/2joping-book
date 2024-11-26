@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.bookset.category.controller;
 
 import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryRequestDto;
+import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryIsActiveResponseDto;
 import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
 import com.nhnacademy.bookstore.bookset.category.service.CategoryService;
 import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
@@ -98,9 +99,9 @@ public class CategoryController {
     @Operation(summary = "전체 카테고리 조회(페이징)", description = "모든 카테고리를 조회합니다.(페이징)")
     @ApiResponse(responseCode = "200", description = "전체 카테고리 조회 성공")
     @GetMapping("/categories/pages")
-    public ResponseEntity<Page<CategoryResponseDto>> getAllCategoriesPage(
+    public ResponseEntity<Page<CategoryIsActiveResponseDto>> getAllCategoriesPage(
             @PageableDefault Pageable pageable) {
-        Page<CategoryResponseDto> response = categoryService.getAllCategoriesPage(pageable);
+        Page<CategoryIsActiveResponseDto> response = categoryService.getAllCategoriesPage(pageable);
         return ResponseEntity.ok(response);
     }
 
