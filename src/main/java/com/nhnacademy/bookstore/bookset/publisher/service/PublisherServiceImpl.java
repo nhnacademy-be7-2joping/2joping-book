@@ -77,6 +77,7 @@ public class PublisherServiceImpl implements PublisherService{
         return publisherRepository.findAllBy(pageable);
     }
 
+
     /**
      * 모든 출판사를 조회하는 메서드 (등록용)
      * @return -> 출판사 객체
@@ -93,6 +94,7 @@ public class PublisherServiceImpl implements PublisherService{
         }
         return responseDtoList;
     }
+
 
     /**
      * 특정 출판사를 삭제하는 메서드

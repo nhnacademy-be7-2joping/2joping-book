@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * 도서 기여자 역할 Service
  *
@@ -91,4 +94,16 @@ public class ContributorRoleServiceImpl implements ContributorRoleService {
         contributorRoleRepository.deleteById(contributorRoleId);
     }
 
+    /**
+     * 모든 도서 기여자 역할을 조회하는 메서드입니다.
+     *
+     * @return 모든 기여자 역할의 정보를 포함한 리스트
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<ContributorRoleResponseDto> getAllContributorRoles() {
+        return contributorRoleRepository.findAll().stream()
+                .map(contributorRoleMapper::toContributorRoleResponseDto)
+                .collect(Collectors.toList());
+    }
 }

@@ -22,15 +22,12 @@ import java.util.Map;
 public interface BookService {
     BookCreateResponseDto createBook(BookCreateRequestDto bookCreateRequestDto);
     List<BookCreateAPIResponseDto> createBooks();
+    List<ContributorResponseDto> getContributorListForAPI(String text);
     Page<BookSimpleResponseDto> getAllBooks(Pageable pageable);
     BookResponseDto getBookById(Long bookId);
     Page<BookSimpleResponseDto> getBooksByCategoryId(Pageable pageable, Long categoryId);
     Page<BookSimpleResponseDto> getBooksByContributorId(Pageable pageable, Long contributorId);
-    // List<ContributorResponseDto> getContributorList(String text);
-    Category getLowestLevelCategory(String categoryText);
     BookUpdateResponseDto getUpdateBookByBookId(Long bookId);
     BookUpdateResultResponseDto updateBook(Long bookId, BookUpdateRequestDto bookUpdateRequestDto);
-    List<ContributorResponseDto> getContributorList(String contributorListJson);
-    List<ContributorResponseDto> getContributorListForAPI(String text);
     void deactivateBook(Long bookId);
 }
