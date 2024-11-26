@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.bookset.contributor.service.impl;
 
 import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRequestDto;
+import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorIsActiveResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorNameRoleResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.entity.Contributor;
@@ -270,12 +271,12 @@ class ContributorServiceImplTest {
         Page<Contributor> contributorPage = new PageImpl<>(contributors);
 
         when(contributorRepository.findAll(pageable)).thenReturn(contributorPage);
-        when(contributorMapper.toContributorResponseDto(any(Contributor.class)))
-                .thenReturn(new ContributorResponseDto(1L, 1L, "이조핑"))
-                .thenReturn(new ContributorResponseDto(2L, 1L, "삼조핑"));
+        when(contributorMapper.toContributorIsActiveResponseDto(any(Contributor.class)))
+                .thenReturn(new ContributorIsActiveResponseDto(1L, 1L, "이조핑", true))
+                .thenReturn(new ContributorIsActiveResponseDto(2L, 1L, "삼조핑", true));
 
         // when
-        Page<ContributorResponseDto> result = contributorService.getAllContributors(pageable);
+        Page<ContributorIsActiveResponseDto> result = contributorService.getAllContributors(pageable);
 
         // then
         assertNotNull(result);

@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.bookset.contributor.controller;
 
 import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRequestDto;
+import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorIsActiveResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorNameRoleResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.service.ContributorService;
@@ -143,8 +144,8 @@ public class ContributorController {
     @Operation(summary = "도서 기여자 조회 (페이징)", description = "모든 도서 기여자를 페이지 형식으로 조회합니다.")
     @ApiResponse(responseCode = "200", description = "도서 기여자 페이지 조회 성공")
     @GetMapping
-    public ResponseEntity<Page<ContributorResponseDto>> getAllContributors(@PageableDefault Pageable pageable) {
-        Page<ContributorResponseDto> contributors = contributorService.getAllContributors(pageable);
+    public ResponseEntity<Page<ContributorIsActiveResponseDto>> getAllContributors(@PageableDefault(size = 20) Pageable pageable) {
+        Page<ContributorIsActiveResponseDto> contributors = contributorService.getAllContributors(pageable);
         return ResponseEntity.ok(contributors);
     }
 

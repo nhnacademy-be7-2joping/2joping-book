@@ -100,7 +100,7 @@ public class CategoryController {
     @ApiResponse(responseCode = "200", description = "전체 카테고리 조회 성공")
     @GetMapping("/categories/pages")
     public ResponseEntity<Page<CategoryIsActiveResponseDto>> getAllCategoriesPage(
-            @PageableDefault Pageable pageable) {
+            @PageableDefault(size = 20) Pageable pageable) {
         Page<CategoryIsActiveResponseDto> response = categoryService.getAllCategoriesPage(pageable);
         return ResponseEntity.ok(response);
     }

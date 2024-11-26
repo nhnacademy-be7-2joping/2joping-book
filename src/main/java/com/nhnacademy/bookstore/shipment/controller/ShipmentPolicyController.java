@@ -1,6 +1,5 @@
 package com.nhnacademy.bookstore.shipment.controller;
 
-import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
 import com.nhnacademy.bookstore.shipment.dto.request.ShipmentPolicyRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.response.ShipmentPolicyResponseDto;

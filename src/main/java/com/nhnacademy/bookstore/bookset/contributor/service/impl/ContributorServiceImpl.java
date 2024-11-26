@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.bookset.contributor.service.impl;
 
 import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRequestDto;
+import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorIsActiveResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorNameRoleResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.entity.Contributor;
@@ -47,7 +48,7 @@ public class ContributorServiceImpl implements ContributorService {
         ContributorRole contributorRole = contributorRoleRepository.findById(dto.contributorRoleId())
                 .orElseThrow(ContributorRoleNotFoundException::new);
 
-        Contributor contributor = new Contributor(null, contributorRole, dto.contributorName(), true);
+        Contributor contributor = new Contributor(null, contributorRole, dto.name(), true);
 
         Contributor savedContributor = contributorRepository.save(contributor);
         return contributorMapper.toContributorResponseDto(savedContributor);
@@ -144,8 +145,8 @@ public class ContributorServiceImpl implements ContributorService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ContributorResponseDto> getAllContributors(Pageable pageable) {
+    public Page<ContributorIsActiveResponseDto> getAllContributors(Pageable pageable) {
         return contributorRepository.findAll(pageable)
-                .map(contributorMapper::toContributorResponseDto);
+                .map(contributorMapper::toContributorIsActiveResponseDto);
     }
 }

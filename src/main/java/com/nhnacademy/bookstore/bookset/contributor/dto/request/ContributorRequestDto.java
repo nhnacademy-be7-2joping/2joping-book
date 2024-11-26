@@ -10,6 +10,6 @@ import jakarta.validation.constraints.NotNull;
  * @date : 2024-10-24
  */
 public record ContributorRequestDto(
-        @NotBlank(message = "기여자 이름 입력: ") String contributorName,
+        @NotBlank(message = "기여자 이름 입력: ") String name,
         @NotNull Long contributorRoleId
 ) {}
