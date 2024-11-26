@@ -127,7 +127,6 @@ public class BookController {
         BookUpdateResultResponseDto book = bookService.updateBook(bookId, bookUpdateRequestDto);
         return ResponseEntity.status(HttpStatus.OK).body(book);
     }
-
     /**
      * 특정 도서를 삭제하는 controller
      * @param bookId 삭제하려는 도서 id
