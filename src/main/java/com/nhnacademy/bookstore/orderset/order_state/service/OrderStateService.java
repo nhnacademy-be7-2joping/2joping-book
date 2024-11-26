@@ -42,6 +42,13 @@ public class OrderStateService {
         return GetOrderStateResponse.from(orderState);
     }
 
+    @Transactional(readOnly = true)
+    public OrderState getWaitingState() {
+        OrderState orderState =
+                orderStateRepository.findByOrderStateId(0L).orElseThrow((OrderStateNotFoundException::new));
+
+        return orderState;
+    }
 
     public void deleteOrderState(Long orderStateId) {
         OrderState orderState = orderStateRepository.findByOrderStateId(orderStateId)
