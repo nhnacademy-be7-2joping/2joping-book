@@ -160,7 +160,7 @@ class CategoryServiceImplTest {
 
     @Test
     @DisplayName("활성화된 모든 카테고리 조회 테스트")
-    void getAllCategories() {
+    void getAllActiveCategories() {
         // given
         List<Category> categories = List.of(new Category(1L, null, "소설", true));
         when(categoryRepository.findAllByIsActiveTrue()).thenReturn(categories);
@@ -168,7 +168,7 @@ class CategoryServiceImplTest {
                 .thenReturn(new CategoryResponseDto(1L, "소설", null));
 
         // when
-        List<CategoryResponseDto> responseDtos = categoryService.getAllCategories();
+        List<CategoryResponseDto> responseDtos = categoryService.getAllActiveCategories();
 
         // then
         assertNotNull(responseDtos);
@@ -177,11 +177,11 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    @DisplayName("활성화된 모든 카테고리 페이징 조회 테스트")
+    @DisplayName("모든 카테고리 페이징 조회 테스트")
     void getAllCategoriesPage() {
         // given
         Page<Category> page = new PageImpl<>(List.of(new Category(1L, null, "소설", true)));
-        when(categoryRepository.findAllByIsActiveTrue(any(PageRequest.class))).thenReturn(page);
+        when(categoryRepository.findAll(any(PageRequest.class))).thenReturn(page);
         when(categoryMapper.toCategoryResponseDto(any(Category.class)))
                 .thenReturn(new CategoryResponseDto(1L, "소설", null));
 

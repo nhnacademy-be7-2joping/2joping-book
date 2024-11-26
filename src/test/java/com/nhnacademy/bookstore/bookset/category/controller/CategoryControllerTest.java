@@ -201,14 +201,14 @@ class CategoryControllerTest {
 
     @Test
     @DisplayName("활성화된 전체 카테고리 조회 테스트")
-    void getAllCategories() throws Exception {
+    void getAllActiveCategories() throws Exception {
         // given
         List<CategoryResponseDto> responseDtos = List.of(
                 new CategoryResponseDto(1L, "문학", null),
                 new CategoryResponseDto(2L, "역사", null)
         );
 
-        Mockito.when(categoryService.getAllCategories()).thenReturn(responseDtos);
+        Mockito.when(categoryService.getAllActiveCategories()).thenReturn(responseDtos);
 
         // when
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bookstore/categories")

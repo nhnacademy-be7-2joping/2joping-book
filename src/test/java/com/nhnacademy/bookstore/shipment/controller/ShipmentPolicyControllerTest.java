@@ -11,6 +11,9 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -68,23 +71,29 @@ class ShipmentPolicyControllerTest {
     }
 
     @Test
-    @DisplayName("모든 배송 정책 조회 테스트")
-    void getAllShipmentPolicies() throws Exception {
+    @DisplayName("모든 배송 정책 페이징 조회 테스트")
+    void getAllShipmentPolicies_Controller() throws Exception {
         // given
         ShipmentPolicyResponseDto responseDto1 = new ShipmentPolicyResponseDto(1L, "정책1", 10000, true, null, null, 5000, true);
         ShipmentPolicyResponseDto responseDto2 = new ShipmentPolicyResponseDto(2L, "정책2", 5000, false, null, null, 2500, true);
-        Mockito.when(shipmentPolicyService.getAllShipmentPolicies()).thenReturn(List.of(responseDto1, responseDto2));
+
+        Page<ShipmentPolicyResponseDto> responsePage = new PageImpl<>(List.of(responseDto1, responseDto2));
+        Mockito.when(shipmentPolicyService.getAllShipmentPolicies(any(Pageable.class))).thenReturn(responsePage);
 
         // when
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bookstore/shipment-policies")
+                        .param("page", "0")
+                        .param("size", "10")
                         .accept(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].shipmentPolicyId").value(1L))
-                .andExpect(jsonPath("$[0].name").value("정책1"))
-                .andExpect(jsonPath("$[1].shipmentPolicyId").value(2L))
-                .andExpect(jsonPath("$[1].name").value("정책2"));
+                .andExpect(jsonPath("$.content[0].shipmentPolicyId").value(1L))
+                .andExpect(jsonPath("$.content[0].name").value("정책1"))
+                .andExpect(jsonPath("$.content[1].shipmentPolicyId").value(2L))
+                .andExpect(jsonPath("$.content[1].name").value("정책2"))
+                .andExpect(jsonPath("$.totalElements").value(2));
     }
+
 
     @Test
     @DisplayName("배송 정책 수정 테스트")

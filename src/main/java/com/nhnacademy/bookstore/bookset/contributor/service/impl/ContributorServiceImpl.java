@@ -13,6 +13,8 @@ import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorReposi
 import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorRoleRepository;
 import com.nhnacademy.bookstore.bookset.contributor.service.ContributorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -138,5 +140,12 @@ public class ContributorServiceImpl implements ContributorService {
     @Transactional
     public List<ContributorNameRoleResponseDto> getActiveContributorsWithRoles() {
         return contributorRepository.findContributorsWithRoles();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ContributorResponseDto> getAllContributors(Pageable pageable) {
+        return contributorRepository.findAll(pageable)
+                .map(contributorMapper::toContributorResponseDto);
     }
 }

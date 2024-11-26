@@ -12,6 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -125,23 +129,31 @@ class ShipmentPolicyServiceImplTest {
 
 
     @Test
-    @DisplayName("모든 활성화된 배송 정책 조회 테스트")
-    void getAllShipmentPolicies() {
+    @DisplayName("모든 배송 정책 페이징 조회 테스트")
+    void getAllShipmentPolicies_Service() {
         // given
-        ShipmentPolicyResponseDto responseDto1 = new ShipmentPolicyResponseDto(1L, "정책 1", 10000, true, null, null, 5000, true);
-        ShipmentPolicyResponseDto responseDto2 = new ShipmentPolicyResponseDto(2L, "정책 2", 5000, false, null, null, 3000, true);
+        ShipmentPolicy shipmentPolicy1 = new ShipmentPolicy(1L, "정책1", 10000, true, null, null, 5000, true);
+        ShipmentPolicy shipmentPolicy2 = new ShipmentPolicy(2L, "정책2", 5000, false, null, null, 2500, true);
 
-        when(shipmentPolicyRepository.findActiveShipmentPolicies()).thenReturn(List.of(responseDto1, responseDto2));
+        ShipmentPolicyResponseDto responseDto1 = new ShipmentPolicyResponseDto(1L, "정책1", 10000, true, null, null, 5000, true);
+        ShipmentPolicyResponseDto responseDto2 = new ShipmentPolicyResponseDto(2L, "정책2", 5000, false, null, null, 2500, true);
+
+        Page<ShipmentPolicy> shipmentPolicyPage = new PageImpl<>(List.of(shipmentPolicy1, shipmentPolicy2));
+
+        when(shipmentPolicyRepository.findAll(any(Pageable.class))).thenReturn(shipmentPolicyPage);
+        when(shipmentPolicyMapper.toShipmentPolicyResponseDto(shipmentPolicy1)).thenReturn(responseDto1);
+        when(shipmentPolicyMapper.toShipmentPolicyResponseDto(shipmentPolicy2)).thenReturn(responseDto2);
 
         // when
-        List<ShipmentPolicyResponseDto> responseList = shipmentPolicyService.getAllShipmentPolicies();
+        Page<ShipmentPolicyResponseDto> result = shipmentPolicyService.getAllShipmentPolicies(PageRequest.of(0, 10));
 
         // then
-        assertNotNull(responseList);
-        assertEquals(2, responseList.size());
-        assertEquals("정책 1", responseList.get(0).name());
-        assertEquals("정책 2", responseList.get(1).name());
+        assertNotNull(result);
+        assertEquals(2, result.getTotalElements());
+        assertEquals("정책1", result.getContent().get(0).name());
+        assertEquals("정책2", result.getContent().get(1).name());
     }
+
 
     @Test
     @DisplayName("회원 여부에 따른 활성화된 배송비 조회 테스트")

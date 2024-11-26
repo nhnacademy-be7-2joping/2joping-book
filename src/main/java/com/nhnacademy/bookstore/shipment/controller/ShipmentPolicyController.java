@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.shipment.controller;
 
+import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
 import com.nhnacademy.bookstore.shipment.dto.request.ShipmentPolicyRequestDto;
 import com.nhnacademy.bookstore.shipment.dto.response.ShipmentPolicyResponseDto;
@@ -10,6 +11,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,15 +53,15 @@ public class ShipmentPolicyController {
     }
 
     /**
-     * 모든 활성화된 배송 정책을 조회하는 메서드.
+     * 모든 배송 정책을 조회하는 메서드.
      *
-     * @return 활성화된 모든 배송 정책 목록을 포함한 ResponseEntity
+     * @return 모든 배송 정책 목록을 포함한 ResponseEntity
      */
-    @Operation(summary = "Get all shipment policies", description = "모든 활성화된 배송 정책을 조회합니다.")
+    @Operation(summary = "Get all shipment policies", description = "모든 배송 정책을 조회합니다.")
     @ApiResponse(responseCode = "200", description = "배송 정책 조회 성공")
     @GetMapping
-    public ResponseEntity<List<ShipmentPolicyResponseDto>> getAllShipmentPolicies() {
-        List<ShipmentPolicyResponseDto> responseDtos = shipmentPolicyService.getAllShipmentPolicies();
+    public ResponseEntity<Page<ShipmentPolicyResponseDto>> getAllShipmentPolicies(@PageableDefault Pageable pageable) {
+        Page<ShipmentPolicyResponseDto> responseDtos = shipmentPolicyService.getAllShipmentPolicies(pageable);
         return ResponseEntity.ok(responseDtos);
     }
 

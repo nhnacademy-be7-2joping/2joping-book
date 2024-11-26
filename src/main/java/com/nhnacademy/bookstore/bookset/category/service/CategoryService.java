@@ -26,7 +26,7 @@ public interface CategoryService {
 
     List<CategoryResponseDto> getChildCategories(Long categoryId);
 
-    List<CategoryResponseDto> getAllCategories();
+    List<CategoryResponseDto> getAllActiveCategories();
 
     Page<CategoryResponseDto> getAllCategoriesPage(Pageable pageable);
 

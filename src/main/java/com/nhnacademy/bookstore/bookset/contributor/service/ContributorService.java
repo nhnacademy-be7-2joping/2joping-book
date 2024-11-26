@@ -3,6 +3,8 @@ package com.nhnacademy.bookstore.bookset.contributor.service;
 import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRequestDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorNameRoleResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,4 +17,5 @@ public interface ContributorService {
     void deactivateContributor(Long contributorId);
     void activateContributor(Long contributorId);
     List<ContributorNameRoleResponseDto> getActiveContributorsWithRoles();
+    Page<ContributorResponseDto> getAllContributors(Pageable pageable);
 }

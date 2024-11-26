@@ -11,6 +11,9 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -139,6 +142,27 @@ class ContributorControllerTest {
                 .andExpect(jsonPath("$[1].contributorRole").value("엮은이"));
     }
 
+    @Test
+    @DisplayName("모든 기여자 조회 테스트 (페이징)")
+    void getAllContributors() throws Exception {
+        // given
+        Page<ContributorResponseDto> contributorsPage = new PageImpl<>(
+                List.of(new ContributorResponseDto(1L, 1L, "이조핑"), new ContributorResponseDto(2L, 1L, "삼조핑"))
+        );
+
+        Mockito.when(contributorService.getAllContributors(any(Pageable.class))).thenReturn(contributorsPage);
+
+        // when
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bookstore/contributors")
+                        .accept(MediaType.APPLICATION_JSON))
+                // then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.size()").value(2))
+                .andExpect(jsonPath("$.content[0].contributorId").value(1L))
+                .andExpect(jsonPath("$.content[0].name").value("이조핑"))
+                .andExpect(jsonPath("$.content[1].contributorId").value(2L))
+                .andExpect(jsonPath("$.content[1].name").value("삼조핑"));
+    }
 }
 
 

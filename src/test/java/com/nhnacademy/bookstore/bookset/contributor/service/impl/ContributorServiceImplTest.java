@@ -17,6 +17,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -254,4 +258,29 @@ class ContributorServiceImplTest {
         assertTrue(actualDtos.isEmpty());
     }
 
+    @Test
+    @DisplayName("모든 기여자 조회 테스트 (페이징)")
+    void getAllContributors() {
+        // given
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Contributor> contributors = List.of(
+                new Contributor(1L, new ContributorRole(1L, "지은이"), "이조핑", true),
+                new Contributor(2L, new ContributorRole(1L, "지은이"), "삼조핑", true)
+        );
+        Page<Contributor> contributorPage = new PageImpl<>(contributors);
+
+        when(contributorRepository.findAll(pageable)).thenReturn(contributorPage);
+        when(contributorMapper.toContributorResponseDto(any(Contributor.class)))
+                .thenReturn(new ContributorResponseDto(1L, 1L, "이조핑"))
+                .thenReturn(new ContributorResponseDto(2L, 1L, "삼조핑"));
+
+        // when
+        Page<ContributorResponseDto> result = contributorService.getAllContributors(pageable);
+
+        // then
+        assertNotNull(result);
+        assertEquals(2, result.getContent().size());
+        assertEquals("이조핑", result.getContent().get(0).name());
+        assertEquals("삼조핑", result.getContent().get(1).name());
+    }
 }

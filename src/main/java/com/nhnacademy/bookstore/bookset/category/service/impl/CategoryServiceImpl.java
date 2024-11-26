@@ -92,7 +92,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<CategoryResponseDto> getAllCategories() {
+    public List<CategoryResponseDto> getAllActiveCategories() {
         List<Category> categoryList = categoryRepository.findAllByIsActiveTrue();
         return categoryList.stream()
                 .map(categoryMapper::toCategoryResponseDto)
@@ -102,7 +102,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional(readOnly = true)
     @Override
     public Page<CategoryResponseDto> getAllCategoriesPage(Pageable pageable) {
-        return categoryRepository.findAllByIsActiveTrue(pageable)
+        return categoryRepository.findAll(pageable)
                 .map(categoryMapper::toCategoryResponseDto);
     }
 
