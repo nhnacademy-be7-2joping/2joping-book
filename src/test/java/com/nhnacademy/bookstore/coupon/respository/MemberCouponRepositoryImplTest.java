@@ -31,7 +31,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
+ /**
  * MemberCouponRepositoryImplTest
  * 이 클래스는 MemberCouponRepositoryImpl의 getAllMemberCoupons 메서드를 테스트합니다.
  * 특정 회원의 쿠폰과 쿠폰 정책이 데이터베이스에 올바르게 저장되고 조회되는지 확인하는 테스트입니다.
@@ -142,7 +142,6 @@ class MemberCouponRepositoryImplTest {
         // 회원 쿠폰 생성
         MemberCoupon memberCoupon = new MemberCoupon(null, coupon, testMember, LocalDateTime.now(), LocalDateTime.now().plusDays(5), false, null);
         memberCouponJpaRepository.save(memberCoupon);
-
         // When: getAllMemberOrderCoupons 호출
         List<OrderCouponResponse> orderCoupons = memberCouponRepository.getAllMemberOrderCoupons(testMember.getId());
 

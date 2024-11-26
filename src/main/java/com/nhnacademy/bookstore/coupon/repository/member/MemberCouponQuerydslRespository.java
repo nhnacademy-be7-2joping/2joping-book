@@ -14,7 +14,7 @@ import java.util.List;
  * @author Luha
  */
 public interface MemberCouponQuerydslRespository{
-
+    List<MemberCouponResponseDto> getExpiredOrUsedMemberCoupons(Long customerId);
     List<MemberCouponResponseDto> getAllMemberCoupons(Long customerId);
     List<OrderCouponResponse> getAllMemberOrderCoupons(Long customerId);
 

@@ -60,7 +60,7 @@ class CouponPolicyControllerTest {
         when(couponPolicyService.getAllCouponPolicies()).thenReturn(Collections.singletonList(responseDto));
 
         // when & then
-        mockMvc.perform(get("/api/v1/coupon/policies")
+        mockMvc.perform(get("/api/v1/coupon/policies/activated")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -83,7 +83,7 @@ class CouponPolicyControllerTest {
         when(couponPolicyService.getAllCouponPolicies()).thenReturn(Collections.emptyList());
 
         // when & then
-        mockMvc.perform(get("/api/v1/coupon/policies")
+        mockMvc.perform(get("/api/v1/coupon/policies/activated")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

@@ -59,8 +59,19 @@ public class PublisherController {
      */
     @Operation(summary = "전체 출판사 조회", description = "등록된 모든 출판사를 조회합니다.")
     @GetMapping("/publishers")
-    public ResponseEntity<Page<PublisherResponseDto>> getAllPublishers(@PageableDefault(size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
+    public ResponseEntity<Page<PublisherResponseDto>> getAllPublishers(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<PublisherResponseDto> publishers = publisherService.getAllPublishers(pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(publishers);
+    }
+
+    /**
+     * 전체 출판사를 조회하는 controller (등록용)
+     * @return 전체 줄판사와 상태 코드를 담은 응답
+     */
+    @Operation(summary = "전체 출판사 조회 (등록용)", description = "등록된 모든 출판사를 조회합니다.")
+    @GetMapping("/publishers/list")
+    public ResponseEntity<List<PublisherResponseDto>> getAllPublishersForRegister() {
+        List<PublisherResponseDto> publishers = publisherService.getAllPublishersForRegister();
         return ResponseEntity.status(HttpStatus.OK).body(publishers);
     }
 

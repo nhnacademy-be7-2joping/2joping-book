@@ -48,5 +48,14 @@ public class MemberCouponController {
 
     }
 
+    @GetMapping("/coupons/used/mypage")
+    public ResponseEntity<List<MemberCouponResponseDto>> usedCouponsByMemberId(@RequestHeader("X-Customer-Id") String customerId) {
+
+        List<MemberCouponResponseDto> responseDtos = memberCouponService.getAllMemberUsedCoupons(Long.parseLong(customerId));
+
+        return ResponseEntity.ok(responseDtos);
+
+    }
+
 
 }

@@ -2,6 +2,7 @@ package com.nhnacademy.bookstore.bookset.contributor.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRequestDto;
+import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorNameRoleResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.service.ContributorService;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -113,4 +116,29 @@ class ContributorControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    @DisplayName("기여자 이름 및 역할 리스트 조회 테스트")
+    void getActiveContributors() throws Exception {
+        // given
+        List<ContributorNameRoleResponseDto> responseDtos = List.of(
+                new ContributorNameRoleResponseDto("이조핑", "지은이"),
+                new ContributorNameRoleResponseDto("삼조핑", "엮은이")
+        );
+
+        Mockito.when(contributorService.getActiveContributorsWithRoles()).thenReturn(responseDtos);
+
+        // when
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bookstore/contributors/active")
+                        .accept(MediaType.APPLICATION_JSON))
+                // then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(2))
+                .andExpect(jsonPath("$[0].contributorName").value("이조핑"))
+                .andExpect(jsonPath("$[0].contributorRole").value("지은이"))
+                .andExpect(jsonPath("$[1].contributorName").value("삼조핑"))
+                .andExpect(jsonPath("$[1].contributorRole").value("엮은이"));
+    }
+
 }
+
+
