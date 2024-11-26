@@ -22,6 +22,7 @@ import com.nhnacademy.bookstore.review.dto.request.ReviewRequestDto;
 import com.nhnacademy.bookstore.review.dto.response.ReviewCreateResponseDto;
 import com.nhnacademy.bookstore.review.dto.response.ReviewModifyResponseDto;
 import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
+import com.nhnacademy.bookstore.review.dto.response.ReviewTotalResponseDto;
 import com.nhnacademy.bookstore.review.entity.Review;
 import com.nhnacademy.bookstore.review.mapper.ReviewMapper;
 import com.nhnacademy.bookstore.review.repository.ReviewRepository;
@@ -152,7 +153,7 @@ public class ReviewServiceImpl implements ReviewService {
      */
     @Transactional(readOnly = true)
     @Override
-    public Page<ReviewResponseDto> getReviewsByCustomerId(Pageable pageable, Long customerId) {
+    public Page<ReviewTotalResponseDto> getReviewsByCustomerId(Pageable pageable, Long customerId) {
         return reviewRepository.getReviewsByCustomerId(pageable,customerId);
     }
 
