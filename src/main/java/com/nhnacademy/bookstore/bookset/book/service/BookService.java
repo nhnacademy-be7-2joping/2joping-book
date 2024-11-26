@@ -23,6 +23,7 @@ public interface BookService {
     BookCreateResponseDto createBook(BookCreateRequestDto bookCreateRequestDto);
     List<BookCreateAPIResponseDto> createBooks();
     List<ContributorResponseDto> getContributorListForAPI(String text);
+    List<ContributorResponseDto> getContributorList(String contributorListJson);
     Page<BookSimpleResponseDto> getAllBooks(Pageable pageable);
     BookResponseDto getBookById(Long bookId);
     Page<BookSimpleResponseDto> getBooksByCategoryId(Pageable pageable, Long categoryId);
