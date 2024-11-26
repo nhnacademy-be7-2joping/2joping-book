@@ -24,5 +24,16 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 
         return orderDetails;
     }
+
+    @Override
+    public List<OrderDetailResponseDto> getOrderDetailByCustomerId(Long customerId) {
+        List<OrderDetailResponseDto> orderDetails = orderDetailRepository.findByCustomerId(customerId);
+        if (orderDetails.isEmpty()) {
+            throw new OrderDetailNotFoundException("주문상세가 없습니다.");
+        }
+
+        return orderDetails;
+    }
+
 }
 
