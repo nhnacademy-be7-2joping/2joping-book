@@ -42,4 +42,11 @@ public class OrderDetail {
     @Column(name = "sell_price", nullable = false)
     private int sellPrice;
 
+    public void apply(Order order, Book book, int quantity, int sellPrice) {
+        this.order = order;
+        this.book = book;
+        this.quantity = quantity;
+        this.finalPrice = quantity * sellPrice;
+        this.sellPrice = sellPrice;
+    }
 }

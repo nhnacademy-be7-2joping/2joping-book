@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstore.bookset.category.service.Impl;
+package com.nhnacademy.bookstore.bookset.category.service.impl;
 
 import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryRequestDto;
 import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 

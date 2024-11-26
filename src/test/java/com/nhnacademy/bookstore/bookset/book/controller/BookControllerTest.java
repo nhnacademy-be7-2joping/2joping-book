@@ -250,7 +250,7 @@ class BookControllerTest {
 //         assertEquals(HttpStatus.OK, response.getStatusCode());
 //         assertEquals(resultResponseDto, response.getBody());
 //     }
-  
+
     @Test
     @DisplayName("도서 비활성화 성공")
     void testDeactivateBookSuccess() {

@@ -10,6 +10,8 @@ package com.nhnacademy.bookstore.orderset.order.entity;
 
 
 import com.nhnacademy.bookstore.coupon.entity.member.MemberCoupon;
+import com.nhnacademy.bookstore.orderset.order.dto.request.OrderPostRequest;
+import com.nhnacademy.bookstore.orderset.order.dto.request.OrderRequest;
 import com.nhnacademy.bookstore.orderset.order_state.entity.OrderState;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import jakarta.persistence.*;
@@ -20,6 +22,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -32,6 +35,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id", nullable = false)
     private Long orderId;
+
+    @Column(name = "order_code")
+    private String orderCode;
 
     @ManyToOne
     @JoinColumn(name = "order_state_id", nullable = false)
@@ -54,8 +60,7 @@ public class Order {
     @Column(name = "receiver", length = 20, nullable = false)
     private String receiver;
 
-
-    @Column(name = "postal_code",  columnDefinition = "CHAR(5)")
+    @Column(name = "postal_code", columnDefinition = "CHAR(5)")
     private String postalCode;
 
     @Column(name = "road_address", length = 100, nullable = false)
@@ -77,4 +82,24 @@ public class Order {
 
     @Column(name = "total_price", nullable = false)
     private int totalPrice;
+
+    public void apply(OrderState orderState, MemberCoupon memberCoupon, OrderRequest orderRequest, OrderPostRequest orderPostRequest,
+                      Customer customer) {
+        LocalDateTime now = LocalDateTime.now();
+
+        this.orderCode = orderPostRequest.orderId();
+        this.orderState = orderState;
+        this.customer = customer;
+        this.couponUsage = memberCoupon;
+        this.orderDate = now;
+        this.desiredDeliveryDate = LocalDate.parse(orderRequest.deliveryInfo().desiredDate());
+        this.receiver = orderRequest.deliveryInfo().receiver();
+        this.postalCode = orderRequest.deliveryInfo().postalCode();
+        this.roadAddress = orderRequest.deliveryInfo().address();
+        this.detailAddress = orderRequest.deliveryInfo().detailAddress();
+        this.pointUsage = orderRequest.point();
+        this.shippingFee = 0;
+        this.couponSalePrice = 0;
+        this.totalPrice = orderRequest.totalCost();
+    }
 }

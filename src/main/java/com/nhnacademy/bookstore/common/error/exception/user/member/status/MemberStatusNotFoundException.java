@@ -3,7 +3,6 @@ package com.nhnacademy.bookstore.common.error.exception.user.member.status;
 import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.base.NotFoundException;
 
-import java.io.Serializable;
 
 /**
  * MemberStatusNotFoundException
