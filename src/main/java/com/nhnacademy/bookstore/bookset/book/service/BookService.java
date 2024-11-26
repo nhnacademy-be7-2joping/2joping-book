@@ -25,12 +25,12 @@ public interface BookService {
     Page<BookSimpleResponseDto> getBooksByCategoryId(Pageable pageable, Long categoryId);
     Page<BookSimpleResponseDto> getBooksByContributorId(Pageable pageable, Long contributorId);
     // List<ContributorResponseDto> getContributorList(String text);
-    Category getLowestLevelCategory(String categoryText);
-    List<TagResponseDto> associateBookWithTag(Book book, String text);
+    //    Category getLowestLevelCategory(String categoryText);
     BookUpdateResponseDto getUpdateBookByBookId(Long bookId);
     BookUpdateResultResponseDto updateBook(Long bookId, BookUpdateRequestDto bookUpdateRequestDto);
-    List<ContributorResponseDto> getContributorList(String contributorListJson);
     List<ContributorResponseDto> getContributorListForAPI(String text);
+    Category getLowestLevelCategory(String categoryText);
+    List<ContributorResponseDto> getContributorList(String contributorListJson);
     // List<TagResponseDto> associateBookWithTag(Book book, String text);
     void deactivateBook(Long bookId);
 }
