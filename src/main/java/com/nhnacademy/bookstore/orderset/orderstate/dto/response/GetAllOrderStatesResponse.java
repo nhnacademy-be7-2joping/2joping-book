@@ -18,7 +18,7 @@ public record GetAllOrderStatesResponse(
     }
 
     private record OrderStateResponse(
-            Long orderStatId,
+            Long orderStateId,
             OrderStateType name
     ) {
     }
