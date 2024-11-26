@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
  * @date : 2024.10.29
  */
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/bookstore")
 @RequiredArgsConstructor
@@ -75,6 +77,7 @@ public class BookController {
     @GetMapping("/books/get/category/{category-id}")// 임시로 설정해둔거
     public ResponseEntity<Page<BookSimpleResponseDto>> getBooksByCategoryId(@PathVariable("category-id") Long categoryId,
                                                                             @PageableDefault(size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
+        log.info("카테고리별 도서를 조회하는 컨트롤러 !!");
         Page<BookSimpleResponseDto> books = bookService.getBooksByCategoryId(pageable,categoryId);
         return ResponseEntity.status(HttpStatus.OK).body(books);
     }
@@ -88,6 +91,7 @@ public class BookController {
     @GetMapping("/books/get/contributor/{contributor-id}")// 임시로 설정해둔거
     public ResponseEntity<Page<BookSimpleResponseDto>> getBooksByContributorId(@PathVariable("contributor-id") Long contributorId,
                                                                                @PageableDefault(size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
+        log.info("기여자별 도서를 조회하는 컨트롤러 !!");
         Page<BookSimpleResponseDto> books = bookService.getBooksByContributorId(pageable, contributorId);
         return ResponseEntity.status(HttpStatus.OK).body(books);
     }
