@@ -42,7 +42,7 @@ public class ShipmentPolicyController {
      * @param requestDto 생성할 배송 정책 정보를 담은 DTO
      * @return 생성된 배송 정책 정보를 포함한 ResponseEntity
      */
-    @Operation(summary = "Create a new shipment policy", description = "새로운 배송 정책을 생성합니다.")
+    @Operation(summary = "배송 정책 생성", description = "새로운 배송 정책을 생성합니다.")
     @ApiResponse(responseCode = "201", description = "배송 정책 생성 성공")
     @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
     @PostMapping
@@ -57,7 +57,7 @@ public class ShipmentPolicyController {
      *
      * @return 모든 배송 정책 목록을 포함한 ResponseEntity
      */
-    @Operation(summary = "Get all shipment policies", description = "모든 배송 정책을 조회합니다.")
+    @Operation(summary = "배송 정책 전체 조회", description = "모든 배송 정책을 조회합니다.")
     @ApiResponse(responseCode = "200", description = "배송 정책 조회 성공")
     @GetMapping
     public ResponseEntity<Page<ShipmentPolicyResponseDto>> getAllShipmentPolicies(@PageableDefault Pageable pageable) {
@@ -71,7 +71,7 @@ public class ShipmentPolicyController {
      * @param shipmentPolicyId 조회할 배송 정책의 ID
      * @return 조회된 배송 정책 정보를 포함한 ResponseEntity
      */
-    @Operation(summary = "Get a shipment policy", description = "특정 배송 정책을 조회합니다.")
+    @Operation(summary = "배송 정책 조회", description = "특정 배송 정책을 조회합니다.")
     @ApiResponse(responseCode = "200", description = "배송 정책 조회 성공")
     @ApiResponse(responseCode = "404", description = "배송 정책을 찾을 수 없음")
     @GetMapping("/{shipmentPolicyId}")
@@ -87,7 +87,7 @@ public class ShipmentPolicyController {
      * @param requestDto       수정할 배송 정책 정보를 담은 DTO
      * @return 수정된 배송 정책 정보를 포함한 ResponseEntity
      */
-    @Operation(summary = "Update a shipment policy", description = "특정 배송 정책을 수정합니다.")
+    @Operation(summary = "배송 정책 수정", description = "특정 배송 정책을 수정합니다.")
     @ApiResponse(responseCode = "200", description = "배송 정책 수정 성공")
     @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
     @ApiResponse(responseCode = "404", description = "배송 정책을 찾을 수 없음")
@@ -105,7 +105,7 @@ public class ShipmentPolicyController {
      * @param shipmentPolicyId 비활성화할 배송 정책의 ID
      * @return 비활성화 성공 상태를 포함한 ResponseEntity
      */
-    @Operation(summary = "Deactivate a shipment policy", description = "특정 배송 정책을 비활성화(약삭제)합니다.")
+    @Operation(summary = "배송 정책 비활성화", description = "특정 배송 정책을 비활성화(약삭제)합니다.")
     @ApiResponse(responseCode = "200", description = "배송 정책 비활성화 성공")
     @ApiResponse(responseCode = "404", description = "배송 정책을 찾을 수 없음")
     @PutMapping("/{shipmentPolicyId}/deactivate")
@@ -120,7 +120,7 @@ public class ShipmentPolicyController {
      * @param shipmentPolicyId 활성화할 배송 정책의 ID
      * @return 활성화 성공 상태를 포함한 ResponseEntity
      */
-    @Operation(summary = "Activate a shipment policy", description = "특정 배송 정책을 활성화 합니다.")
+    @Operation(summary = "배송 정책 활성화", description = "특정 배송 정책을 활성화 합니다.")
     @ApiResponse(responseCode = "200", description = "배송 정책 활성화 성공")
     @ApiResponse(responseCode = "404", description = "배송 정책을 찾을 수 없음")
     @PutMapping("/{shipmentPolicyId}/activate")
@@ -134,7 +134,7 @@ public class ShipmentPolicyController {
      *
      * @return 활성화된 모든 배송 정책 중 회원 또는 비회원 배송비 목록을 포함한 ResponseEntity
      */
-    @Operation(summary = "Get Shipping Fees by Member Status", description = "회원여부에 따른 배송비 조회")
+    @Operation(summary = "배송비 조회", description = "회원 여부에 따른 배송비 조회")
     @ApiResponse(responseCode = "200", description = "Shipping policies successfully retrieved")
     @GetMapping("/shipping-fee")
     public ResponseEntity<List<ShippingFeeResponseDto>> getShippingFee(@RequestParam("isLogin") Boolean isLogin) {
