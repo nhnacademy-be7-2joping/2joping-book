@@ -77,6 +77,7 @@ public class BookController {
     @GetMapping("/books/get/category/{category-id}")// 임시로 설정해둔거
     public ResponseEntity<Page<BookSimpleResponseDto>> getBooksByCategoryId(@PathVariable("category-id") Long categoryId,
                                                                             @PageableDefault(size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
+        log.info("카테고리별 도서를 조회하는 컨트롤러 !!");
         Page<BookSimpleResponseDto> books = bookService.getBooksByCategoryId(pageable,categoryId);
         return ResponseEntity.status(HttpStatus.OK).body(books);
     }
