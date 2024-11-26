@@ -2,6 +2,7 @@ package com.nhnacademy.bookstore.bookset.contributor.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRequestDto;
+import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorIsActiveResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorNameRoleResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.service.ContributorService;
@@ -15,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -146,8 +146,11 @@ class ContributorControllerTest {
     @DisplayName("모든 기여자 조회 테스트 (페이징)")
     void getAllContributors() throws Exception {
         // given
-        Page<ContributorResponseDto> contributorsPage = new PageImpl<>(
-                List.of(new ContributorResponseDto(1L, 1L, "이조핑"), new ContributorResponseDto(2L, 1L, "삼조핑"))
+        Page<ContributorIsActiveResponseDto> contributorsPage = new PageImpl<>(
+                List.of(
+                        new ContributorIsActiveResponseDto(1L, 1L, "이조핑", true),
+                        new ContributorIsActiveResponseDto(2L, 1L, "삼조핑", false)
+                )
         );
 
         Mockito.when(contributorService.getAllContributors(any(Pageable.class))).thenReturn(contributorsPage);
@@ -159,9 +162,13 @@ class ContributorControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.size()").value(2))
                 .andExpect(jsonPath("$.content[0].contributorId").value(1L))
+                .andExpect(jsonPath("$.content[0].contributorRoleId").value(1L))
                 .andExpect(jsonPath("$.content[0].name").value("이조핑"))
+                .andExpect(jsonPath("$.content[0].isActive").value(true))
                 .andExpect(jsonPath("$.content[1].contributorId").value(2L))
-                .andExpect(jsonPath("$.content[1].name").value("삼조핑"));
+                .andExpect(jsonPath("$.content[1].contributorRoleId").value(1L))
+                .andExpect(jsonPath("$.content[1].name").value("삼조핑"))
+                .andExpect(jsonPath("$.content[1].isActive").value(false));
     }
 }
 
