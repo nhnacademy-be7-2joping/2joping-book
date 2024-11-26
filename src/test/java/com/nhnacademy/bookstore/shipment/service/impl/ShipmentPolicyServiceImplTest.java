@@ -154,6 +154,24 @@ class ShipmentPolicyServiceImplTest {
         assertEquals("정책2", result.getContent().get(1).name());
     }
 
+    @Test
+    @DisplayName("모든 활성화된 배송 정책 조회 테스트")
+    void getAllIsActiveShipmentPolicies() {
+        // given
+        ShipmentPolicyResponseDto responseDto1 = new ShipmentPolicyResponseDto(1L, "정책 1", 10000, true, null, null, 5000, true);
+        ShipmentPolicyResponseDto responseDto2 = new ShipmentPolicyResponseDto(2L, "정책 2", 5000, false, null, null, 3000, true);
+
+        when(shipmentPolicyRepository.findActiveShipmentPolicies()).thenReturn(List.of(responseDto1, responseDto2));
+
+        // when
+        List<ShipmentPolicyResponseDto> responseList = shipmentPolicyService.getAllIsActiveShipmentPolicies();
+
+        // then
+        assertNotNull(responseList);
+        assertEquals(2, responseList.size());
+        assertEquals("정책 1", responseList.get(0).name());
+        assertEquals("정책 2", responseList.get(1).name());
+    }
 
     @Test
     @DisplayName("회원 여부에 따른 활성화된 배송비 조회 테스트")

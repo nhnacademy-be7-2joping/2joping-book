@@ -15,5 +15,6 @@ public interface ShipmentPolicyService {
     ShipmentPolicyResponseDto updateShipmentPolicy(Long shipmentPolicyId, ShipmentPolicyRequestDto requestDto);
     void deactivateShipmentPolicy(Long shipmentPolicyId);
     void activateShipmentPolicy(Long shipmentPolicyId);
+    List<ShipmentPolicyResponseDto> getAllIsActiveShipmentPolicies();
     List<ShippingFeeResponseDto> getShippingFee(Boolean isLogin);
 }

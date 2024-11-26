@@ -59,9 +59,22 @@ public class ShipmentPolicyController {
      */
     @Operation(summary = "배송 정책 전체 조회", description = "모든 배송 정책을 조회합니다.")
     @ApiResponse(responseCode = "200", description = "배송 정책 조회 성공")
-    @GetMapping
+    @GetMapping("/pages")
     public ResponseEntity<Page<ShipmentPolicyResponseDto>> getAllShipmentPolicies(@PageableDefault Pageable pageable) {
         Page<ShipmentPolicyResponseDto> responseDtos = shipmentPolicyService.getAllShipmentPolicies(pageable);
+        return ResponseEntity.ok(responseDtos);
+    }
+
+    /**
+     * 모든 활성화된 배송 정책을 조회하는 메서드.
+     *
+     * @return 활성화된 모든 배송 정책 목록을 포함한 ResponseEntity
+     */
+    @Operation(summary = "활성화된 배송 정책 전체 조회", description = "모든 활성화된 배송 정책을 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "배송 정책 조회 성공")
+    @GetMapping
+    public ResponseEntity<List<ShipmentPolicyResponseDto>> getAllIsActiveShipmentPolicies() {
+        List<ShipmentPolicyResponseDto> responseDtos = shipmentPolicyService.getAllIsActiveShipmentPolicies();
         return ResponseEntity.ok(responseDtos);
     }
 
