@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -95,6 +94,7 @@ public class PublisherServiceImpl implements PublisherService{
         }
         return responseDtoList;
     }
+
 
     /**
      * 특정 출판사를 삭제하는 메서드

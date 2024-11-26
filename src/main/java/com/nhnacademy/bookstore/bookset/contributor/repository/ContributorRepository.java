@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface ContributorRepository extends JpaRepository<Contributor, Long> {
     Optional<Contributor> findByName(String name);
+
     @Query("SELECT new com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorNameRoleResponseDto(c.name, r.name) " +
             "FROM Contributor c " +
             "JOIN c.contributorRole r " +
