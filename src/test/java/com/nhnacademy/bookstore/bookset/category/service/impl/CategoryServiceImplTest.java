@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.bookset.category.service.impl;
 
 import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryRequestDto;
+import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryIsActiveResponseDto;
 import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
 import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import com.nhnacademy.bookstore.bookset.category.mapper.CategoryMapper;
@@ -160,7 +161,7 @@ class CategoryServiceImplTest {
 
     @Test
     @DisplayName("활성화된 모든 카테고리 조회 테스트")
-    void getAllCategories() {
+    void getAllActiveCategories() {
         // given
         List<Category> categories = List.of(new Category(1L, null, "소설", true));
         when(categoryRepository.findAllByIsActiveTrue()).thenReturn(categories);
@@ -168,7 +169,7 @@ class CategoryServiceImplTest {
                 .thenReturn(new CategoryResponseDto(1L, "소설", null));
 
         // when
-        List<CategoryResponseDto> responseDtos = categoryService.getAllCategories();
+        List<CategoryResponseDto> responseDtos = categoryService.getAllActiveCategories();
 
         // then
         assertNotNull(responseDtos);
@@ -177,16 +178,16 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    @DisplayName("활성화된 모든 카테고리 페이징 조회 테스트")
+    @DisplayName("모든 카테고리 페이징 조회 테스트")
     void getAllCategoriesPage() {
         // given
         Page<Category> page = new PageImpl<>(List.of(new Category(1L, null, "소설", true)));
-        when(categoryRepository.findAllByIsActiveTrue(any(PageRequest.class))).thenReturn(page);
-        when(categoryMapper.toCategoryResponseDto(any(Category.class)))
-                .thenReturn(new CategoryResponseDto(1L, "소설", null));
+        when(categoryRepository.findAll(any(PageRequest.class))).thenReturn(page);
+        when(categoryMapper.toCategoryIsActiveResponseDto(any(Category.class)))
+                .thenReturn(new CategoryIsActiveResponseDto(1L, "소설", null, true));
 
         // when
-        Page<CategoryResponseDto> responsePage = categoryService.getAllCategoriesPage(PageRequest.of(0, 10));
+        Page<CategoryIsActiveResponseDto> responsePage = categoryService.getAllCategoriesPage(PageRequest.of(0, 10));
 
         // then
         assertNotNull(responsePage);

@@ -37,7 +37,7 @@ public class CarrierController {
      * @param requestDto 생성할 배송 업체 정보를 담은 DTO
      * @return 생성된 배송 업체 정보를 포함한 ResponseEntity
      */
-    @Operation(summary = "Create a new carrier", description = "새로운 배송 업체를 생성합니다.")
+    @Operation(summary = "배송 업체 생성", description = "새로운 배송 업체를 생성합니다.")
     @ApiResponse(responseCode = "201", description = "배송 업체 생성 성공")
     @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
     @PostMapping
@@ -51,7 +51,7 @@ public class CarrierController {
      *
      * @return 모든 배송 업체 목록을 포함한 ResponseEntity
      */
-    @Operation(summary = "Get all carriers", description = "모든 배송 업체를 조회합니다.")
+    @Operation(summary = "모든 배송 업체 조회", description = "모든 배송 업체를 조회합니다.")
     @ApiResponse(responseCode = "200", description = "배송 업체 조회 성공")
     @GetMapping
     public ResponseEntity<List<CarrierResponseDto>> getAllCarriers() {
@@ -65,7 +65,7 @@ public class CarrierController {
      * @param carrierId 조회할 배송 업체의 ID
      * @return 조회된 배송 업체 정보를 포함한 ResponseEntity
      */
-    @Operation(summary = "Get a carrier", description = "특정 배송 업체를 조회합니다.")
+    @Operation(summary = "배송 업체 조회", description = "특정 배송 업체를 조회합니다.")
     @ApiResponse(responseCode = "200", description = "배송 업체 조회 성공")
     @ApiResponse(responseCode = "404", description = "배송 업체를 찾을 수 없음")
     @GetMapping("/{carrierId}")
@@ -81,7 +81,7 @@ public class CarrierController {
      * @param requestDto 수정할 배송 업체 정보를 담은 DTO
      * @return 수정된 배송 업체 정보를 포함한 ResponseEntity
      */
-    @Operation(summary = "Update a carrier", description = "특정 배송 업체를 수정합니다.")
+    @Operation(summary = "배송 업체 수정", description = "특정 배송 업체를 수정합니다.")
     @ApiResponse(responseCode = "200", description = "배송 업체 수정 성공")
     @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
     @ApiResponse(responseCode = "404", description = "배송 업체를 찾을 수 없음")
@@ -99,7 +99,7 @@ public class CarrierController {
      * @param carrierId 삭제할 배송 업체의 ID
      * @return 삭제 성공 상태를 포함한 ResponseEntity
      */
-    @Operation(summary = "Delete a carrier", description = "특정 배송 업체를 삭제합니다.")
+    @Operation(summary = "배송 업체 삭제", description = "특정 배송 업체를 삭제합니다.")
     @ApiResponse(responseCode = "200", description = "배송 업체 삭제 성공")
     @ApiResponse(responseCode = "404", description = "배송 업체를 찾을 수 없음")
     @DeleteMapping("/{carrierId}")
