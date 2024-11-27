@@ -10,9 +10,11 @@ import com.nhnacademy.bookstore.common.error.exception.bookset.book.BookNotFound
 import com.nhnacademy.bookstore.common.error.exception.shipment.ShipmentNotFoundException;
 import com.nhnacademy.bookstore.coupon.entity.member.MemberCoupon;
 import com.nhnacademy.bookstore.coupon.repository.member.MemberCouponRepository;
+import com.nhnacademy.bookstore.orderset.order.dto.OrderListResponseDto;
 import com.nhnacademy.bookstore.orderset.order.dto.request.OrderPostRequest;
 import com.nhnacademy.bookstore.orderset.order.dto.request.OrderRequest;
 import com.nhnacademy.bookstore.orderset.order.entity.Order;
+import com.nhnacademy.bookstore.orderset.order.mapper.OrderMapper;
 import com.nhnacademy.bookstore.orderset.order.repository.OrderRepository;
 import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
 import com.nhnacademy.bookstore.orderset.order_detail.repository.OrderDetailRepository;
@@ -72,6 +74,7 @@ public class OrderService {
     private final WrapRepository wrapRepository;
     private final WrapManageRepository wrapManageRepository;
 
+    private final OrderMapper orderMapper;
 
     public void registerOrderOnRedis(OrderRequest orderRequest) {
         // 주문 임시 저장 10분 동안 유효
@@ -166,5 +169,14 @@ public class OrderService {
         }
 
         return null;
+    }
+
+    public List<OrderListResponseDto> getOrders() {
+        List<Order> orders = orderRepository.findAll();
+        return orderMapper.toOrderListResponseDto(orders);
+    }
+
+    public boolean updateOrderState(Long orderId, Long orderStateId) {
+        return orderRepository.updateOrderStateByOrderIdAndOrderStateId(orderId, orderStateId) != 0;
     }
 }
