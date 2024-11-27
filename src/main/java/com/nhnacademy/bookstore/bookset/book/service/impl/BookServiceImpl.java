@@ -297,7 +297,7 @@ public class BookServiceImpl implements BookService {
                 bookCreateHtmlRequestDto.isActive(),
                 bookCreateHtmlRequestDto.remainQuantity(),
                 0,
-                0
+                0,null
         );
         bookRepository.save(book);
 
@@ -417,7 +417,7 @@ public class BookServiceImpl implements BookService {
                         true,
                         1000,
                         0,
-                        0
+                        0, null
                 );
 
                 bookRepository.save(book);
