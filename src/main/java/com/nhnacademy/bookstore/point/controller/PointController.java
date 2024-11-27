@@ -37,7 +37,7 @@ public class PointController {
     }
 
     // TODO: 포인트 상세 정보
-    @GetMapping("/histories/details/")
+    @GetMapping("/histories/details")
     public ResponseEntity<GetMyPageDetailPointHistoriesResponse> getDetailPointHistories(
             @RequestHeader("X-Customer-Id") String customerId
     ) {
