@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.bookset.category.service.impl;
 
+import com.nhnacademy.bookstore.bookset.category.service.impl.CategoryServiceImpl;
 import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryRequestDto;
 import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryIsActiveResponseDto;
 import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
