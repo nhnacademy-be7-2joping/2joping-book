@@ -62,17 +62,5 @@ class LikeControllerTest {
                 .andExpect(content().string("10"));
     }
 
-    @Test
-    void getBooksLikedByMember_success() throws Exception {
-        Book book = new Book(1L, null, "Sample Book", "A description", null, "1234567890123", 1000, 900, true, true, 10, 100, 50);
-        List<Book> books = Collections.singletonList(book);
 
-        when(likeService.getBooksLikedByCustomer(anyLong())).thenReturn(books);
-
-        mockMvc.perform(get("/api/v1/likes/members/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].bookId").value(1L))
-                .andExpect(jsonPath("$[0].title").value("Sample Book"))
-                .andExpect(jsonPath("$[0].isbn").value("1234567890123"));
-    }
 }

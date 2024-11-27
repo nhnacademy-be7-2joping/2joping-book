@@ -11,11 +11,12 @@ import java.time.LocalDateTime;
  * @date : 2024-10-29
  */
 public record ShipmentRequestDto(
-        @NotNull Long carrierId,
+        Long carrierId,
         @NotNull Long shipmentPolicyId,
         @NotNull Long orderId,
         String requirement,
         LocalDateTime shippingDate,
         LocalDateTime deliveryDate,
-        @NotNull String trackingNumber
-) {}
+        String trackingNumber
+) {
+}

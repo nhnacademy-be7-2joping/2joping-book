@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "refund_history")
 @Getter
@@ -36,5 +38,11 @@ public class RefundHistory {
 
     @Column(name = "refund_fee", nullable = false)
     private int refundFee;
+
+    private boolean isApproved;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime approvedAt;
 }
 
