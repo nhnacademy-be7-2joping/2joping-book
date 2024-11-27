@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.review.repository;
 
 import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
+import com.nhnacademy.bookstore.review.dto.response.ReviewTotalResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -12,6 +13,6 @@ import java.util.Optional;
 public interface ReviewRepositoryCustom {
 
         Page<ReviewResponseDto> getReviewsByBookId(Pageable pageable, @Param("bookId") Long bookId);
-        Page<ReviewResponseDto> getReviewsByCustomerId(Pageable pageable,@Param("customerId") Long customerId);
+        Page<ReviewTotalResponseDto> getReviewsByCustomerId(Pageable pageable, @Param("customerId") Long customerId);
         Optional<ReviewResponseDto> getReviewByReviewId(Long reviewId);
 }

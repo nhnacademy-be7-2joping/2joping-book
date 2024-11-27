@@ -47,6 +47,7 @@ public class Member extends Customer {
 
     private LocalDate birthday;
 
+    private Integer birthdayMonth;
 
     @Column(nullable = false)
     private LocalDate joinDate;
@@ -90,6 +91,7 @@ public class Member extends Customer {
         this.nickname = requestDto.nickName();
         this.gender = requestDto.gender();
         this.birthday = requestDto.birthday();
+        this.birthdayMonth = requestDto.birthday().getMonthValue();
         this.joinDate = LocalDate.now();
         this.isPaycoLogin = false;
         this.point = 0;

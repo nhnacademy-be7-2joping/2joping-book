@@ -90,10 +90,12 @@ class BookControllerTest {
 //                 "detail-url"
 //         );
 
+        // BookContributorResponseDto 리스트 생성
         List<BookContributorResponseDto> contributors = List.of(
                 new BookContributorResponseDto(1L, "Contributor 1", 1L, "Author")
         );
 
+        // BookSimpleResponseDto 및 BookResponseDto 객체 초기화
         bookSimpleDto = new BookSimpleResponseDto(
                 1L, "thumbnail1", "Book Title 1", 15000, "Publisher 1", 20000, true,
                 contributors, List.of("Category 1", "Category 2")
@@ -250,7 +252,7 @@ class BookControllerTest {
 //         assertEquals(HttpStatus.OK, response.getStatusCode());
 //         assertEquals(resultResponseDto, response.getBody());
 //     }
-  
+
     @Test
     @DisplayName("도서 비활성화 성공")
     void testDeactivateBookSuccess() {

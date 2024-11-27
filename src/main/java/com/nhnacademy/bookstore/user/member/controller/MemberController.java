@@ -4,10 +4,7 @@ package com.nhnacademy.bookstore.user.member.controller;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberUpdateRequesteDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberWithdrawRequesteDto;
-import com.nhnacademy.bookstore.user.member.dto.response.GetAllMembersResponse;
-import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
-import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto;
-import com.nhnacademy.bookstore.user.member.dto.response.MemberWithdrawResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.*;
 import com.nhnacademy.bookstore.user.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -45,10 +42,10 @@ public class MemberController {
     @Operation(summary = "신규 회원 생성", description = "새로운 회원을 등록합니다.")
     @PostMapping
     public ResponseEntity<MemberCreateSuccessResponseDto> addMember(
-            @Parameter(description = "회원 가입 정보", required = true) @Valid @RequestBody MemberCreateRequestDto requestDto){
+            @Parameter(description = "회원 가입 정보", required = true) @Valid @RequestBody MemberCreateRequestDto requestDto) {
 
 
-        MemberCreateSuccessResponseDto response =  memberService.registerNewMember(requestDto);
+        MemberCreateSuccessResponseDto response = memberService.registerNewMember(requestDto);
 
         return ResponseEntity.ok(response);
 
@@ -68,13 +65,14 @@ public class MemberController {
     @PutMapping("/update")
     public ResponseEntity<MemberUpdateResponseDto> updateMember(
             @RequestHeader("X-Customer-Id") String customerId,
-            @Valid @RequestBody MemberUpdateRequesteDto requestDto){
+            @Valid @RequestBody MemberUpdateRequesteDto requestDto) {
 
         MemberUpdateResponseDto responseDto = memberService.updateMember(Long.parseLong(customerId), requestDto);
 
         return ResponseEntity.ok(responseDto);
 
     }
+
     /**
      * 회원 정보 조회
      *
@@ -87,7 +85,7 @@ public class MemberController {
     )
     @GetMapping
     public ResponseEntity<MemberUpdateResponseDto> memberInfo(
-            @RequestHeader("X-Customer-Id") String customerId){
+            @RequestHeader("X-Customer-Id") String customerId) {
 
         MemberUpdateResponseDto responseDto = memberService.getMemberInfo(Long.parseLong(customerId));
 
@@ -98,7 +96,7 @@ public class MemberController {
     @PutMapping("/withdraw")
     public ResponseEntity<MemberWithdrawResponseDto> withdrawMember(
             @RequestHeader("X-Customer-Id") String customerId,
-            @Valid @RequestBody MemberWithdrawRequesteDto requestDto){
+            @Valid @RequestBody MemberWithdrawRequesteDto requestDto) {
 
         MemberWithdrawResponseDto responseDto = memberService.withdrawMember(Long.parseLong(customerId), requestDto);
 
@@ -106,7 +104,7 @@ public class MemberController {
 
     }
 
-    @GetMapping("/detatils")
+    @GetMapping("/details")
     public ResponseEntity<List<GetAllMembersResponse>> getAllMembers(
             @RequestParam(name = "page", defaultValue = "0") @PositiveOrZero final int page
     ) {
@@ -114,8 +112,20 @@ public class MemberController {
         return ResponseEntity.ok(responses);
     }
 
-
-
-
-
+    /**
+     * 회원의 포인트 조회
+     *
+     * @author 이승준
+     * @param customerId 회원 아이디
+     * @return 회원이 가진 포인트
+     */
+    @Operation(
+            summary = "회원이 가진 포인트를 조회",
+            description = "회원이 가진 포인트를 조회한다. 활용시 X-Customer-Id 헤더 추가 필요"
+    )
+    @GetMapping("/points")
+    public ResponseEntity<MemberPointResponse> getPoint(@RequestHeader("X-Customer-Id") Long customerId) {
+        MemberPointResponse response = memberService.getPointsOfMember(customerId);
+        return ResponseEntity.ok(response);
+    }
 }
