@@ -15,6 +15,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -99,5 +101,28 @@ class ContributorRoleControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("전체 기여자 역할 리스트 조회 테스트")
+    void getAllContributorRoles() throws Exception {
+        // given
+        List<ContributorRoleResponseDto> roles = List.of(
+                new ContributorRoleResponseDto(1L, "지은이"),
+                new ContributorRoleResponseDto(2L, "옮긴이")
+        );
+
+        Mockito.when(contributorRoleService.getAllContributorRoles()).thenReturn(roles);
+
+        // when
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bookstore/contributors/role")
+                        .accept(MediaType.APPLICATION_JSON))
+                // then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(2))
+                .andExpect(jsonPath("$[0].contributorRoleId").value(1L))
+                .andExpect(jsonPath("$[0].name").value("지은이"))
+                .andExpect(jsonPath("$[1].contributorRoleId").value(2L))
+                .andExpect(jsonPath("$[1].name").value("옮긴이"));
     }
 }

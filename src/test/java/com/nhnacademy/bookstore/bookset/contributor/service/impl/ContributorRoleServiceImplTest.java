@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -140,5 +141,33 @@ class ContributorRoleServiceImplTest {
 
         // when & then
         assertThrows(ContributorRoleNotFoundException.class, () -> contributorRoleService.deleteContributorRole(1L));
+    }
+
+    @Test
+    @DisplayName("전체 기여자 역할 리스트 조회 테스트")
+    void getAllContributorRoles() {
+        // given
+        List<ContributorRole> roles = List.of(
+                new ContributorRole(1L, "지은이"),
+                new ContributorRole(2L, "옮긴이")
+        );
+        List<ContributorRoleResponseDto> expectedResponse = List.of(
+                new ContributorRoleResponseDto(1L, "지은이"),
+                new ContributorRoleResponseDto(2L, "옮긴이")
+        );
+
+        when(contributorRoleRepository.findAll()).thenReturn(roles);
+        when(contributorRoleMapper.toContributorRoleResponseDto(roles.get(0)))
+                .thenReturn(expectedResponse.get(0));
+        when(contributorRoleMapper.toContributorRoleResponseDto(roles.get(1)))
+                .thenReturn(expectedResponse.get(1));
+
+        // when
+        List<ContributorRoleResponseDto> actualResponse = contributorRoleService.getAllContributorRoles();
+
+        // then
+        assertNotNull(actualResponse);
+        assertEquals(2, actualResponse.size());
+        assertEquals(expectedResponse, actualResponse);
     }
 }
