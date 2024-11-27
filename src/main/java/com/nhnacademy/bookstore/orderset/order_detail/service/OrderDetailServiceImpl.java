@@ -1,6 +1,5 @@
 package com.nhnacademy.bookstore.orderset.order_detail.service;
 
-import com.nhnacademy.bookstore.common.error.exception.orderset.order_detail.OrderDetailNotFoundException;
 import com.nhnacademy.bookstore.orderset.order_detail.dto.response.OrderDetailResponseDto;
 import com.nhnacademy.bookstore.orderset.order_detail.repository.OrderDetailRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,24 +15,12 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 
     @Override
     public List<OrderDetailResponseDto> getOrderDetailByOrderId(Long orderId) {
-        List<OrderDetailResponseDto> orderDetails = orderDetailRepository.findByOrderId(orderId);
-
-        if (orderDetails.isEmpty()) {
-            throw new OrderDetailNotFoundException("주문상세가 없습니다.");
-        }
-
-        return orderDetails;
+        return orderDetailRepository.findByOrderId(orderId);
     }
 
     @Override
     public List<OrderDetailResponseDto> getOrderDetailByCustomerId(Long customerId) {
-        List<OrderDetailResponseDto> orderDetails = orderDetailRepository.findByCustomerId(customerId);
-        if (orderDetails.isEmpty()) {
-            throw new OrderDetailNotFoundException("주문상세가 없습니다.");
-        }
-
-        return orderDetails;
+        return orderDetailRepository.findByCustomerId(customerId);
     }
-
 }
 
