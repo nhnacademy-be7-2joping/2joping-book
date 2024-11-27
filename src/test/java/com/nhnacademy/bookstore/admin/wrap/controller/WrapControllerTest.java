@@ -1,8 +1,8 @@
 //package com.nhnacademy.bookstore.admin.wrap.controller;
 //
 //import com.nhnacademy.bookstore.admin.wrap.controller.WrapController;
-//import com.nhnacademy.bookstore.admin.wrap.dto.WrapRequestDto;
-//import com.nhnacademy.bookstore.admin.wrap.dto.WrapResponseDto;
+//import com.nhnacademy.bookstore.admin.wrap.dto.request.WrapRequestDto;
+//import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapResponseDto;
 //import com.nhnacademy.bookstore.admin.wrap.service.WrapService;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;

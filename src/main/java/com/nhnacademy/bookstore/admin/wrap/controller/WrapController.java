@@ -1,10 +1,14 @@
 package com.nhnacademy.bookstore.admin.wrap.controller;
 
-import com.nhnacademy.bookstore.admin.wrap.dto.WrapCreateResponseDto;
-import com.nhnacademy.bookstore.admin.wrap.dto.WrapRequestDto;
-import com.nhnacademy.bookstore.admin.wrap.dto.WrapResponseDto;
+import com.nhnacademy.bookstore.admin.wrap.dto.request.WrapUpdateRequestDto;
+import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapCreateResponseDto;
+import com.nhnacademy.bookstore.admin.wrap.dto.request.WrapRequestDto;
+import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapResponseDto;
+import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapUpdateResponseDto;
 import com.nhnacademy.bookstore.admin.wrap.service.WrapService;
 import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
+import com.nhnacademy.bookstore.review.dto.request.ReviewModifyRequestDto;
+import com.nhnacademy.bookstore.review.dto.response.ReviewModifyResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -13,6 +17,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
@@ -63,9 +68,9 @@ public class WrapController {
             @ApiResponse(responseCode = "404", description = "포장상품을 찾을 수 없음")
     })
     @GetMapping("/{wrap-id}")
-    public ResponseEntity<WrapResponseDto> getWrap(@PathVariable("wrap-id") @ValidPathVariable Long wrapId) {
-        WrapResponseDto wrap = wrapService.getWrap(wrapId);
-        return ResponseEntity.ok(wrap);
+    public WrapUpdateResponseDto getWrap(@PathVariable("wrap-id") @ValidPathVariable Long wrapId) {
+        WrapUpdateResponseDto wrap = wrapService.getWrap(wrapId);
+        return wrap;
     }
 
     /**
@@ -78,33 +83,29 @@ public class WrapController {
     @Operation(summary = "활성화 된 포장상품 목록 조회", description = "활성화 된 포장상품을 조회합니다.")
     @ApiResponse(responseCode = "200", description = "포장상품 목록 조회 성공")
     @GetMapping
-    public ResponseEntity<List<WrapResponseDto>> findAllByIsActiveTrue() {
-        List<WrapResponseDto> wrap = wrapService.findAllByIsActiveTrue();
-        return ResponseEntity.ok(wrap);
+    public List<WrapUpdateResponseDto> findAllByIsActiveTrue() {
+        List<WrapUpdateResponseDto> wrap = wrapService.findAllByIsActiveTrue();
+        return wrap;
     }
 
-//    /**
-//     * 포장상품 수정
-//     *
-//     * 특정 포장상품을 수정합니다.
-//     *
-//     * @param wrapId 수정할 포장상품의 ID
-//     * @return 수정된 포장상품 정보
-//     */
-//    @Operation(summary = "포장상품 수정", description = "특정 포장상품을 수정합니다.")
-//    @ApiResponses({
-//            @ApiResponse(responseCode = "200", description = "포장상품 수정 성공"),
-//            @ApiResponse(responseCode = "404", description = "포장상품을 찾을 수 없음")
-//    })
-//    @PutMapping("/{wrap-id}")
-//    public ResponseEntity<WrapResponseDto> updateWrap(
-//            @PathVariable("wrap-id") @Positive Long wrapId,
-//            @RequestBody WrapRequestDto dto) {
-//
-//        WrapResponseDto updatedWrap = wrapService.updateWrap(wrapId, dto);
-//        return ResponseEntity.ok(updatedWrap);
-//    }
-
+    /**
+     * 포장상품 수정
+     *
+     * 특정 포장상품을 수정합니다.
+     *
+     * @param wrapId 수정할 포장상품의 ID
+     * @return 수정된 포장상품 정보
+     */
+    @Operation(summary = "포장상품 수정", description = "특정 포장상품을 수정합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "포장상품 수정 성공"),
+            @ApiResponse(responseCode = "404", description = "포장상품을 찾을 수 없음")
+    })
+    @PutMapping("/{wrap-id}")
+    public WrapUpdateResponseDto updateWrap(@PathVariable("wrap-id") @Positive Long wrapId,
+                                                      @RequestBody @Valid WrapUpdateRequestDto wrapUpdateRequestDto) {
+        return wrapService.updateWrap(wrapId, wrapUpdateRequestDto);
+    }
 
 //    /**
 //     * 포장상품 삭제

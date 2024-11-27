@@ -1,18 +1,14 @@
-package com.nhnacademy.bookstore.admin.wrap.dto;
+package com.nhnacademy.bookstore.admin.wrap.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
-public record WrapCreateResponseDto (
-        Long wrapId,
-
+public record WrapUpdateDetailRequestDto (
         @NotBlank
         String name,
 
         @Positive
         Integer wrapPrice,
 
-        boolean isActive,
-
-        String wrapImage
+        boolean isActive
 ) {}

@@ -1,18 +1,17 @@
 package com.nhnacademy.bookstore.admin.wrap.service;
 
-import com.nhnacademy.bookstore.admin.wrap.dto.WrapCreateResponseDto;
-import com.nhnacademy.bookstore.admin.wrap.dto.WrapRequestDto;
-import com.nhnacademy.bookstore.admin.wrap.dto.WrapResponseDto;
-import com.nhnacademy.bookstore.admin.wrap.entity.Wrap;
+import com.nhnacademy.bookstore.admin.wrap.dto.request.WrapUpdateRequestDto;
+import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapCreateResponseDto;
+import com.nhnacademy.bookstore.admin.wrap.dto.request.WrapRequestDto;
+import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapResponseDto;
+import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapUpdateResponseDto;
 
 import java.util.List;
 
 public interface WrapService {
     WrapCreateResponseDto createWrap(WrapRequestDto requestDto);
-    WrapResponseDto getWrap(Long WrapId);
-    List<WrapResponseDto> findAllByIsActiveTrue();
-
-    //WrapResponseDto updateWrap(Long WrapId, WrapRequestDto wrapRequestDto);
-
-//    void deleteWrap(Long wrapId);
+    WrapUpdateResponseDto getWrap(Long WrapId);
+    List<WrapUpdateResponseDto> findAllByIsActiveTrue();
+    WrapUpdateResponseDto updateWrap(Long wrabId, WrapUpdateRequestDto wrapUpdateRequestDto);
+    void deleteWrap(Long wrapId);
 }

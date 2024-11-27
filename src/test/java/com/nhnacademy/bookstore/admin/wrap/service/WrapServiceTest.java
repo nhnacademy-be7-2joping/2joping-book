@@ -1,7 +1,7 @@
 //package com.nhnacademy.bookstore.admin.wrap.service;
 //
-//import com.nhnacademy.bookstore.admin.wrap.dto.WrapRequestDto;
-//import com.nhnacademy.bookstore.admin.wrap.dto.WrapResponseDto;
+//import com.nhnacademy.bookstore.admin.wrap.dto.request.WrapRequestDto;
+//import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapResponseDto;
 //import com.nhnacademy.bookstore.admin.wrap.entity.Wrap;
 //import com.nhnacademy.bookstore.admin.wrap.repository.WrapRepository;
 //import com.nhnacademy.bookstore.common.error.exception.wrap.WrapAlreadyExistException;
