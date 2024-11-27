@@ -3,6 +3,8 @@ package com.nhnacademy.bookstore.orderset.order_detail.service;
 import com.nhnacademy.bookstore.orderset.order_detail.dto.response.OrderDetailResponseDto;
 import com.nhnacademy.bookstore.orderset.order_detail.repository.OrderDetailRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,8 +21,8 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     }
 
     @Override
-    public List<OrderDetailResponseDto> getOrderDetailByCustomerId(Long customerId) {
-        return orderDetailRepository.findByCustomerId(customerId);
+    public Page<OrderDetailResponseDto> getOrderDetailByCustomerId(Pageable pageable, Long customerId) {
+        return orderDetailRepository.findByCustomerId(pageable, customerId);
     }
 }
 

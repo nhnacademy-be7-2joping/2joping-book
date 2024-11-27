@@ -4,6 +4,10 @@ import com.nhnacademy.bookstore.orderset.order_detail.dto.response.OrderDetailRe
 import com.nhnacademy.bookstore.orderset.order_detail.service.OrderDetailService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +28,10 @@ public class OrderDetailController {
 
     @Operation(summary = "고객ID로 주문 상세 조회", description = "고객에 관련된 주문상세를 조회합니다.")
     @GetMapping("/customer")
-    public ResponseEntity<List<OrderDetailResponseDto>> getOrderDetailsByCustomerId(@RequestHeader("X-Customer-Id") String customerId) {
-        List<OrderDetailResponseDto> orderDetails = orderDetailService.getOrderDetailByCustomerId(Long.valueOf(customerId));
+    public ResponseEntity<Page<OrderDetailResponseDto>> getOrderDetailsByCustomerId(
+            @PageableDefault(size = 10, sort = "orderDetailId", direction = Sort.Direction.ASC) Pageable pageable,
+            @RequestHeader("X-Customer-Id") String customerId) {
+        Page<OrderDetailResponseDto> orderDetails = orderDetailService.getOrderDetailByCustomerId(pageable, Long.valueOf(customerId));
         return ResponseEntity.ok(orderDetails);
     }
 }

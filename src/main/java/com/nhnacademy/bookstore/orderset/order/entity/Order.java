@@ -12,6 +12,7 @@ package com.nhnacademy.bookstore.orderset.order.entity;
 import com.nhnacademy.bookstore.coupon.entity.member.MemberCoupon;
 import com.nhnacademy.bookstore.orderset.order.dto.request.OrderPostRequest;
 import com.nhnacademy.bookstore.orderset.order.dto.request.OrderRequest;
+import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
 import com.nhnacademy.bookstore.orderset.order_state.entity.OrderState;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import jakarta.persistence.*;
@@ -43,11 +44,11 @@ public class Order {
     @JoinColumn(name = "order_state_id", nullable = false)
     private OrderState orderState;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_usage_id")
     private MemberCoupon couponUsage;
 
@@ -83,6 +84,9 @@ public class Order {
     @Column(name = "total_price", nullable = false)
     private int totalPrice;
 
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    private List<OrderDetail> orderDetails;
+
     public void apply(OrderState orderState, MemberCoupon memberCoupon, OrderRequest orderRequest, OrderPostRequest orderPostRequest,
                       Customer customer) {
         LocalDateTime now = LocalDateTime.now();
@@ -98,8 +102,8 @@ public class Order {
         this.roadAddress = orderRequest.deliveryInfo().address();
         this.detailAddress = orderRequest.deliveryInfo().detailAddress();
         this.pointUsage = orderRequest.point();
-        this.shippingFee = 0;
-        this.couponSalePrice = 0;
+        this.shippingFee = orderRequest.deliveryCost();
+        this.couponSalePrice = orderRequest.couponDiscount();
         this.totalPrice = orderRequest.totalCost();
     }
 }
