@@ -1,10 +1,12 @@
 package com.nhnacademy.bookstore.review.repository;
 
+import com.nhnacademy.bookstore.bookset.book.entity.QBook;
 import com.nhnacademy.bookstore.imageset.entity.QImage;
 import com.nhnacademy.bookstore.imageset.entity.QReviewImage;
 import com.nhnacademy.bookstore.orderset.order.entity.QOrder;
 import com.nhnacademy.bookstore.orderset.order_detail.entity.QOrderDetail;
 import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
+import com.nhnacademy.bookstore.review.dto.response.ReviewTotalResponseDto;
 import com.nhnacademy.bookstore.review.entity.QReview;
 import com.nhnacademy.bookstore.review.entity.Review;
 
@@ -35,6 +37,8 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
     private final QOrder qOrder = QOrder.order;
     private final QMember qMember = QMember.member;
     private final QCustomer qCustomer = QCustomer.customer;
+    private final QBook qBook = QBook.book;
+
 
 
     @Override
@@ -68,18 +72,20 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
 
 
     @Override
-    public Page<ReviewResponseDto> getReviewsByCustomerId(Pageable pageable, Long customerId) {
-        List<ReviewResponseDto> content = from(qReview)
+    public Page<ReviewTotalResponseDto> getReviewsByCustomerId(Pageable pageable, Long customerId) {
+        List<ReviewTotalResponseDto> content = from(qReview)
+                .join(qReview.book, qBook) // book과 review를 JOIN
                 .where(qReview.member.id.eq(customerId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .select(Projections.constructor(
-                        ReviewResponseDto.class,
+                        ReviewTotalResponseDto.class,
                         qReview.reviewId,
                         qReview.orderDetail.orderDetailId,
                         qReview.member.id,
                         qReview.book.bookId,
                         qReview.ratingValue,
+                        qBook.title,
                         qReview.title,
                         qReview.text,
                         qReview.imageUrl,
@@ -110,7 +116,7 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
         }
 
         Review review = reviewTuple.get(qReview);
-        String imageUrl = reviewTuple.get(qImage.url) != null ? reviewTuple.get(qImage.url) : "default-image.jpg";
+        String imageUrl = reviewTuple.get(qImage.url) != null ? reviewTuple.get(qImage.url) : null;
 
         ReviewResponseDto reviewResponseDto = new ReviewResponseDto(
                 review.getReviewId(),
@@ -129,5 +135,3 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport implements R
     }
 
 }
-
-

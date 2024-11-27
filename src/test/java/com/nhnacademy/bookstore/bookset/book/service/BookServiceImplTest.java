@@ -1,6 +1,10 @@
 package com.nhnacademy.bookstore.bookset.book.service;
 
-import com.nhnacademy.bookstore.bookset.book.dto.request.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateHtmlRequestDto;
+import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateRequestDto;
+import com.nhnacademy.bookstore.bookset.book.dto.request.ImageUrlRequestDto;
 import com.nhnacademy.bookstore.bookset.book.dto.response.*;
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.bookset.book.repository.BookCategoryRepository;
@@ -34,6 +38,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;

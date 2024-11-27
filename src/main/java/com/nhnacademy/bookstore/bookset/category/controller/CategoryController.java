@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.bookset.category.controller;
 
 import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryRequestDto;
+import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryIsActiveResponseDto;
 import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
 import com.nhnacademy.bookstore.bookset.category.service.CategoryService;
 import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
@@ -87,20 +88,20 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "전체 카테고리 조회", description = "모든 활성화된 카테고리를 조회합니다.")
-    @ApiResponse(responseCode = "200", description = "활성 카테고리 조회 성공")
+    @Operation(summary = "전체 활성 카테고리 조회", description = "모든 활성화된 카테고리를 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "전체 활성 카테고리 조회 성공")
     @GetMapping("/categories")
-    public ResponseEntity<List<CategoryResponseDto>> getAllCategories() {
-        List<CategoryResponseDto> response = categoryService.getAllCategories();
+    public ResponseEntity<List<CategoryResponseDto>> getAllActiveCategories() {
+        List<CategoryResponseDto> response = categoryService.getAllActiveCategories();
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "전체 카테고리 조회(페이징)", description = "모든 활성화된 카테고리를 조회합니다.(페이징)")
-    @ApiResponse(responseCode = "200", description = "활성 카테고리 조회 성공")
+    @Operation(summary = "전체 카테고리 조회(페이징)", description = "모든 카테고리를 조회합니다.(페이징)")
+    @ApiResponse(responseCode = "200", description = "전체 카테고리 조회 성공")
     @GetMapping("/categories/pages")
-    public ResponseEntity<Page<CategoryResponseDto>> getAllCategories(
-            @PageableDefault Pageable pageable) {
-        Page<CategoryResponseDto> response = categoryService.getAllCategoriesPage(pageable);
+    public ResponseEntity<Page<CategoryIsActiveResponseDto>> getAllCategoriesPage(
+            @PageableDefault(size = 20) Pageable pageable) {
+        Page<CategoryIsActiveResponseDto> response = categoryService.getAllCategoriesPage(pageable);
         return ResponseEntity.ok(response);
     }
 

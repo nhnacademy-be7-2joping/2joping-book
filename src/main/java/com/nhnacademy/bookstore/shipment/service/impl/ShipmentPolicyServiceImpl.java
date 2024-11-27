@@ -9,6 +9,8 @@ import com.nhnacademy.bookstore.shipment.mapper.ShipmentPolicyMapper;
 import com.nhnacademy.bookstore.shipment.repository.ShipmentPolicyRepository;
 import com.nhnacademy.bookstore.shipment.service.ShipmentPolicyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,13 +55,25 @@ public class ShipmentPolicyServiceImpl implements ShipmentPolicyService {
     }
 
     /**
+     * 모든 배송 정책을 조회하는 메서드입니다.
+     *
+     * @return 배송 정책 목록을 포함한 ShipmentPolicyResponseDto 리스트
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ShipmentPolicyResponseDto> getAllShipmentPolicies(Pageable pageable) {
+        return shipmentPolicyRepository.findAll(pageable)
+                .map(shipmentPolicyMapper::toShipmentPolicyResponseDto);
+    }
+
+    /**
      * 모든 활성화된 배송 정책을 조회하는 메서드입니다.
      *
      * @return 활성화된 배송 정책 목록을 포함한 ShipmentPolicyResponseDto 리스트
      */
     @Override
     @Transactional(readOnly = true)
-    public List<ShipmentPolicyResponseDto> getAllShipmentPolicies() {
+    public List<ShipmentPolicyResponseDto> getAllIsActiveShipmentPolicies() {
         return shipmentPolicyRepository.findActiveShipmentPolicies();
     }
 

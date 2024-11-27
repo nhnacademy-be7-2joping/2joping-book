@@ -9,5 +9,5 @@ import jakarta.validation.constraints.NotBlank;
  * @date : 2024-10-24
  */
 public record ContributorRoleRequestDto(
-        @NotBlank(message = "기여자 역할 이름 입력: ") String roleName
+        @NotBlank(message = "기여자 역할 이름 입력: ") String name
 ) {}

@@ -6,6 +6,7 @@ import com.nhnacademy.bookstore.review.dto.request.ReviewRequestDto;
 import com.nhnacademy.bookstore.review.dto.response.ReviewCreateResponseDto;
 import com.nhnacademy.bookstore.review.dto.response.ReviewModifyResponseDto;
 import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
+import com.nhnacademy.bookstore.review.dto.response.ReviewTotalResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -21,7 +22,7 @@ public interface ReviewService {
 
     Page<ReviewResponseDto> getReviewsByBookId(Pageable pageable,Long bookId);
 
-    Page<ReviewResponseDto> getReviewsByCustomerId(Pageable pageable,Long customerId);
+    Page<ReviewTotalResponseDto> getReviewsByCustomerId(Pageable pageable, Long customerId);
 
     // 수정 U
     ReviewModifyResponseDto modifyReview(ReviewModifyRequestDto reviewModifyRequestDto);
