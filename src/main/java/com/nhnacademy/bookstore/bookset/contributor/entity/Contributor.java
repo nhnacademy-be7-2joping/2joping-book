@@ -45,7 +45,7 @@ public class Contributor {
 
     public void toEntity(ContributorRequestDto requestDto, ContributorRole contributorRole) {
         this.contributorRole = contributorRole;
-        this.name = requestDto.contributorName();
+        this.name = requestDto.name();
         this.isActive = true;
     }
 }
