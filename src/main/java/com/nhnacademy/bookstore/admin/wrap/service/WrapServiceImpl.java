@@ -1,11 +1,16 @@
 package com.nhnacademy.bookstore.admin.wrap.service;
 
-import com.nhnacademy.bookstore.admin.wrap.dto.WrapRequestDto;
-import com.nhnacademy.bookstore.admin.wrap.dto.WrapResponseDto;
+import com.nhnacademy.bookstore.admin.wrap.dto.*;
 import com.nhnacademy.bookstore.admin.wrap.entity.Wrap;
 import com.nhnacademy.bookstore.admin.wrap.repository.WrapRepository;
 import com.nhnacademy.bookstore.common.error.exception.wrap.WrapAlreadyExistException;
 import com.nhnacademy.bookstore.common.error.exception.wrap.WrapNotFoundException;
+import com.nhnacademy.bookstore.imageset.entity.Image;
+import com.nhnacademy.bookstore.imageset.entity.ReviewImage;
+import com.nhnacademy.bookstore.imageset.entity.WrapImage;
+import com.nhnacademy.bookstore.imageset.repository.ImageRepository;
+import com.nhnacademy.bookstore.imageset.repository.WrapImageRepository;
+import com.nhnacademy.bookstore.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +29,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WrapServiceImpl implements WrapService {
     private final WrapRepository wrapRepository;
+    private final ImageRepository imageRepository;
+    private final WrapImageRepository wrapImageRepository;
 
     /**
      * 새로운 포장 상품을 생성합니다.
@@ -33,17 +40,24 @@ public class WrapServiceImpl implements WrapService {
      */
     @Override
     @Transactional
-    public void createWrap(WrapRequestDto requestDto) {
-        if (wrapRepository.findByName(requestDto.name()).isPresent()) {
+    public WrapCreateResponseDto createWrap(WrapRequestDto requestDto) {
+        WrapDetailRequestDto wrapDetailRequestDto = requestDto.wrapDetailRequestDto();
+        WrapImageUrlRequestDto wrapImageUrlRequestDto = requestDto.imageUrlRequestDto();
+        if (wrapRepository.findByName(wrapDetailRequestDto.name()).isPresent()) {
             throw new WrapAlreadyExistException();
         }
         Wrap wrap = new Wrap(
-                requestDto.name(),
-                requestDto.wrapPrice(),
-                requestDto.isActive()
+                wrapDetailRequestDto.name(),
+                wrapDetailRequestDto.wrapPrice(),
+                wrapDetailRequestDto.isActive()
         );
-
+        String wrapImageUrl = wrapImageUrlRequestDto.wrapImageUrl();
         wrapRepository.save(wrap);
+        if (wrapImageUrlRequestDto.wrapImageUrl() != null) {
+            Image image = imageRepository.save(new Image(wrapImageUrl));
+            wrapImageRepository.save(new WrapImage(wrap,image));
+        }
+        return new WrapCreateResponseDto(wrap.getWrapId(), wrap.getName(), wrap.getWrapPrice(), wrap.isActive(), wrapImageUrl);
     }
 
     /**
@@ -76,28 +90,28 @@ public class WrapServiceImpl implements WrapService {
     }
 
 
-    /**
-     * 포장 상품을 업데이트합니다.
-     *
-     * @param wrapId 업데이트할 포장 상품의 ID
-     * @param dto    업데이트할 포장 상품 데이터
-     * @return 업데이트된 포장 상품 응답 DTO
-     * @throws WrapNotFoundException 포장 상품을 찾을 수 없는 경우
-     */
-    @Override
-    public WrapResponseDto updateWrap(Long wrapId, WrapRequestDto dto) {
-        Wrap wrap = wrapRepository.findById(wrapId)
-                .orElseThrow(WrapNotFoundException::new);
-
-        wrap.updateWrap(
-                dto.name(),
-                dto.wrapPrice(),
-                dto.isActive()
-        );
-
-        Wrap updatedWrap = wrapRepository.save(wrap);
-        return new WrapResponseDto(updatedWrap.getWrapId(), updatedWrap.getName(), updatedWrap.getWrapPrice(), updatedWrap.isActive());
-    }
+//    /**
+//     * 포장 상품을 업데이트합니다.
+//     *
+//     * @param wrapId 업데이트할 포장 상품의 ID
+//     * @param dto    업데이트할 포장 상품 데이터
+//     * @return 업데이트된 포장 상품 응답 DTO
+//     * @throws WrapNotFoundException 포장 상품을 찾을 수 없는 경우
+//     */
+//    @Override
+//    public WrapResponseDto updateWrap(Long wrapId, WrapRequestDto dto) {
+//        Wrap wrap = wrapRepository.findById(wrapId)
+//                .orElseThrow(WrapNotFoundException::new);
+//
+//        wrap.updateWrap(
+//                dto.name(),
+//                dto.wrapPrice(),
+//                dto.isActive()
+//        );
+//
+//        Wrap updatedWrap = wrapRepository.save(wrap);
+//        return new WrapResponseDto(updatedWrap.getWrapId(), updatedWrap.getName(), updatedWrap.getWrapPrice(), updatedWrap.isActive());
+//    }
 
 //    /**
 //     * 포장 상품을 ID로 삭제합니다.

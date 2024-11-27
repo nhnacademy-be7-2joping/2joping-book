@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.admin.wrap.controller;
 
+import com.nhnacademy.bookstore.admin.wrap.dto.WrapCreateResponseDto;
 import com.nhnacademy.bookstore.admin.wrap.dto.WrapRequestDto;
 import com.nhnacademy.bookstore.admin.wrap.dto.WrapResponseDto;
 import com.nhnacademy.bookstore.admin.wrap.service.WrapService;
@@ -46,9 +47,8 @@ public class WrapController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
     })
     @PostMapping
-    public ResponseEntity<Void> createWrap(@Valid @RequestBody WrapRequestDto requestDto) {
-        wrapService.createWrap(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public WrapCreateResponseDto createWrap(@Valid @RequestBody WrapRequestDto requestDto) {
+        return wrapService.createWrap(requestDto);
     }
 
     /**
@@ -83,27 +83,27 @@ public class WrapController {
         return ResponseEntity.ok(wrap);
     }
 
-    /**
-     * 포장상품 수정
-     *
-     * 특정 포장상품을 수정합니다.
-     *
-     * @param wrapId 수정할 포장상품의 ID
-     * @return 수정된 포장상품 정보
-     */
-    @Operation(summary = "포장상품 수정", description = "특정 포장상품을 수정합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "포장상품 수정 성공"),
-            @ApiResponse(responseCode = "404", description = "포장상품을 찾을 수 없음")
-    })
-    @PutMapping("/{wrap-id}")
-    public ResponseEntity<WrapResponseDto> updateWrap(
-            @PathVariable("wrap-id") @Positive Long wrapId,
-            @RequestBody WrapRequestDto dto) {
-
-        WrapResponseDto updatedWrap = wrapService.updateWrap(wrapId, dto);
-        return ResponseEntity.ok(updatedWrap);
-    }
+//    /**
+//     * 포장상품 수정
+//     *
+//     * 특정 포장상품을 수정합니다.
+//     *
+//     * @param wrapId 수정할 포장상품의 ID
+//     * @return 수정된 포장상품 정보
+//     */
+//    @Operation(summary = "포장상품 수정", description = "특정 포장상품을 수정합니다.")
+//    @ApiResponses({
+//            @ApiResponse(responseCode = "200", description = "포장상품 수정 성공"),
+//            @ApiResponse(responseCode = "404", description = "포장상품을 찾을 수 없음")
+//    })
+//    @PutMapping("/{wrap-id}")
+//    public ResponseEntity<WrapResponseDto> updateWrap(
+//            @PathVariable("wrap-id") @Positive Long wrapId,
+//            @RequestBody WrapRequestDto dto) {
+//
+//        WrapResponseDto updatedWrap = wrapService.updateWrap(wrapId, dto);
+//        return ResponseEntity.ok(updatedWrap);
+//    }
 
 
 //    /**
