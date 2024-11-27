@@ -109,10 +109,8 @@ public class PointServiceImpl implements PointService {
                         null
                 ));
 
-        final Pageable pageable = PageRequest.of(1, 3);
-
         List<GetSimplePointHistoriesResponse> responses = pointHistoryRepository
-                .findByCustomerIdOrderByRegisterDateDesc(customerId, pageable)
+                .findAllByCustomerIdOrderByRegisterDateDesc(customerId)
                 .stream()
                 .map(GetSimplePointHistoriesResponse::from)
                 .toList();
