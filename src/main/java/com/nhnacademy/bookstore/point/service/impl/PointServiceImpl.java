@@ -55,6 +55,7 @@ public class PointServiceImpl implements PointService {
         member.addPoint(pointAmount);
 
         createPointHistory(reviewPointType, orderDetailId, null, customerId, pointAmount);
+        memberRepository.save(member);
     }
 
     @Override
@@ -74,6 +75,7 @@ public class PointServiceImpl implements PointService {
         int pointAmount = getPointAmount(order, String.valueOf(tierName), member);
 
         member.addPoint(pointAmount);
+        memberRepository.save(member);
     }
 
     @Override
