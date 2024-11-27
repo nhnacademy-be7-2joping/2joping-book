@@ -21,6 +21,8 @@ import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.enums.Tier;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -105,7 +107,10 @@ public class PointServiceImpl implements PointService {
                         null
                 ));
 
-        List<GetSimplePointHistoriesResponse> responses = pointHistoryRepository.findByCustomerIdOrderByRegisterDateDesc(customerId)
+        final Pageable pageable = PageRequest.of(1, 3);
+
+        List<GetSimplePointHistoriesResponse> responses = pointHistoryRepository
+                .findByCustomerIdOrderByRegisterDateDesc(customerId, pageable)
                 .stream()
                 .map(GetSimplePointHistoriesResponse::from)
                 .toList();
