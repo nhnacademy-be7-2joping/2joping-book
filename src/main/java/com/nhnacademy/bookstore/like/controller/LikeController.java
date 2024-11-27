@@ -3,6 +3,7 @@ package com.nhnacademy.bookstore.like.controller;
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.like.dto.LikeRequestDto;
 import com.nhnacademy.bookstore.like.dto.LikeResponseDto;
+import com.nhnacademy.bookstore.like.dto.response.MemberLikeResponseDto;
 import com.nhnacademy.bookstore.like.service.LikeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -73,7 +74,6 @@ public class LikeController {
     /**
      * 특정 사용자가 좋아요를 누른 책의 목록을 조회하는 메서드
      *
-     * @param memberId 사용자 ID
      * @return List<Book> 좋아요를 누른 책 목록
      */
     @Operation(summary = "사용자가 좋아요한 책 목록 조회", description = "특정 사용자가 좋아요를 누른 책 목록을 조회합니다.")
@@ -81,9 +81,9 @@ public class LikeController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음")
     })
-    @GetMapping("/members/{member-id}")
-    public ResponseEntity<List<Book>> getBooksLikedByMember(@PathVariable ("member-id") Long memberId) {
-        List<Book> books = likeService.getBooksLikedByCustomer(memberId);
+    @GetMapping("/members")
+    public ResponseEntity<List<MemberLikeResponseDto>> getBooksLikedByMember(@RequestHeader("X-Customer-Id") String customerId) {
+        List<MemberLikeResponseDto> books = likeService.getBooksLikedByCustomer(Long.parseLong(customerId));
         return ResponseEntity.ok(books);
 
 
