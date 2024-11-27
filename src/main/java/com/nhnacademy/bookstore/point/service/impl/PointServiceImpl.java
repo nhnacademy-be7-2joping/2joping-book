@@ -163,22 +163,18 @@ public class PointServiceImpl implements PointService {
 
     private static int getPointAmount(Order order, String tierName, Member member) {
         int totalPrice = order.getTotalPrice();
-        int couponSalePrice = order.getCouponSalePrice();
-        int shippingFee = order.getShippingFee();
-
-        int pointAmount = totalPrice - (couponSalePrice + shippingFee);
 
         if (tierName.equals("일반")) {
-            pointAmount = pointAmount * 1 / 100;
+            totalPrice = totalPrice * 1 / 100;
         } else if (member.getTier().equals("로얄")) {
-            pointAmount = pointAmount * 2 / 100;
+            totalPrice = totalPrice * 2 / 100;
         } else if (member.getTier().equals("골드")) {
-            pointAmount = pointAmount * 3 / 100;
+            totalPrice = totalPrice * 3 / 100;
         } else if (member.getTier().equals("플래티넘")) {
-            pointAmount = pointAmount * 4 / 100;
+            totalPrice = totalPrice * 4 / 100;
         } else {
-            pointAmount = 0;
+            totalPrice = 0;
         }
-        return pointAmount;
+        return totalPrice;
     }
 }
