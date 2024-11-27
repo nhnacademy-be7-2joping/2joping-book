@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.admin.wrap.controller;
 
+import com.nhnacademy.bookstore.admin.wrap.dto.request.WrapModifyRequestDto;
 import com.nhnacademy.bookstore.admin.wrap.dto.request.WrapUpdateRequestDto;
 import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapCreateResponseDto;
 import com.nhnacademy.bookstore.admin.wrap.dto.request.WrapRequestDto;
@@ -102,9 +103,12 @@ public class WrapController {
             @ApiResponse(responseCode = "404", description = "포장상품을 찾을 수 없음")
     })
     @PutMapping("/{wrap-id}")
-    public WrapUpdateResponseDto updateWrap(@PathVariable("wrap-id") @Positive Long wrapId,
-                                                      @RequestBody @Valid WrapUpdateRequestDto wrapUpdateRequestDto) {
-        return wrapService.updateWrap(wrapId, wrapUpdateRequestDto);
+    public ResponseEntity<WrapResponseDto> updateWrap(
+            @PathVariable("wrap-id") @Positive Long wrapId,
+            @RequestBody WrapModifyRequestDto dto) {
+
+        WrapResponseDto updatedWrap = wrapService.updateWrap(wrapId, dto);
+        return ResponseEntity.ok(updatedWrap);
     }
 
 //    /**

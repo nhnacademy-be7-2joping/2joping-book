@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.admin.wrap.service;
 
+import com.nhnacademy.bookstore.admin.wrap.dto.request.WrapModifyRequestDto;
 import com.nhnacademy.bookstore.admin.wrap.dto.request.WrapUpdateRequestDto;
 import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapCreateResponseDto;
 import com.nhnacademy.bookstore.admin.wrap.dto.request.WrapRequestDto;
@@ -12,6 +13,6 @@ public interface WrapService {
     WrapCreateResponseDto createWrap(WrapRequestDto requestDto);
     WrapUpdateResponseDto getWrap(Long WrapId);
     List<WrapUpdateResponseDto> findAllByIsActiveTrue();
-    WrapUpdateResponseDto updateWrap(Long wrabId, WrapUpdateRequestDto wrapUpdateRequestDto);
+    WrapResponseDto updateWrap(Long WrapId, WrapModifyRequestDto wrapModifyRequestDto);
     void deleteWrap(Long wrapId);
 }
