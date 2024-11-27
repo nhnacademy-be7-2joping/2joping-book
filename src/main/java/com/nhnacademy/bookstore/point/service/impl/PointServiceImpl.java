@@ -21,6 +21,8 @@ import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.enums.Tier;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,14 +55,9 @@ public class PointServiceImpl implements PointService {
         member.addPoint(pointAmount);
 
         createPointHistory(reviewPointType, orderDetailId, null, customerId, pointAmount);
+        memberRepository.save(member);
     }
 
-    // TODO: 결제 시 적립 포인트 관련 메서드
-    // 멤버가 주문 완료했을 때
-    // 어떤 멤버인지 멤버 정보를 찾고
-    // 어떤 주문인지 주문 정보를 찾고
-    // 해당 주문에 대해서 구매 적립 포인트 추가
-    // 추가 완료 return
     @Override
     public void awardOrderPoint(Long customerId, Long orderId) {
         Member member = memberRepository.findById(customerId)
@@ -73,14 +70,12 @@ public class PointServiceImpl implements PointService {
         MemberTier memberTier = member.getTier();
         Tier tierName = memberTier.getName();
 
-        // 주문 정보를 통해서 총 가격 구하기
-        // 해당 주문 정보에 대한 가격으로 구매 적립 포인트 추가
-        // 순수금액 = 주문금액 - (쿠폰 + 배송비 + 취소금액 + 포장비)
         Order order = orderRepository.findByOrderId(orderId);
 
         int pointAmount = getPointAmount(order, String.valueOf(tierName), member);
 
         member.addPoint(pointAmount);
+        memberRepository.save(member);
     }
 
     @Override
@@ -92,7 +87,6 @@ public class PointServiceImpl implements PointService {
                         null
                 ));
 
-        // TODO: 주문 시에 포인트 사용할 경우 포인트 사용 요청에 담겨 들어온 포인트 양만큼 멤버 포인트 삭제
         member.usePoint(request.pointAmount());
 
         PointType usePointType = pointTypeRepository.findByNameAndIsActiveTrue("포인트사용")
@@ -115,7 +109,8 @@ public class PointServiceImpl implements PointService {
                         null
                 ));
 
-        List<GetSimplePointHistoriesResponse> responses = pointHistoryRepository.findByCustomerIdOrderByRegisterDateDesc(customerId)
+        List<GetSimplePointHistoriesResponse> responses = pointHistoryRepository
+                .findAllByCustomerIdOrderByRegisterDateDesc(customerId)
                 .stream()
                 .map(GetSimplePointHistoriesResponse::from)
                 .toList();
@@ -136,7 +131,8 @@ public class PointServiceImpl implements PointService {
                         null
                 ));
 
-        List<GetDetailPointHistoriesResponse> responses = pointHistoryRepository.findByCustomerIdOrderByRegisterDateDesc(customerId)
+        List<GetDetailPointHistoriesResponse> responses = pointHistoryRepository
+                .findAllByCustomerIdOrderByRegisterDateDesc(customerId)
                 .stream()
                 .map(GetDetailPointHistoriesResponse::from)
                 .toList();
@@ -167,22 +163,18 @@ public class PointServiceImpl implements PointService {
 
     private static int getPointAmount(Order order, String tierName, Member member) {
         int totalPrice = order.getTotalPrice();
-        int couponSalePrice = order.getCouponSalePrice();
-        int shippingFee = order.getShippingFee();
-
-        int pointAmount = totalPrice - (couponSalePrice + shippingFee);
 
         if (tierName.equals("일반")) {
-            pointAmount = pointAmount * 1 / 100;
+            totalPrice = totalPrice * 1 / 100;
         } else if (member.getTier().equals("로얄")) {
-            pointAmount = pointAmount * 2 / 100;
+            totalPrice = totalPrice * 2 / 100;
         } else if (member.getTier().equals("골드")) {
-            pointAmount = pointAmount * 3 / 100;
+            totalPrice = totalPrice * 3 / 100;
         } else if (member.getTier().equals("플래티넘")) {
-            pointAmount = pointAmount * 4 / 100;
+            totalPrice = totalPrice * 4 / 100;
         } else {
-            pointAmount = 0;
+            totalPrice = 0;
         }
-        return pointAmount;
+        return totalPrice;
     }
 }
