@@ -44,11 +44,11 @@ public class Order {
     @JoinColumn(name = "order_state_id", nullable = false)
     private OrderState orderState;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_usage_id")
     private MemberCoupon couponUsage;
 
@@ -102,8 +102,8 @@ public class Order {
         this.roadAddress = orderRequest.deliveryInfo().address();
         this.detailAddress = orderRequest.deliveryInfo().detailAddress();
         this.pointUsage = orderRequest.point();
-        this.shippingFee = 0;
-        this.couponSalePrice = 0;
+        this.shippingFee = orderRequest.deliveryCost();
+        this.couponSalePrice = orderRequest.couponDiscount();
         this.totalPrice = orderRequest.totalCost();
     }
 }

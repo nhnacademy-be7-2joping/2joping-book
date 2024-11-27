@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstore.admin.wrap.repository;
 
-import com.nhnacademy.bookstore.admin.wrap.dto.WrapResponseDto;
+import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapResponseDto;
 
 import java.util.List;
 

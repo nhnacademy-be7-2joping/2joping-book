@@ -3,6 +3,7 @@ package com.nhnacademy.bookstore.like.service;
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.like.dto.LikeRequestDto;
 import com.nhnacademy.bookstore.like.dto.LikeResponseDto;
+import com.nhnacademy.bookstore.like.dto.response.MemberLikeResponseDto;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public interface LikeService {
      * @param customerId 사용자 ID
      * @return List<Book> 좋아요를 누른 책 목록
      */
-    List<Book> getBooksLikedByCustomer(Long customerId);
+    List<MemberLikeResponseDto> getBooksLikedByCustomer(Long customerId);
 
 
     /**

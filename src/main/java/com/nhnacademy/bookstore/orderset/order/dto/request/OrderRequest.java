@@ -8,7 +8,11 @@ public record OrderRequest(
         Integer point,
         Long couponId,
         List<WrapItemRequest> wrapList,
+        Integer bookCost,
+        Integer deliveryCost,
+        Integer wrapCost,
         Integer totalCost,
+        Integer couponDiscount,
         String orderCode
 ) {
     public record CartItemRequest(

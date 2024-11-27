@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstore.admin.wrap.repository;
 
-import com.nhnacademy.bookstore.admin.wrap.dto.WrapResponseDto;
+import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapResponseDto;
 import com.nhnacademy.bookstore.admin.wrap.entity.QWrap;
 import com.nhnacademy.bookstore.admin.wrap.entity.Wrap;
 import com.querydsl.core.types.Projections;
