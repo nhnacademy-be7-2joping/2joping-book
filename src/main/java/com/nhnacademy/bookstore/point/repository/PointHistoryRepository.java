@@ -19,5 +19,5 @@ public interface PointHistoryRepository extends JpaRepository<PointHistory, Long
     Integer getTotalPointByCustomerId(@Param("customerId") Long customerId);
 
     Page<PointHistory> findByCustomerIdOrderByRegisterDateDesc(Long customerId, Pageable pageable);
-    List<PointHistory> findByCustomerIdOrderByRegisterDateDesc(Long customerId);
+    List<PointHistory> findAllByCustomerIdOrderByRegisterDateDesc(Long customerId);
 }

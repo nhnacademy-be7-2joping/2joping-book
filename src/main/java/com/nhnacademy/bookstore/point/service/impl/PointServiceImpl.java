@@ -131,7 +131,8 @@ public class PointServiceImpl implements PointService {
                         null
                 ));
 
-        List<GetDetailPointHistoriesResponse> responses = pointHistoryRepository.findByCustomerIdOrderByRegisterDateDesc(customerId)
+        List<GetDetailPointHistoriesResponse> responses = pointHistoryRepository
+                .findAllByCustomerIdOrderByRegisterDateDesc(customerId)
                 .stream()
                 .map(GetDetailPointHistoriesResponse::from)
                 .toList();
