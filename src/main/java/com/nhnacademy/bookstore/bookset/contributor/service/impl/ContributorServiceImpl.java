@@ -1,6 +1,8 @@
 package com.nhnacademy.bookstore.bookset.contributor.service.impl;
 
 import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRequestDto;
+import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorIsActiveResponseDto;
+import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorNameRoleResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.entity.Contributor;
 import com.nhnacademy.bookstore.bookset.contributor.entity.ContributorRole;
@@ -12,8 +14,12 @@ import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorReposi
 import com.nhnacademy.bookstore.bookset.contributor.repository.ContributorRoleRepository;
 import com.nhnacademy.bookstore.bookset.contributor.service.ContributorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 도서 기여자 Service
@@ -42,7 +48,7 @@ public class ContributorServiceImpl implements ContributorService {
         ContributorRole contributorRole = contributorRoleRepository.findById(dto.contributorRoleId())
                 .orElseThrow(ContributorRoleNotFoundException::new);
 
-        Contributor contributor = new Contributor(null, contributorRole, dto.contributorName(), true);
+        Contributor contributor = new Contributor(null, contributorRole, dto.name(), true);
 
         Contributor savedContributor = contributorRepository.save(contributor);
         return contributorMapper.toContributorResponseDto(savedContributor);
@@ -62,7 +68,8 @@ public class ContributorServiceImpl implements ContributorService {
         Contributor contributor = contributorRepository.findById(contributorId)
                 .orElseThrow(ContributorNotFoundException::new);
 
-        if (!contributor.getIsActive()) {
+        Boolean b = contributor.getIsActive();
+        if (Boolean.FALSE.equals(b)) {
             throw new ContributorIsDeactivateException();
         }
 
@@ -88,7 +95,8 @@ public class ContributorServiceImpl implements ContributorService {
         ContributorRole contributorRole = contributorRoleRepository.findById(dto.contributorRoleId())
                 .orElseThrow(ContributorRoleNotFoundException::new);
 
-        if (!contributor.getIsActive()) {
+        Boolean b = contributor.getIsActive();
+        if (Boolean.FALSE.equals(b)) {
             throw new ContributorIsDeactivateException();
         }
 
@@ -127,5 +135,18 @@ public class ContributorServiceImpl implements ContributorService {
                 .orElseThrow(ContributorNotFoundException::new);
         contributor.activate();
         contributorRepository.save(contributor);
+    }
+
+    @Override
+    @Transactional
+    public List<ContributorNameRoleResponseDto> getActiveContributorsWithRoles() {
+        return contributorRepository.findContributorsWithRoles();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ContributorIsActiveResponseDto> getAllContributors(Pageable pageable) {
+        return contributorRepository.findAll(pageable)
+                .map(contributorMapper::toContributorIsActiveResponseDto);
     }
 }

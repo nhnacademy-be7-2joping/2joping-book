@@ -65,6 +65,17 @@ public class PublisherController {
     }
 
     /**
+     * 전체 출판사를 조회하는 controller (등록용)
+     * @return 전체 줄판사와 상태 코드를 담은 응답
+     */
+    @Operation(summary = "전체 출판사 조회 (등록용)", description = "등록된 모든 출판사를 조회합니다.")
+    @GetMapping("/publishers/list")
+    public ResponseEntity<List<PublisherResponseDto>> getAllPublishersForRegister() {
+        List<PublisherResponseDto> publishers = publisherService.getAllPublishersForRegister();
+        return ResponseEntity.status(HttpStatus.OK).body(publishers);
+    }
+
+    /**
      * 특정 출판사를 조회하는 controller
      * @param id 특정 출판사를 조회할 id
      * @return 특정 줄판사와 상태 코드를 담은 응답

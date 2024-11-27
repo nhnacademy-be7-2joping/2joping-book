@@ -1,6 +1,5 @@
 package com.nhnacademy.bookstore.user.member.controller;
 
-import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
 import com.nhnacademy.bookstore.common.error.exception.user.address.AddressLimitToTenException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberAddressRequestDto;

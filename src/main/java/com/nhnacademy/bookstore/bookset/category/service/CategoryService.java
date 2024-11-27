@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.bookset.category.service;
 
 import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryRequestDto;
+import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryIsActiveResponseDto;
 import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,9 +27,11 @@ public interface CategoryService {
 
     List<CategoryResponseDto> getChildCategories(Long categoryId);
 
-    List<CategoryResponseDto> getAllCategories();
+    List<CategoryResponseDto> getAllActiveCategories();
 
-    Page<CategoryResponseDto> getAllCategoriesPage(Pageable pageable);
+    Page<CategoryIsActiveResponseDto> getAllCategoriesPage(Pageable pageable);
+
+    List<CategoryResponseDto> getTopCategories();
 
     CategoryResponseDto updateCategory(Long categoryId, CategoryRequestDto request);
 
