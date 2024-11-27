@@ -12,6 +12,7 @@ package com.nhnacademy.bookstore.orderset.order.entity;
 import com.nhnacademy.bookstore.coupon.entity.member.MemberCoupon;
 import com.nhnacademy.bookstore.orderset.order.dto.request.OrderPostRequest;
 import com.nhnacademy.bookstore.orderset.order.dto.request.OrderRequest;
+import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
 import com.nhnacademy.bookstore.orderset.order_state.entity.OrderState;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import jakarta.persistence.*;
@@ -82,6 +83,9 @@ public class Order {
 
     @Column(name = "total_price", nullable = false)
     private int totalPrice;
+
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    private List<OrderDetail> orderDetails;
 
     public void apply(OrderState orderState, MemberCoupon memberCoupon, OrderRequest orderRequest, OrderPostRequest orderPostRequest,
                       Customer customer) {
