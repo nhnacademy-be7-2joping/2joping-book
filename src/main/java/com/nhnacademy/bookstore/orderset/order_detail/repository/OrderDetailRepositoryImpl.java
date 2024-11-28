@@ -8,6 +8,10 @@ import com.nhnacademy.bookstore.orderset.order_detail.entity.QOrderDetail;
 import com.nhnacademy.bookstore.user.customer.entity.QCustomer;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
+import com.querydsl.jpa.impl.JPAQuery;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import java.util.List;
@@ -42,8 +46,10 @@ public class OrderDetailRepositoryImpl extends QuerydslRepositorySupport impleme
     }
 
     @Override
-    public List<OrderDetailResponseDto> findByCustomerId(Long customerId) {
-        return from(qOrderDetail)
+    public Page<OrderDetailResponseDto> findByCustomerId(Pageable pageable, Long customerId) {
+        JPAQuery<OrderDetailResponseDto> query = new JPAQuery<>(getEntityManager());
+
+        query.from(qOrderDetail)
                 .join(qOrderDetail.order, qOrder)
                 .join(qOrderDetail.book, qBook)
                 .where(qOrder.customer.id.eq(customerId))
@@ -54,8 +60,18 @@ public class OrderDetailRepositoryImpl extends QuerydslRepositorySupport impleme
                         qBook.title,
                         qOrderDetail.quantity,
                         qOrderDetail.finalPrice
-                ))
-                .fetch(); // 결과를 리스트로 반환
+                ));
+
+        // 전체 개수 계산
+        long total = query.fetchCount();
+
+        // 페이징 처리
+        List<OrderDetailResponseDto> content = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return new PageImpl<>(content, pageable, total);
     }
 
 }

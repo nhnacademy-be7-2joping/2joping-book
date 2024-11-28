@@ -5,6 +5,7 @@ import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
 import com.nhnacademy.bookstore.common.error.exception.base.NotFoundException;
 import com.nhnacademy.bookstore.like.dto.LikeRequestDto;
 import com.nhnacademy.bookstore.like.dto.LikeResponseDto;
+import com.nhnacademy.bookstore.like.dto.response.MemberLikeResponseDto;
 import com.nhnacademy.bookstore.like.entity.Like;
 import com.nhnacademy.bookstore.like.repository.LikeRepository;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
@@ -99,10 +100,10 @@ public class LikeServiceImpl implements LikeService{
      * @return List<Book> 좋아요를 누른 책 목록
      */
     @Override
-    public List<Book> getBooksLikedByCustomer(Long customerId) {
+    public List<MemberLikeResponseDto> getBooksLikedByCustomer(Long customerId) {
         if (!memberRepository.existsById(customerId)) {
             throw new NotFoundException("존재하지 않는 회원입니다.");
         }
-        return likeRepository.findBooksLikedByMember(customerId);
+        return likeRepository.findLikesByMember(customerId);
     }
 }

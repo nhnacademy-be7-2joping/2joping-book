@@ -1,9 +1,15 @@
 package com.nhnacademy.bookstore.admin.wrap.controller;
 
-import com.nhnacademy.bookstore.admin.wrap.dto.WrapRequestDto;
-import com.nhnacademy.bookstore.admin.wrap.dto.WrapResponseDto;
+import com.nhnacademy.bookstore.admin.wrap.dto.request.WrapModifyRequestDto;
+import com.nhnacademy.bookstore.admin.wrap.dto.request.WrapUpdateRequestDto;
+import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapCreateResponseDto;
+import com.nhnacademy.bookstore.admin.wrap.dto.request.WrapRequestDto;
+import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapResponseDto;
+import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapUpdateResponseDto;
 import com.nhnacademy.bookstore.admin.wrap.service.WrapService;
 import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
+import com.nhnacademy.bookstore.review.dto.request.ReviewModifyRequestDto;
+import com.nhnacademy.bookstore.review.dto.response.ReviewModifyResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -12,6 +18,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
@@ -46,9 +53,8 @@ public class WrapController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
     })
     @PostMapping
-    public ResponseEntity<Void> createWrap(@Valid @RequestBody WrapRequestDto requestDto) {
-        wrapService.createWrap(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public WrapCreateResponseDto createWrap(@Valid @RequestBody WrapRequestDto requestDto) {
+        return wrapService.createWrap(requestDto);
     }
 
     /**
@@ -63,9 +69,9 @@ public class WrapController {
             @ApiResponse(responseCode = "404", description = "포장상품을 찾을 수 없음")
     })
     @GetMapping("/{wrap-id}")
-    public ResponseEntity<WrapResponseDto> getWrap(@PathVariable("wrap-id") @ValidPathVariable Long wrapId) {
-        WrapResponseDto wrap = wrapService.getWrap(wrapId);
-        return ResponseEntity.ok(wrap);
+    public WrapUpdateResponseDto getWrap(@PathVariable("wrap-id") @ValidPathVariable Long wrapId) {
+        WrapUpdateResponseDto wrap = wrapService.getWrap(wrapId);
+        return wrap;
     }
 
     /**
@@ -78,9 +84,9 @@ public class WrapController {
     @Operation(summary = "활성화 된 포장상품 목록 조회", description = "활성화 된 포장상품을 조회합니다.")
     @ApiResponse(responseCode = "200", description = "포장상품 목록 조회 성공")
     @GetMapping
-    public ResponseEntity<List<WrapResponseDto>> findAllByIsActiveTrue() {
-        List<WrapResponseDto> wrap = wrapService.findAllByIsActiveTrue();
-        return ResponseEntity.ok(wrap);
+    public List<WrapUpdateResponseDto> findAllByIsActiveTrue() {
+        List<WrapUpdateResponseDto> wrap = wrapService.findAllByIsActiveTrue();
+        return wrap;
     }
 
     /**
@@ -99,12 +105,11 @@ public class WrapController {
     @PutMapping("/{wrap-id}")
     public ResponseEntity<WrapResponseDto> updateWrap(
             @PathVariable("wrap-id") @Positive Long wrapId,
-            @RequestBody WrapRequestDto dto) {
+            @RequestBody WrapModifyRequestDto dto) {
 
         WrapResponseDto updatedWrap = wrapService.updateWrap(wrapId, dto);
         return ResponseEntity.ok(updatedWrap);
     }
-
 
 //    /**
 //     * 포장상품 삭제

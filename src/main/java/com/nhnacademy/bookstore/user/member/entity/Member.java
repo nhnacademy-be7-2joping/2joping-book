@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.user.member.entity;
 
 import com.nhnacademy.bookstore.coupon.entity.member.MemberCoupon;
+import com.nhnacademy.bookstore.like.entity.Like;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import com.nhnacademy.bookstore.user.enums.Gender;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
@@ -61,6 +62,9 @@ public class Member extends Customer {
 
     @Column(nullable = false)
     private int accPurchase;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.EAGER)
+    private List<Like> likes;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<MemberAddress> addresses;
