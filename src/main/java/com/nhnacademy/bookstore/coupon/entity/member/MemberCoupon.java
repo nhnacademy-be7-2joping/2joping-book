@@ -25,23 +25,27 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class MemberCoupon {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long couponUsageId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long couponUsageId;
 
-        @ManyToOne
-        @JoinColumn(name = "coupon_id")
-        private Coupon coupon;
+    @ManyToOne
+    @JoinColumn(name = "coupon_id")
+    private Coupon coupon;
 
-        @ManyToOne
-        @JoinColumn(name = "customer_id")
-        private Member member;
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Member member;
 
-        private LocalDateTime receiveTime;
+    private LocalDateTime receiveTime;
 
-        private LocalDateTime invalidTime;
+    private LocalDateTime invalidTime;
 
-        private Boolean isUsed;
+    private Boolean isUsed;
 
-        private LocalDateTime usedDate;
+    private LocalDateTime usedDate;
+
+    public void updateUsed(boolean isUsed) {
+        this.isUsed = isUsed;
+    }
 }
