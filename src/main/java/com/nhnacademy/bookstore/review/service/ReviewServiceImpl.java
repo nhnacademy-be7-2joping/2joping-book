@@ -18,7 +18,6 @@ import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
 import com.nhnacademy.bookstore.orderset.order_detail.repository.OrderDetailRepository;
 import com.nhnacademy.bookstore.point.dto.request.ReviewPointAwardRequest;
 import com.nhnacademy.bookstore.point.service.PointService;
-import com.nhnacademy.bookstore.point.service.impl.PointServiceImpl;
 import com.nhnacademy.bookstore.review.dto.request.ReviewCreateRequestDto;
 import com.nhnacademy.bookstore.review.dto.request.ReviewModifyRequestDto;
 import com.nhnacademy.bookstore.review.dto.request.ReviewRequestDto;
