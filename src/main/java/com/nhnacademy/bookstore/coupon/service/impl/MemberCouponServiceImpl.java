@@ -57,7 +57,6 @@ public class MemberCouponServiceImpl implements MemberCouponService {
         return memberCouponRepository.getAllMemberOrderCoupons(customerId);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public boolean saveWelcomeCoupon(Member member) {
 

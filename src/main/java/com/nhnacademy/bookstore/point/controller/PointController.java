@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.point.controller;
 
+import com.nhnacademy.bookstore.point.dto.request.OrderPointAwardRequest;
 import com.nhnacademy.bookstore.point.dto.request.PointUseRequest;
 import com.nhnacademy.bookstore.point.dto.response.GetMyPageDetailPointHistoriesResponse;
 import com.nhnacademy.bookstore.point.dto.response.GetMyPageSimplePointHistoriesResponse;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -20,12 +22,6 @@ public class PointController {
 
     private final PointServiceImpl pointServiceImpl;
     private final PointTypeServiceImpl pointTypeServiceImpl;
-
-    @PostMapping("/uses")
-    public ResponseEntity<Void> usePoint(@RequestBody @Valid PointUseRequest request) {
-        pointServiceImpl.usePoint(request);
-        return ResponseEntity.ok().build();
-    }
 
     // TODO: 포인트 간략 정보
     @GetMapping("/histories")
