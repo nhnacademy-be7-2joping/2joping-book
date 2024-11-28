@@ -21,12 +21,6 @@ public class PointController {
     private final PointServiceImpl pointServiceImpl;
     private final PointTypeServiceImpl pointTypeServiceImpl;
 
-    @PostMapping("/uses")
-    public ResponseEntity<Void> usePoint(@RequestBody @Valid PointUseRequest request) {
-        pointServiceImpl.usePoint(request);
-        return ResponseEntity.ok().build();
-    }
-
     // TODO: 포인트 간략 정보
     @GetMapping("/histories")
     public ResponseEntity<GetMyPageSimplePointHistoriesResponse> getSimplePointHistories(

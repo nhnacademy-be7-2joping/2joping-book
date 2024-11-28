@@ -103,9 +103,6 @@ public class Member extends Customer {
         this.point += amount;
     }
 
-    // TODO:
-    //  사용량만큼 포인트 차감 기능 구현
-    //  포인트가 부족할 경우 에러 메시지
     public void usePoint(int amount) {
         this.point -= amount;
     }

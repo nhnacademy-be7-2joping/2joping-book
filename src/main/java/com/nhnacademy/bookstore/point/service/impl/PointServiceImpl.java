@@ -1,6 +1,8 @@
 package com.nhnacademy.bookstore.point.service.impl;
 
 import com.nhnacademy.bookstore.common.error.enums.RedirectType;
+import com.nhnacademy.bookstore.common.error.exception.orderset.order.OrderNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.point.PointAmountException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
 import com.nhnacademy.bookstore.orderset.order.entity.Order;
 import com.nhnacademy.bookstore.orderset.order.repository.OrderRepository;
@@ -21,15 +23,12 @@ import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.enums.Tier;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PointServiceImpl implements PointService {
 
@@ -39,6 +38,7 @@ public class PointServiceImpl implements PointService {
     private final OrderRepository orderRepository;
 
     @Override
+    @Transactional
     public void awardReviewPoint(Long customerId, Long orderDetailId) {
         Member member = memberRepository.findById(customerId)
                 .orElseThrow(() -> new MemberNotFoundException(
@@ -53,12 +53,12 @@ public class PointServiceImpl implements PointService {
         int pointAmount = reviewPointType.getAccVal();
 
         member.addPoint(pointAmount);
-
         createPointHistory(reviewPointType, orderDetailId, null, customerId, pointAmount);
         memberRepository.save(member);
     }
 
     @Override
+    @Transactional
     public void awardOrderPoint(Long customerId, Long orderId) {
         Member member = memberRepository.findById(customerId)
                 .orElseThrow(() -> new MemberNotFoundException(
@@ -67,18 +67,24 @@ public class PointServiceImpl implements PointService {
                         null
                 ));
 
+        Order order = orderRepository.findByOrderId(orderId)
+                .orElseThrow(OrderNotFoundException::new);
+
         MemberTier memberTier = member.getTier();
         Tier tierName = memberTier.getName();
 
-        Order order = orderRepository.findByOrderId(orderId);
-
         int pointAmount = getPointAmount(order, String.valueOf(tierName), member);
 
+        PointType orderPointType = pointTypeRepository.findByNameAndIsActiveTrue("도서주문")
+                .orElseThrow(() -> new EntityNotFoundException("도서주문 포인트 정책을 찾을 수 없습니다."));
+
         member.addPoint(pointAmount);
+        createPointHistory(orderPointType, null, orderId, customerId, pointAmount);
         memberRepository.save(member);
     }
 
     @Override
+    @Transactional
     public void usePoint(PointUseRequest request) {
         Member member = memberRepository.findById(request.customerId())
                 .orElseThrow(() -> new MemberNotFoundException(
@@ -87,13 +93,17 @@ public class PointServiceImpl implements PointService {
                         null
                 ));
 
-        member.usePoint(request.pointAmount());
+        int accPoint = member.getPoint();
+        int usePointAmount = request.pointAmount();
 
-        PointType usePointType = pointTypeRepository.findByNameAndIsActiveTrue("포인트사용")
-                .orElseThrow(() -> new EntityNotFoundException("포인트 사용 정책을 찾을 수 없습니다."));
+        if (accPoint < usePointAmount) {
+            throw new PointAmountException(
+                    "포인트 사용량이 포인트 보유량보다 많습니다."
+            );
+        }
 
-        createPointHistory(usePointType, null, request.orderId(),
-                request.customerId(), -request.pointAmount());
+        member.usePoint(usePointAmount);
+        memberRepository.save(member);
     }
 
     /**
@@ -101,6 +111,7 @@ public class PointServiceImpl implements PointService {
      * @return 회원 페이지 포인트 간략 정보
      */
     @Override
+    @Transactional
     public GetMyPageSimplePointHistoriesResponse getMyPageSimplePointHistories(Long customerId) {
         Member member = memberRepository.findById(customerId)
                 .orElseThrow(() -> new MemberNotFoundException(
@@ -123,6 +134,7 @@ public class PointServiceImpl implements PointService {
      * @return 회원 페이지 포인트 상세 정보
      */
     @Override
+    @Transactional
     public GetMyPageDetailPointHistoriesResponse getMyPageDetailPointHistories(Long customerId) {
         Member member = memberRepository.findById(customerId)
                 .orElseThrow(() -> new MemberNotFoundException(
@@ -140,16 +152,14 @@ public class PointServiceImpl implements PointService {
         return GetMyPageDetailPointHistoriesResponse.of(member, responses);
     }
 
-
-    private Integer calculatePurchasePoint(Integer totalPrice, PointType pointType) {
-        if (pointType.getType() == PointTypeEnum.PERCENT) {
-            return (int) (totalPrice * (pointType.getAccVal() / 100.0));
-        }
-        return pointType.getAccVal();
-    }
-
-    private void createPointHistory(PointType pointType, Long orderDetailId,
-                                    Long orderId, Long customerId, Integer pointVal) {
+    @Transactional
+    public void createPointHistory(
+            PointType pointType,
+            Long orderDetailId,
+            Long orderId,
+            Long customerId,
+            Integer pointVal
+    ) {
         PointHistory pointHistory = PointHistory.builder()
                 .pointType(pointType)
                 .orderDetailId(orderDetailId)
@@ -176,5 +186,12 @@ public class PointServiceImpl implements PointService {
             totalPrice = 0;
         }
         return totalPrice;
+    }
+
+    private Integer calculatePurchasePoint(Integer totalPrice, PointType pointType) {
+        if (pointType.getType() == PointTypeEnum.PERCENT) {
+            return (int) (totalPrice * (pointType.getAccVal() / 100.0));
+        }
+        return pointType.getAccVal();
     }
 }
