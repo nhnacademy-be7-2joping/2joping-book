@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -44,4 +45,15 @@ public class MemberCoupon {
         private Boolean isUsed;
 
         private LocalDateTime usedDate;
+
+        public static MemberCoupon saveMemberCoupon(Coupon coupon, Member member, LocalDateTime receiveTime, LocalDateTime invalidTime) {
+                MemberCoupon memberCoupon = new MemberCoupon();
+                memberCoupon.coupon = coupon;
+                memberCoupon.member = member;
+                memberCoupon.receiveTime = receiveTime;
+                memberCoupon.invalidTime = invalidTime;
+                memberCoupon.isUsed = false; // 기본값
+                memberCoupon.usedDate = null; // 기본값
+                return memberCoupon;
+        }
 }
