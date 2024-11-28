@@ -103,13 +103,28 @@ public class WrapController {
             @ApiResponse(responseCode = "404", description = "포장상품을 찾을 수 없음")
     })
     @PutMapping("/{wrap-id}")
-    public ResponseEntity<WrapResponseDto> updateWrap(
-            @PathVariable("wrap-id") @Positive Long wrapId,
-            @RequestBody WrapModifyRequestDto dto) {
+    public ResponseEntity<WrapUpdateResponseDto> updateWrap(@PathVariable("wrap-id") @Positive Long wrapId,
+                                                            @Valid @RequestBody WrapUpdateRequestDto wrapUpdateRequestDto) {
 
-        WrapResponseDto updatedWrap = wrapService.updateWrap(wrapId, dto);
-        return ResponseEntity.ok(updatedWrap);
+        WrapUpdateResponseDto wrapUpdateResponseDto = wrapService.updateWrap(wrapId, wrapUpdateRequestDto);
+        return ResponseEntity.ok(wrapUpdateResponseDto);
     }
+
+//    /**
+//     * 리뷰 수정하는 컨트롤러
+//     * @param reviewModifyRequestDto 리뷰 수정을 위한 dto
+//     * @return 수정된 리뷰와 상태 코드를 담은 응답
+//     */
+//    @Operation(summary = "리뷰 수정", description = "등록된 리뷰를 수정합니다.")
+//    @PutMapping("/{reviewId}")
+//    public ResponseEntity<ReviewModifyResponseDto> modifyReview(@PathVariable Long reviewId,
+//                                                                @RequestBody @Valid ReviewModifyRequestDto reviewModifyRequestDto,
+//                                                                BindingResult bindingResult) {
+//
+//        ReviewModifyResponseDto modifyDto = reviewService.modifyReview(reviewModifyRequestDto);
+//        return ResponseEntity.status(HttpStatus.OK).body(modifyDto);
+//    }
+
 
 //    /**
 //     * 포장상품 삭제
