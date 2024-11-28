@@ -16,6 +16,9 @@ import com.nhnacademy.bookstore.imageset.repository.ImageRepository;
 import com.nhnacademy.bookstore.imageset.repository.ReviewImageRepository;
 import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
 import com.nhnacademy.bookstore.orderset.order_detail.repository.OrderDetailRepository;
+import com.nhnacademy.bookstore.point.dto.request.ReviewPointAwardRequest;
+import com.nhnacademy.bookstore.point.service.PointService;
+import com.nhnacademy.bookstore.point.service.impl.PointServiceImpl;
 import com.nhnacademy.bookstore.review.dto.request.ReviewCreateRequestDto;
 import com.nhnacademy.bookstore.review.dto.request.ReviewModifyRequestDto;
 import com.nhnacademy.bookstore.review.dto.request.ReviewRequestDto;
@@ -50,7 +53,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewMapper reviewMapper;
     private final ImageRepository imageRepository;
     private final ReviewImageRepository reviewImageRepository;
-
+    private final PointService pointService;
 
 
     /**
@@ -77,10 +80,9 @@ public class ReviewServiceImpl implements ReviewService {
         OrderDetail orderDetail = orderDetailRepository.findById(reviewCreateRequestDto.reviewDetailRequestDto().orderDetailId()).orElseThrow(OrderNotFoundException::new);
 
 
-        //TODO 나중에 이 예외처리도 필요하므로 주석 해제해야 한다.
-//        if (reviewRepository.existsById(reviewCreateRequestDto.orderDetailId())) {
-//            throw new ReviewAlreadyExistException("리뷰가 이미 존재합니다.");
-//        }
+        if (reviewRepository.existsById(reviewCreateRequestDto.reviewDetailRequestDto().orderDetailId())) {
+            throw new ReviewAlreadyExistException("리뷰가 이미 존재합니다.");
+        }
 
         int ratingValue = reviewCreateRequestDto.reviewDetailRequestDto().ratingValue();
 
@@ -106,6 +108,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         Review savedReview = reviewRepository.save(review);
 
+        pointService.awardReviewPoint(new ReviewPointAwardRequest(member.getId()));
 
         if (reviewCreateRequestDto.reviewImageUrlRequestDto().reviewImage() != null) {
             Image imageUrl = imageRepository.save(new Image(reviewImage));
