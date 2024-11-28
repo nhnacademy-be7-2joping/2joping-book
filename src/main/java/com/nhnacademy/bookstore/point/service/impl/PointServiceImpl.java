@@ -6,6 +6,7 @@ import com.nhnacademy.bookstore.common.error.exception.point.PointAmountExceptio
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
 import com.nhnacademy.bookstore.orderset.order.entity.Order;
 import com.nhnacademy.bookstore.orderset.order.repository.OrderRepository;
+import com.nhnacademy.bookstore.point.dto.request.OrderPointAwardRequest;
 import com.nhnacademy.bookstore.point.dto.request.PointUseRequest;
 import com.nhnacademy.bookstore.point.dto.response.GetDetailPointHistoriesResponse;
 import com.nhnacademy.bookstore.point.dto.response.GetMyPageDetailPointHistoriesResponse;
@@ -53,21 +54,20 @@ public class PointServiceImpl implements PointService {
         int pointAmount = reviewPointType.getAccVal();
 
         member.addPoint(pointAmount);
-        createPointHistory(reviewPointType, orderDetailId, null, customerId, pointAmount);
         memberRepository.save(member);
     }
 
     @Override
     @Transactional
-    public void awardOrderPoint(Long customerId, Long orderId) {
-        Member member = memberRepository.findById(customerId)
+    public void awardOrderPoint(OrderPointAwardRequest request) {
+        Member member = memberRepository.findById(request.customerId())
                 .orElseThrow(() -> new MemberNotFoundException(
                         "회원을 찾을 수 없습니다.",
                         RedirectType.NONE,
                         null
                 ));
 
-        Order order = orderRepository.findByOrderId(orderId)
+        Order order = orderRepository.findByOrderId(request.orderId())
                 .orElseThrow(OrderNotFoundException::new);
 
         MemberTier memberTier = member.getTier();
@@ -79,7 +79,6 @@ public class PointServiceImpl implements PointService {
                 .orElseThrow(() -> new EntityNotFoundException("도서주문 포인트 정책을 찾을 수 없습니다."));
 
         member.addPoint(pointAmount);
-        createPointHistory(orderPointType, null, orderId, customerId, pointAmount);
         memberRepository.save(member);
     }
 
@@ -156,6 +155,7 @@ public class PointServiceImpl implements PointService {
     public void createPointHistory(
             PointType pointType,
             Long orderDetailId,
+            Long refundHistoryId,
             Long orderId,
             Long customerId,
             Integer pointVal
@@ -163,6 +163,7 @@ public class PointServiceImpl implements PointService {
         PointHistory pointHistory = PointHistory.builder()
                 .pointType(pointType)
                 .orderDetailId(orderDetailId)
+                .refundHistoryId(refundHistoryId)
                 .orderId(orderId)
                 .customerId(customerId)
                 .pointVal(pointVal)

@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.point.service;
 
+import com.nhnacademy.bookstore.point.dto.request.OrderPointAwardRequest;
 import com.nhnacademy.bookstore.point.dto.request.PointUseRequest;
 import com.nhnacademy.bookstore.point.dto.response.GetMyPageDetailPointHistoriesResponse;
 import com.nhnacademy.bookstore.point.dto.response.GetMyPageSimplePointHistoriesResponse;
@@ -7,7 +8,7 @@ import com.nhnacademy.bookstore.point.dto.response.GetMyPageSimplePointHistories
 public interface PointService {
 
     void awardReviewPoint(Long customerId, Long orderDetailId);
-    void awardOrderPoint(Long customerId, Long orderId);
+    void awardOrderPoint(OrderPointAwardRequest request);
     void usePoint(PointUseRequest request);
 
     GetMyPageSimplePointHistoriesResponse getMyPageSimplePointHistories(Long customerId);
