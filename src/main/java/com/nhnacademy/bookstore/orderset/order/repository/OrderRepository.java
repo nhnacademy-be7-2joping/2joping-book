@@ -7,13 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 public interface OrderRepository extends JpaRepository<Order, Long> {
-
-
-    Order findByOrderId(Long orderId);
 
     @Modifying
     @Transactional
     @Query("UPDATE Order o SET o.orderState.orderStateId = :orderStateId WHERE o.orderId = :orderId")
     int updateOrderStateByOrderIdAndOrderStateId(@Param("orderId") Long orderId, @Param("orderStateId") Long orderStateId);
+
+    Optional<Order> findByOrderId(Long orderId);
 }
