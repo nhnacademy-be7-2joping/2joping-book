@@ -10,6 +10,7 @@ import com.nhnacademy.bookstore.coupon.service.MemberCouponService;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -56,6 +57,7 @@ public class MemberCouponServiceImpl implements MemberCouponService {
         return memberCouponRepository.getAllMemberOrderCoupons(customerId);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public boolean saveWelcomeCoupon(Member member) {
 
