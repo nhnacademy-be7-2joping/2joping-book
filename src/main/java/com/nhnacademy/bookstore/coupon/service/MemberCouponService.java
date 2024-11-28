@@ -2,6 +2,7 @@ package com.nhnacademy.bookstore.coupon.service;
 
 import com.nhnacademy.bookstore.coupon.dto.response.MemberCouponResponseDto;
 import com.nhnacademy.bookstore.coupon.dto.response.OrderCouponResponse;
+import com.nhnacademy.bookstore.user.member.entity.Member;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface MemberCouponService {
     List<MemberCouponResponseDto> getAllMemberCoupons(long customerId);
     List<MemberCouponResponseDto> getAllMemberUsedCoupons(long customerId);
     List<OrderCouponResponse> getAllMemberOrderCoupons(long customerId);
+    boolean saveWelcomeCoupon(Member member);
+
 }

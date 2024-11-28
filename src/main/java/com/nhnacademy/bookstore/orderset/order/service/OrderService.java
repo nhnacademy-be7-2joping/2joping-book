@@ -32,6 +32,7 @@ import com.nhnacademy.bookstore.paymentset.status.entity.PaymentStatus;
 import com.nhnacademy.bookstore.paymentset.status.enums.PaymentStatusType;
 import com.nhnacademy.bookstore.paymentset.status.exception.PaymentStatusNotFoundException;
 import com.nhnacademy.bookstore.paymentset.status.repository.PaymentStatusRepository;
+import com.nhnacademy.bookstore.point.dto.request.OrderPointAwardRequest;
 import com.nhnacademy.bookstore.point.dto.request.PointUseRequest;
 import com.nhnacademy.bookstore.point.service.PointService;
 import com.nhnacademy.bookstore.shipment.dto.request.ShipmentRequestDto;
@@ -47,7 +48,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -116,8 +120,10 @@ public class OrderService {
         List<OrderRequest.CartItemRequest> cartItemRequests = orderRequest.cartItemList();
         List<Long> bookIds = cartItemRequests.stream().map(OrderRequest.CartItemRequest::bookId).toList();
         Map<Long, Book> bookMap =
-                bookRepository.findByBookIdIn(bookIds).stream().collect(Collectors.toMap(Book::getBookId,
-                                                                                         book -> book));
+                bookRepository.findByBookIdIn(bookIds).stream().collect(Collectors.toMap(
+                        Book::getBookId,
+                        book -> book
+                ));
         Map<Long, OrderDetail> orderDetailMap = cartItemRequests.stream()
                 .map(cartItem -> {
                     Book book = bookMap.get(cartItem.bookId());
@@ -147,8 +153,9 @@ public class OrderService {
                         wrap -> wrap
                 ));
         List<WrapManage> wrapManages = validWrapRequests.stream()
+
                 .map(item -> {
-                    OrderDetail orderDetail = orderDetailMap.get(item.wrapId());
+                    OrderDetail orderDetail = orderDetailMap.get(item.bookId());
                     Wrap wrap = wrapMap.get(item.wrapId());
                     return new WrapManage(null, wrap, orderDetail);
                 }).toList();
@@ -194,9 +201,15 @@ public class OrderService {
         // 포인트 차감
         memberRepository.findById(customer.getId()).ifPresent(m -> {
             // 회원인 경우만 포인트를 차감한다.
-            pointService.usePoint(new PointUseRequest(savedOrder.getOrderId(), customer.getId(), orderRequest.point()));
+            PointUseRequest pointUseRequest = new PointUseRequest(customer.getId(), orderRequest.point());
+            pointService.usePoint(pointUseRequest);
             // 회원 등급별 포인트 적립 수행
-            pointService.awardOrderPoint(customer.getId(), savedOrder.getOrderId());
+            OrderPointAwardRequest orderPointAwardRequest =
+                    new OrderPointAwardRequest(
+                            customer.getId(),
+                            savedOrder.getOrderId()
+                    );
+            pointService.awardOrderPoint(orderPointAwardRequest);
         });
 
     }

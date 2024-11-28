@@ -1,8 +1,8 @@
 package com.nhnacademy.bookstore.point.dto.request;
 
-public record PointUseRequest(
+public record OrderPointAwardRequest(
 
         Long customerId,
-        Integer pointAmount
+        Long orderId
 ) {
 }
