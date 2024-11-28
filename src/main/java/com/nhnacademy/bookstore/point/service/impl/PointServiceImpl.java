@@ -8,6 +8,7 @@ import com.nhnacademy.bookstore.orderset.order.entity.Order;
 import com.nhnacademy.bookstore.orderset.order.repository.OrderRepository;
 import com.nhnacademy.bookstore.point.dto.request.OrderPointAwardRequest;
 import com.nhnacademy.bookstore.point.dto.request.PointUseRequest;
+import com.nhnacademy.bookstore.point.dto.request.ReviewPointAwardRequest;
 import com.nhnacademy.bookstore.point.dto.response.GetDetailPointHistoriesResponse;
 import com.nhnacademy.bookstore.point.dto.response.GetMyPageDetailPointHistoriesResponse;
 import com.nhnacademy.bookstore.point.dto.response.GetMyPageSimplePointHistoriesResponse;
@@ -40,8 +41,8 @@ public class PointServiceImpl implements PointService {
 
     @Override
     @Transactional
-    public void awardReviewPoint(Long customerId, Long orderDetailId) {
-        Member member = memberRepository.findById(customerId)
+    public void awardReviewPoint(ReviewPointAwardRequest request) {
+        Member member = memberRepository.findById(request.customerId())
                 .orElseThrow(() -> new MemberNotFoundException(
                         "회원을 찾을 수 없습니다.",
                         RedirectType.NONE,
