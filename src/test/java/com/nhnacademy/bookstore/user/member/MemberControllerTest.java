@@ -224,7 +224,7 @@ import static org.mockito.Mockito.when;
       when(memberService.getPointsOfMember(customerId)).thenReturn(mockPoint);
       ResponseEntity<MemberPointResponse> actualResponse = memberController.getPoint(customerId);
 
-      assertEquals(actualResponse.getStatusCode(), HttpStatus.OK);
+      assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
       assertEquals(mockPoint, actualResponse.getBody());
    }
 

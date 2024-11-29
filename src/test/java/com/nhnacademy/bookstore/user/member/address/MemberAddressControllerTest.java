@@ -2,9 +2,13 @@ package com.nhnacademy.bookstore.user.member.address;
 
 import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.user.address.AddressLimitToTenException;
+import com.nhnacademy.bookstore.common.error.exception.user.address.AddressNotFoundException;
 import com.nhnacademy.bookstore.user.member.controller.MemberAddressController;
+import com.nhnacademy.bookstore.user.member.dto.request.AddressUpdateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberAddressRequestDto;
-import com.nhnacademy.bookstore.user.member.dto.response.MemberAddressResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.address.AddressDeleteResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.address.AddressUpdateResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.address.MemberAddressResponseDto;
 import com.nhnacademy.bookstore.user.member.service.MemberAddressService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -92,6 +96,89 @@ class MemberAddressControllerTest {
                 .when(memberAddressService).addMemberAddress(memberId, requestDto);
 
         // when & then
-        assertThrows(AddressLimitToTenException.class, () -> memberAddressController.addMemberAddress(String.valueOf(memberId), requestDto));
+        assertThrows(AddressLimitToTenException.class, () -> invokeAddMemberAddress(memberId, requestDto));
     }
+    private void invokeAddMemberAddress(long memberId, MemberAddressRequestDto requestDto) {
+        memberAddressController.addMemberAddress(String.valueOf(memberId), requestDto);
+    }
+    /**
+     * 테스트: 주소 삭제 성공 시 응답 검증
+     * 예상 결과: 200 OK 응답 코드와 함께 삭제된 주소 정보 반환
+     */
+    @Test
+    void testDeleteMemberAddress_Success() {
+        // given
+        String customerId = "1";
+        Long memberAddressId = 10L;
+        AddressDeleteResponseDto responseDto = new AddressDeleteResponseDto(memberAddressId, "주소가 성공적으로 삭제되었습니다.");
+
+        when(memberAddressService.deleteMemberAddress(Long.parseLong(customerId), memberAddressId)).thenReturn(responseDto);
+
+        // when
+        ResponseEntity<AddressDeleteResponseDto> response = memberAddressController.deleteMemberAddress(customerId, memberAddressId);
+
+        // then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(memberAddressId, Objects.requireNonNull(response.getBody()).memberAddressId());
+        assertEquals("주소가 성공적으로 삭제되었습니다.", response.getBody().message());
+    }
+
+    /**
+     * 테스트: 주소 삭제 실패 시 예외 발생 확인
+     * 예상 결과: AddressNotFoundException 발생
+     */
+    @Test
+    void testDeleteMemberAddress_AddressNotFoundException() {
+        // given
+        String customerId = "1";
+        long memberAddressId = 10L;
+
+        doThrow(new AddressNotFoundException("주소를 찾을 수 없습니다.", RedirectType.REDIRECT, "mypage"))
+                .when(memberAddressService).deleteMemberAddress(Long.parseLong(customerId), memberAddressId);
+
+        // when & then
+        assertThrows(AddressNotFoundException.class, () -> memberAddressController.deleteMemberAddress(customerId, memberAddressId));
+    }
+
+    /**
+     * 테스트: 주소 업데이트 성공 시 응답 검증
+     * 예상 결과: 200 OK 응답 코드와 함께 업데이트된 주소 정보 반환
+     */
+    @Test
+    void testUpdateMemberAddress_Success() {
+        // given
+        String customerId = "1";
+        Long memberAddressId = 10L;
+        AddressUpdateRequestDto requestDto = new AddressUpdateRequestDto("12345", "도로명 주소", "상세 주소", "별칭",  "수신인");
+        AddressUpdateResponseDto responseDto = new AddressUpdateResponseDto(memberAddressId, "주소가 성공적으로 업데이트되었습니다.");
+
+        when(memberAddressService.updateMemberAddress(Long.parseLong(customerId), memberAddressId, requestDto)).thenReturn(responseDto);
+
+        // when
+        ResponseEntity<AddressUpdateResponseDto> response = memberAddressController.updateMemberAddress(customerId, memberAddressId, requestDto);
+
+        // then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(memberAddressId, Objects.requireNonNull(response.getBody()).memberAddressId());
+        assertEquals("주소가 성공적으로 업데이트되었습니다.", response.getBody().message());
+    }
+
+    /**
+     * 테스트: 주소 업데이트 실패 시 예외 발생 확인
+     * 예상 결과: AddressNotFoundException 발생
+     */
+    @Test
+    void testUpdateMemberAddress_AddressNotFoundException() {
+        // given
+        String customerId = "1";
+        long memberAddressId = 10L;
+        AddressUpdateRequestDto requestDto = new AddressUpdateRequestDto("12345", "도로명 주소", "상세 주소", "별칭", "수신인");
+
+        doThrow(new AddressNotFoundException("주소를 찾을 수 없습니다.", RedirectType.REDIRECT, "mypage"))
+                .when(memberAddressService).updateMemberAddress(Long.parseLong(customerId), memberAddressId, requestDto);
+
+        // when & then
+        assertThrows(AddressNotFoundException.class, () -> memberAddressController.updateMemberAddress(customerId, memberAddressId, requestDto));
+    }
+
 }
