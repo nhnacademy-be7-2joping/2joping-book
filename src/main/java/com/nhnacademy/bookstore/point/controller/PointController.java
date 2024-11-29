@@ -1,18 +1,17 @@
 package com.nhnacademy.bookstore.point.controller;
 
-import com.nhnacademy.bookstore.point.dto.request.OrderPointAwardRequest;
-import com.nhnacademy.bookstore.point.dto.request.PointUseRequest;
 import com.nhnacademy.bookstore.point.dto.response.GetMyPageDetailPointHistoriesResponse;
 import com.nhnacademy.bookstore.point.dto.response.GetMyPageSimplePointHistoriesResponse;
 import com.nhnacademy.bookstore.point.dto.response.PointTypeDto;
 import com.nhnacademy.bookstore.point.service.impl.PointServiceImpl;
 import com.nhnacademy.bookstore.point.service.impl.PointTypeServiceImpl;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
