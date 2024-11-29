@@ -79,7 +79,7 @@ public class ReviewServiceImpl implements ReviewService {
         OrderDetail orderDetail = orderDetailRepository.findById(reviewCreateRequestDto.reviewDetailRequestDto().orderDetailId()).orElseThrow(OrderNotFoundException::new);
 
 
-        if (reviewRepository.existsById(reviewCreateRequestDto.reviewDetailRequestDto().orderDetailId())) {
+        if (reviewRepository.existsByOrderDetail_OrderDetailId(reviewCreateRequestDto.reviewDetailRequestDto().orderDetailId())) {
             throw new ReviewAlreadyExistException("리뷰가 이미 존재합니다.");
         }
 
