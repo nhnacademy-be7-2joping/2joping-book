@@ -92,8 +92,8 @@ public class PointServiceImpl implements PointService {
                 .orElseThrow(() -> new EntityNotFoundException("도서주문 포인트 정책을 찾을 수 없습니다."));
 
         member.addPoint(pointAmount);
-        pointHistoryService.createReviewPointHistory(
-                new CreateReviewPointHistoryRequest(
+        pointHistoryService.createOrderPointHistory(
+                new CreateOrderPointHistoryRequest(
                         orderPointType,
                         order.getOrderId(),
                         null,
