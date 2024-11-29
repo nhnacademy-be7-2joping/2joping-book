@@ -111,22 +111,6 @@ public class WrapController {
     }
 
 //    /**
-//     * 리뷰 수정하는 컨트롤러
-//     * @param reviewModifyRequestDto 리뷰 수정을 위한 dto
-//     * @return 수정된 리뷰와 상태 코드를 담은 응답
-//     */
-//    @Operation(summary = "리뷰 수정", description = "등록된 리뷰를 수정합니다.")
-//    @PutMapping("/{reviewId}")
-//    public ResponseEntity<ReviewModifyResponseDto> modifyReview(@PathVariable Long reviewId,
-//                                                                @RequestBody @Valid ReviewModifyRequestDto reviewModifyRequestDto,
-//                                                                BindingResult bindingResult) {
-//
-//        ReviewModifyResponseDto modifyDto = reviewService.modifyReview(reviewModifyRequestDto);
-//        return ResponseEntity.status(HttpStatus.OK).body(modifyDto);
-//    }
-
-
-//    /**
 //     * 포장상품 삭제
 //     *
 //     * 특정 포장상품을 삭제합니다.

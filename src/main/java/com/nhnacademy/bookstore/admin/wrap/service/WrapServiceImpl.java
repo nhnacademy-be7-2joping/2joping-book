@@ -10,6 +10,7 @@ import com.nhnacademy.bookstore.common.error.exception.review.RatingValueNotVali
 import com.nhnacademy.bookstore.common.error.exception.review.ReviewNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.wrap.WrapAlreadyExistException;
 import com.nhnacademy.bookstore.common.error.exception.wrap.WrapNotFoundException;
+import com.nhnacademy.bookstore.imageset.entity.BookImage;
 import com.nhnacademy.bookstore.imageset.entity.Image;
 import com.nhnacademy.bookstore.imageset.entity.ReviewImage;
 import com.nhnacademy.bookstore.imageset.entity.WrapImage;
@@ -66,7 +67,7 @@ public class WrapServiceImpl implements WrapService {
         wrapRepository.save(wrap);
         if (wrapImageUrlRequestDto.wrapImageUrl() != null) {
             Image image = imageRepository.save(new Image(wrapImageUrl));
-            wrapImageRepository.save(new WrapImage(wrap,image));
+            wrapImageRepository.save(new WrapImage(wrap, image));
         }
         return new WrapCreateResponseDto(wrap.getWrapId(), wrap.getName(), wrap.getWrapPrice(), wrap.isActive(), wrapImageUrl);
     }
@@ -107,7 +108,7 @@ public class WrapServiceImpl implements WrapService {
     /**
      * 포장 상품을 업데이트합니다.
      *
-     * @param wrapUpdateRequestDto    업데이트할 포장 상품 데이터
+     * @param wrapUpdateRequestDto 업데이트할 포장 상품 데이터
      * @return 업데이트된 포장 상품 응답 DTO
      * @throws WrapNotFoundException 포장 상품을 찾을 수 없는 경우
      */
@@ -125,44 +126,39 @@ public class WrapServiceImpl implements WrapService {
                 wrapUpdateDetailRequestDto.wrapPrice(),
                 wrapUpdateDetailRequestDto.isActive()
         );
-
         String updatedUrl = null;
+        String defaultImageUrl = "http://image.toast.com/aaaacko/ejoping/book/default/default-book-image.jpg";
         if (wrapUpdateRequestDto.deleteImage()) {
             if (wrapRepository.existsById(wrapId)) {
                 wrapImageRepository.deleteByWrap_WrapId(wrapId);
+                Image defaultImage = imageRepository.save(new Image(defaultImageUrl));
+                wrapImageRepository.save(new WrapImage(wrap, defaultImage));
+                updatedUrl = defaultImage.getUrl();
             }
         } else if (wrapImageUrlRequestDto.wrapImageUrl() != null) {
             if (wrapRepository.existsById(wrapId)) {
-                try {
-                    if (wrapImageRepository.existsByWrap_WrapId(wrapId)) {
-                        wrapImageRepository.deleteByWrap_WrapId(wrapId);
-                    }
-                } catch (Exception e) {
-                    // 로그를 남기고 사용자에게 적절한 메시지를 제공
-                    e.printStackTrace();
-                    throw new RuntimeException("Failed to delete wrap image for wrapId: " + wrapId, e);
+                if (wrapImageRepository.existsByWrap_WrapId(wrapId)) {
+                    wrapImageRepository.deleteByWrap_WrapId(wrapId);
                 }
+                Image newImage = imageRepository.save(new Image(wrapImageUrlRequestDto.wrapImageUrl()));
+                updatedUrl = newImage.getUrl();
+                wrapImageRepository.save(new WrapImage(wrap, newImage));
             }
-            Image newImage = imageRepository.save(new Image(wrapImageUrlRequestDto.wrapImageUrl()));
-            updatedUrl = newImage.getUrl();
-            wrapImageRepository.save(new WrapImage(wrap, newImage));
+            }
+            wrapRepository.save(wrap);
+            return new WrapUpdateResponseDto(wrap.getWrapId(), wrap.getName(), wrap.getWrapPrice(), wrap.isActive(), updatedUrl);
+    }
+
+        /**
+         * 포장 상품을 ID로 삭제합니다.
+         *
+         * @param wrapId 삭제할 포장 상품의 ID
+         * @throws WrapNotFoundException 포장 상품을 찾을 수 없는 경우
+         */
+        @Override
+        public void deleteWrap (Long wrapId){
+            wrapRepository.findById(wrapId)
+                    .orElseThrow(WrapNotFoundException::new);
+            wrapRepository.deleteById(wrapId);
         }
-        wrapRepository.save(wrap);
-        return new WrapUpdateResponseDto(wrap.getWrapId(), wrap.getName(), wrap.getWrapPrice(), wrap.isActive(), updatedUrl);
     }
-
-    /**
-     * 포장 상품을 ID로 삭제합니다.
-     *
-     * @param wrapId 삭제할 포장 상품의 ID
-     * @throws WrapNotFoundException 포장 상품을 찾을 수 없는 경우
-     */
-    @Override
-    public void deleteWrap(Long wrapId) {
-        wrapRepository.findById(wrapId)
-                .orElseThrow(WrapNotFoundException::new);
-        wrapRepository.deleteById(wrapId);
-    }
-}
-
-
