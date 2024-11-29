@@ -47,11 +47,9 @@ public class BookController {
      * @return 등록한 도서와 상태 코드를 담은 응답
      */
     @Operation(summary = "도서 단독 등록", description = "새로운 도서를 등록합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "도서 생성 성공"),
-            @ApiResponse(responseCode = "404", description = "리소스를 찾을 수 없음"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
-    })
+    @ApiResponse(responseCode = "201", description = "도서 생성 성공")
+    @ApiResponse(responseCode = "404", description = "리소스를 찾을 수 없음")
+    @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
     @PostMapping(value = "/admin/books/register")
     public ResponseEntity<BookCreateResponseDto> createBook(@RequestBody BookCreateRequestDto bookCreateRequestDto) {
         try {
@@ -67,11 +65,9 @@ public class BookController {
      * @return 등록한 도서와 상태 코드를 담은 응답
      */
     @Operation(summary = "알라딘 API 활용 도서 등록", description = "알라딘 API를 활용해 새로운 도서를 등록합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "도서 생성 성공"),
-            @ApiResponse(responseCode = "404", description = "리소스를 찾을 수 없음"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
-    })
+    @ApiResponse(responseCode = "201", description = "도서 생성 성공")
+    @ApiResponse(responseCode = "404", description = "리소스를 찾을 수 없음")
+    @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
     @PostMapping("/admin/books/register/aladin")
     public ResponseEntity<List<BookCreateAPIResponseDto>> createBooks() {
         try {
