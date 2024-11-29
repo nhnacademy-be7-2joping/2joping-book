@@ -43,7 +43,7 @@ public class MemberServiceImpl implements MemberService {
     static final String MEMBER_SIGNUP_URL = "/signup";
     static final String MEMBER_EDIT_PROFILE_URL = "/mypage/edit-profile";
     static final String MEMBER_WITHDRAW_URL = "/mypage/withdraw";
-    private final static int INITIAL_PAGE_SIZE = 10;
+    private static final int INITIAL_PAGE_SIZE = 10;
 
     private final MemberRepository memberRepository;
     private final MemberStatusRepository statusRepository;

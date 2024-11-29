@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstore.user.member.dto.response;
+package com.nhnacademy.bookstore.user.member.dto.response.address;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
