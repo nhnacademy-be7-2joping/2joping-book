@@ -8,8 +8,10 @@ import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
 import com.nhnacademy.bookstore.common.error.exception.bookset.book.BookNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.shipment.ShipmentNotFoundException;
+import com.nhnacademy.bookstore.coupon.dto.response.MemberCouponResponseDto;
 import com.nhnacademy.bookstore.coupon.entity.member.MemberCoupon;
 import com.nhnacademy.bookstore.coupon.repository.member.MemberCouponRepository;
+import com.nhnacademy.bookstore.coupon.service.MemberCouponService;
 import com.nhnacademy.bookstore.orderset.order.dto.request.OrderPostRequest;
 import com.nhnacademy.bookstore.orderset.order.dto.request.OrderRequest;
 import com.nhnacademy.bookstore.orderset.order.entity.Order;
@@ -60,6 +62,7 @@ public class OrderService {
 
     private final RedisTemplate<Object, Object> redisTemplate;
     private final OrderStateService orderStateService;
+    private final MemberCouponService memberCouponService;
     private final BookRepository bookRepository;
     private final MemberCouponRepository memberCouponRepository;
     private final OrderDetailRepository orderDetailRepository;
@@ -87,20 +90,25 @@ public class OrderService {
         Order order = new Order();
         OrderState orderState = orderStateService.getWaitingState();
         MemberCoupon memberCoupon = null;
+        List<MemberCouponResponseDto> memberCoupons = memberCouponService.getAllMemberCoupons(customer.getId());
 
-        // 적용된 쿠폰이 있는 경우 쿠폰 가져오기
-        if (orderRequest.couponId() > 0) {
+        // 적용된 쿠폰이 있는 경우 쿠폰 가져오기, (해당 회원이 가진 쿠폰만)
+        if (orderRequest.couponId() != null && orderRequest.couponId() > 0 &&
+                memberCoupons.stream().anyMatch(dto -> dto.couponId().equals(orderRequest.couponId()))) {
             memberCoupon = memberCouponRepository.findById(orderRequest.couponId()).orElse(null);
         }
         order.apply(orderState, memberCoupon, orderRequest, orderPostRequest, customer);
         Order savedOrder = orderRepository.save(order);
+
         redisTemplate.delete(ORDER_KEY + orderPostRequest.orderId()); // 임시저장한 주문정보 삭제
+
 
         // 주문 상세 등록
         List<OrderRequest.CartItemRequest> cartItemRequests = orderRequest.cartItemList();
         Map<Long, OrderDetail> orderDetailMap = new HashMap<>();
         for (OrderRequest.CartItemRequest cartItemRequest : cartItemRequests) {
-            Book book = bookRepository.findById(cartItemRequest.bookId()).orElseThrow(BookNotFoundException::new);
+            Book book = bookRepository.findById(cartItemRequest.bookId())
+                    .orElseThrow(BookNotFoundException::new);
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.apply(savedOrder, book, cartItemRequest.quantity(), cartItemRequest.unitPrice());
             orderDetailMap.put(book.getBookId(), orderDetailRepository.save(orderDetail));
