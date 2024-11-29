@@ -1,12 +1,14 @@
 package com.nhnacademy.bookstore.bookset.book.entity;
 
 import com.nhnacademy.bookstore.bookset.publisher.entity.Publisher;
+import com.nhnacademy.bookstore.like.entity.Like;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * 도서 Entity
@@ -63,6 +65,9 @@ public class Book {
     @Column(nullable = false, columnDefinition = "INT default 0")
     private int likes;
 
+    @OneToMany(mappedBy = "book", fetch = FetchType.EAGER)
+    private List<Like> likedBy; // Book과 Like의 연관관계 추가
+
     public void updateBook(String title, String description, Publisher publisher, LocalDate publishedDate,
                            String isbn, int retailPrice, int sellingPrice, boolean giftWrappable,
                            boolean isActive, int remainQuantity) {
@@ -76,6 +81,10 @@ public class Book {
         this.giftWrappable = giftWrappable;
         this.isActive = isActive;
         this.remainQuantity = remainQuantity;
+    }
+
+    public void decreaseQuantity(int quantityToDecrease) {
+        this.remainQuantity -= quantityToDecrease;
     }
   
     public void deactivate() {

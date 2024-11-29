@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.user.member.controller;
 
 
+
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberUpdateRequesteDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberWithdrawRequesteDto;
@@ -46,6 +47,7 @@ public class MemberController {
 
 
         MemberCreateSuccessResponseDto response = memberService.registerNewMember(requestDto);
+
 
         return ResponseEntity.ok(response);
 

@@ -25,23 +25,39 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class MemberCoupon {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long couponUsageId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long couponUsageId;
 
-        @ManyToOne
-        @JoinColumn(name = "coupon_id")
-        private Coupon coupon;
+    @ManyToOne
+    @JoinColumn(name = "coupon_id")
+    private Coupon coupon;
 
-        @ManyToOne
-        @JoinColumn(name = "customer_id")
-        private Member member;
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Member member;
 
-        private LocalDateTime receiveTime;
+    private LocalDateTime receiveTime;
 
-        private LocalDateTime invalidTime;
+    private LocalDateTime invalidTime;
 
-        private Boolean isUsed;
+    private Boolean isUsed;
 
-        private LocalDateTime usedDate;
+    private LocalDateTime usedDate;
+
+    public static MemberCoupon saveMemberCoupon(Coupon coupon, Member member, LocalDateTime receiveTime,
+                                                LocalDateTime invalidTime) {
+        MemberCoupon memberCoupon = new MemberCoupon();
+        memberCoupon.coupon = coupon;
+        memberCoupon.member = member;
+        memberCoupon.receiveTime = receiveTime;
+        memberCoupon.invalidTime = invalidTime;
+        memberCoupon.isUsed = false; // 기본값
+        memberCoupon.usedDate = null; // 기본값
+        return memberCoupon;
+    }
+
+    public void updateUsed(boolean isUsed) {
+        this.isUsed = isUsed;
+    }
 }

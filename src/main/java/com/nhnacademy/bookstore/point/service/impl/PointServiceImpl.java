@@ -1,10 +1,14 @@
 package com.nhnacademy.bookstore.point.service.impl;
 
 import com.nhnacademy.bookstore.common.error.enums.RedirectType;
+import com.nhnacademy.bookstore.common.error.exception.orderset.order.OrderNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.point.PointAmountException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
 import com.nhnacademy.bookstore.orderset.order.entity.Order;
 import com.nhnacademy.bookstore.orderset.order.repository.OrderRepository;
+import com.nhnacademy.bookstore.point.dto.request.OrderPointAwardRequest;
 import com.nhnacademy.bookstore.point.dto.request.PointUseRequest;
+import com.nhnacademy.bookstore.point.dto.request.ReviewPointAwardRequest;
 import com.nhnacademy.bookstore.point.dto.response.GetDetailPointHistoriesResponse;
 import com.nhnacademy.bookstore.point.dto.response.GetMyPageDetailPointHistoriesResponse;
 import com.nhnacademy.bookstore.point.dto.response.GetMyPageSimplePointHistoriesResponse;
@@ -27,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PointServiceImpl implements PointService {
 
@@ -37,8 +40,9 @@ public class PointServiceImpl implements PointService {
     private final OrderRepository orderRepository;
 
     @Override
-    public void awardReviewPoint(Long customerId, Long orderDetailId) {
-        Member member = memberRepository.findById(customerId)
+    @Transactional
+    public void awardReviewPoint(ReviewPointAwardRequest request) {
+        Member member = memberRepository.findById(request.customerId())
                 .orElseThrow(() -> new MemberNotFoundException(
                         "회원을 찾을 수 없습니다.",
                         RedirectType.NONE,
@@ -51,39 +55,36 @@ public class PointServiceImpl implements PointService {
         int pointAmount = reviewPointType.getAccVal();
 
         member.addPoint(pointAmount);
-
-        createPointHistory(reviewPointType, orderDetailId, null, customerId, pointAmount);
+        memberRepository.save(member);
     }
 
-    // TODO: 결제 시 적립 포인트 관련 메서드
-    // 멤버가 주문 완료했을 때
-    // 어떤 멤버인지 멤버 정보를 찾고
-    // 어떤 주문인지 주문 정보를 찾고
-    // 해당 주문에 대해서 구매 적립 포인트 추가
-    // 추가 완료 return
     @Override
-    public void awardOrderPoint(Long customerId, Long orderId) {
-        Member member = memberRepository.findById(customerId)
+    @Transactional
+    public void awardOrderPoint(OrderPointAwardRequest request) {
+        Member member = memberRepository.findById(request.customerId())
                 .orElseThrow(() -> new MemberNotFoundException(
                         "회원을 찾을 수 없습니다.",
                         RedirectType.NONE,
                         null
                 ));
 
+        Order order = orderRepository.findByOrderId(request.orderId())
+                .orElseThrow(OrderNotFoundException::new);
+
         MemberTier memberTier = member.getTier();
         Tier tierName = memberTier.getName();
 
-        // 주문 정보를 통해서 총 가격 구하기
-        // 해당 주문 정보에 대한 가격으로 구매 적립 포인트 추가
-        // 순수금액 = 주문금액 - (쿠폰 + 배송비 + 취소금액 + 포장비)
-        Order order = orderRepository.findByOrderId(orderId);
-
         int pointAmount = getPointAmount(order, String.valueOf(tierName), member);
 
+        PointType orderPointType = pointTypeRepository.findByNameAndIsActiveTrue("도서주문")
+                .orElseThrow(() -> new EntityNotFoundException("도서주문 포인트 정책을 찾을 수 없습니다."));
+
         member.addPoint(pointAmount);
+        memberRepository.save(member);
     }
 
     @Override
+    @Transactional
     public void usePoint(PointUseRequest request) {
         Member member = memberRepository.findById(request.customerId())
                 .orElseThrow(() -> new MemberNotFoundException(
@@ -92,14 +93,17 @@ public class PointServiceImpl implements PointService {
                         null
                 ));
 
-        // TODO: 주문 시에 포인트 사용할 경우 포인트 사용 요청에 담겨 들어온 포인트 양만큼 멤버 포인트 삭제
-        member.usePoint(request.pointAmount());
+        int accPoint = member.getPoint();
+        int usePointAmount = request.pointAmount();
 
-        PointType usePointType = pointTypeRepository.findByNameAndIsActiveTrue("포인트사용")
-                .orElseThrow(() -> new EntityNotFoundException("포인트 사용 정책을 찾을 수 없습니다."));
+        if (accPoint < usePointAmount) {
+            throw new PointAmountException(
+                    "포인트 사용량이 포인트 보유량보다 많습니다."
+            );
+        }
 
-        createPointHistory(usePointType, null, request.orderId(),
-                request.customerId(), -request.pointAmount());
+        member.usePoint(usePointAmount);
+        memberRepository.save(member);
     }
 
     /**
@@ -107,6 +111,7 @@ public class PointServiceImpl implements PointService {
      * @return 회원 페이지 포인트 간략 정보
      */
     @Override
+    @Transactional
     public GetMyPageSimplePointHistoriesResponse getMyPageSimplePointHistories(Long customerId) {
         Member member = memberRepository.findById(customerId)
                 .orElseThrow(() -> new MemberNotFoundException(
@@ -115,7 +120,8 @@ public class PointServiceImpl implements PointService {
                         null
                 ));
 
-        List<GetSimplePointHistoriesResponse> responses = pointHistoryRepository.findByCustomerIdOrderByRegisterDateDesc(customerId)
+        List<GetSimplePointHistoriesResponse> responses = pointHistoryRepository
+                .findAllByCustomerIdOrderByRegisterDateDesc(customerId)
                 .stream()
                 .map(GetSimplePointHistoriesResponse::from)
                 .toList();
@@ -128,6 +134,7 @@ public class PointServiceImpl implements PointService {
      * @return 회원 페이지 포인트 상세 정보
      */
     @Override
+    @Transactional
     public GetMyPageDetailPointHistoriesResponse getMyPageDetailPointHistories(Long customerId) {
         Member member = memberRepository.findById(customerId)
                 .orElseThrow(() -> new MemberNotFoundException(
@@ -136,7 +143,8 @@ public class PointServiceImpl implements PointService {
                         null
                 ));
 
-        List<GetDetailPointHistoriesResponse> responses = pointHistoryRepository.findByCustomerIdOrderByRegisterDateDesc(customerId)
+        List<GetDetailPointHistoriesResponse> responses = pointHistoryRepository
+                .findAllByCustomerIdOrderByRegisterDateDesc(customerId)
                 .stream()
                 .map(GetDetailPointHistoriesResponse::from)
                 .toList();
@@ -144,19 +152,19 @@ public class PointServiceImpl implements PointService {
         return GetMyPageDetailPointHistoriesResponse.of(member, responses);
     }
 
-
-    private Integer calculatePurchasePoint(Integer totalPrice, PointType pointType) {
-        if (pointType.getType() == PointTypeEnum.PERCENT) {
-            return (int) (totalPrice * (pointType.getAccVal() / 100.0));
-        }
-        return pointType.getAccVal();
-    }
-
-    private void createPointHistory(PointType pointType, Long orderDetailId,
-                                    Long orderId, Long customerId, Integer pointVal) {
+    @Transactional
+    public void createPointHistory(
+            PointType pointType,
+            Long orderDetailId,
+            Long refundHistoryId,
+            Long orderId,
+            Long customerId,
+            Integer pointVal
+    ) {
         PointHistory pointHistory = PointHistory.builder()
                 .pointType(pointType)
                 .orderDetailId(orderDetailId)
+                .refundHistoryId(refundHistoryId)
                 .orderId(orderId)
                 .customerId(customerId)
                 .pointVal(pointVal)
@@ -167,22 +175,25 @@ public class PointServiceImpl implements PointService {
 
     private static int getPointAmount(Order order, String tierName, Member member) {
         int totalPrice = order.getTotalPrice();
-        int couponSalePrice = order.getCouponSalePrice();
-        int shippingFee = order.getShippingFee();
-
-        int pointAmount = totalPrice - (couponSalePrice + shippingFee);
 
         if (tierName.equals("일반")) {
-            pointAmount = pointAmount * 1 / 100;
+            totalPrice = totalPrice * 1 / 100;
         } else if (member.getTier().equals("로얄")) {
-            pointAmount = pointAmount * 2 / 100;
+            totalPrice = totalPrice * 2 / 100;
         } else if (member.getTier().equals("골드")) {
-            pointAmount = pointAmount * 3 / 100;
+            totalPrice = totalPrice * 3 / 100;
         } else if (member.getTier().equals("플래티넘")) {
-            pointAmount = pointAmount * 4 / 100;
+            totalPrice = totalPrice * 4 / 100;
         } else {
-            pointAmount = 0;
+            totalPrice = 0;
         }
-        return pointAmount;
+        return totalPrice;
+    }
+
+    private Integer calculatePurchasePoint(Integer totalPrice, PointType pointType) {
+        if (pointType.getType() == PointTypeEnum.PERCENT) {
+            return (int) (totalPrice * (pointType.getAccVal() / 100.0));
+        }
+        return pointType.getAccVal();
     }
 }

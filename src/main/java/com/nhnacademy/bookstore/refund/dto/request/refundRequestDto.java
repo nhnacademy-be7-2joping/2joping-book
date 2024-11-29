@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstore.refund.dto;
+package com.nhnacademy.bookstore.refund.dto.request;
 
 import com.nhnacademy.bookstore.refund.enums.RefundPolicyType;
 

@@ -24,7 +24,7 @@ import jakarta.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "likes", uniqueConstraints = {
+@Table(name = "`likes`", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"customer_id", "book_id"})
 })
 
