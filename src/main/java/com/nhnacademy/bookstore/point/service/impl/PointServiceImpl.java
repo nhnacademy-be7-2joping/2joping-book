@@ -6,9 +6,7 @@ import com.nhnacademy.bookstore.common.error.exception.point.PointAmountExceptio
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
 import com.nhnacademy.bookstore.orderset.order.entity.Order;
 import com.nhnacademy.bookstore.orderset.order.repository.OrderRepository;
-import com.nhnacademy.bookstore.point.dto.request.OrderPointAwardRequest;
-import com.nhnacademy.bookstore.point.dto.request.PointUseRequest;
-import com.nhnacademy.bookstore.point.dto.request.ReviewPointAwardRequest;
+import com.nhnacademy.bookstore.point.dto.request.*;
 import com.nhnacademy.bookstore.point.dto.response.GetDetailPointHistoriesResponse;
 import com.nhnacademy.bookstore.point.dto.response.GetMyPageDetailPointHistoriesResponse;
 import com.nhnacademy.bookstore.point.dto.response.GetMyPageSimplePointHistoriesResponse;
@@ -28,11 +26,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class PointServiceImpl implements PointService {
+
+    private final PointHistoryService pointHistoryService;
 
     private final PointTypeRepository pointTypeRepository;
     private final PointHistoryRepository pointHistoryRepository;
@@ -55,6 +56,17 @@ public class PointServiceImpl implements PointService {
         int pointAmount = reviewPointType.getAccVal();
 
         member.addPoint(pointAmount);
+        pointHistoryService.createReviewPointHistory(
+                new CreateReviewPointHistoryRequest(
+                        reviewPointType,
+                        null,
+                        null,
+                        null,
+                        member.getId(),
+                        pointAmount,
+                        LocalDateTime.now()
+                )
+        );
         memberRepository.save(member);
     }
 
@@ -80,6 +92,17 @@ public class PointServiceImpl implements PointService {
                 .orElseThrow(() -> new EntityNotFoundException("도서주문 포인트 정책을 찾을 수 없습니다."));
 
         member.addPoint(pointAmount);
+        pointHistoryService.createReviewPointHistory(
+                new CreateReviewPointHistoryRequest(
+                        orderPointType,
+                        order.getOrderId(),
+                        null,
+                        order.getOrderId(),
+                        member.getId(),
+                        pointAmount,
+                        LocalDateTime.now()
+                )
+        );
         memberRepository.save(member);
     }
 
@@ -103,6 +126,17 @@ public class PointServiceImpl implements PointService {
         }
 
         member.usePoint(usePointAmount);
+        pointHistoryService.createPointUseHistory(
+                new CreatePointUseHistoryUseRequest(
+                        null,
+                        null,
+                        null,
+                        null,
+                        member.getId(),
+                        usePointAmount,
+                        LocalDateTime.now()
+                )
+        );
         memberRepository.save(member);
     }
 
@@ -111,7 +145,7 @@ public class PointServiceImpl implements PointService {
      * @return 회원 페이지 포인트 간략 정보
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public GetMyPageSimplePointHistoriesResponse getMyPageSimplePointHistories(Long customerId) {
         Member member = memberRepository.findById(customerId)
                 .orElseThrow(() -> new MemberNotFoundException(
@@ -134,7 +168,7 @@ public class PointServiceImpl implements PointService {
      * @return 회원 페이지 포인트 상세 정보
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public GetMyPageDetailPointHistoriesResponse getMyPageDetailPointHistories(Long customerId) {
         Member member = memberRepository.findById(customerId)
                 .orElseThrow(() -> new MemberNotFoundException(
@@ -150,27 +184,6 @@ public class PointServiceImpl implements PointService {
                 .toList();
 
         return GetMyPageDetailPointHistoriesResponse.of(member, responses);
-    }
-
-    @Transactional
-    public void createPointHistory(
-            PointType pointType,
-            Long orderDetailId,
-            Long refundHistoryId,
-            Long orderId,
-            Long customerId,
-            Integer pointVal
-    ) {
-        PointHistory pointHistory = PointHistory.builder()
-                .pointType(pointType)
-                .orderDetailId(orderDetailId)
-                .refundHistoryId(refundHistoryId)
-                .orderId(orderId)
-                .customerId(customerId)
-                .pointVal(pointVal)
-                .build();
-
-        pointHistoryRepository.save(pointHistory);
     }
 
     private static int getPointAmount(Order order, String tierName, Member member) {
