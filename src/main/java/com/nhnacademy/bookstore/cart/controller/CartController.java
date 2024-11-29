@@ -56,25 +56,36 @@ public class CartController {
                                           @CookieValue(name = "cartSession", required = false) String cartSessionId,
                                           @RequestHeader(name = "X-Customer-Id", required = false, defaultValue = "0") long customerId,
                                           @RequestBody CartRequestDto cartRequestDto) {
-        if (customerId == 0) {
-            // 비회원 로직
-            if (cartSessionId.isEmpty()) {
-                String newCartSessionId = "cart:" + UUID.randomUUID();
-                redisTemplate.opsForHash().put(newCartSessionId, String.valueOf(cartRequestDto.bookId()), cartRequestDto.title() + "/" + cartRequestDto.sellingPrice() + "/" + cartRequestDto.quantity());
-                return ResponseEntity.status(HttpStatus.CREATED).body(newCartSessionId);
-            } else {
-                if (redisTemplate.opsForHash().get(cartSessionId, String.valueOf(cartRequestDto.bookId())) == null) {
-                    redisTemplate.opsForHash().put(cartSessionId, String.valueOf(cartRequestDto.bookId()), cartRequestDto.title() + "/" + cartRequestDto.sellingPrice() + "/" + cartRequestDto.quantity());
-                } else {
-                    // TODO BAD_REQUEST
-                }
-            }
+        String newCartSessionId;
+        int statusCode; //1: 성공, 0: 재고부족, -1: 장바구니에 이미 존재
+        if (bookService.getBookRemainQuantity(cartRequestDto.bookId()) - cartRequestDto.quantity() < 0) {
+            statusCode = 0;
         } else {
-            // 회원 로직
-            cartService.addCart(cartRequestDto, customerId);
-        }
+            if (customerId == 0) {
+                // 비회원 로직
+                if (cartSessionId.isEmpty()) { // 비회원이 처음 장바구니에 상품을 담을 때 (세션이 없을때)
+                    newCartSessionId = "cart:" + UUID.randomUUID();
+                    redisTemplate.opsForHash().put(newCartSessionId, String.valueOf(cartRequestDto.bookId()), cartRequestDto.title() + "/" + cartRequestDto.sellingPrice() + "/" + cartRequestDto.quantity());
+                    return ResponseEntity.status(HttpStatus.CREATED).body(newCartSessionId);
+                } else { // 비회원이 장바구니에 상품을 담을때 (세션O)
+                    if (redisTemplate.opsForHash().get(cartSessionId, String.valueOf(cartRequestDto.bookId())) == null) {
+                        redisTemplate.opsForHash().put(cartSessionId, String.valueOf(cartRequestDto.bookId()), cartRequestDto.title() + "/" + cartRequestDto.sellingPrice() + "/" + cartRequestDto.quantity());
+                        statusCode = 1;
+                    } else { // 장바구니에 상품이 존재할때
+                        statusCode = -1;
+                    }
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+                }
+            } else {
+                // 회원 로직
+                statusCode = cartService.addCart(cartRequestDto, customerId);
+            }
+        }
+        return switch (statusCode) {
+            case 1 -> ResponseEntity.status(HttpStatus.CREATED).build();
+            case -1 -> ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+            default -> ResponseEntity.status(HttpStatus.CONFLICT).build();
+        };
     }
 
     // DELETE

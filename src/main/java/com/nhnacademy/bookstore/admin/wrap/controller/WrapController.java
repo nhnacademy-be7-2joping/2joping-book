@@ -103,12 +103,11 @@ public class WrapController {
             @ApiResponse(responseCode = "404", description = "포장상품을 찾을 수 없음")
     })
     @PutMapping("/{wrap-id}")
-    public ResponseEntity<WrapResponseDto> updateWrap(
-            @PathVariable("wrap-id") @Positive Long wrapId,
-            @RequestBody WrapModifyRequestDto dto) {
+    public ResponseEntity<WrapUpdateResponseDto> updateWrap(@PathVariable("wrap-id") @Positive Long wrapId,
+                                                            @Valid @RequestBody WrapUpdateRequestDto wrapUpdateRequestDto) {
 
-        WrapResponseDto updatedWrap = wrapService.updateWrap(wrapId, dto);
-        return ResponseEntity.ok(updatedWrap);
+        WrapUpdateResponseDto wrapUpdateResponseDto = wrapService.updateWrap(wrapId, wrapUpdateRequestDto);
+        return ResponseEntity.ok(wrapUpdateResponseDto);
     }
 
 //    /**
