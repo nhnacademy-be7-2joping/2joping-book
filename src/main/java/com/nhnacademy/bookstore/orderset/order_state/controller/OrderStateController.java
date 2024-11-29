@@ -30,7 +30,7 @@ public class OrderStateController {
             @PathVariable("order-state-id") Long orderStateId,
             @Valid @RequestBody UpdateOrderStateRequest request
     ) {
-        Long updatedOrderStateId = orderStateService.updateOrderState(orderStateId, request);
+        orderStateService.updateOrderState(orderStateId, request);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 

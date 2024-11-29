@@ -5,11 +5,9 @@ import com.nhnacademy.bookstore.bookset.tag.dto.TagResponseDto;
 import com.nhnacademy.bookstore.bookset.tag.service.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import jakarta.ws.rs.Path;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,11 +37,8 @@ public class TagController {
      * @return 생성 성공 상태
      */
     @Operation(summary = "create a new tag", description = "새로운 태그를 등록합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "태그 생성 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
-    })
-
+    @ApiResponse(responseCode = "201", description = "태그 생성 성공")
+    @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
     @PostMapping("api/v1/tags")
     public ResponseEntity<Void> createTag(@RequestBody @Valid TagRequestDto dto) {
         tagService.createTag(dto);
@@ -60,11 +55,9 @@ public class TagController {
 
 
     @Operation(summary = "Assign a tag to a book", description = "특정 책에 태그를 할당합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "태그 할당 성공"),
-            @ApiResponse(responseCode = "404", description = "도서나 태그를 찾을 수 없음"),
-            @ApiResponse(responseCode = "409", description = "태그가 이미 도서에 할당됨")
-    })
+    @ApiResponse(responseCode = "200", description = "태그 할당 성공")
+    @ApiResponse(responseCode = "404", description = "도서나 태그를 찾을 수 없음")
+    @ApiResponse(responseCode = "409", description = "태그가 이미 도서에 할당됨")
     @PostMapping("api/v1/book/{book-id}/tags")
     public ResponseEntity<TagResponseDto> assignTagToBook(
             @PathVariable("book-id") @Positive Long bookId,
@@ -80,11 +73,8 @@ public class TagController {
      * @return 태그 정보
      */
     @Operation(summary = "get a tag", description = "특정 태그를 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "태그 조회 성공"),
-            @ApiResponse(responseCode = "404", description = "태그를 찾을 수 없음"),
-    })
-
+    @ApiResponse(responseCode = "200", description = "태그 조회 성공")
+    @ApiResponse(responseCode = "404", description = "태그를 찾을 수 없음")
     @GetMapping("api/v1/tags/{tag-id}")
     public ResponseEntity<TagResponseDto> getTag(@PathVariable("tag-id") @Positive Long tagId) {
         TagResponseDto tag = tagService.getTag(tagId);
@@ -97,10 +87,8 @@ public class TagController {
      * @return 모든 태그 정보
      */
     @Operation(summary = "get all tags", description = "모든 태그를 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "모든 태그 조회 성공"),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
-    })
+    @ApiResponse(responseCode = "200", description = "모든 태그 조회 성공")
+    @ApiResponse(responseCode = "500", description = "서버 내부 오류")
     @GetMapping("api/v1/tags")
     public ResponseEntity<List<TagResponseDto>> getAllTags() {
         List<TagResponseDto> allTags = tagService.getAllTags();
@@ -117,12 +105,9 @@ public class TagController {
      */
 
     @Operation(summary = "Update a tag", description = "특정 태그의 정보를 수정합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "태그 수정 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
-            @ApiResponse(responseCode = "404", description = "태그를 찾을 수 없음"),
-    })
-
+    @ApiResponse(responseCode = "200", description = "태그 수정 성공")
+    @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
+    @ApiResponse(responseCode = "404", description = "태그를 찾을 수 없음")
     @PutMapping("api/v1/tags/{tag-id}")
     public ResponseEntity<TagResponseDto> updateTag(@PathVariable ("tag-id") @Positive Long tagId, @RequestBody @Valid TagRequestDto dto) {
         TagResponseDto updatedTag = tagService.updateTag(tagId, dto);
@@ -136,11 +121,8 @@ public class TagController {
      * @return 삭제 성공 상태
      */
     @Operation(summary = "Delete a tag", description = "태그를 삭제합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "태그 삭제 성공"),
-            @ApiResponse(responseCode = "404", description = "태그를 찾을 수 없음"),
-    })
-
+    @ApiResponse(responseCode = "204", description = "태그 삭제 성공")
+    @ApiResponse(responseCode = "404", description = "태그를 찾을 수 없음")
     @DeleteMapping("api/v1/tags/{tag-id}")
     public ResponseEntity<Void> deleteTag(@PathVariable ("tag-id") @Positive Long tagId) {
         tagService.deleteById(tagId);

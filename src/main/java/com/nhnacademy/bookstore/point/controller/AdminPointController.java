@@ -8,7 +8,6 @@ import com.nhnacademy.bookstore.point.dto.response.UpdatePointTypeResponseDto;
 import com.nhnacademy.bookstore.point.service.impl.PointTypeServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -45,10 +44,8 @@ public class AdminPointController {
      * @return 생성된 포인트 타입 정보와 HTTP 200 OK 상태 코드
      */
     @Operation(summary = "포인트 타입 생성", description = "새로운 포인트 타입을 생성합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "포인트 타입 생성 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
-    })
+    @ApiResponse(responseCode = "200", description = "포인트 타입 생성 성공")
+    @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
     @PostMapping
     public ResponseEntity<Void> createPointType(
             @RequestBody @Valid CreatePointTypeRequestDto request
@@ -68,11 +65,9 @@ public class AdminPointController {
      * @return 수정된 포인트 타입 정보와 HTTP 200 OK 상태 코드
      */
     @Operation(summary = "포인트 타입 수정", description = "특정 포인트 타입의 정보를 수정합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "포인트 타입 수정 성공"),
-            @ApiResponse(responseCode = "404", description = "포인트 타입을 찾을 수 없음"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
-    })
+    @ApiResponse(responseCode = "200", description = "포인트 타입 수정 성공")
+    @ApiResponse(responseCode = "404", description = "포인트 타입을 찾을 수 없음")
+    @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
     @PutMapping("/{type-id}")
     public ResponseEntity<UpdatePointTypeResponseDto> updatePointType(
             @PathVariable("type-id") Long typeId,
@@ -106,10 +101,8 @@ public class AdminPointController {
      * @return 포인트 타입 정보와 HTTP 200 OK 상태 코드
      */
     @Operation(summary = "특정 포인트 타입 조회", description = "지정된 ID의 포인트 타입을 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "포인트 타입 조회 성공"),
-            @ApiResponse(responseCode = "404", description = "포인트 타입을 찾을 수 없음")
-    })
+    @ApiResponse(responseCode = "200", description = "포인트 타입 조회 성공")
+    @ApiResponse(responseCode = "404", description = "포인트 타입을 찾을 수 없음")
     @GetMapping("/{type-id}")
     public ResponseEntity<ReadPointTypeResponseDto> getPointTypeById(@PathVariable("type-id") Long typeId) {
         ReadPointTypeResponseDto pointType = pointTypeServiceImpl.getPointTypeById(typeId);
