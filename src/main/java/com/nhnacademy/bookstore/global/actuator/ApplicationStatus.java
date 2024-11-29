@@ -1,7 +1,9 @@
 package com.nhnacademy.bookstore.global.actuator;
 
+import lombok.Getter;
 import org.springframework.stereotype.Component;
 
+@Getter
 @Component
 public class ApplicationStatus {
 
@@ -9,9 +11,5 @@ public class ApplicationStatus {
 
     public void stopStatus() {
         this.status = false;
-    }
-
-    public boolean isStatus() {
-        return status;
     }
 }

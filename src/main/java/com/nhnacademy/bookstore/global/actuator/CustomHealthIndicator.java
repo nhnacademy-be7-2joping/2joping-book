@@ -12,15 +12,6 @@ public class CustomHealthIndicator implements HealthIndicator {
     private final ApplicationStatus applicationStatus;
 
     /**
-     * @param includeDetails
-     * @return
-     */
-    @Override
-    public Health getHealth(boolean includeDetails) {
-        return HealthIndicator.super.getHealth(includeDetails);
-    }
-
-    /**
      * @return
      */
     @Override
