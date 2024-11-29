@@ -43,7 +43,6 @@ import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
-import com.nhnacademy.bookstore.common.error.exception.bookset.publisher.PublisherNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.tag.TagNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.category.CategoryNotFoundException;
 import com.nhnacademy.bookstore.imageset.entity.BookImage;
@@ -703,5 +702,11 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BookNotFoundException("도서를 찾을 수 없습니다."));
         book.deactivate();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public int getBookRemainQuantity(Long bookId) {
+        return bookRepository.findRemainQuantityByBookId(bookId).orElseThrow(() -> new BookNotFoundException("도서를 찾을 수 없습니다."));
     }
 }

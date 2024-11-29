@@ -82,6 +82,10 @@ public class Book {
         this.isActive = isActive;
         this.remainQuantity = remainQuantity;
     }
+
+    public void decreaseQuantity(int quantityToDecrease) {
+        this.remainQuantity -= quantityToDecrease;
+    }
   
     public void deactivate() {
         this.isActive = false;

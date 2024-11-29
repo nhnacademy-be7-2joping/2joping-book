@@ -7,6 +7,7 @@ import com.nhnacademy.bookstore.common.error.exception.user.member.MemberPasswor
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberNothingToUpdateException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberStatusNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.tier.MemberTierNotFoundException;
+import com.nhnacademy.bookstore.coupon.service.impl.MemberCouponServiceImpl;
 import com.nhnacademy.bookstore.user.enums.Gender;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberUpdateRequesteDto;
@@ -50,6 +51,9 @@ class MemberServiceImplTest {
     private MemberServiceImpl memberService;
 
     @Mock
+    private MemberCouponServiceImpl memberCouponService;
+
+    @Mock
     private MemberRepository memberRepository;
 
     @Mock
@@ -88,6 +92,7 @@ class MemberServiceImplTest {
         when(statusRepository.findById(1L)).thenReturn(Optional.of(defaultStatus));
         when(tierRepository.findById(1L)).thenReturn(Optional.of(defaultTier));
         when(memberRepository.save(any(Member.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(memberCouponService.saveWelcomeCoupon(any(Member.class))).thenReturn(true);
 
         // When
         MemberCreateSuccessResponseDto response = memberService.registerNewMember(memberCreateRequestDto);
@@ -409,6 +414,7 @@ class MemberServiceImplTest {
         when(statusRepository.findById(1L)).thenReturn(Optional.of(new MemberStatus(1L, "가입")));
         when(tierRepository.findById(1L)).thenReturn(Optional.of(new MemberTier(1L, Tier.GOLD, true, 1, 10000, 200000)));
         when(memberRepository.save(any(Member.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(memberCouponService.saveWelcomeCoupon(any(Member.class))).thenReturn(true);
 
         // When
         MemberCreateSuccessResponseDto response = memberService.registerNewMember(memberCreateRequestDto);
@@ -536,7 +542,6 @@ class MemberServiceImplTest {
     @Test
     @DisplayName("없는 회원의 포인트 조회")
     void testGetPointsOfMember_NotFound() {
-        MemberPointResponse mockPoint = new MemberPointResponse(100);
         when(memberRepository.findPointById(1L)).thenThrow(MemberNotFoundException.class);
         assertThrows(MemberNotFoundException.class, () -> memberService.getPointsOfMember(1L));
     }

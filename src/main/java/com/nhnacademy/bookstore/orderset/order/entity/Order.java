@@ -44,11 +44,11 @@ public class Order {
     @JoinColumn(name = "order_state_id", nullable = false)
     private OrderState orderState;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "coupon_usage_id")
     private MemberCoupon couponUsage;
 

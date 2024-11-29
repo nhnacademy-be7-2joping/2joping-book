@@ -2,12 +2,17 @@ package com.nhnacademy.bookstore.coupon.service.impl;
 
 import com.nhnacademy.bookstore.coupon.dto.response.MemberCouponResponseDto;
 import com.nhnacademy.bookstore.coupon.dto.response.OrderCouponResponse;
+import com.nhnacademy.bookstore.coupon.entity.Coupon;
+import com.nhnacademy.bookstore.coupon.entity.member.MemberCoupon;
+import com.nhnacademy.bookstore.coupon.repository.coupon.CouponRepository;
 import com.nhnacademy.bookstore.coupon.repository.member.MemberCouponRepository;
 import com.nhnacademy.bookstore.coupon.service.MemberCouponService;
+import com.nhnacademy.bookstore.user.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -23,6 +28,7 @@ import java.util.List;
 public class MemberCouponServiceImpl implements MemberCouponService {
 
     private final MemberCouponRepository memberCouponRepository;
+    private final CouponRepository couponRepository;
 
     /**
      * 특정 회원이 보유한 모든 쿠폰을 조회하여 MemberCouponResponseDto 목록으로 반환합니다.
@@ -48,6 +54,24 @@ public class MemberCouponServiceImpl implements MemberCouponService {
     public List<OrderCouponResponse> getAllMemberOrderCoupons(long customerId) {
 
         return memberCouponRepository.getAllMemberOrderCoupons(customerId);
+    }
+
+    @Override
+    public boolean saveWelcomeCoupon(Member member) {
+
+        Coupon welcomeCoupon = couponRepository.findByName("WELCOME 쿠폰");
+
+        if (welcomeCoupon == null) {
+            throw new IllegalArgumentException("WELCOME 쿠폰이 존재하지 않습니다.");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime duration = now.plusDays(welcomeCoupon.getCouponPolicy().getDuration());
+        MemberCoupon memberCoupon = MemberCoupon.saveMemberCoupon(welcomeCoupon, member, now, duration);
+
+        memberCouponRepository.save(memberCoupon);
+
+        return true;
     }
 
 

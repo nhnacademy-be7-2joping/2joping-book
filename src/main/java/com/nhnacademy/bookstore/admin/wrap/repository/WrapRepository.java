@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WrapRepository extends JpaRepository<Wrap, Long>, WrapRepositoryCustom {
+    Optional<Wrap> findByWrapIdIn(List<Long> wrapIds);
+
     Optional<Wrap> findByName(String name);
 
     @Query("SELECT new com.nhnacademy.bookstore.admin.wrap.dto.response.WrapUpdateResponseDto(" +
