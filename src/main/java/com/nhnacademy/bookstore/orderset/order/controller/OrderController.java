@@ -7,6 +7,7 @@ import com.nhnacademy.bookstore.orderset.order.service.OrderService;
 import com.nhnacademy.bookstore.user.customer.dto.request.CustomerRegisterRequest;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import com.nhnacademy.bookstore.user.customer.service.CustomerService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class OrderController {
     private final CustomerService customerService;
 
     @PostMapping("/temp")
-    public ResponseEntity<OrderTempResponse> postOrderOnRedis(@RequestBody OrderRequest orderRequest) {
+    public ResponseEntity<OrderTempResponse> postOrderOnRedis(@RequestBody @Valid OrderRequest orderRequest) {
         // redis에 주문 정보 임시등록
         orderService.registerOrderOnRedis(orderRequest);
         OrderTempResponse tempResponse = new OrderTempResponse(orderRequest.totalCost());
@@ -27,7 +28,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<?> postOrder(@RequestBody OrderPostRequest orderPostRequest,
+    public ResponseEntity<?> postOrder(@RequestBody @Valid OrderPostRequest orderPostRequest,
                                        @RequestHeader(value = "X-Customer-Id", required = false) Long customerId) {
         Customer customer;
         OrderRequest orderRequest = orderService.getOrderOnRedis(orderPostRequest.orderId());
