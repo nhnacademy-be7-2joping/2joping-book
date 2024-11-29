@@ -67,6 +67,7 @@ public class MemberAddress {
         this.defaultAddress = requestDto.defaultAddress();
         this.receiver = requestDto.receiver();
         this.member = member;
+        this.available = true;
     }
     public void updateAddress(AddressUpdateRequestDto requestDto){
         this.postalCode = requestDto.postalCode();

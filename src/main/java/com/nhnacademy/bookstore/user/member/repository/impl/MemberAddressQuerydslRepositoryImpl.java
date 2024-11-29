@@ -30,7 +30,10 @@ public class MemberAddressQuerydslRepositoryImpl implements MemberAddressQueryds
                         memberAddress.receiver
                 ))
                 .from(memberAddress)
-                .where(memberAddress.member.id.eq(memberId))
+                .where(
+                        memberAddress.member.id.eq(memberId) // memberId 조건
+                                .and(memberAddress.available.isTrue()) // available 필드가 true인 조건 추가
+                )
                 .orderBy(
                         memberAddress.defaultAddress.desc(), // isDefaultAddress가 true인 항목 먼저
                         memberAddress.id.desc()              // 가장 마지막에 등록된 순서대로
