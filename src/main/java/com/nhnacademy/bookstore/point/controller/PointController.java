@@ -22,7 +22,6 @@ public class PointController {
     private final PointServiceImpl pointServiceImpl;
     private final PointTypeServiceImpl pointTypeServiceImpl;
 
-    // TODO: 포인트 간략 정보
     @GetMapping("/histories")
     public ResponseEntity<GetMyPageSimplePointHistoriesResponse> getSimplePointHistories(
             @RequestHeader("X-Customer-Id") String customerId
@@ -31,7 +30,6 @@ public class PointController {
         return ResponseEntity.ok(response);
     }
 
-    // TODO: 포인트 상세 정보
     @GetMapping("/histories/details")
     public ResponseEntity<GetMyPageDetailPointHistoriesResponse> getDetailPointHistories(
             @RequestHeader("X-Customer-Id") String customerId

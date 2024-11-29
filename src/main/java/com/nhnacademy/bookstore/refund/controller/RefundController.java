@@ -2,7 +2,6 @@ package com.nhnacademy.bookstore.refund.controller;
 
 import com.nhnacademy.bookstore.refund.dto.response.RefundResponseDto;
 import com.nhnacademy.bookstore.refund.service.RefundService;
-import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

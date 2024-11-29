@@ -10,8 +10,10 @@ import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.bookset.book.BookNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.book.BookStockOutException;
 import com.nhnacademy.bookstore.common.error.exception.shipment.ShipmentNotFoundException;
+import com.nhnacademy.bookstore.coupon.dto.response.MemberCouponResponseDto;
 import com.nhnacademy.bookstore.coupon.entity.member.MemberCoupon;
 import com.nhnacademy.bookstore.coupon.repository.member.MemberCouponRepository;
+import com.nhnacademy.bookstore.coupon.service.MemberCouponService;
 import com.nhnacademy.bookstore.orderset.order.dto.OrderListResponseDto;
 import com.nhnacademy.bookstore.orderset.order.dto.request.OrderPostRequest;
 import com.nhnacademy.bookstore.orderset.order.dto.request.OrderRequest;
@@ -69,6 +71,7 @@ public class OrderService {
 
     private final RedisTemplate<Object, Object> redisTemplate;
     private final OrderStateService orderStateService;
+    private final MemberCouponService memberCouponService;
     private final PointService pointService;
 
     private final BookRepository bookRepository;
@@ -107,9 +110,11 @@ public class OrderService {
         Order order = new Order();
         OrderState orderState = orderStateService.getWaitingState();
         MemberCoupon memberCoupon = null;
+        List<MemberCouponResponseDto> memberCoupons = memberCouponService.getAllMemberCoupons(customer.getId());
 
-        // 적용된 쿠폰이 있는 경우 쿠폰 가져오기
-        if (orderRequest.couponId() > 0) {
+        // 적용된 쿠폰이 있는 경우 쿠폰 가져오기, (해당 회원이 가진 쿠폰만)
+        if (orderRequest.couponId() != null && orderRequest.couponId() > 0 &&
+                memberCoupons.stream().anyMatch(dto -> dto.couponId().equals(orderRequest.couponId()))) {
             memberCoupon = memberCouponRepository.findById(orderRequest.couponId()).orElse(null);
         }
         order.apply(orderState, memberCoupon, orderRequest, orderPostRequest, customer);
