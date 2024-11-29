@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstore.user.member.repository.impl;
 
-import com.nhnacademy.bookstore.user.member.dto.response.MemberAddressResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.address.MemberAddressResponseDto;
 import com.nhnacademy.bookstore.user.member.repository.MemberAddressQuerydslRepository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;

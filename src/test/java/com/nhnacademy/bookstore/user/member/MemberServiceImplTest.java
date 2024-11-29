@@ -7,7 +7,6 @@ import com.nhnacademy.bookstore.common.error.exception.user.member.MemberPasswor
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberNothingToUpdateException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberStatusNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.tier.MemberTierNotFoundException;
-import com.nhnacademy.bookstore.coupon.service.MemberCouponService;
 import com.nhnacademy.bookstore.coupon.service.impl.MemberCouponServiceImpl;
 import com.nhnacademy.bookstore.user.enums.Gender;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
@@ -543,7 +542,6 @@ class MemberServiceImplTest {
     @Test
     @DisplayName("없는 회원의 포인트 조회")
     void testGetPointsOfMember_NotFound() {
-        MemberPointResponse mockPoint = new MemberPointResponse(100);
         when(memberRepository.findPointById(1L)).thenThrow(MemberNotFoundException.class);
         assertThrows(MemberNotFoundException.class, () -> memberService.getPointsOfMember(1L));
     }

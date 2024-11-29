@@ -13,10 +13,10 @@ import org.springframework.http.ResponseEntity;
  * @since 1.0
  */
 public interface BaseExceptionHandler {
-    ResponseEntity<ErrorResponseDto<?>> handleBadRequestExceptions(BadRequestException ex);
-    ResponseEntity<ErrorResponseDto<?>> handleUnauthorizedExceptions(UnauthorizedException ex);
-    ResponseEntity<ErrorResponseDto<?>> handleForbiddenExceptions(ForbiddenException ex);
-    ResponseEntity<ErrorResponseDto<?>> handleNotFoundExceptions(NotFoundException ex);
-    ResponseEntity<ErrorResponseDto<?>> handleConflictExceptions(ConflictException ex);
-    ResponseEntity<ErrorResponseDto<?>> handleAllExceptions(Exception ex);
+    ResponseEntity<ErrorResponseDto<Object>> handleBadRequestExceptions(BadRequestException ex);
+    ResponseEntity<ErrorResponseDto<Object>> handleUnauthorizedExceptions(UnauthorizedException ex);
+    ResponseEntity<ErrorResponseDto<Object>> handleForbiddenExceptions(ForbiddenException ex);
+    ResponseEntity<ErrorResponseDto<Object>> handleNotFoundExceptions(NotFoundException ex);
+    ResponseEntity<ErrorResponseDto<Object>> handleConflictExceptions(ConflictException ex);
+    ResponseEntity<ErrorResponseDto<Object>> handleAllExceptions(Exception ex);
 }

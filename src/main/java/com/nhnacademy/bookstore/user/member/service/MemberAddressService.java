@@ -1,7 +1,10 @@
 package com.nhnacademy.bookstore.user.member.service;
 
+import com.nhnacademy.bookstore.user.member.dto.request.AddressUpdateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberAddressRequestDto;
-import com.nhnacademy.bookstore.user.member.dto.response.MemberAddressResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.address.AddressDeleteResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.address.AddressUpdateResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.address.MemberAddressResponseDto;
 
 import java.util.List;
 
@@ -15,4 +18,6 @@ import java.util.List;
 public interface MemberAddressService {
     List<MemberAddressResponseDto> addMemberAddress(long memberId, MemberAddressRequestDto memberAddressRequestDto);
     List<MemberAddressResponseDto> getMemberAddresses(long memberId);
+    AddressDeleteResponseDto deleteMemberAddress(long customerId, long addressId);
+    AddressUpdateResponseDto updateMemberAddress(long customerId, long addressId, AddressUpdateRequestDto requestDto);
 }

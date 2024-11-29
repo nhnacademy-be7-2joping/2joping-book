@@ -1,9 +1,13 @@
 package com.nhnacademy.bookstore.user.member.address;
 
 import com.nhnacademy.bookstore.common.error.exception.user.address.AddressLimitToTenException;
+import com.nhnacademy.bookstore.common.error.exception.user.address.AddressNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
+import com.nhnacademy.bookstore.user.member.dto.request.AddressUpdateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberAddressRequestDto;
-import com.nhnacademy.bookstore.user.member.dto.response.MemberAddressResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.address.AddressDeleteResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.address.AddressUpdateResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.address.MemberAddressResponseDto;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.entity.MemberAddress;
 import com.nhnacademy.bookstore.user.member.repository.MemberAddressRepository;
@@ -57,7 +61,7 @@ class MemberAddressServiceTest {
         MemberAddressRequestDto requestDto = new MemberAddressRequestDto("12345", "도로명 주소", "상세 주소", "주소 별칭", true, "수신인");
 
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
-        when(memberAddressRepository.countByMemberId(memberId)).thenReturn(5);
+        when(memberAddressRepository.countByMemberIdAndAvailableTrue(memberId)).thenReturn(5);
         when(memberAddressRepository.findByMemberIdAndDefaultAddressTrue(memberId)).thenReturn(null);
         when(memberAddressRepository.findAddressesByMemberId(memberId)).thenReturn(Collections.singletonList(new MemberAddressResponseDto(null, null, null, null, null, true, null)));
 
@@ -68,7 +72,7 @@ class MemberAddressServiceTest {
         assertNotNull(result);
         assertFalse(result.isEmpty());
         verify(memberRepository).findById(memberId);
-        verify(memberAddressRepository).countByMemberId(memberId);
+        verify(memberAddressRepository).countByMemberIdAndAvailableTrue(memberId);
         verify(memberAddressRepository).findByMemberIdAndDefaultAddressTrue(memberId);
         verify(memberAddressRepository).save(any(MemberAddress.class));
     }
@@ -101,7 +105,7 @@ class MemberAddressServiceTest {
         MemberAddressRequestDto requestDto = new MemberAddressRequestDto("12345", "도로명 주소", "상세 주소", "주소 별칭", true, "수신인");
 
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
-        when(memberAddressRepository.countByMemberId(memberId)).thenReturn(10);
+        when(memberAddressRepository.countByMemberIdAndAvailableTrue(memberId)).thenReturn(10);
 
         assertThrows(AddressLimitToTenException.class, () -> memberAddressService.addMemberAddress(memberId, requestDto));
     }
@@ -161,7 +165,7 @@ class MemberAddressServiceTest {
         existingDefaultAddress.setDefaultAddress(true);
 
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
-        when(memberAddressRepository.countByMemberId(memberId)).thenReturn(5);
+        when(memberAddressRepository.countByMemberIdAndAvailableTrue(memberId)).thenReturn(5);
         when(memberAddressRepository.findByMemberIdAndDefaultAddressTrue(memberId)).thenReturn(existingDefaultAddress);
         when(memberAddressRepository.findAddressesByMemberId(memberId)).thenReturn(Collections.singletonList(new MemberAddressResponseDto(null, null, null, null, null, true, null)));
 
@@ -173,7 +177,7 @@ class MemberAddressServiceTest {
         assertFalse(result.isEmpty());
         assertFalse(existingDefaultAddress.isDefaultAddress()); // 기존 주소의 기본 설정이 해제되었는지 확인
         verify(memberRepository).findById(memberId);
-        verify(memberAddressRepository).countByMemberId(memberId);
+        verify(memberAddressRepository).countByMemberIdAndAvailableTrue(memberId);
         verify(memberAddressRepository).findByMemberIdAndDefaultAddressTrue(memberId);
         verify(memberAddressRepository).save(any(MemberAddress.class));
     }
@@ -194,11 +198,97 @@ class MemberAddressServiceTest {
                 "12345", "도로명 주소", "상세 주소", "주소 별칭", false, "수신인");
 
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
-        when(memberAddressRepository.countByMemberId(memberId)).thenReturn(5);
+        when(memberAddressRepository.countByMemberIdAndAvailableTrue(memberId)).thenReturn(5);
 
         List<MemberAddressResponseDto> result = memberAddressService.addMemberAddress(memberId, requestDto);
 
         assertNotNull(result);
         verify(memberAddressRepository, never()).findByMemberIdAndDefaultAddressTrue(memberId);
+    }
+    /**
+     * 테스트: 주소 삭제 성공 시
+     * 예상 결과: 주소의 available이 false로 설정되고 성공 메시지가 반환된다.
+     */
+    @Test
+    void testDeleteMemberAddress_Success() {
+        long customerId = 1L;
+        long addressId = 10L;
+
+        MemberAddress memberAddress = new MemberAddress();
+        ReflectionTestUtils.setField(memberAddress, "id", addressId);
+        memberAddress.setAvailable(true);
+
+        when(memberAddressRepository.findByMemberIdAndIdAndAvailableTrue(customerId, addressId)).thenReturn(Optional.of(memberAddress));
+
+        AddressDeleteResponseDto response = memberAddressService.deleteMemberAddress(customerId, addressId);
+
+        assertNotNull(response);
+        assertEquals(addressId, response.memberAddressId());
+        assertEquals("주소가 성공적으로 삭제되었습니다.", response.message());
+        assertFalse(memberAddress.isAvailable()); // 삭제 후 available이 false로 변경되었는지 확인
+        verify(memberAddressRepository).findByMemberIdAndIdAndAvailableTrue(customerId, addressId);
+    }
+
+    /**
+     * 테스트: 삭제 시 주소를 찾을 수 없을 때
+     * 예상 결과: AddressNotFoundException이 발생한다.
+     */
+    @Test
+    void testDeleteMemberAddress_AddressNotFound() {
+        long customerId = 1L;
+        long addressId = 10L;
+
+        when(memberAddressRepository.findByMemberIdAndIdAndAvailableTrue(customerId, addressId)).thenReturn(Optional.empty());
+
+        assertThrows(AddressNotFoundException.class, () -> memberAddressService.deleteMemberAddress(customerId, addressId));
+        verify(memberAddressRepository).findByMemberIdAndIdAndAvailableTrue(customerId, addressId);
+    }
+
+    /**
+     * 테스트: 주소 업데이트 성공 시
+     * 예상 결과: 주소 정보가 수정되고 성공 메시지가 반환된다.
+     */
+    @Test
+    void testUpdateMemberAddress_Success() {
+        long customerId = 1L;
+        long addressId = 10L;
+
+        MemberAddress memberAddress = new MemberAddress();
+        ReflectionTestUtils.setField(memberAddress, "id", addressId);
+        memberAddress.setAvailable(true);
+
+        AddressUpdateRequestDto requestDto = new AddressUpdateRequestDto("54321", "새 도로명 주소", "새 상세 주소", "새 별칭", "새 수신인");
+
+        when(memberAddressRepository.findByMemberIdAndIdAndAvailableTrue(customerId, addressId)).thenReturn(Optional.of(memberAddress));
+
+        AddressUpdateResponseDto response = memberAddressService.updateMemberAddress(customerId, addressId, requestDto);
+
+        assertNotNull(response);
+        assertEquals(addressId, response.memberAddressId());
+        assertEquals("주소가 성공적으로 수정되었습니다.", response.message());
+        assertEquals("54321", memberAddress.getPostalCode());
+        assertEquals("새 도로명 주소", memberAddress.getRoadAddress());
+        assertEquals("새 상세 주소", memberAddress.getDetailAddress());
+        assertEquals("새 별칭", memberAddress.getAddressAlias());
+        assertFalse(memberAddress.isDefaultAddress());
+        assertEquals("새 수신인", memberAddress.getReceiver());
+        verify(memberAddressRepository).findByMemberIdAndIdAndAvailableTrue(customerId, addressId);
+    }
+
+    /**
+     * 테스트: 업데이트 시 주소를 찾을 수 없을 때
+     * 예상 결과: AddressNotFoundException이 발생한다.
+     */
+    @Test
+    void testUpdateMemberAddress_AddressNotFound() {
+        long customerId = 1L;
+        long addressId = 10L;
+
+        AddressUpdateRequestDto requestDto = new AddressUpdateRequestDto("54321", "새 도로명 주소", "새 상세 주소", "새 별칭", "새 수신인");
+
+        when(memberAddressRepository.findByMemberIdAndIdAndAvailableTrue(customerId, addressId)).thenReturn(Optional.empty());
+
+        assertThrows(AddressNotFoundException.class, () -> memberAddressService.updateMemberAddress(customerId, addressId, requestDto));
+        verify(memberAddressRepository).findByMemberIdAndIdAndAvailableTrue(customerId, addressId);
     }
 }

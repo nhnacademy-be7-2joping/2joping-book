@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstore.user.member.entity;
 
+import com.nhnacademy.bookstore.user.member.dto.request.AddressUpdateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberAddressRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -39,11 +40,13 @@ public class MemberAddress {
     private String addressAlias;
 
     @Setter
-    @Column(name="is_default_address", columnDefinition = "TINYINT(1)")
-
+    @Column(name="is_default_address")
     private boolean defaultAddress;
 
     private String receiver;
+
+    @Setter
+    private boolean available;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id", nullable = false)
@@ -57,12 +60,19 @@ public class MemberAddress {
      * @param member     주소를 소유한 회원 객체
      */
     public void toEntity(MemberAddressRequestDto requestDto, Member member){
-        this.postalCode = requestDto.getPostalCode();
-        this.roadAddress = requestDto.getRoadAddress();
-        this.detailAddress = requestDto.getDetailAddress();
-        this.addressAlias = requestDto.getAddressAlias();
-        this.defaultAddress = requestDto.isDefaultAddress();
-        this.receiver = requestDto.getReceiver();
+        this.postalCode = requestDto.postalCode();
+        this.roadAddress = requestDto.roadAddress();
+        this.detailAddress = requestDto.detailAddress();
+        this.addressAlias = requestDto.addressAlias();
+        this.defaultAddress = requestDto.defaultAddress();
+        this.receiver = requestDto.receiver();
         this.member = member;
+    }
+    public void updateAddress(AddressUpdateRequestDto requestDto){
+        this.postalCode = requestDto.postalCode();
+        this.roadAddress = requestDto.roadAddress();
+        this.detailAddress = requestDto.detailAddress();
+        this.addressAlias = requestDto.addressAlias();
+        this.receiver = requestDto.receiver();
     }
 }
