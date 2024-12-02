@@ -56,7 +56,7 @@ public class PointServiceImpl implements PointService {
         int pointAmount = reviewPointType.getAccVal();
 
         member.addPoint(pointAmount);
-        pointHistoryService.createReviewPointHistory(
+        Long reviewPointHistoryId = pointHistoryService.createReviewPointHistory(
                 new CreateReviewPointHistoryRequest(
                         reviewPointType,
                         null,
@@ -92,8 +92,8 @@ public class PointServiceImpl implements PointService {
                 .orElseThrow(() -> new EntityNotFoundException("도서주문 포인트 정책을 찾을 수 없습니다."));
 
         member.addPoint(pointAmount);
-        pointHistoryService.createReviewPointHistory(
-                new CreateReviewPointHistoryRequest(
+        Long orderPointHistoryId = pointHistoryService.createOrderPointHistory(
+                new CreateOrderPointHistoryRequest(
                         orderPointType,
                         order.getOrderId(),
                         null,
@@ -126,7 +126,7 @@ public class PointServiceImpl implements PointService {
         }
 
         member.usePoint(usePointAmount);
-        pointHistoryService.createPointUseHistory(
+        Long pointUseHistoryId = pointHistoryService.createPointUseHistory(
                 new CreatePointUseHistoryUseRequest(
                         null,
                         null,
