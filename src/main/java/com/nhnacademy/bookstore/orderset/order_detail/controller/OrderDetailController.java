@@ -28,8 +28,7 @@ public class OrderDetailController {
 
     @Operation(summary = "고객ID로 주문 상세 조회", description = "고객에 관련된 주문상세를 조회합니다.")
     @GetMapping("/customer")
-    public ResponseEntity<Page<OrderDetailResponseDto>> getOrderDetailsByCustomerId(
-            @PageableDefault(size = 10, sort = "orderDetailId", direction = Sort.Direction.ASC) Pageable pageable,
+    public ResponseEntity<Page<OrderDetailResponseDto>> getOrderDetailsByCustomerId(Pageable pageable,
             @RequestHeader("X-Customer-Id") String customerId) {
         Page<OrderDetailResponseDto> orderDetails = orderDetailService.getOrderDetailByCustomerId(pageable, Long.valueOf(customerId));
         return ResponseEntity.ok(orderDetails);
