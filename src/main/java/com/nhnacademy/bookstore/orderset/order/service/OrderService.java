@@ -9,9 +9,12 @@ import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
 import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.bookset.book.BookNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.book.BookStockOutException;
+import com.nhnacademy.bookstore.common.error.exception.coupon.CouponInvalidException;
+import com.nhnacademy.bookstore.common.error.exception.orderset.order.OrderPointInvalidException;
 import com.nhnacademy.bookstore.common.error.exception.shipment.ShipmentNotFoundException;
 import com.nhnacademy.bookstore.coupon.dto.response.MemberCouponResponseDto;
 import com.nhnacademy.bookstore.coupon.entity.member.MemberCoupon;
+import com.nhnacademy.bookstore.coupon.enums.DiscountType;
 import com.nhnacademy.bookstore.coupon.repository.member.MemberCouponRepository;
 import com.nhnacademy.bookstore.coupon.service.MemberCouponService;
 import com.nhnacademy.bookstore.orderset.order.dto.OrderListResponseDto;
@@ -38,22 +41,21 @@ import com.nhnacademy.bookstore.point.dto.request.OrderPointAwardRequest;
 import com.nhnacademy.bookstore.point.dto.request.PointUseRequest;
 import com.nhnacademy.bookstore.point.service.PointService;
 import com.nhnacademy.bookstore.shipment.dto.request.ShipmentRequestDto;
+import com.nhnacademy.bookstore.shipment.dto.response.ShipmentPolicyResponseDto;
 import com.nhnacademy.bookstore.shipment.entity.Shipment;
 import com.nhnacademy.bookstore.shipment.entity.ShipmentPolicy;
 import com.nhnacademy.bookstore.shipment.repository.ShipmentPolicyRepository;
 import com.nhnacademy.bookstore.shipment.repository.ShipmentRepository;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
+import com.nhnacademy.bookstore.user.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -71,6 +73,7 @@ public class OrderService {
 
     private final RedisTemplate<Object, Object> redisTemplate;
     private final OrderStateService orderStateService;
+    private final MemberService memberService;
     private final MemberCouponService memberCouponService;
     private final PointService pointService;
 
@@ -96,6 +99,109 @@ public class OrderService {
 
     public OrderRequest getOrderOnRedis(String orderId) {
         return (OrderRequest) redisTemplate.opsForValue().get(ORDER_KEY + orderId);
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public OrderRequest validateOrderRequest(OrderRequest orderRequest, Long customerId) {
+        Map<Long, Integer> bookQuantityMap =
+                orderRequest.cartItemList().stream()
+                        .collect(Collectors.toMap(
+                                OrderRequest.CartItemRequest::bookId,
+                                OrderRequest.CartItemRequest::quantity
+                        ));
+        List<Book> books = bookRepository.findByBookIdIn(bookQuantityMap.keySet());
+
+        // 도서 가격 재계산
+        int bookCost = books.stream().mapToInt(b -> {
+            int quantity = bookQuantityMap.getOrDefault(b.getBookId(), 0);
+            return b.getSellingPrice() * quantity;
+        }).sum();
+
+        // 포장 가격 재계산
+        List<OrderRequest.WrapItemRequest> wrapItems =
+                orderRequest.wrapList().stream().filter(w -> Objects.nonNull(w.wrapId())).toList();
+
+        // key: 포장 ID, value: 카운트된 포장 ID 수
+        Map<Long, Integer> wrapCountMap = new HashMap<>();
+        for (OrderRequest.WrapItemRequest item : wrapItems) {
+            Long wrapId = item.wrapId();
+            Integer wrapCount = wrapCountMap.getOrDefault(wrapId, 0);
+            wrapCountMap.put(wrapId, wrapCount + 1);
+        }
+        List<Wrap> wraps = wrapRepository.findByWrapIdIn(wrapCountMap.keySet());
+
+        int wrapCost = wraps.stream()
+                .map(w -> w.getWrapPrice() * wrapCountMap.get(w.getWrapId()))
+                .reduce(0, Integer::sum);
+
+        // 배송비 결정
+        List<ShipmentPolicyResponseDto> shipmentPolicies =
+                shipmentPolicyRepository.findActiveShipmentPolicies()
+                        .stream()
+                        .filter(s -> isMember(customerId) == s.isMemberOnly()).toList();
+        int shipmentCost = 0;
+
+        // 배송 정책 최소 적용 가격 기준으로 정렬 및 책정
+        Objects.requireNonNull(shipmentPolicies).sort((p1, p2) -> p1.minOrderAmount() - p2.minOrderAmount());
+        for (ShipmentPolicyResponseDto dto : shipmentPolicies) {
+            if (bookCost >= dto.minOrderAmount()) {
+                shipmentCost = dto.shippingFee();
+            }
+        }
+
+        // 쿠폰 유효성 검사
+        int couponDiscount = 0;
+        if (!isMember(customerId)) {
+            throw new CouponInvalidException("로그인 후 쿠폰을 사용해주십시오.");
+        }
+
+        List<MemberCouponResponseDto> memberCoupons = memberCouponService.getAllMemberCoupons(customerId);
+        Optional<MemberCouponResponseDto> coupon = memberCoupons.stream()
+                .filter(c -> c.couponId().equals(orderRequest.couponId()))
+                .findFirst();
+        couponDiscount = coupon.map(m -> calculateCouponDiscount(bookCost, m)).orElse(0);
+
+        // 포인트 유효성 검사
+        int totalCost = bookCost + wrapCost + shipmentCost - couponDiscount;
+        int point = 0;
+        if (isMember(customerId)) {
+            if (memberService.getPointsOfMember(customerId).point() < orderRequest.point()) {
+                throw new OrderPointInvalidException("보유한 포인트를 초과했습니다.");
+            }
+
+            if (totalCost < orderRequest.point()) {
+                throw new OrderPointInvalidException(String.format("포인트 %d는 주문 금액보다 많은 포인트입니다.", orderRequest.point()));
+            }
+
+            point = memberService.getPointsOfMember(customerId).point();
+        }
+
+        // 포인트 금액 차감
+        totalCost -= point;
+
+        return generateOrderRequest(orderRequest, bookCost, shipmentCost, wrapCost, totalCost, couponDiscount);
+    }
+
+    private OrderRequest generateOrderRequest(
+            OrderRequest orderRequest,
+            int bookCost,
+            int shipmentCost,
+            int wrapCost,
+            int totalCost,
+            int couponDiscount) {
+        return new OrderRequest(
+                orderRequest.cartItemList(),                // 장바구니 항목
+                orderRequest.deliveryInfo(),               // 배송 정보
+                orderRequest.point(),                      // 포인트
+                orderRequest.couponId(),                   // 쿠폰 ID
+                orderRequest.wrapList(),                   // 포장 목록
+                bookCost,                                  // 도서 비용
+                shipmentCost,                              // 배송비
+                wrapCost,                                  // 포장비
+                totalCost,                                 // 총 비용
+                couponDiscount,                       // 쿠폰 할인
+                orderRequest.orderCode()
+        );
     }
 
     /**
@@ -216,7 +322,6 @@ public class OrderService {
                     );
             pointService.awardOrderPoint(orderPointAwardRequest);
         });
-
     }
 
     /**
@@ -243,5 +348,28 @@ public class OrderService {
 
     public boolean updateOrderState(Long orderId, Long orderStateId) {
         return orderRepository.updateOrderStateByOrderIdAndOrderStateId(orderId, orderStateId) != 0;
+    }
+
+    private boolean isMember(Long customerId) {
+        return customerId != null;
+    }
+
+    private int calculateCouponDiscount(int bookCost, MemberCouponResponseDto memberCouponResponseDto) {
+        Integer usageLimit = memberCouponResponseDto.couponResponseDto().couponPolicyResponseDto().usageLimit();
+        Integer maxDiscount = memberCouponResponseDto.couponResponseDto().couponPolicyResponseDto().maxDiscount();
+        DiscountType discountType =
+                DiscountType.valueOf(memberCouponResponseDto.couponResponseDto().couponPolicyResponseDto().discountType());
+        Integer discountValue = memberCouponResponseDto.couponResponseDto().couponPolicyResponseDto().discountValue();
+        int discountCost = discountType.equals(DiscountType.PERCENT) ? discountValue * bookCost / 100 : discountValue;
+
+        if (usageLimit != null && bookCost < usageLimit) {
+            return discountCost;
+        }
+
+        if (maxDiscount != null && maxDiscount < discountCost) {
+            discountCost = maxDiscount;
+        }
+
+        return discountCost;
     }
 }

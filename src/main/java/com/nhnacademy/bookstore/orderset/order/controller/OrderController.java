@@ -20,10 +20,13 @@ public class OrderController {
     private final CustomerService customerService;
 
     @PostMapping("/temp")
-    public ResponseEntity<OrderTempResponse> postOrderOnRedis(@RequestBody @Valid OrderRequest orderRequest) {
+    public ResponseEntity<OrderTempResponse> postOrderOnRedis(
+            @RequestBody @Valid OrderRequest orderRequest,
+            @RequestHeader(value = "X-Customer-Id", required = false) Long customerId) {
         // redis에 주문 정보 임시등록
-        orderService.registerOrderOnRedis(orderRequest);
-        OrderTempResponse tempResponse = new OrderTempResponse(orderRequest.totalCost());
+        OrderRequest satinizedOrderRequest = orderService.validateOrderRequest(orderRequest, customerId);
+        orderService.registerOrderOnRedis(satinizedOrderRequest);
+        OrderTempResponse tempResponse = new OrderTempResponse(satinizedOrderRequest.totalCost());
         return ResponseEntity.ok(tempResponse);
     }
 
