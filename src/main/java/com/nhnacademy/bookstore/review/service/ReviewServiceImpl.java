@@ -74,7 +74,7 @@ public class ReviewServiceImpl implements ReviewService {
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("해당 도서를 찾을 수 없습니다."));
 
         Member member = memberRepository.findById(reviewCreateRequestDto.reviewDetailRequestDto().customerId()).orElseThrow(() ->
-                new MemberNotFoundException(("해당 회원이 없습니다."), RedirectType.REDIRECT, "url")); // TODO url 수정
+                new MemberNotFoundException(("해당 회원이 없습니다."), RedirectType.REDIRECT, "/mypage/mypage"));
 
         OrderDetail orderDetail = orderDetailRepository.findById(reviewCreateRequestDto.reviewDetailRequestDto().orderDetailId()).orElseThrow(OrderNotFoundException::new);
 
