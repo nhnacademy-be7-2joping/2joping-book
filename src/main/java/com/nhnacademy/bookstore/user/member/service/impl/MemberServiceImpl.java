@@ -120,10 +120,7 @@ public class MemberServiceImpl implements MemberService {
         return new MemberCreateSuccessResponseDto(member.getNickname());
     }
 
-    /**
-     * @param page
-     * @return
-     */
+
     @Transactional(readOnly = true)
     @Override
     public List<GetAllMembersResponse> getAllMembers(
