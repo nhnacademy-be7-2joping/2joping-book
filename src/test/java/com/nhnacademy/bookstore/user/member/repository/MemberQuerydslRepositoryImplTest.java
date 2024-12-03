@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstore.user.member;
+package com.nhnacademy.bookstore.user.member.repository;
 
 
 import com.nhnacademy.bookstore.common.config.QuerydslConfig;
@@ -14,6 +14,7 @@ import com.nhnacademy.bookstore.user.tier.enums.Tier;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -26,6 +27,14 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
+/**
+ * MemberQuerydslRepositoryImplTest
+ * 이 클래스는 MemberQuerydslRepositoryImpl의 동작을 테스트합니다.
+ * 회원 정보 조회 및 업데이트 기능의 동작을 검증합니다.
+ *
+ * @since 1.0
+ * author Luha
+ */
 @DataJpaTest
 @Import(QuerydslConfig.class)
 @ActiveProfiles("test")
@@ -38,6 +47,11 @@ class MemberQuerydslRepositoryImplTest {
     @Autowired
     private EntityManager entityManager;
 
+    /**
+     * 테스트 데이터 초기화
+     * 회원, 등급, 상태 데이터를 데이터베이스에 저장합니다.
+     *
+     */
     @BeforeEach
     void setUp() {
 
@@ -68,7 +82,15 @@ class MemberQuerydslRepositoryImplTest {
         entityManager.clear();
     }
 
+    /**
+     * 회원 정보 조회 테스트
+     * 예상 결과: 회원 ID로 조회된 정보가 예상 값과 일치합니다.
+     *
+     * @since 1.0
+     * author Luha
+     */
     @Test
+    @DisplayName("회원 정보 조회 - 성공")
     @Transactional
     void testGetMemberInfo() {
         // given
@@ -83,7 +105,16 @@ class MemberQuerydslRepositoryImplTest {
         assertThat(result.email()).isEqualTo("dlgksqls@naver.com");
         assertThat(result.phone()).isEqualTo("010-2222-1223");
     }
+
+    /**
+     * 회원 정보 업데이트 테스트 - 모든 필드 업데이트
+     * 예상 결과: 회원 정보가 요청된 값으로 모두 업데이트됩니다.
+     *
+     * @since 1.0
+     * author Luha
+     */
     @Test
+    @DisplayName("회원 정보 업데이트 - 성공")
     void testUpdateMemberDetails_success() {
         // given
         long memberId = 1L;
@@ -99,7 +130,15 @@ class MemberQuerydslRepositoryImplTest {
         assertThat(result.nickName()).isEqualTo("newNick");
     }
 
+    /**
+     * 회원 정보 업데이트 테스트 - 업데이트할 데이터가 없는 경우
+     * 예상 결과: MemberNothingToUpdateException 발생
+     *
+     * @since 1.0
+     * author Luha
+     */
     @Test
+    @DisplayName("회원 정보 업데이트 - 업데이트할 데이터 없음")
     void testUpdateMemberDetails_noUpdateData() {
         // given
         long memberId = 1L;
@@ -111,7 +150,15 @@ class MemberQuerydslRepositoryImplTest {
                 .hasMessageContaining("업데이트할 데이터가 없습니다.");
     }
 
+    /**
+     * 회원 정보 업데이트 테스트 - 일부 필드만 업데이트
+     * 예상 결과: 업데이트되지 않은 필드는 기존 값을 유지합니다.
+     *
+     * @since 1.0
+     * author Luha
+     */
     @Test
+    @DisplayName("회원 정보 업데이트 - 일부 필드 업데이트")
     void testUpdateMemberDetails_partialUpdate() {
         // given
         long memberId = 1L;
