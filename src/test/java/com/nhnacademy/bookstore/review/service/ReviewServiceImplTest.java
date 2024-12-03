@@ -5,15 +5,12 @@ import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
 import com.nhnacademy.bookstore.common.error.exception.review.RatingValueNotValidException;
 import com.nhnacademy.bookstore.common.error.exception.review.ReviewAlreadyExistException;
 import com.nhnacademy.bookstore.common.error.exception.review.ReviewNotFoundException;
-import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
 import com.nhnacademy.bookstore.imageset.entity.Image;
-import com.nhnacademy.bookstore.imageset.entity.ReviewImage;
 import com.nhnacademy.bookstore.imageset.repository.ImageRepository;
 import com.nhnacademy.bookstore.imageset.repository.ReviewImageRepository;
 import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
 import com.nhnacademy.bookstore.orderset.order_detail.repository.OrderDetailRepository;
 import com.nhnacademy.bookstore.point.service.PointService;
-import com.nhnacademy.bookstore.point.service.impl.PointServiceImpl;
 import com.nhnacademy.bookstore.review.dto.request.*;
 import com.nhnacademy.bookstore.review.dto.response.ReviewCreateResponseDto;
 import com.nhnacademy.bookstore.review.dto.response.ReviewModifyResponseDto;
@@ -30,7 +27,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -46,6 +42,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+
+
 @ExtendWith(MockitoExtension.class)
 class ReviewServiceImplTest {
 
