@@ -11,7 +11,6 @@ import com.nhnacademy.bookstore.point.dto.response.GetDetailPointHistoriesRespon
 import com.nhnacademy.bookstore.point.dto.response.GetMyPageDetailPointHistoriesResponse;
 import com.nhnacademy.bookstore.point.dto.response.GetMyPageSimplePointHistoriesResponse;
 import com.nhnacademy.bookstore.point.dto.response.GetSimplePointHistoriesResponse;
-import com.nhnacademy.bookstore.point.entity.PointHistory;
 import com.nhnacademy.bookstore.point.entity.PointType;
 import com.nhnacademy.bookstore.point.enums.PointTypeEnum;
 import com.nhnacademy.bookstore.point.repository.PointHistoryRepository;
