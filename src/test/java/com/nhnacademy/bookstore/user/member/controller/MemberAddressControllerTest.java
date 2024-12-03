@@ -1,15 +1,15 @@
-package com.nhnacademy.bookstore.user.member.address;
+package com.nhnacademy.bookstore.user.member.controller;
 
 import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.user.address.AddressLimitToTenException;
 import com.nhnacademy.bookstore.common.error.exception.user.address.AddressNotFoundException;
-import com.nhnacademy.bookstore.user.member.controller.MemberAddressController;
 import com.nhnacademy.bookstore.user.member.dto.request.AddressUpdateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberAddressRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.response.address.AddressDeleteResponseDto;
 import com.nhnacademy.bookstore.user.member.dto.response.address.AddressUpdateResponseDto;
 import com.nhnacademy.bookstore.user.member.dto.response.address.MemberAddressResponseDto;
 import com.nhnacademy.bookstore.user.member.service.MemberAddressService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,10 +28,12 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 /**
- * 회원 주소 컨트롤러 테스트
+ * MemberAddressControllerTest
+ * 이 클래스는 MemberAddressController의 REST API를 테스트합니다.
+ * 회원 주소 추가, 조회, 삭제, 업데이트와 관련된 기능을 검증합니다.
  *
- * @author Luha
  * @since 1.0
+ * author Luha
  */
 @ExtendWith(MockitoExtension.class)
 class MemberAddressControllerTest {
@@ -42,10 +44,14 @@ class MemberAddressControllerTest {
     private MemberAddressService memberAddressService;
 
     /**
-     * 테스트: 주소 추가 성공 시 응답 검증
-     * 예상 결과: 200 OK 응답 코드와 함께, 추가된 주소 정보를 포함한 리스트 반환
+     * 주소 추가 성공 테스트
+     * Description: 주소를 성공적으로 추가했을 때 200 OK 응답과 추가된 주소 정보를 확인합니다.
+     *
+     * @since 1.0
+     * author Luha
      */
     @Test
+    @DisplayName("주소 추가 - 성공")
     void testAddMemberAddress_Success() {
         // given
         long memberId = 1L;
@@ -64,10 +70,14 @@ class MemberAddressControllerTest {
     }
 
     /**
-     * 테스트: 특정 회원의 모든 주소 조회 성공 시 응답 검증
-     * 예상 결과: 200 OK 응답 코드와 함께, 조회된 주소 정보를 포함한 리스트 반환
+     * 주소 조회 성공 테스트
+     * Description: 특정 회원의 모든 주소를 조회했을 때 200 OK 응답과 주소 리스트를 확인합니다.
+     *
+     * @since 1.0
+     * author Luha
      */
     @Test
+    @DisplayName("회원 주소 조회 - 성공")
     void testGetAllMemberAddress_Success() {
         // given
         long memberId = 1L;
@@ -84,10 +94,14 @@ class MemberAddressControllerTest {
     }
 
     /**
-     * 테스트: 주소 추가 시 주소 개수 제한 예외 발생 확인
-     * 예상 결과: AddressLimitToTenException 발생
+     * 주소 추가 실패 테스트 - 주소 제한 초과
+     * Description: 주소 추가 시 최대 개수를 초과했을 때 AddressLimitToTenException 발생을 확인합니다.
+     *
+     * @since 1.0
+     * author Luha
      */
     @Test
+    @DisplayName("주소 추가 - 주소 제한 초과")
     void testAddMemberAddress_AddressLimitExceededException() {
         // given
         long memberId = 1L;
@@ -101,11 +115,16 @@ class MemberAddressControllerTest {
     private void invokeAddMemberAddress(long memberId, MemberAddressRequestDto requestDto) {
         memberAddressController.addMemberAddress(String.valueOf(memberId), requestDto);
     }
+
     /**
-     * 테스트: 주소 삭제 성공 시 응답 검증
-     * 예상 결과: 200 OK 응답 코드와 함께 삭제된 주소 정보 반환
+     * 주소 삭제 성공 테스트
+     * Description: 주소를 성공적으로 삭제했을 때 200 OK 응답과 삭제된 주소 정보를 확인합니다.
+     *
+     * @since 1.0
+     * author Luha
      */
     @Test
+    @DisplayName("주소 삭제 - 성공")
     void testDeleteMemberAddress_Success() {
         // given
         String customerId = "1";
@@ -124,10 +143,14 @@ class MemberAddressControllerTest {
     }
 
     /**
-     * 테스트: 주소 삭제 실패 시 예외 발생 확인
-     * 예상 결과: AddressNotFoundException 발생
+     * 주소 삭제 실패 테스트 - 주소 없음
+     * Description: 삭제하려는 주소가 없을 때 AddressNotFoundException 발생을 확인합니다.
+     *
+     * @since 1.0
+     * author Luha
      */
     @Test
+    @DisplayName("주소 삭제 - 주소 없음")
     void testDeleteMemberAddress_AddressNotFoundException() {
         // given
         String customerId = "1";
@@ -141,10 +164,14 @@ class MemberAddressControllerTest {
     }
 
     /**
-     * 테스트: 주소 업데이트 성공 시 응답 검증
-     * 예상 결과: 200 OK 응답 코드와 함께 업데이트된 주소 정보 반환
+     * 주소 업데이트 성공 테스트
+     * Description: 주소를 성공적으로 업데이트했을 때 200 OK 응답과 업데이트된 주소 정보를 확인합니다.
+     *
+     * @since 1.0
+     * author Luha
      */
     @Test
+    @DisplayName("주소 업데이트 - 성공")
     void testUpdateMemberAddress_Success() {
         // given
         String customerId = "1";
@@ -164,10 +191,14 @@ class MemberAddressControllerTest {
     }
 
     /**
-     * 테스트: 주소 업데이트 실패 시 예외 발생 확인
-     * 예상 결과: AddressNotFoundException 발생
+     * 주소 업데이트 실패 테스트 - 주소 없음
+     * Description: 업데이트하려는 주소가 없을 때 AddressNotFoundException 발생을 확인합니다.
+     *
+     * @since 1.0
+     * author Luha
      */
     @Test
+    @DisplayName("주소 업데이트 - 주소 없음")
     void testUpdateMemberAddress_AddressNotFoundException() {
         // given
         String customerId = "1";
