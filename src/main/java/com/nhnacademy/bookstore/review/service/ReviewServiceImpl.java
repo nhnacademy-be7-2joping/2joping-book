@@ -127,9 +127,8 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional(readOnly = true)
     @Override
     public Optional<ReviewResponseDto> getReviews(ReviewRequestDto reviewRequestDto) {
-        Optional<ReviewResponseDto> review = Optional.of(reviewRepository.getReviewByReviewId(reviewRequestDto.reviewId()).orElseThrow(()-> new ReviewNotFoundException("리뷰가 존재하지 않습니다.")));
 
-        return review;
+        return Optional.of(reviewRepository.getReviewByReviewId(reviewRequestDto.reviewId()).orElseThrow(()-> new ReviewNotFoundException("리뷰가 존재하지 않습니다.")));
 
     }
 
