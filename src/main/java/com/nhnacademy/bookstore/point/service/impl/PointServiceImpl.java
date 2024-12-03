@@ -126,7 +126,7 @@ public class PointServiceImpl implements PointService {
         }
 
         member.usePoint(usePointAmount);
-        Long pointUseHistoryId = pointHistoryService.createPointUseHistory(
+        pointHistoryService.createPointUseHistory(
                 new CreatePointUseHistoryUseRequest(
                         null,
                         null,
