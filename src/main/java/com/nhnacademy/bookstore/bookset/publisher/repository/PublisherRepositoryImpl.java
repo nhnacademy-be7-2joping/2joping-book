@@ -3,6 +3,7 @@ package com.nhnacademy.bookstore.bookset.publisher.repository;
 import com.nhnacademy.bookstore.bookset.publisher.dto.response.PublisherResponseDto;
 import com.nhnacademy.bookstore.bookset.publisher.entity.Publisher;
 import com.nhnacademy.bookstore.bookset.publisher.entity.QPublisher;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import jakarta.persistence.EntityManager;
@@ -31,22 +32,23 @@ public class PublisherRepositoryImpl extends QuerydslRepositorySupport implement
     public Page<PublisherResponseDto> findAllBy(Pageable pageable) {
         // PublisherResponseDto 리스트를 조회하는 쿼리
         JPAQuery<PublisherResponseDto> query = new JPAQuery<>(entityManager);
-        List<PublisherResponseDto> results = query
-                .select(Projections.constructor(PublisherResponseDto.class,
+
+        // 정렬 조건 추가
+        query.select(Projections.constructor(PublisherResponseDto.class,
                         publisher.publisherId,
                         publisher.name
                 ))
                 .from(publisher)
+                .orderBy(publisher.publisherId.asc())  // 정렬 조건 추가
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+                .limit(pageable.getPageSize());
+
+        List<PublisherResponseDto> results = query.fetch();
 
         // 전체 개수를 조회하는 쿼리
-        JPAQuery<Long> countQuery = new JPAQuery<>(entityManager);
-        long total = countQuery
-                .from(publisher)
-                .fetchCount();
+        long total = query.fetchCount();
 
         return new PageImpl<>(results, pageable, total);
     }
+
 }
