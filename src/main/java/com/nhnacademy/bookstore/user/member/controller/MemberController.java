@@ -130,4 +130,6 @@ public class MemberController {
         MemberPointResponse response = memberService.getPointsOfMember(customerId);
         return ResponseEntity.ok(response);
     }
+
+
 }

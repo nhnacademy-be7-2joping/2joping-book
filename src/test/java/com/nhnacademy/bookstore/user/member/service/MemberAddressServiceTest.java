@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstore.user.member.address;
+package com.nhnacademy.bookstore.user.member.service;
 
 import com.nhnacademy.bookstore.common.error.exception.user.address.AddressLimitToTenException;
 import com.nhnacademy.bookstore.common.error.exception.user.address.AddressNotFoundException;
@@ -13,6 +13,7 @@ import com.nhnacademy.bookstore.user.member.entity.MemberAddress;
 import com.nhnacademy.bookstore.user.member.repository.MemberAddressRepository;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.member.service.impl.MemberAddressServiceImpl;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,10 +30,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * 회원 주소 서비스 테스트
+ * MemberAddressServiceTest
+ * 이 클래스는 MemberAddressServiceImpl의 동작을 테스트합니다.
+ * 회원 주소 추가, 삭제, 업데이트, 조회 기능의 동작을 검증합니다.
  *
- * @author Luha
  * @since 1.0
+ * author Luha
  */
 @ExtendWith(MockitoExtension.class)
 class MemberAddressServiceTest {
@@ -46,13 +49,15 @@ class MemberAddressServiceTest {
     @Mock
     private MemberAddressRepository memberAddressRepository;
 
-
-
     /**
      * 테스트: 정상적으로 주소가 추가되는 경우
      * 예상 결과: Member의 기본 주소 목록에 새로운 주소가 추가되고, 응답이 반환된다.
+     *
+     * @since 1.0
+     * author Luha
      */
     @Test
+    @DisplayName("회원 주소 추가 - 성공")
     void testAddMemberAddress_Success() {
         // given
         long memberId = 1L;
@@ -80,9 +85,12 @@ class MemberAddressServiceTest {
     /**
      * 테스트: 회원을 찾을 수 없을 때 예외 발생
      * 예상 결과: MemberNotFoundException이 발생한다.
+     *
+     * @since 1.0
+     * author Luha
      */
-
     @Test
+    @DisplayName("회원 주소 추가 - 회원 없음")
     void testAddMemberAddress_MemberNotFound() {
         long memberId = 1L;
         MemberAddressRequestDto requestDto = new MemberAddressRequestDto("12345", "도로명 주소", "상세 주소", "주소 별칭", true, "수신인");
@@ -95,9 +103,12 @@ class MemberAddressServiceTest {
     /**
      * 테스트: 주소 개수가 10개 이상일 때 예외 발생
      * 예상 결과: AddressLimitToTenException이 발생한다.
+     *
+     * @since 1.0
+     * author Luha
      */
-
     @Test
+    @DisplayName("회원 주소 추가 - 주소 개수 초과")
     void testAddMemberAddress_AddressLimitExceeded() {
         long memberId = 1L;
         Member member = new Member();
@@ -113,9 +124,12 @@ class MemberAddressServiceTest {
     /**
      * 테스트: 특정 회원의 주소 목록을 조회하는 경우
      * 예상 결과: 주소 목록이 반환되고, 목록은 비어 있지 않다.
+     *
+     * @since 1.0
+     * author Luha
      */
-
     @Test
+    @DisplayName("회원 주소 조회 - 성공")
     void testGetMemberAddresses_Success() {
         long memberId = 1L;
         Member member = new Member();
@@ -135,9 +149,12 @@ class MemberAddressServiceTest {
     /**
      * 테스트: 주소 조회 시 회원을 찾을 수 없을 때 예외 발생
      * 예상 결과: MemberNotFoundException이 발생한다.
+     *
+     * @since 1.0
+     * author Luha
      */
-
     @Test
+    @DisplayName("회원 주소 조회 실패 - 회원 없음")
     void testGetMemberAddresses_MemberNotFound() {
         long memberId = 1L;
 
@@ -149,9 +166,12 @@ class MemberAddressServiceTest {
     /**
      * 테스트: 기본 주소가 설정된 상태에서 새로운 기본 주소가 추가되는 경우
      * 예상 결과: 기존 기본 주소의 isDefaultAddress가 false로 변경된다.
+     *
+     * @since 1.0
+     * author Luha
      */
-
     @Test
+    @DisplayName("회원 주소 추가 - 기존 기본 주소 업데이트")
     void testAddMemberAddress_WithExistingDefaultAddress() {
         // given
         long memberId = 1L;
@@ -185,9 +205,12 @@ class MemberAddressServiceTest {
     /**
      * 테스트: 기본 주소 설정이 없을 때 새 주소를 추가하는 경우
      * 예상 결과: 기본 주소를 설정하는 로직이 호출되지 않는다.
+     *
+     * @since 1.0
+     * author Luha
      */
-
     @Test
+    @DisplayName("회원 주소 추가 - 기본 주소 설정 없음")
     void testAddMemberAddress_WithNoDefaultAddressSetting() {
         // 기본 주소가 false일 때 동작 확인
         long memberId = 1L;
@@ -205,11 +228,16 @@ class MemberAddressServiceTest {
         assertNotNull(result);
         verify(memberAddressRepository, never()).findByMemberIdAndDefaultAddressTrue(memberId);
     }
+
     /**
      * 테스트: 주소 삭제 성공 시
      * 예상 결과: 주소의 available이 false로 설정되고 성공 메시지가 반환된다.
+     *
+     * @since 1.0
+     * author Luha
      */
     @Test
+    @DisplayName("회원 주소 삭제 - 성공")
     void testDeleteMemberAddress_Success() {
         long customerId = 1L;
         long addressId = 10L;
@@ -232,8 +260,12 @@ class MemberAddressServiceTest {
     /**
      * 테스트: 삭제 시 주소를 찾을 수 없을 때
      * 예상 결과: AddressNotFoundException이 발생한다.
+     *
+     * @since 1.0
+     * author Luha
      */
     @Test
+    @DisplayName("회원 주소 삭제 실패 - 주소 없음")
     void testDeleteMemberAddress_AddressNotFound() {
         long customerId = 1L;
         long addressId = 10L;
@@ -247,8 +279,12 @@ class MemberAddressServiceTest {
     /**
      * 테스트: 주소 업데이트 성공 시
      * 예상 결과: 주소 정보가 수정되고 성공 메시지가 반환된다.
+     *
+     * @since 1.0
+     * author Luha
      */
     @Test
+    @DisplayName("회원 주소 업데이트 - 성공")
     void testUpdateMemberAddress_Success() {
         long customerId = 1L;
         long addressId = 10L;
@@ -278,8 +314,12 @@ class MemberAddressServiceTest {
     /**
      * 테스트: 업데이트 시 주소를 찾을 수 없을 때
      * 예상 결과: AddressNotFoundException이 발생한다.
+     *
+     * @since 1.0
+     * author Luha
      */
     @Test
+    @DisplayName("회원 주소 업데이트 실패 - 주소 없음")
     void testUpdateMemberAddress_AddressNotFound() {
         long customerId = 1L;
         long addressId = 10L;

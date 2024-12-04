@@ -65,7 +65,8 @@ public class MemberCouponRepositoryImpl implements MemberCouponQuerydslResposito
                                 .and(memberCoupon.isUsed.eq(true) // 사용된 쿠폰
                                         .or(memberCoupon.invalidTime.before(LocalDateTime.now()))) // 기간 만료된 쿠폰
                 )
-                .fetch();    }
+                .fetch();
+    }
 
     /**
      * 특정 회원의 모든 쿠폰을 조회하여 MemberCouponResponseDto 목록으로 반환합니다.

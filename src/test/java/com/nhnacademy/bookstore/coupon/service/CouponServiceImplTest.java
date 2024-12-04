@@ -81,6 +81,8 @@ class CouponServiceImplTest {
     /**
      * 쿠폰 생성 시 중복 이름으로 인한 예외 발생 테스트
      * 이미 존재하는 쿠폰 이름으로 생성 요청 시 DuplicateCouponNameException이 발생하는지 확인합니다.
+     * @since 1.0
+     * author Luha
      */
     @Test
     void createCoupon_DuplicateNameException() {
@@ -97,6 +99,8 @@ class CouponServiceImplTest {
     /**
      * 모든 쿠폰 조회 성공 테스트
      * 저장된 모든 쿠폰을 조회하고 예상된 쿠폰 목록이 반환되는지 확인합니다.
+     * @since 1.0
+     * author Luha
      */
     @Test
     void getAllCoupons_Success() {
@@ -115,6 +119,8 @@ class CouponServiceImplTest {
     /**
      * 모든 쿠폰 조회 시 빈 목록 반환 테스트
      * 저장된 쿠폰이 없을 경우 빈 리스트가 반환되는지 확인합니다.
+     * @since 1.0
+     * author Luha
      */
     @Test
     void getAllCoupons_EmptyList() {
@@ -130,8 +136,9 @@ class CouponServiceImplTest {
     /**
      * 쿠폰 생성 시 존재하지 않는 쿠폰 정책으로 인한 예외 발생 테스트
      * 존재하지 않는 쿠폰 정책 ID로 요청 시 CouponPolicyNotFoundException이 발생하는지 확인합니다.
+     * @since 1.0
+     * author Luha
      */
-
     @Test
     void createCoupon_CouponPolicyNotFoundException() {
         // given
