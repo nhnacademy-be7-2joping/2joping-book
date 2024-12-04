@@ -31,15 +31,19 @@ public class CartService {
         return cartMapper.toCartResponseDtoList(cartRepository.findCartsByCustomerId(customerId));
     }
 
-    public boolean addCart(CartRequestDto cartRequestDto, long customerId) {
+    public int addCart(CartRequestDto cartRequestDto, long customerId) {
         Book book = bookRepository.findById(cartRequestDto.bookId()).orElseThrow(null);
         Member member = memberRepository.findById(customerId).orElseThrow(null);
 
         if (cartRepository.existsById(new CartId(cartRequestDto.bookId(), customerId))) {
-            return false;
+            return -1;
+        } else {
+            if (book.getRemainQuantity() - cartRequestDto.quantity() < 0) {
+                return 0;
+            }
+            cartRepository.save(new Cart(book, member, cartRequestDto.quantity()));
+            return 1;
         }
-        cartRepository.save(new Cart(book, member, cartRequestDto.quantity()));
-        return true;
     }
 
     public boolean removeCart(CartId cartId) {

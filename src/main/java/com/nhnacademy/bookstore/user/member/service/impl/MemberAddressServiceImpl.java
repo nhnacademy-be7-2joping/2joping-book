@@ -2,9 +2,13 @@ package com.nhnacademy.bookstore.user.member.service.impl;
 
 import com.nhnacademy.bookstore.common.error.enums.RedirectType;
 import com.nhnacademy.bookstore.common.error.exception.user.address.AddressLimitToTenException;
+import com.nhnacademy.bookstore.common.error.exception.user.address.AddressNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
+import com.nhnacademy.bookstore.user.member.dto.request.AddressUpdateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberAddressRequestDto;
-import com.nhnacademy.bookstore.user.member.dto.response.MemberAddressResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.address.AddressDeleteResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.address.AddressUpdateResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.address.MemberAddressResponseDto;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.entity.MemberAddress;
 import com.nhnacademy.bookstore.user.member.repository.MemberAddressRepository;
@@ -56,7 +60,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
                 );
 
         //주소 개수 조회 10개 제한 /
-        int addressCnt = memberAddressRepository.countByMemberId(customerId);
+        int addressCnt = memberAddressRepository.countByMemberIdAndAvailableTrue(customerId);
         if(addressCnt >= 10) {
             throw new AddressLimitToTenException(
                     "주소는 10개까지 저장할 수 있습니다.",
@@ -67,7 +71,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         }
 
         //기본 배송지 선택시
-        if (memberAddressRequestDto.isDefaultAddress()) {
+        if (memberAddressRequestDto.defaultAddress()) {
 
             // 기존에 기본 주소가 설정된 경우 해제
             MemberAddress existingDefaultAddress = memberAddressRepository.findByMemberIdAndDefaultAddressTrue(customerId);
@@ -99,9 +103,31 @@ public class MemberAddressServiceImpl implements MemberAddressService {
     public List<MemberAddressResponseDto> getMemberAddresses(long customerId) {
 
         Member member = memberRepository.findById(customerId).orElseThrow(() -> new MemberNotFoundException(
-                "멤버" + customerId + "를 찾을 수 없습니다.", RedirectType.REDIRECT, "/member/addresses"));
+                "멤버" + customerId + "를 찾을 수 없습니다.", RedirectType.REDIRECT, MEMBER_MYPAGE_ADDRESS_URL));
 
         return memberAddressRepository.findAddressesByMemberId(member.getId());
+    }
+
+    @Override
+    @Transactional
+    public AddressDeleteResponseDto deleteMemberAddress(long customerId, long addressId) {
+
+        MemberAddress memberAddress = memberAddressRepository.findByMemberIdAndIdAndAvailableTrue(customerId, addressId)
+                .orElseThrow(() -> new AddressNotFoundException("해당 회원 주소를 찾을 수 없습니다.", RedirectType.REDIRECT, MEMBER_MYPAGE_ADDRESS_URL));
+
+        memberAddress.setAvailable(false);
+
+        return new AddressDeleteResponseDto(addressId, "주소가 성공적으로 삭제되었습니다.");    }
+
+    @Override
+    @Transactional
+    public AddressUpdateResponseDto updateMemberAddress(long customerId, long addressId, AddressUpdateRequestDto requestDto) {
+
+        MemberAddress memberAddress = memberAddressRepository.findByMemberIdAndIdAndAvailableTrue(customerId, addressId)
+                .orElseThrow(() -> new AddressNotFoundException("해당 회원 주소를 찾을 수 없습니다.", RedirectType.REDIRECT, MEMBER_MYPAGE_ADDRESS_URL));
+        memberAddress.updateAddress(requestDto);
+
+        return new AddressUpdateResponseDto(addressId, "주소가 성공적으로 수정되었습니다.");
     }
 
 

@@ -13,6 +13,6 @@ public interface WrapService {
     WrapCreateResponseDto createWrap(WrapRequestDto requestDto);
     WrapUpdateResponseDto getWrap(Long WrapId);
     List<WrapUpdateResponseDto> findAllByIsActiveTrue();
-    WrapResponseDto updateWrap(Long WrapId, WrapModifyRequestDto wrapModifyRequestDto);
+    WrapUpdateResponseDto updateWrap(Long WrapId, WrapUpdateRequestDto wrapUpdateRequestDto);
     void deleteWrap(Long wrapId);
 }

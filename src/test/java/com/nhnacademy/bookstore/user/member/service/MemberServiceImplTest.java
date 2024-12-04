@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstore.user.member;
+package com.nhnacademy.bookstore.user.member.service;
 
 
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberDuplicateException;
@@ -7,16 +7,12 @@ import com.nhnacademy.bookstore.common.error.exception.user.member.MemberPasswor
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberNothingToUpdateException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.status.MemberStatusNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.tier.MemberTierNotFoundException;
-import com.nhnacademy.bookstore.coupon.service.MemberCouponService;
 import com.nhnacademy.bookstore.coupon.service.impl.MemberCouponServiceImpl;
 import com.nhnacademy.bookstore.user.enums.Gender;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberUpdateRequesteDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberWithdrawRequesteDto;
-import com.nhnacademy.bookstore.user.member.dto.response.MemberCreateSuccessResponseDto;
-import com.nhnacademy.bookstore.user.member.dto.response.MemberPointResponse;
-import com.nhnacademy.bookstore.user.member.dto.response.MemberUpdateResponseDto;
-import com.nhnacademy.bookstore.user.member.dto.response.MemberWithdrawResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.*;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.member.service.impl.MemberServiceImpl;
@@ -32,9 +28,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -541,10 +543,78 @@ class MemberServiceImplTest {
     }
 
     @Test
-    @DisplayName("없는 회원의 포인트 조회")
+    @DisplayName("전체 회원 조회 - 성공")
+    void testGetAllMembers_Success() {
+
+        int page = 0;
+        Pageable pageable = PageRequest.of(page, 10); // 페이지 크기 10 설정
+
+        MemberTier tier = new MemberTier(1L, Tier.NORMAL, true, 1, 1, 1);
+        Member member1 = new Member("testLoginId1", "Test Member1", "nick1", Gender.M, LocalDate.now(), 10, LocalDate.now(), null, false, 0, 0, null,
+                null, null, tier, null);
+        Member member2 = new Member("testLoginId2", "Test Member2", "nick2", Gender.M, LocalDate.now(), 10, LocalDate.now(), null, false, 0, 0, null,
+                null, null, tier, null);
+
+        List<Member> members = List.of(member1, member2);
+        Page<Member> memberPage = new PageImpl<>(members, pageable, members.size());
+
+        when(memberRepository.findAllByOrderByNicknameDesc(pageable)).thenReturn(memberPage);
+
+        List<GetAllMembersResponse> actualResponse = memberService.getAllMembers(page);
+
+        assertNotNull(actualResponse);
+        assertEquals(2, actualResponse.size());
+    }
+
+    @Test
+    @DisplayName("회원 포인트 조회 실패 - 회원 정보 없음")
     void testGetPointsOfMember_NotFound() {
-        MemberPointResponse mockPoint = new MemberPointResponse(100);
-        when(memberRepository.findPointById(1L)).thenThrow(MemberNotFoundException.class);
-        assertThrows(MemberNotFoundException.class, () -> memberService.getPointsOfMember(1L));
+        // Given
+        Long customerId = 1L;
+
+        // Mock: memberRepository.findPointById가 Optional.empty()를 반환하도록 설정
+        when(memberRepository.findPointById(customerId)).thenReturn(Optional.empty());
+
+        // When & Then
+        MemberNotFoundException exception = assertThrows(
+                MemberNotFoundException.class,
+                () -> memberService.getPointsOfMember(customerId)
+        );
+
+        // Exception 메시지 검증
+        assertEquals("회원 정보를 찾을 수 없습니다.", exception.getMessage());
+
+        // Repository 호출 검증
+        verify(memberRepository).findPointById(customerId);
+    }
+
+    /**
+     * 테스트: 회원 정보를 업데이트하려고 할 때, 존재하지 않는 회원인 경우
+     * 예상 결과: MemberNotFoundException이 발생한다.
+     *
+     * @since 1.0
+     * author Luha
+     */
+    @Test
+    @DisplayName("회원 업데이트 실패 - 존재하지 않는 회원")
+    void testUpdateMember_NotFound() {
+        // given
+        long customerId = 999L; // 존재하지 않는 ID
+        MemberUpdateRequesteDto updateRequest = new MemberUpdateRequesteDto(
+                "010-1234-5678",
+                "test@example.com",
+                "newNick"
+        );
+
+        // 필요한 Mock 설정만 유지
+        when(memberRepository.findById(customerId)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(MemberNotFoundException.class, () -> memberService.updateMember(customerId, updateRequest));
+
+        // Verify: findById가 호출되었는지 확인
+        verify(memberRepository, times(1)).findById(customerId);
+        // updateMemberDetails는 호출되지 않아야 함
+        verify(memberRepository, never()).updateMemberDetails(any(MemberUpdateRequesteDto.class), anyLong());
     }
 }

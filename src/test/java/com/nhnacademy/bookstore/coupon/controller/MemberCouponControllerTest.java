@@ -6,6 +6,7 @@ import com.nhnacademy.bookstore.coupon.dto.response.OrderCouponResponse;
 import com.nhnacademy.bookstore.coupon.enums.DiscountType;
 import com.nhnacademy.bookstore.coupon.service.MemberCouponService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -58,6 +59,7 @@ class MemberCouponControllerTest {
      * author Luha
      */
     @Test
+    @DisplayName("특정 회원의 모든 쿠폰 조회 - 성공")
     void getCouponsByMemberId_Success() throws Exception {
         // given
         MemberCouponResponseDto responseDto = new MemberCouponResponseDto(1L, 2L, LocalDateTime.now(), LocalDateTime.now().plusDays(10), false, null, null);
@@ -83,6 +85,7 @@ class MemberCouponControllerTest {
      * author Luha
      */
     @Test
+    @DisplayName("특정 회원의 모든 쿠폰 조회 - 빈 목록 반환")
     void getCouponsByMemberId_EmptyList() throws Exception {
         // given
         when(memberCouponService.getAllMemberCoupons(1L)).thenReturn(Collections.emptyList());
@@ -95,7 +98,15 @@ class MemberCouponControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(0)));
     }
+
+    /**
+     * 테스트: 특정 회원의 주문 가능한 쿠폰 조회 - 성공
+     * 예상 결과: 특정 회원이 주문에 사용할 수 있는 쿠폰 데이터가 반환됨.
+     * @since 1.0
+     * author Luha
+     */
     @Test
+    @DisplayName("특정 회원의 주문 가능한 쿠폰 조회 - 성공")
     void orderCouponsByMemberId_Success() throws Exception {
         // given
         OrderCouponResponse responseDto = new OrderCouponResponse(1L, null, LocalDateTime.now(), DiscountType.ACTUAL, 5, 22, "쿠폰", 1);
@@ -113,7 +124,14 @@ class MemberCouponControllerTest {
                 .andExpect(jsonPath("$[0].maxDiscount", is(1)));
     }
 
+    /**
+     * 테스트: 특정 회원의 주문 가능한 쿠폰 조회 - 빈 목록 반환
+     * 예상 결과: 주문에 사용할 수 있는 쿠폰이 없을 경우 빈 목록이 반환됨.
+     * @since 1.0
+     * author Luha
+     */
     @Test
+    @DisplayName("특정 회원의 주문 가능한 쿠폰 조회 - 빈 목록 반환")
     void orderCouponsByMemberId_EmptyList() throws Exception {
         // given
         when(memberCouponService.getAllMemberOrderCoupons(1L)).thenReturn(Collections.emptyList());
@@ -127,12 +145,56 @@ class MemberCouponControllerTest {
                 .andExpect(jsonPath("$", hasSize(0))); // 빈 리스트 검증
     }
 
+    /**
+     * 테스트: 잘못된 요청 헤더로 쿠폰 목록 조회 - 실패
+     * 예상 결과: 헤더 정보가 없거나 잘못된 경우 400 Bad Request 응답.
+     * @since 1.0
+     * author Luha
+     */
     @Test
+    @DisplayName("잘못된 요청 헤더로 쿠폰 목록 조회 - 실패")
     void orderCouponsByMemberId_InvalidHeader() throws Exception {
         // when & then
         mockMvc.perform(get("/api/v1/coupons/order")
                         .contentType(MediaType.APPLICATION_JSON)) // 헤더 없이 요청
                 .andExpect(status().isBadRequest()); // 400 상태 코드 확인
     }
+
+    /**
+     * 테스트: 특정 회원의 사용된 쿠폰 조회 - 성공
+     * 예상 결과: 사용된 쿠폰 목록이 반환됨.
+     * @since 1.0
+     * author Luha
+     */
+    @Test
+    @DisplayName("특정 회원의 사용된 쿠폰 조회 - 성공")
+    void usedCouponsByMemberId_Success() throws Exception {
+        // given
+        MemberCouponResponseDto responseDto = new MemberCouponResponseDto(
+                1L, // couponUsageId
+                2L, // couponId
+                LocalDateTime.now().minusDays(10), // receiveTime
+                LocalDateTime.now().minusDays(5), // invalidTime
+                true, // isUsed
+                LocalDateTime.now().minusDays(5), // usedDate
+                null // couponResponseDto
+        );
+
+        when(memberCouponService.getAllMemberUsedCoupons(1L)).thenReturn(List.of(responseDto));
+
+        // when & then
+        mockMvc.perform(get("/api/v1/coupons/used/mypage")
+                        .header("X-Customer-Id", "1") // 헤더로 customerId 전달
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].couponUsageId", is(1)))
+                .andExpect(jsonPath("$[0].couponId", is(2)))
+                .andExpect(jsonPath("$[0].isUsed", is(true)))
+                .andExpect(jsonPath("$[0].usedDate", notNullValue())); // usedDate가 null이 아님을 검증
+    }
+
+
+
 
 }

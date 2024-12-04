@@ -4,6 +4,7 @@ import com.nhnacademy.bookstore.coupon.dto.request.CouponRequestDto;
 import com.nhnacademy.bookstore.coupon.dto.response.CouponResponseDto;
 import com.nhnacademy.bookstore.coupon.service.CouponService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -57,6 +58,7 @@ import static org.hamcrest.Matchers.*;
      * @author Luha
      */
     @Test
+    @DisplayName("쿠폰 생성 성공 - 유효한 요청 데이터로 쿠폰 생성")
     void createCoupon_Success() throws Exception {
         // given
         CouponResponseDto responseDto = new CouponResponseDto(1L, "New Coupon", LocalDate.now(), LocalDate.now().plusDays(30), 10, null);
@@ -82,6 +84,7 @@ import static org.hamcrest.Matchers.*;
      * @author Luha
      */
     @Test
+    @DisplayName("쿠폰 생성 실패 - 유효하지 않은 요청 데이터로 BadRequest 반환")
     void createCoupon_BadRequest() throws Exception {
         // given
 
@@ -101,6 +104,7 @@ import static org.hamcrest.Matchers.*;
      * @author Luha
      */
     @Test
+    @DisplayName("모든 쿠폰 조회 성공 - 쿠폰 데이터 목록 반환")
     void getAllCoupons_Success() throws Exception {
         // given
         CouponResponseDto responseDto = new CouponResponseDto(1L, "Sample Coupon", LocalDate.now(), LocalDate.now().plusDays(10), 5, null);
@@ -124,6 +128,7 @@ import static org.hamcrest.Matchers.*;
      * author Luha
      */
     @Test
+    @DisplayName("모든 쿠폰 조회 성공 - 쿠폰이 없을 경우 빈 목록 반환")
     void getAllCoupons_EmptyList() throws Exception {
         // given
         when(couponService.getAllCouponse()).thenReturn(Collections.emptyList());

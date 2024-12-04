@@ -2,8 +2,11 @@ package com.nhnacademy.bookstore.user.member.controller;
 
 import com.nhnacademy.bookstore.common.error.exception.user.address.AddressLimitToTenException;
 import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
+import com.nhnacademy.bookstore.user.member.dto.request.AddressUpdateRequestDto;
 import com.nhnacademy.bookstore.user.member.dto.request.MemberAddressRequestDto;
-import com.nhnacademy.bookstore.user.member.dto.response.MemberAddressResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.address.AddressDeleteResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.address.AddressUpdateResponseDto;
+import com.nhnacademy.bookstore.user.member.dto.response.address.MemberAddressResponseDto;
 import com.nhnacademy.bookstore.user.member.service.MemberAddressService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -70,6 +73,28 @@ public class MemberAddressController {
         List<MemberAddressResponseDto> addresses = memberAddressService.getMemberAddresses(Long.parseLong(customerId));
 
         return ResponseEntity.ok(addresses);
+    }
+
+    @DeleteMapping("/addresses/{member-address-id}")
+    public ResponseEntity<AddressDeleteResponseDto> deleteMemberAddress(
+            @RequestHeader("X-Customer-Id") String customerId,
+            @PathVariable(name = "member-address-id") Long memberAddressId) {
+
+
+        AddressDeleteResponseDto response = memberAddressService.deleteMemberAddress(Long.parseLong(customerId), memberAddressId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/addresses/{member-address-id}")
+    public ResponseEntity<AddressUpdateResponseDto> updateMemberAddress(
+            @RequestHeader("X-Customer-Id") String customerId,
+            @PathVariable(name = "member-address-id") Long memberAddressId,
+            @RequestBody @Valid AddressUpdateRequestDto requestDto) {
+
+        AddressUpdateResponseDto response = memberAddressService.updateMemberAddress(Long.parseLong(customerId), memberAddressId, requestDto);
+
+        return ResponseEntity.ok(response);
     }
 
 

@@ -31,4 +31,5 @@ public interface BookService {
     BookUpdateResponseDto getUpdateBookByBookId(Long bookId);
     BookUpdateResultResponseDto updateBook(Long bookId, BookUpdateRequestDto bookUpdateRequestDto);
     void deactivateBook(Long bookId);
+    int getBookRemainQuantity(Long bookId);
 }
