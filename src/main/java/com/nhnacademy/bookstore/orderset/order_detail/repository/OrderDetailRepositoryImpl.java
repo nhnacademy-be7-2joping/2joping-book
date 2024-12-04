@@ -5,7 +5,7 @@ import com.nhnacademy.bookstore.orderset.order.entity.QOrder;
 import com.nhnacademy.bookstore.orderset.order_detail.dto.response.OrderDetailResponseDto;
 import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
 import com.nhnacademy.bookstore.orderset.order_detail.entity.QOrderDetail;
-import com.nhnacademy.bookstore.user.customer.entity.QCustomer;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -49,6 +49,7 @@ public class OrderDetailRepositoryImpl extends QuerydslRepositorySupport impleme
     public Page<OrderDetailResponseDto> findByCustomerId(Pageable pageable, Long customerId) {
         JPAQuery<OrderDetailResponseDto> query = new JPAQuery<>(getEntityManager());
 
+        // 기본 쿼리 작성
         query.from(qOrderDetail)
                 .join(qOrderDetail.order, qOrder)
                 .join(qOrderDetail.book, qBook)
@@ -62,6 +63,10 @@ public class OrderDetailRepositoryImpl extends QuerydslRepositorySupport impleme
                         qOrderDetail.finalPrice
                 ));
 
+        OrderSpecifier<?> orderSpecifier;
+        orderSpecifier = qOrderDetail.orderDetailId.desc();
+        query.orderBy(orderSpecifier);
+
         // 전체 개수 계산
         long total = query.fetchCount();
 
@@ -73,6 +78,8 @@ public class OrderDetailRepositoryImpl extends QuerydslRepositorySupport impleme
 
         return new PageImpl<>(content, pageable, total);
     }
+
+
 
 }
 

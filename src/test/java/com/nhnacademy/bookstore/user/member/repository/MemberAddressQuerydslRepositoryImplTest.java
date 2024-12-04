@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstore.user.member.address;
+package com.nhnacademy.bookstore.user.member.repository;
 
 
 import com.nhnacademy.bookstore.common.config.MySqlConfig;
@@ -13,6 +13,7 @@ import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.enums.Tier;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -27,6 +28,14 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * MemberAddressQuerydslRepositoryImplTest
+ * 이 클래스는 MemberAddressQuerydslRepositoryImpl의 동작을 테스트합니다.
+ * 회원 ID를 기반으로 주소 목록을 조회하는 기능을 검증합니다.
+ *
+ * @since 1.0
+ * author Luha
+ */
 @DataJpaTest
 @Import(QuerydslConfig.class) // QueryDSL 및 설정 클래스 포함
 @ActiveProfiles("test") // test 프로파일 활성화
@@ -37,12 +46,14 @@ class MemberAddressQuerydslRepositoryImplTest {
     @Autowired
     private MemberAddressQuerydslRepositoryImpl memberAddressQuerydslRepository;
 
-
-
     @Autowired
     private EntityManager entityManager;
 
-
+    /**
+     * 테스트 데이터 초기화
+     * 회원, 등급, 상태, 주소 데이터를 데이터베이스에 저장합니다.
+     *
+     */
     @BeforeEach
     void setUp() {
 
@@ -104,7 +115,15 @@ class MemberAddressQuerydslRepositoryImplTest {
         entityManager.clear(); // 영속성 컨텍스트 초기화
     }
 
+    /**
+     * 회원 ID를 기반으로 주소 목록 조회 테스트
+     * 예상 결과: 회원 ID에 연결된 주소가 올바르게 조회되고, 각 주소의 세부 정보가 일치해야 합니다.
+     *
+     * @since 1.0
+     * author Luha
+     */
     @Test
+    @DisplayName("회원 ID를 기반으로 주소 목록 조회")
     @Transactional
     void testFindAddressesByMemberId() {
         // given
