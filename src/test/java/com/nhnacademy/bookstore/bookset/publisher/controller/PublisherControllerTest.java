@@ -127,4 +127,27 @@ public class PublisherControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.name").value("업데이트된 출판사 이름"));
     }
+
+    @Test
+    @DisplayName("전체 출판사 등록용 조회 - 성공")
+    public void testGetAllPublishersForRegister_Success() throws Exception {
+        // given
+        List<PublisherResponseDto> responseList = Arrays.asList(
+                new PublisherResponseDto(1L, "출판사1"),
+                new PublisherResponseDto(2L, "출판사2")
+        );
+        when(publisherService.getAllPublishersForRegister()).thenReturn(responseList);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/bookstore/publishers/list")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].name").value("출판사1"))
+                .andExpect(jsonPath("$[1].id").value(2L))
+                .andExpect(jsonPath("$[1].name").value("출판사2"));
+    }
+
 }

@@ -170,4 +170,27 @@ class PublisherServiceImplTest {
                 .isInstanceOf(PublisherNotFoundException.class)
                 .hasMessageContaining("출판사를 찾을 수 없습니다.");
     }
+
+    @Test
+    @DisplayName("전체 출판사 등록용 조회 - 성공")
+    void getAllPublishersForRegister_Success() {
+        // Given
+        Publisher publisher1 = new Publisher(1L, "Publisher 1");
+        Publisher publisher2 = new Publisher(2L, "Publisher 2");
+        List<Publisher> publishers = List.of(publisher1, publisher2);
+
+        when(publisherRepository.findAll()).thenReturn(publishers);
+
+        // When
+        List<PublisherResponseDto> responseDtoList = publisherService.getAllPublishersForRegister();
+
+        // Then
+        assertThat(responseDtoList).isNotEmpty();
+        assertThat(responseDtoList).hasSize(2);
+        assertThat(responseDtoList.get(0).id()).isEqualTo(publisher1.getPublisherId());
+        assertThat(responseDtoList.get(0).name()).isEqualTo(publisher1.getName());
+        assertThat(responseDtoList.get(1).id()).isEqualTo(publisher2.getPublisherId());
+        assertThat(responseDtoList.get(1).name()).isEqualTo(publisher2.getName());
+    }
+
 }

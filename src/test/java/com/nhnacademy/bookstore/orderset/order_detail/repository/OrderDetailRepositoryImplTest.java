@@ -1,22 +1,19 @@
-package com.nhnacademy.bookstore.review.repository;
+package com.nhnacademy.bookstore.orderset.order_detail.repository;
 
-import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.bookset.publisher.entity.Publisher;
 import com.nhnacademy.bookstore.common.config.MySqlConfig;
-import com.nhnacademy.bookstore.common.config.QuerydslConfig;
+import com.nhnacademy.bookstore.orderset.order_detail.dto.response.OrderDetailResponseDto;
 import com.nhnacademy.bookstore.orderset.order.entity.Order;
 import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
 import com.nhnacademy.bookstore.orderset.order_state.entity.OrderState;
 import com.nhnacademy.bookstore.orderset.order_state.entity.vo.OrderStateType;
-import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
-import com.nhnacademy.bookstore.review.dto.response.ReviewTotalResponseDto;
-import com.nhnacademy.bookstore.review.entity.Review;
+import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.user.enums.Gender;
 import com.nhnacademy.bookstore.user.member.entity.Member;
+import com.nhnacademy.bookstore.common.config.QuerydslConfig;
 import com.nhnacademy.bookstore.user.memberstatus.entity.MemberStatus;
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.enums.Tier;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,35 +26,34 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.sql.Timestamp;
+import jakarta.persistence.EntityManager;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Import(QuerydslConfig.class) // QueryDSL 및 설정 클래스 포함
-@ActiveProfiles("test") // test 프로파일 활성화
-@ImportAutoConfiguration(exclude = MySqlConfig.class) // MySqlConfig 비활성화
+@Import(QuerydslConfig.class)
+@ActiveProfiles("test")
+@ImportAutoConfiguration(exclude = MySqlConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class ReviewRepositoryImplTest {
+class OrderDetailRepositoryImplTest {
 
     @Autowired
-    private ReviewRepositoryImpl reviewRepository;
+    private OrderDetailRepositoryImpl orderDetailRepository;
 
     @Autowired
     private EntityManager entityManager;
 
     private Member member;
+    private Order order;
     private Book book;
     private OrderDetail orderDetail;
-    private Review review;
 
     @BeforeEach
     void setUp() {
-        // MemberStatus와 MemberTier 생성 및 저장
         MemberStatus status = new MemberStatus(1L, "가입");
         entityManager.merge(status);
 
@@ -86,7 +82,7 @@ class ReviewRepositoryImplTest {
         member.initializeCustomerFields("이름", "010-1111-1111", "email@naver.com");
         entityManager.persist(member); // persist 사용
 
-        // Publisher와 Book 생성 및 저장
+        // Book 생성 및 저장
         Publisher publisher = new Publisher("출판사 이름");
         entityManager.persist(publisher);
 
@@ -108,16 +104,17 @@ class ReviewRepositoryImplTest {
         );
         entityManager.persist(book);
 
+
         OrderState orderState = new OrderState(OrderStateType.WAITING);
         orderState.setOrderStateId(1L);
         entityManager.persist(orderState);
 
         // Order 생성 및 저장
-        Order order = new Order(
+        order = new Order(
                 null,
                 "ORD123",
                 orderState,
-                member, // 영속화된 Member 설정
+                member,
                 null,
                 LocalDateTime.now(),
                 null,
@@ -144,54 +141,32 @@ class ReviewRepositoryImplTest {
         );
         entityManager.persist(orderDetail);
 
-        // Review 생성 및 저장
-        review = new Review(
-                null,
-                orderDetail,
-                member,
-                book,
-                "Great Book!",
-                "Loved reading this book.",
-                5,
-                new Timestamp(System.currentTimeMillis()),
-                new Timestamp(System.currentTimeMillis()),
-                null
-        );
-        entityManager.persist(review);
-
-        // 강제로 flush 및 clear 호출
         entityManager.flush();
         entityManager.clear();
     }
 
-
     @Test
-    void testGetReviewsByBookId() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<ReviewResponseDto> reviews = reviewRepository.getReviewsByBookId(pageable, book.getBookId());
+    void testFindByOrderId() {
+        // 메서드 호출
+        List<OrderDetailResponseDto> result = orderDetailRepository.findByOrderId(order.getOrderId());
 
-        assertThat(reviews.getTotalElements()).isEqualTo(1);
-        assertThat(reviews.getContent().get(0).reviewId()).isEqualTo(review.getReviewId());
-        assertThat(reviews.getContent().get(0).title()).isEqualTo("Great Book!");
+        // 검증
+        assertThat(result).isNotEmpty();
+        assertThat(result.get(0).orderDetailId()).isEqualTo(orderDetail.getOrderDetailId());
+        assertThat(result.get(0).bookTitle()).isEqualTo("Test Book");
     }
 
     @Test
-    void testGetReviewsByCustomerId() {
+    void testFindByCustomerId() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<ReviewTotalResponseDto> reviews = reviewRepository.getReviewsByCustomerId(pageable, member.getId());
 
-        assertThat(reviews.getTotalElements()).isEqualTo(1);
-        assertThat(reviews.getContent().get(0).customerId()).isEqualTo(member.getId());
-        assertThat(reviews.getContent().get(0).bookName()).isEqualTo("Test Book");
-    }
+        // 메서드 호출
+        Page<OrderDetailResponseDto> resultPage = orderDetailRepository.findByCustomerId(pageable, member.getId());
 
-    @Test
-    void testGetReviewByReviewId() {
-        Optional<ReviewResponseDto> reviewDto = reviewRepository.getReviewByReviewId(review.getReviewId());
-
-        assertThat(reviewDto).isPresent();
-        assertThat(reviewDto.get().reviewId()).isEqualTo(review.getReviewId());
-        assertThat(reviewDto.get().title()).isEqualTo("Great Book!");
+        // 검증
+        assertThat(resultPage.getTotalElements()).isEqualTo(1); // 총 OrderDetail 수
+        assertThat(resultPage.getContent().size()).isEqualTo(1); // 현재 페이지 데이터 개수
+        assertThat(resultPage.getContent().get(0).bookTitle()).isEqualTo("Test Book"); // Book 제목 확인
+        assertThat(resultPage.getContent().get(0).orderDate()).isNotNull(); // 주문 날짜 확인
     }
 }
-
