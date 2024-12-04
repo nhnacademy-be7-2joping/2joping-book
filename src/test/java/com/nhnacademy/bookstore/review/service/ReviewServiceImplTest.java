@@ -10,6 +10,7 @@ import com.nhnacademy.bookstore.imageset.repository.ImageRepository;
 import com.nhnacademy.bookstore.imageset.repository.ReviewImageRepository;
 import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
 import com.nhnacademy.bookstore.orderset.order_detail.repository.OrderDetailRepository;
+import com.nhnacademy.bookstore.point.dto.request.ReviewPointAwardRequest;
 import com.nhnacademy.bookstore.point.service.PointService;
 import com.nhnacademy.bookstore.review.dto.request.*;
 import com.nhnacademy.bookstore.review.dto.response.ReviewCreateResponseDto;
@@ -130,6 +131,7 @@ class ReviewServiceImplTest {
         when(reviewRepository.save(any(Review.class))).thenReturn(mock(Review.class));
         when(reviewMapper.toCreateResponseDto(any())).thenReturn(createResponseDto);
         when(imageRepository.save(any())).thenReturn(mock(Image.class));
+        doNothing().when(pointService).awardReviewPoint(any(ReviewPointAwardRequest.class));
 
         // 실행
         ReviewCreateResponseDto response = reviewService.registerReview(createRequestDto);
