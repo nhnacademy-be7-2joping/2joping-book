@@ -69,9 +69,9 @@ public class BookController {
     @ApiResponse(responseCode = "404", description = "리소스를 찾을 수 없음")
     @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
     @PostMapping("/admin/books/register/aladin")
-    public ResponseEntity<List<BookCreateAPIResponseDto>> createBooks() {
+    public ResponseEntity<List<BookCreateAPIResponseDto>> createBooks(String query) {
         try {
-            List<BookCreateAPIResponseDto> books = bookService.createBooks();
+            List<BookCreateAPIResponseDto> books = bookService.createBooks(query);
             return ResponseEntity.status(HttpStatus.CREATED).body(books);
         } catch (PublisherNotFoundException | ContributorNotFoundException | CategoryNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -116,7 +116,6 @@ public class BookController {
     @GetMapping("/books/get/contributor/{contributor-id}")// 임시로 설정해둔거
     public ResponseEntity<Page<BookSimpleResponseDto>> getBooksByContributorId(@PathVariable("contributor-id") Long contributorId,
                                                                                @PageableDefault(size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
-        log.info("기여자별 도서를 조회하는 컨트롤러 !!");
         Page<BookSimpleResponseDto> books = bookService.getBooksByContributorId(pageable, contributorId);
         return ResponseEntity.status(HttpStatus.OK).body(books);
     }

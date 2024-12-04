@@ -43,52 +43,21 @@ class BookControllerTest {
     private Page<BookSimpleResponseDto> bookPage;
     private BookCreateRequestDto bookCreateRequestDto;
     private BookCreateResponseDto bookCreateResponseDto;
+    private BookUpdateRequestDto bookUpdateRequestDto;
+    private BookUpdateResponseDto bookUpdateResponseDto;
+    private BookUpdateResultResponseDto bookUpdateResultResponseDto;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-//         BookCreateHtmlRequestDto bookHtmlDto = new BookCreateHtmlRequestDto(
-//                 "Book Title",
-//                 "Description",
-//                 "Publisher Name",
-//                 LocalDate.of(2023, 10, 29),
-//                 "1234567890123",
-//                 20000,
-//                 15000,
-//                 true,
-//                 true,
-//                 10,
-//                 "김지은 (지은이)",
-//                 "국내도서 > 경제경영",
-//                 "재밌는, 따뜻한"
-//         );
-
-//         ImageUrlRequestDto imageUrlDto = new ImageUrlRequestDto(
-//                 "thumbnail-url",
-//                 "detail-url"
-//         );
-
-//         bookCreateRequestDto = new BookCreateRequestDto(bookHtmlDto, imageUrlDto);
-
-//         bookCreateResponseDto = new BookCreateResponseDto(
-//                 1L,
-//                 "Book Title",
-//                 "Description",
-//                 "Publisher Name",
-//                 LocalDate.of(2023, 10, 29),
-//                 "1234567890123",
-//                 20000,
-//                 15000,
-//                 true,
-//                 true,
-//                 10,
-//                 List.of(new ContributorResponseDto(1L, 1L, "김지은")),
-//                 new CategoryResponseDto(1L,"경제경영", null),
-//                 List.of(new TagResponseDto(1L, "재밌는"), new TagResponseDto(2L, "따뜻한")),
-//                 "thumbnail-url",
-//                 "detail-url"
-//         );
+        bookCreateRequestDto = mock(BookCreateRequestDto.class);
+        bookCreateResponseDto = new BookCreateResponseDto(
+                1L, "Book Title", "Description", "Publisher Name",
+                LocalDate.of(2024, 10, 1), "1234567890123",
+                20000, 15000, true, true, 10, null, null, null,
+                "thumbnail-url", "detail-url"
+        );
 
         // BookContributorResponseDto 리스트 생성
         List<BookContributorResponseDto> contributors = List.of(
@@ -108,29 +77,98 @@ class BookControllerTest {
                 "1234567890123", 20000, 15000, true, true, 10, 0, 0,
                 contributors, List.of("Category 1", "Category 2"), List.of(new BookTagResponseDto(1L,"Tag 1")),"thumbnail1",List.of(new ReviewResponseDto(1L,1L,1L,1L,5,"제목","내용","이미지", Timestamp.valueOf(LocalDateTime.now()),null))
         );
+
+        BookUpdateHtmlRequestDto bookUpdateHtmlRequestDto = new BookUpdateHtmlRequestDto(
+                "Updated Book Title",
+                "Updated Description",
+                "Updated Publisher",
+                LocalDate.of(2024, 11, 1),
+                "1234567890123",
+                30000,
+                25000,
+                true,
+                true,
+                15,
+                "Author (지은이)",
+                1L,
+                2L,
+                3L,
+                List.of("Tag1", "Tag2"),
+                false,
+                false
+        );
+
+        ImageUrlRequestDto imageUrlRequestDto = new ImageUrlRequestDto(
+                "updated-thumbnail-url",
+                "updated-detail-url"
+        );
+
+        bookUpdateRequestDto = new BookUpdateRequestDto(bookUpdateHtmlRequestDto, imageUrlRequestDto);
+
+        bookUpdateResponseDto = new BookUpdateResponseDto(
+                1L,
+                "Updated Book Title",
+                "Updated Description",
+                "Updated Publisher",
+                LocalDate.of(2024, 11, 1),
+                "1234567890123",
+                30000,
+                25000,
+                true,
+                true,
+                15,
+                null,
+                1L,
+                2L,
+                3L,
+                null,
+                "updated-thumbnail-url",
+                "updated-detail-url",
+                false,
+                false
+        );
+
+        bookUpdateResultResponseDto = new BookUpdateResultResponseDto(
+                1L,
+                "Updated Publisher",
+                "Updated Book Title",
+                "Updated Description",
+                LocalDate.of(2024, 11, 1),
+                "1234567890123",
+                30000,
+                25000,
+                true,
+                true,
+                15,
+                List.of(),
+                null,
+                List.of(),
+                "updated-thumbnail-url",
+                "updated-detail-url"
+        );
     }
 
-//    @Test
-//    @DisplayName("도서 생성 성공")
-//    void testCreateBookSuccess() {
-//        when(bookService.createBook(any(BookCreateRequestDto.class))).thenReturn(bookCreateResponseDto);
-//
-//        ResponseEntity<BookCreateResponseDto> response = bookController.createBook(bookCreateRequestDto);
-//
-//        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-//        assertEquals(bookCreateResponseDto, response.getBody());
-//    }
-//
-//    @Test
-//    @DisplayName("도서 생성 실패 - 내부 서버 오류")
-//    void testCreateBookInternalServerError() {
-//        when(bookService.createBook(any(BookCreateRequestDto.class))).thenThrow(new RuntimeException("Internal Server Error"));
-//
-//        ResponseEntity<BookCreateResponseDto> response = bookController.createBook(bookCreateRequestDto);
-//
-//        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-//        assertEquals(null, response.getBody());
-//    }
+    @Test
+    @DisplayName("도서 생성 성공")
+    void testCreateBookSuccess() {
+        when(bookService.createBook(any(BookCreateRequestDto.class))).thenReturn(bookCreateResponseDto);
+
+        ResponseEntity<BookCreateResponseDto> response = bookController.createBook(bookCreateRequestDto);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(bookCreateResponseDto, response.getBody());
+    }
+
+    @Test
+    @DisplayName("도서 단독 등록 실패")
+    void testCreateBookFailure() {
+        when(bookService.createBook(any(BookCreateRequestDto.class))).thenThrow(new RuntimeException("Internal Error"));
+
+        ResponseEntity<BookCreateResponseDto> response = bookController.createBook(bookCreateRequestDto);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(null, response.getBody());
+    }
 
     @Test
     @DisplayName("전체 도서 조회")
@@ -182,90 +220,63 @@ class BookControllerTest {
         assertEquals(bookResponseDto, response.getBody());
     }
 
-//     @Test
-//     @DisplayName("도서 수정 정보 조회 성공")
-//     void testGetUpdateBookByBookIdSuccess() {
-//         BookUpdateResponseDto updateResponseDto = new BookUpdateResponseDto(
-//                 1L, "Publisher Name", "Book Title", "Book Description", LocalDate.of(2023, 10, 29),
-//                 "1234567890123", 20000, 15000, true, true, 10,
-//                 "김지은 (지은이)", "국내도서 > 소설 > 현대소설", "따뜻한, 웃긴", "thumbnail.jpg", "detail.jpg"
-//         );
+    @Test
+    @DisplayName("도서 수정 정보 조회 성공")
+    void testGetUpdateBookByBookIdSuccess() {
+        when(bookService.getUpdateBookByBookId(anyLong())).thenReturn(bookUpdateResponseDto);
 
-//         when(bookService.getUpdateBookByBookId(1L)).thenReturn(updateResponseDto);
+        ResponseEntity<BookUpdateResponseDto> response = bookController.getUpdateBookByBookId(1L);
 
-//         ResponseEntity<BookUpdateResponseDto> response = bookController.getUpdateBookByBookId(1L);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(bookUpdateResponseDto, response.getBody());
+    }
 
-//         assertEquals(HttpStatus.OK, response.getStatusCode());
-//         assertEquals(updateResponseDto, response.getBody());
-//     }
+    @Test
+    @DisplayName("도서 수정 정보 조회 실패")
+    void testGetUpdateBookByBookIdFailure() {
+        when(bookService.getUpdateBookByBookId(anyLong())).thenThrow(new RuntimeException("도서를 찾을 수 없습니다."));
 
-//     @Test
-//     @DisplayName("도서 수정 성공")
-//     void testUpdateBookSuccess() {
-//         BookUpdateHtmlRequestDto htmlRequestDto = new BookUpdateHtmlRequestDto(
-//                 "Updated Book Title",
-//                 "Updated Description",
-//                 "Updated Publisher",
-//                 LocalDate.of(2023, 10, 29),
-//                 "1234567890123",
-//                 20000,
-//                 15000,
-//                 true,
-//                 true,
-//                 10,
-//                 "김지은 (지은이)",
-//                 "국내도서 > 소설 > 현대소설",
-//                 "따뜻한, 웃긴",
-//                 false,
-//                 false
-//         );
+        try {
+            bookController.getUpdateBookByBookId(1L);
+        } catch (RuntimeException ex) {
+            assertEquals("도서를 찾을 수 없습니다.", ex.getMessage());
+        }
+    }
 
-//         BookUpdateRequestDto requestDto = new BookUpdateRequestDto(
-//                 htmlRequestDto,
-//                 null
-//         );
+    @Test
+    @DisplayName("도서 수정 성공")
+    void testUpdateBookSuccess() {
+        when(bookService.updateBook(anyLong(), any(BookUpdateRequestDto.class)))
+                .thenReturn(bookUpdateResultResponseDto);
 
-//         BookUpdateResultResponseDto resultResponseDto = new BookUpdateResultResponseDto(
-//                 1L,
-//                 "Updated Publisher",
-//                 "Updated Book Title",
-//                 "Updated Description",
-//                 LocalDate.of(2023, 10, 29),
-//                 "1234567890123",
-//                 20000,
-//                 15000,
-//                 true,
-//                 true,
-//                 10,
-//                 List.of(new ContributorResponseDto(1L, 1L, "김지은")),
-//                 new GetCategoryResponse(1L, "현대소설", 2L),
-//                 List.of(new TagResponseDto(1L, "따뜻한"), new TagResponseDto(2L, "웃긴")),
-//                 "updated-thumbnail-url",
-//                 "updated-detail-url"
-//         );
+        ResponseEntity<BookUpdateResultResponseDto> response = bookController.updateBook(1L, bookUpdateRequestDto);
 
-//         when(bookService.updateBook(anyLong(), any(BookUpdateRequestDto.class)))
-//                 .thenReturn(resultResponseDto);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(bookUpdateResultResponseDto, response.getBody());
+    }
 
-//         ResponseEntity<BookUpdateResultResponseDto> response = bookController.updateBook(1L, requestDto);
+    @Test
+    @DisplayName("도서 수정 실패")
+    void testUpdateBookFailure() {
+        when(bookService.updateBook(anyLong(), any(BookUpdateRequestDto.class)))
+                .thenThrow(new RuntimeException("도서를 찾을 수 없습니다."));
 
-//         assertEquals(HttpStatus.OK, response.getStatusCode());
-//         assertEquals(resultResponseDto, response.getBody());
-//     }
+        try {
+            bookController.updateBook(1L, bookUpdateRequestDto);
+        } catch (RuntimeException ex) {
+            assertEquals("도서를 찾을 수 없습니다.", ex.getMessage());
+        }
+    }
 
     @Test
     @DisplayName("도서 비활성화 성공")
     void testDeactivateBookSuccess() {
-        // Given: 비활성화할 도서 ID
         Long bookId = 1L;
 
-        // Mocking: 비활성화 동작을 설정
         doNothing().when(bookService).deactivateBook(bookId);
 
-        // When: 컨트롤러 메서드 호출
         ResponseEntity<Long> response = bookController.deactivateBook(bookId);
 
-        // Then: 응답 검증
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(bookId, response.getBody());
     }
@@ -273,22 +284,17 @@ class BookControllerTest {
     @Test
     @DisplayName("도서 비활성화 실패 - BookNotFoundException")
     void testDeactivateBookFailure() {
-        // Given: 존재하지 않는 도서 ID
         Long bookId = 2L;
 
-        // Mocking: 예외 발생 설정
         doThrow(new RuntimeException("도서를 찾을 수 없습니다.")).when(bookService).deactivateBook(bookId);
 
-        // When: 컨트롤러 메서드 호출 및 예외 처리
         ResponseEntity<Long> response = null;
         try {
             response = bookController.deactivateBook(bookId);
         } catch (RuntimeException ex) {
-            // Then: 예외 메시지 검증
             assertEquals("도서를 찾을 수 없습니다.", ex.getMessage());
         }
 
-        // Response가 null이어야 함 (실패 처리 시 반환 없음)
         assertEquals(null, response);
     }
 }
