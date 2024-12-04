@@ -14,8 +14,7 @@ public record OrderRequest(
         @Min(value = 0)
         Integer point,
 
-        @NotNull
-        @Positive
+        @Min(value = -1)
         Long couponId,
 
         List<@Valid WrapItemRequest> wrapList,
@@ -34,6 +33,7 @@ public record OrderRequest(
 
         @Min(value = 0)
         Integer couponDiscount,
+        String nonMemberPassword,
 
         @NotBlank
         String orderCode

@@ -12,6 +12,7 @@ import com.nhnacademy.bookstore.common.error.exception.bookset.book.BookStockOut
 import com.nhnacademy.bookstore.common.error.exception.coupon.CouponInvalidException;
 import com.nhnacademy.bookstore.common.error.exception.orderset.order.OrderPointInvalidException;
 import com.nhnacademy.bookstore.common.error.exception.shipment.ShipmentNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.user.customer.NonMemberValidationFailed;
 import com.nhnacademy.bookstore.coupon.dto.response.MemberCouponResponseDto;
 import com.nhnacademy.bookstore.coupon.entity.member.MemberCoupon;
 import com.nhnacademy.bookstore.coupon.enums.DiscountType;
@@ -46,9 +47,12 @@ import com.nhnacademy.bookstore.shipment.entity.Shipment;
 import com.nhnacademy.bookstore.shipment.entity.ShipmentPolicy;
 import com.nhnacademy.bookstore.shipment.repository.ShipmentPolicyRepository;
 import com.nhnacademy.bookstore.shipment.repository.ShipmentRepository;
+import com.nhnacademy.bookstore.user.customer.dto.response.CustomerWithMemberStatusResponse;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
+import com.nhnacademy.bookstore.user.customer.service.CustomerService;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.member.service.MemberService;
+import com.nhnacademy.bookstore.user.nonmember.service.NonMemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -73,6 +77,8 @@ public class OrderService {
 
     private final RedisTemplate<Object, Object> redisTemplate;
     private final OrderStateService orderStateService;
+    private final CustomerService customerService;
+    private final NonMemberService nonMemberService;
     private final MemberService memberService;
     private final MemberCouponService memberCouponService;
     private final PointService pointService;
@@ -138,7 +144,7 @@ public class OrderService {
         List<ShipmentPolicyResponseDto> shipmentPolicies =
                 shipmentPolicyRepository.findActiveShipmentPolicies()
                         .stream()
-                        .filter(s -> isMember(customerId) == s.isMemberOnly()).toList();
+                        .filter(s -> isMember(customerId) == s.isMemberOnly()).collect(Collectors.toCollection(ArrayList::new));
         int shipmentCost = 0;
 
         // 배송 정책 최소 적용 가격 기준으로 정렬 및 책정
@@ -150,16 +156,10 @@ public class OrderService {
         }
 
         // 쿠폰 유효성 검사
-        int couponDiscount = 0;
-        if (!isMember(customerId)) {
-            throw new CouponInvalidException("로그인 후 쿠폰을 사용해주십시오.");
-        }
+        validateCouponUsage(orderRequest, customerId);
 
-        List<MemberCouponResponseDto> memberCoupons = memberCouponService.getAllMemberCoupons(customerId);
-        Optional<MemberCouponResponseDto> coupon = memberCoupons.stream()
-                .filter(c -> c.couponId().equals(orderRequest.couponId()))
-                .findFirst();
-        couponDiscount = coupon.map(m -> calculateCouponDiscount(bookCost, m)).orElse(0);
+        // 쿠폰 사용 id와 일치하는 회원의 쿠폰 조회
+        int couponDiscount = calculateCouponDiscount(orderRequest, customerId, bookCost);
 
         // 포인트 유효성 검사
         int totalCost = bookCost + wrapCost + shipmentCost - couponDiscount;
@@ -173,13 +173,37 @@ public class OrderService {
                 throw new OrderPointInvalidException(String.format("포인트 %d는 주문 금액보다 많은 포인트입니다.", orderRequest.point()));
             }
 
-            point = memberService.getPointsOfMember(customerId).point();
+            point = orderRequest.point();
         }
 
         // 포인트 금액 차감
         totalCost -= point;
 
         return generateOrderRequest(orderRequest, bookCost, shipmentCost, wrapCost, totalCost, couponDiscount);
+    }
+
+    @Transactional
+    public int calculateCouponDiscount(OrderRequest orderRequest, Long customerId, int bookCost) {
+        if (!isMember(customerId)){
+            return 0;
+        }
+
+        List<MemberCouponResponseDto> memberCoupons = memberCouponService.getAllMemberCoupons(customerId);
+        Optional<MemberCouponResponseDto> coupon = memberCoupons.stream()
+                .filter(c -> c.couponUsageId().equals(orderRequest.couponId()))
+                .findFirst();
+        // 조회된 쿠폰이 없으면 예외
+        if (coupon.isEmpty()) {
+            throw new CouponInvalidException("로그인한 회원이 가진 쿠폰이 아닙니다.");
+        }
+
+        return coupon.map(m -> calculateCouponDiscount(bookCost, m)).orElse(0);
+    }
+
+    private void validateCouponUsage(OrderRequest orderRequest, Long customerId) {
+        if (!isMember(customerId) && orderRequest.couponId() > 0) {
+            throw new CouponInvalidException("로그인 후 쿠폰을 사용해주십시오.");
+        }
     }
 
     private OrderRequest generateOrderRequest(
@@ -199,24 +223,29 @@ public class OrderService {
                 shipmentCost,                              // 배송비
                 wrapCost,                                  // 포장비
                 totalCost,                                 // 총 비용
-                couponDiscount,                       // 쿠폰 할인
+                couponDiscount, // 쿠폰 할인
+                orderRequest.nonMemberPassword(),
                 orderRequest.orderCode()
         );
     }
 
     /**
-     * 주문 정보를 등록한다. 주문 처리 중
+     * 주문 성공 시 수행되는 주문 등록
      *
-     * @param orderRequest
+     * @param orderRequest     사용자가 작성한 주문 요청
      * @param orderPostRequest
-     * @param customer
+     * @param customerId
      */
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public void registerOrder(OrderRequest orderRequest, OrderPostRequest orderPostRequest, Customer customer) {
+    public void registerOrder(OrderRequest orderRequest, OrderPostRequest orderPostRequest, Long customerId) {
         Order order = new Order();
         OrderState orderState = orderStateService.getWaitingState();
         MemberCoupon memberCoupon = null;
-        List<MemberCouponResponseDto> memberCoupons = memberCouponService.getAllMemberCoupons(customer.getId());
+        List<MemberCouponResponseDto> memberCoupons = memberCouponService.getAllMemberCoupons(customerId);
+
+        CustomerWithMemberStatusResponse customerWithMemberStatusResponse =
+                customerService.getOrCreateCustomerIfNonMember(customerId, orderRequest);
+        Customer customer = customerWithMemberStatusResponse.customer();
 
         // 적용된 쿠폰이 있는 경우 쿠폰 가져오기, (해당 회원이 가진 쿠폰만)
         if (orderRequest.couponId() != null && orderRequest.couponId() > 0 &&
@@ -322,6 +351,14 @@ public class OrderService {
                     );
             pointService.awardOrderPoint(orderPointAwardRequest);
         });
+
+        // 비회원인 경우 비회원용 비밀번호 등록
+        if (!customerWithMemberStatusResponse.isMember()) {
+            if (orderRequest.nonMemberPassword() == null || orderRequest.nonMemberPassword().isEmpty()) {
+                throw new NonMemberValidationFailed("비밀번호가 유효하지 않습니다.", RedirectType.REDIRECT, "/");
+            }
+            nonMemberService.setNonMemberPassword(customer, orderRequest.nonMemberPassword());
+        }
     }
 
     /**

@@ -47,7 +47,7 @@ public class OrderController {
             customer = customerService.getCustomer(customerId);
         }
 
-        orderService.registerOrder(orderRequest, orderPostRequest, customer);
+        orderService.registerOrder(orderRequest, orderPostRequest, customer.getId());
         return ResponseEntity.ok().build();
     }
 }
