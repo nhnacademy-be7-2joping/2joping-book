@@ -7,6 +7,7 @@ import com.nhnacademy.bookstore.common.error.exception.base.ForbiddenException;
 import com.nhnacademy.bookstore.common.error.exception.base.NotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.base.UnauthorizedException;
 import com.nhnacademy.bookstore.common.error.exception.base.BadRequestException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -29,7 +30,10 @@ import java.util.stream.Collectors;
  * @since 1.0
  */
 @ControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler implements BaseExceptionHandler{
+
+    private final ObjectMapper objectMapper;
 
     // 400 - Bad Request 예외 처리
     @Override
@@ -65,7 +69,6 @@ public class GlobalExceptionHandler implements BaseExceptionHandler{
         // JSON 변환
         String errorMessage;
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
             errorMessage = objectMapper.writeValueAsString(errors);
         } catch (Exception e) {
             errorMessage = "JSON 변환 중 오류가 발생했습니다.";
