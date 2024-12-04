@@ -46,19 +46,15 @@ public class CartService {
         }
     }
 
-    public boolean removeCart(CartId cartId) {
+    public void removeCart(CartId cartId) {
         if (cartRepository.existsById(cartId)) {
             cartRepository.deleteById(cartId);
-            return true;
         }
-        return false;
     }
 
-    public boolean updateCart(CartRequestDto cartRequestDto, long customerId) {
+    public void updateCart(CartRequestDto cartRequestDto, long customerId) {
         if (cartRepository.existsById(new CartId(cartRequestDto.bookId(), customerId))) {
             cartRepository.updateQuantity(cartRequestDto.bookId(), cartRequestDto.quantity());
-            return true;
         }
-        return false;
     }
 }
