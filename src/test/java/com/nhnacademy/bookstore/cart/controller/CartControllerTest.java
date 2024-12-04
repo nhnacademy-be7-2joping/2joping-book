@@ -294,4 +294,26 @@ class CartControllerTest {
                 // then
                 .andExpect(status().isNoContent());
     }
+
+    @Test
+    @DisplayName("비회원 장바구니 추가 테스트 (cartSessionId.isEmpty())")
+    void addToCartForGuestWithEmptySessionId() throws Exception {
+        // given
+        CartRequestDto requestDto = new CartRequestDto(1L, "책1", 10000, 2);
+
+        Mockito.when(bookService.getBookRemainQuantity(requestDto.bookId())).thenReturn(10);
+
+        // Redis Mock 설정
+        HashOperations<Object, Object, Object> hashOperations = Mockito.mock(HashOperations.class);
+        Mockito.when(redisTemplate.opsForHash()).thenReturn(hashOperations);
+        Mockito.doNothing().when(hashOperations).put(anyString(), eq(String.valueOf(requestDto.bookId())), any(String.class));
+
+        // when
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/cart")
+                        .cookie(new jakarta.servlet.http.Cookie("cartSession", "")) // 빈 세션 쿠키 제공
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                // then
+                .andExpect(status().isCreated());
+    }
 }
