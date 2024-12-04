@@ -57,6 +57,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,7 @@ import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
@@ -248,10 +250,10 @@ public class BookServiceImpl implements BookService {
                 }
 
                 ContributorRole role = contributorRoleRepository.findByName(roleName)
-                        .orElseThrow(() -> new ContributorRoleNotFoundException());
+                        .orElseThrow(ContributorRoleNotFoundException::new);
 
                 Contributor contributor = contributorRepository.findByName(name)
-                        .orElseThrow(() -> new ContributorNotFoundException());
+                        .orElseThrow(ContributorNotFoundException::new);
 
                 contributorDtos.add(new ContributorResponseDto(
                         contributor.getContributorId(),
@@ -259,7 +261,7 @@ public class BookServiceImpl implements BookService {
                         contributor.getName()
                 ));
             }
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             // JSON 변환 중 발생한 예외 처리
             ex.printStackTrace();
             throw new RuntimeException("Error processing contributor list JSON");
@@ -298,7 +300,6 @@ public class BookServiceImpl implements BookService {
                 0,
                 0,null
         );
-        bookRepository.save(book);
 
         List<ContributorResponseDto> contributorResponseDtos = getContributorList(bookCreateHtmlRequestDto.contributorList());
 
@@ -347,6 +348,8 @@ public class BookServiceImpl implements BookService {
             bookImageRepository.save(new BookImage(book, detailImage, "상세"));
         }
 
+        bookRepository.save(book);
+
         return new BookCreateResponseDto(
                 book.getBookId(),
                 book.getTitle(),
@@ -370,15 +373,15 @@ public class BookServiceImpl implements BookService {
     /**
      * 알라딘 API를 통해 도서를 등록하는 메서드
      *
+     * @param query 검색명
      * @return 등록된 도서 리스트 객체 (BookCreateAPIResponseDto)
      * @throws ContributorNotFoundException 기여자를 찾을 수 없는 경우 발생
      */
     @Override
-    public List<BookCreateAPIResponseDto> createBooks() {
+    public List<BookCreateAPIResponseDto> createBooks(String query) {
 
         String apiKey = "ttbdlugus1759001";
-        // String url = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + apiKey + "&Query=company&QueryType=Title&MaxResults=50&Cover=Big&start=1&SearchTarget=Book&output=JS&Version=20131101";
-        String url = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + apiKey + "&Query=universe&QueryType=Title&MaxResults=50&start=1&SearchTarget=Book&output=JS&Version=20131101";
+        String url = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + apiKey + "&Query=" + query + "&QueryType=Title&MaxResults=5&start=1&SearchTarget=Book&output=JS&Version=20131101";
 
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         String jsonResponse = response.getBody();
@@ -471,7 +474,7 @@ public class BookServiceImpl implements BookService {
                 bookCreateResponseDtos.add(bookCreateResponseDto);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("데이터 처리 중 예외 발생", e);
         }
         return bookCreateResponseDtos;
     }
@@ -625,6 +628,7 @@ public class BookServiceImpl implements BookService {
             removeExistingImages(book, "썸네일");
             Image thumbnailImage = imageRepository.save(new Image(defaultImageUrl));
             bookImageRepository.save(new BookImage(book, thumbnailImage, "썸네일"));
+            thumbnailImageUrl = thumbnailImage.getUrl();
         } else if (imageUrlRequestDto.thumbnailImageUrl() != null && !imageUrlRequestDto.thumbnailImageUrl().isBlank()) {
             thumbnailImageUrl = imageUrlRequestDto.thumbnailImageUrl();
             removeExistingImages(book, "썸네일");
@@ -641,6 +645,7 @@ public class BookServiceImpl implements BookService {
             removeExistingImages(book, "상세");
             Image detailImage = imageRepository.save(new Image(defaultImageUrl));
             bookImageRepository.save(new BookImage(book, detailImage, "상세"));
+            detailImageUrl = detailImage.getUrl();
         } else if (imageUrlRequestDto.detailImageUrl() != null && !imageUrlRequestDto.detailImageUrl().isBlank()) {
             detailImageUrl = imageUrlRequestDto.detailImageUrl();
             removeExistingImages(book, "상세");
@@ -655,9 +660,9 @@ public class BookServiceImpl implements BookService {
 
         return new BookUpdateResultResponseDto(
                 book.getBookId(),
-                book.getPublisher().getName(),
                 book.getTitle(),
                 book.getDescription(),
+                book.getPublisher().getName(),
                 book.getPublishedDate(),
                 book.getIsbn(),
                 book.getRetailPrice(),
@@ -682,7 +687,7 @@ public class BookServiceImpl implements BookService {
      * 이미지 유형에 해당하는 도서의 기존 이미지를 모두 삭제합니다.
      * 이미지가 더 이상 다른 도서와 연결되어 있지 않을 경우 이미지 데이터를 완전히 삭제합니다.
      */
-    private void removeExistingImages(Book book, String imageType) {
+    public void removeExistingImages(Book book, String imageType) {
         bookImageRepository.findByBookAndImageType(book, imageType)
                 .forEach(existing -> {
                     bookImageRepository.delete(existing);
