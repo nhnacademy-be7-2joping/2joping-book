@@ -8,7 +8,6 @@ import com.nhnacademy.bookstore.like.dto.LikeResponseDto;
 import com.nhnacademy.bookstore.like.dto.response.MemberLikeResponseDto;
 import com.nhnacademy.bookstore.like.entity.Like;
 import com.nhnacademy.bookstore.like.repository.LikeRepository;
-import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,7 @@ import java.util.Optional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-
+@Transactional
 public class LikeServiceImpl implements LikeService{
 
     private final LikeRepository likeRepository;
@@ -43,23 +42,20 @@ public class LikeServiceImpl implements LikeService{
      * @return LikeResponseDto
      */
     public LikeResponseDto setBookLike(LikeRequestDto request,Long customerId) {
-        log.debug("1");
         Member member = memberRepository.findById(customerId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않은 회원입니다."));
-        log.debug("2");
         Book book = bookRepository.findById(request.bookId())
                 .orElseThrow(() -> new NotFoundException("책 정보가 없습니다."));
-        log.debug("좋아요 도서 get");
         Optional<Like> optionalBookLike =
 
                 likeRepository.findBookLike(member.getId(), book.getBookId());
-        log.debug("IF문 전");
         if (optionalBookLike.isEmpty()) {
-            log.debug("좋아요 새롭게 추가");
             Like bookLike = new Like(member, book);
 
             Like savedBookLike = likeRepository.save(bookLike);
 
+            book.setLikes(book.getLikes() + 1);
+            bookRepository.save(book);
 
             return new LikeResponseDto(
                     savedBookLike.getLikeId(),
@@ -68,8 +64,11 @@ public class LikeServiceImpl implements LikeService{
                     getLikeCount(book.getBookId())
             );
         } else {
-            log.debug("좋아요 삭제");
             Like bookLike = optionalBookLike.get();
+
+            book.setLikes(book.getLikes() - 1);
+            bookRepository.save(book);
+
             likeRepository.deleteById(bookLike.getLikeId());
 
             return new LikeResponseDto(
