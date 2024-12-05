@@ -2,9 +2,9 @@ package com.nhnacademy.bookstore.review.service;
 
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
-import com.nhnacademy.bookstore.common.error.exception.review.RatingValueNotValidException;
 import com.nhnacademy.bookstore.common.error.exception.review.ReviewAlreadyExistException;
 import com.nhnacademy.bookstore.common.error.exception.review.ReviewNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.user.member.MemberNotFoundException;
 import com.nhnacademy.bookstore.imageset.entity.Image;
 import com.nhnacademy.bookstore.imageset.repository.ImageRepository;
 import com.nhnacademy.bookstore.imageset.repository.ReviewImageRepository;
@@ -156,25 +156,35 @@ class ReviewServiceImplTest {
         assertThrows(ReviewAlreadyExistException.class, () -> reviewService.registerReview(createRequestDto));
     }
 
-    @Test
-    @DisplayName("리뷰 등록 실패 - 유효하지 않은 평점")
-    void registerReview_invalidRatingValue() {
-        // Mock 설정
-        when(orderDetailRepository.findBookIdByOrderDetailId(anyLong())).thenReturn(Optional.of(1L));
-        when(bookRepository.findById(anyLong())).thenReturn(Optional.of(mock(Book.class)));
-        when(memberRepository.findById(anyLong())).thenReturn(Optional.of(mock(Member.class)));
-        when(orderDetailRepository.findById(anyLong())).thenReturn(Optional.of(mock(OrderDetail.class)));
-        when(reviewRepository.existsByOrderDetail_OrderDetailId(anyLong())).thenReturn(false);
 
-        // 유효하지 않은 평점
-        ReviewCreateRequestDto invalidDto = new ReviewCreateRequestDto(
-                new ReviewDetailRequestDto(1L, 1L, 6, "제목", "내용"),
+    @Test
+    @DisplayName("리뷰 등록 실패 - 회원이 존재하지 않는 경우")
+    void registerReview_MemberNotFoundException() {
+        // Given: Mock 설정
+        when(orderDetailRepository.findBookIdByOrderDetailId(anyLong())).thenReturn(Optional.of(1L)); // bookId 반환
+        when(bookRepository.findById(anyLong())).thenReturn(Optional.of(mock(Book.class))); // book을 찾을 수 있게 설정
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.empty()); // 회원을 찾지 못하도록 설정
+
+        ReviewCreateRequestDto reviewCreateRequestDto = new ReviewCreateRequestDto(
+                new ReviewDetailRequestDto(1L, 1L, 5, "Test Title", "Test Text"),
                 new ReviewImageUrlRequestDto("test-image.jpg")
         );
 
-        // 실행 및 예외 검증
-        assertThrows(RatingValueNotValidException.class, () -> reviewService.registerReview(invalidDto));
+        // When & Then: 예외 검증
+        MemberNotFoundException exception = assertThrows(MemberNotFoundException.class,
+                () -> reviewService.registerReview(reviewCreateRequestDto));
+
+        // 예외 메시지 및 Redirect URL 검증
+        assertEquals("해당 회원이 없습니다.", exception.getMessage());
+        assertEquals("/mypage/mypage", exception.getUrl());
+
+        // 호출 검증: MemberRepository만 호출되고, 이후 단계는 호출되지 않아야 함
+        verify(memberRepository, times(1)).findById(anyLong());
+        verifyNoInteractions(reviewRepository); // Review 저장은 호출되지 않아야 함
     }
+
+
+
 
     @Test
     @DisplayName("리뷰 단일 조회 테스트 - 성공")
@@ -277,25 +287,6 @@ class ReviewServiceImplTest {
         verify(reviewRepository, never()).save(any());
     }
 
-    @Test
-    @DisplayName("리뷰 수정 테스트 - 유효하지 않은 평점")
-    void modifyReview_invalidRatingValue() {
-        // Mock 설정
-        Review mockReview = mock(Review.class);
-        when(reviewRepository.findById(anyLong())).thenReturn(Optional.of(mockReview));
-
-        // 유효하지 않은 평점 DTO
-        ReviewModifyRequestDto invalidDto = new ReviewModifyRequestDto(
-                new ReviewModifyDetailRequestDto(1L, 6, "수정된 제목", "수정된 내용"), // 평점 6 (유효 범위 초과)
-                new ReviewImageUrlRequestDto("updated-image.jpg"),
-                false
-        );
-
-        // 실행 및 검증
-        assertThrows(RatingValueNotValidException.class, () -> reviewService.modifyReview(invalidDto));
-        verify(reviewRepository, times(1)).findById(anyLong());
-        verify(reviewRepository, never()).save(any());
-    }
 
     @Test
     @DisplayName("리뷰 수정 테스트 - 이미지 삭제")

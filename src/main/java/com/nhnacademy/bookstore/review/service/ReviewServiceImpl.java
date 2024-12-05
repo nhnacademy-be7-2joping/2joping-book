@@ -88,10 +88,6 @@ public class ReviewServiceImpl implements ReviewService {
         String reviewImage = reviewCreateRequestDto.reviewImageUrlRequestDto().reviewImage() != null ? reviewCreateRequestDto.reviewImageUrlRequestDto().reviewImage() : null;
 
 
-
-        if (ratingValue < 1 || ratingValue > 5) {
-            throw new RatingValueNotValidException("평점 " + ratingValue + " 은 유효하지 않습니다. 1~5 사이의 값만 입력 가능합니다.", ratingValue);
-        }
         Review review = new Review(
                 null,
                 orderDetail,
@@ -173,9 +169,6 @@ public class ReviewServiceImpl implements ReviewService {
                 .orElseThrow(() -> new ReviewNotFoundException("리뷰가 존재하지 않습니다."));
 
         int ratingValue = reviewModifyRequestDto.reviewModifyDetailRequestDto().ratingValue();
-        if (ratingValue < 1 || ratingValue > 5) {
-            throw new RatingValueNotValidException("평점 " + ratingValue + " 은 유효하지 않습니다.", ratingValue);
-        }
 
         String updatedImageUrl = review.getImageUrl(); // 기존 URL 기본값
 
