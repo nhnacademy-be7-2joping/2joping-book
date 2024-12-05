@@ -54,6 +54,22 @@ public class PublisherControllerTest {
     }
 
     @Test
+    @DisplayName("출판사 등록 실패 - 유효성 검증 실패")
+    public void testRegisterPublisher_BindingResultHasErrors() throws Exception {
+        // given: 유효하지 않은 요청 데이터
+        String invalidRequestContent = "{\"name\": \"\"}"; // 이름이 빈 문자열로 유효성 검증 실패
+
+        // when: 요청 실행
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/bookstore/publishers")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(invalidRequestContent));
+
+        // then: 검증 실패로 Bad Request 반환
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+
+    @Test
     @DisplayName("전체 출판사 조회")
     public void testGetAllPublishers() throws Exception {
         // given
@@ -127,4 +143,43 @@ public class PublisherControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.name").value("업데이트된 출판사 이름"));
     }
+
+    @Test
+    @DisplayName("출판사 수정 실패 - 유효성 검증 실패")
+    public void testUpdatePublisher_BindingResultHasErrors() throws Exception {
+        // given: 유효하지 않은 요청 데이터
+        String invalidRequestContent = "{\"name\": \"\"}"; // 이름이 빈 문자열로 유효성 검증 실패
+
+        // when: 요청 실행
+        ResultActions resultActions = mockMvc.perform(put("/api/v1/bookstore/publisher/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(invalidRequestContent));
+
+        // then: 검증 실패로 Bad Request 반환
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    @DisplayName("전체 출판사 등록용 조회 - 성공")
+    public void testGetAllPublishersForRegister_Success() throws Exception {
+        // given
+        List<PublisherResponseDto> responseList = Arrays.asList(
+                new PublisherResponseDto(1L, "출판사1"),
+                new PublisherResponseDto(2L, "출판사2")
+        );
+        when(publisherService.getAllPublishersForRegister()).thenReturn(responseList);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/bookstore/publishers/list")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].name").value("출판사1"))
+                .andExpect(jsonPath("$[1].id").value(2L))
+                .andExpect(jsonPath("$[1].name").value("출판사2"));
+    }
+
 }
