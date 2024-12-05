@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstore.coupon.respository;
 
 
+import com.nhnacademy.bookstore.common.config.QuerydslConfig;
 import com.nhnacademy.bookstore.coupon.dto.response.MemberCouponResponseDto;
 import com.nhnacademy.bookstore.coupon.dto.response.OrderCouponResponse;
 import com.nhnacademy.bookstore.coupon.entity.Coupon;
@@ -15,143 +16,212 @@ import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import com.nhnacademy.bookstore.user.memberstatus.entity.MemberStatus;
+import com.nhnacademy.bookstore.user.memberstatus.repository.MemberStatusRepository;
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.enums.Tier;
+import com.nhnacademy.bookstore.user.tier.repository.MemberTierRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 import com.nhnacademy.bookstore.user.enums.Gender;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
- /**
+
+/**
  * MemberCouponRepositoryImplTest
- * 이 클래스는 MemberCouponRepositoryImpl의 getAllMemberCoupons 메서드를 테스트합니다.
- * 특정 회원의 쿠폰과 쿠폰 정책이 데이터베이스에 올바르게 저장되고 조회되는지 확인하는 테스트입니다.
+ * 특정 회원의 쿠폰과 쿠폰 정책 조회 테스트 클래스입니다.
+ * 쿠폰 생성, 저장 및 조회 메서드의 정상 동작을 검증합니다.
  *
+ * @author Luha
  * @since 1.0
- * author Luha
  */
-@ActiveProfiles("dev")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-class MemberCouponRepositoryImplTest {
-    @Autowired
-    private MemberRepository memberRepository;
+ @DataJpaTest
+ @Import(QuerydslConfig.class) // QueryDSL 설정 추가
+ @ActiveProfiles("test") // 테스트 프로파일 활성화
+ @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+ class MemberCouponRepositoryImplTest {
 
-    @Autowired
-    private MemberCouponRepositoryImpl memberCouponRepository;
+     @Autowired
+     private MemberRepository memberRepository;
 
-    @Autowired
-    private CouponPolicyRepository couponPolicyRepository;
+     @Autowired
+     private MemberCouponRepositoryImpl memberCouponRepository;
 
-    @Autowired
-    private CouponRepository couponRepository;
+     @Autowired
+     private CouponPolicyRepository couponPolicyRepository;
 
-    @Autowired
-    private MemberCouponRepository memberCouponJpaRepository;
+     @Autowired
+     private CouponRepository couponRepository;
 
+     @Autowired
+     private MemberCouponRepository memberCouponJpaRepository;
+
+     @Autowired
+     private MemberTierRepository memberTierRepository;
+
+     @Autowired
+     private MemberStatusRepository memberStatusRepository;
 
     /**
-     * getAllMemberCoupons 메서드 테스트.
-     * Given: 특정 회원의 쿠폰과 정책을 저장.
-     * When: getAllMemberCoupons 메서드를 사용하여 쿠폰 목록을 조회.
-     * Then: 조회된 쿠폰 목록이 올바른지 확인.
+     * 테스트 데이터 초기화
+     * 쿠폰 정책, 쿠폰, 회원 정보를 데이터베이스에 저장합니다.
+     */
+     @BeforeEach
+     void setUp() {
+         // 1. MemberStatus 및 MemberTier 초기화
+         MemberStatus status = new MemberStatus(1L, "Active");
+         memberStatusRepository.save(status); // 반드시 저장
+
+         MemberTier tier = new MemberTier(1L, Tier.GOLD, true, 1, 1, 1);
+         memberTierRepository.save(tier); // 반드시 저장
+
+         // 2. Member 생성 및 저장
+         Member member = getMember();
+         member.setStatus(status); // 저장된 MemberStatus 참조
+         member.setTier(tier); // 저장된 MemberTier 참조
+         memberRepository.save(member);
+
+         // 3. CouponPolicy 및 Coupon 생성
+         CouponPolicy policy = new CouponPolicy(null, "Test Policy", DiscountType.ACTUAL, 10, 100, 30, "Policy Detail", 50, false);
+         couponPolicyRepository.save(policy);
+
+         Coupon coupon = new Coupon(null, "Test Coupon", LocalDate.now(), LocalDate.now().plusDays(10), 100, policy, null);
+         couponRepository.save(coupon);
+
+         Coupon usedCoupon = new Coupon(null, "Used Coupon", LocalDate.now(), LocalDate.now().plusDays(10), 100, policy, null);
+         couponRepository.save(usedCoupon);
+
+         Coupon expiredCoupon = new Coupon(null, "Expired Coupon", LocalDate.now(), LocalDate.now().plusDays(10), 100, policy, null);
+         couponRepository.save(expiredCoupon);
+
+         // 4. MemberCoupon 생성 및 저장
+         MemberCoupon memberCoupon = new MemberCoupon(null, coupon, member, LocalDateTime.now(), LocalDateTime.now().plusDays(5), false, null);
+         memberCouponJpaRepository.save(memberCoupon);
+
+         MemberCoupon memberUsedCoupon = new MemberCoupon(null, usedCoupon, member, LocalDateTime.now(), LocalDateTime.now().plusDays(5), true, null);
+         memberCouponJpaRepository.save(memberUsedCoupon);
+
+         MemberCoupon memberExpiredCoupon = new MemberCoupon(null, expiredCoupon, member, LocalDateTime.now().minusDays(10), LocalDateTime.now().minusDays(5), true, null);
+         memberCouponJpaRepository.save(memberExpiredCoupon);
+     }
+
+    /**
+     * 특정 회원의 쿠폰 조회 테스트
+     * Given: 회원과 쿠폰이 저장된 상태.
+     * When: getAllMemberCoupons 호출.
+     * Then: 저장된 쿠폰 목록을 반환.
+     * @author Luha
+     * @since 1.0
      */
     @Test
-    @Transactional
+    @DisplayName("회원의 모든 쿠폰 조회 - 성공")
     void testGetAllMemberCoupons() {
-        Member member = getMember();
+         // Given
+         Member testMember = memberRepository.findAll().getFirst();
 
-        Member testMember = memberRepository.save(member);
+         // When
+         List<MemberCouponResponseDto> memberCoupons = memberCouponRepository.getAllMemberCoupons(testMember.getId());
 
-        CouponPolicy policy = new CouponPolicy(null, "Test Policy", DiscountType.ACTUAL, 10, 100, 30, "Policy Detail", 50, false);
-        couponPolicyRepository.save(policy);
-
-        Coupon coupon = new Coupon(null, "Test Coupon", LocalDate.now(), LocalDate.now().plusDays(10), 100, policy, null);
-        Coupon coupon1 = couponRepository.save(coupon);
-        MemberCoupon memberCoupon = new MemberCoupon(null, coupon1, testMember, LocalDateTime.now(), LocalDateTime.now().plusDays(5), false, null);
-        memberCouponJpaRepository.save(memberCoupon);
-
-        // When: getAllMemberCoupons 호출
-        List<MemberCouponResponseDto> memberCoupons = memberCouponRepository.getAllMemberCoupons(testMember.getId());
-
-        // Then: 조회된 데이터 검증
-        assertNotNull(memberCoupons);
-        assertEquals(1, memberCoupons.size());
-        assertEquals("Test Coupon", memberCoupons.getFirst().couponResponseDto().name());
-        assertEquals("Test Policy", memberCoupons.getFirst().couponResponseDto().couponPolicyResponseDto().name());
-    }
-
-    private static Member getMember() {
-        MemberCreateRequestDto requestDto = new MemberCreateRequestDto(
-                "TestUser",    // 이름
-                "010-1234-5678", // 전화번호
-                "testuser@example.com", // 이메일
-                "testLoginId",  // 로그인 ID
-                "password",      // 비밀번호
-                "nickname",      // 닉네임
-                Gender.M,     // 성별
-                LocalDate.of(1990, 1, 1) // 생일
-        );
-
-        // 빈 Member 객체 생성 후 toEntity로 초기화
-        Member member = new Member();
-        member.toEntity(requestDto, "password");
-
-        // 추가 필드 설정 (status, tier 등)
-        member.setStatus(new MemberStatus(1L, "Active")); // 예시용 MemberStatus
-        member.setTier(new MemberTier(1L, Tier.GOLD, true, 1, 1, 1)); // 예시용 MemberTier
-        return member;
-    }
+         // Then
+         assertThat(memberCoupons).isNotEmpty();
+         assertThat(memberCoupons.getFirst().couponResponseDto().name()).isEqualTo("Test Coupon");
+         assertThat(memberCoupons.getFirst().couponResponseDto().couponPolicyResponseDto().name()).isEqualTo("Test Policy");
+     }
 
     /**
-     * getAllMemberOrderCoupons 메서드 테스트.
-     * Given: 특정 회원의 쿠폰과 정책을 저장.
-     * When: getAllMemberOrderCoupons 메서드를 사용하여 주문 가능한 쿠폰 목록을 조회.
-     * Then: 조회된 쿠폰 목록이 올바른지 확인.
+     * 특정 회원의 만료된 또는 사용된 쿠폰 조회 테스트
+     * Given: 회원과 만료된 및 사용된 쿠폰이 저장된 상태.
+     * When: getExpiredOrUsedMemberCoupons 호출.
+     * Then: 만료되거나 사용된 쿠폰 목록을 반환.
+     * @author Luha
+     * @since 1.0
      */
     @Test
-    @Transactional
+    @DisplayName("회원의 만료 또는 사용된 쿠폰 조회 - 성공")
     void testGetAllMemberOrderCoupons() {
+         // Given
+         Member testMember = memberRepository.findAll().getFirst();
 
+         // When
+         List<OrderCouponResponse> orderCoupons = memberCouponRepository.getAllMemberOrderCoupons(testMember.getId());
 
-        // 빈 Member 객체 생성 후 toEntity로 초기화
-        Member member = getMember();
+         // Then
+         assertThat(orderCoupons).isNotEmpty();
+         assertThat(orderCoupons.getFirst().name()).isEqualTo("Test Coupon");
+         assertThat(orderCoupons.getFirst().detail()).isEqualTo("Policy Detail");
+         assertThat(orderCoupons.getFirst().discountValue()).isEqualTo(10);
+         assertThat(orderCoupons.getFirst().maxDiscount()).isEqualTo(50);
+         assertThat(orderCoupons.getFirst().discountType()).isEqualTo(DiscountType.ACTUAL);
+     }
 
-        // 추가 필드 설정 (status, tier 등)
-        member.setStatus(new MemberStatus(1L, "Active")); // 예시용 MemberStatus
-        member.setTier(new MemberTier(1L, Tier.GOLD, true, 1, 1, 1)); // 예시용 MemberTier
+     private static Member getMember() {
+         MemberCreateRequestDto requestDto = new MemberCreateRequestDto(
+                 "TestUser",    // 이름
+                 "010-1234-5678", // 전화번호
+                 "testuser@example.com", // 이메일
+                 "testLoginId",  // 로그인 ID
+                 "password",      // 비밀번호
+                 "nickname",      // 닉네임
+                 Gender.M,     // 성별
+                 LocalDate.of(1990, 1, 1) // 생일
+         );
 
-        Member testMember = memberRepository.save(member);
+         Member member = new Member();
+         member.toEntity(requestDto, "password");
+         member.setStatus(new MemberStatus(1L, "Active"));
+         member.setTier(new MemberTier(1L, Tier.GOLD, true, 1, 1, 1));
+         return member;
+     }
 
-        // 쿠폰 정책 생성
-        CouponPolicy policy = new CouponPolicy(null, "Test Policy", DiscountType.ACTUAL, 10, 100, 30, "Policy Detail", 50, false);
-        couponPolicyRepository.save(policy);
+    /**
+     * 특정 회원의 만료된 또는 사용된 쿠폰 조회 테스트
+     * Given: 회원과 만료된 및 사용된 쿠폰이 저장된 상태.
+     * When: getExpiredOrUsedMemberCoupons 호출.
+     * Then: 만료되거나 사용된 쿠폰 목록을 반환.
+     * @author Luha
+     * @since 1.0
+     */
+    @Test
+    @DisplayName("회원의 만료 또는 사용된 쿠폰 조회 - 성공")
+    void testGetExpiredOrUsedMemberCoupons() {
+         // Given
+         Member member = memberRepository.findAll().getFirst();
 
-        // 쿠폰 생성
-        Coupon coupon = new Coupon(null, "Test Coupon", LocalDate.now(), LocalDate.now().plusDays(10), 100, policy, null);
-        couponRepository.save(coupon);
+         // When
+         List<MemberCouponResponseDto> result = memberCouponRepository.getExpiredOrUsedMemberCoupons(member.getId());
 
-        // 회원 쿠폰 생성
-        MemberCoupon memberCoupon = new MemberCoupon(null, coupon, testMember, LocalDateTime.now(), LocalDateTime.now().plusDays(5), false, null);
-        memberCouponJpaRepository.save(memberCoupon);
-        // When: getAllMemberOrderCoupons 호출
-        List<OrderCouponResponse> orderCoupons = memberCouponRepository.getAllMemberOrderCoupons(testMember.getId());
+         // Then
+         assertThat(result).hasSize(2);
 
-        // Then: 조회된 데이터 검증
-        assertNotNull(orderCoupons);
-        assertEquals(1, orderCoupons.size());
-        assertEquals("Test Coupon", orderCoupons.getFirst().name());
-        assertEquals("Policy Detail", orderCoupons.getFirst().detail());
-        assertEquals(10, orderCoupons.getFirst().discountValue());
-        assertEquals(50, orderCoupons.getFirst().maxDiscount());
-        assertEquals(DiscountType.ACTUAL, orderCoupons.getFirst().discountType());
-    }
-}
+         MemberCouponResponseDto expiredCoupon = null;
+         MemberCouponResponseDto usedCoupon = null;
+
+         for (MemberCouponResponseDto dto : result) {
+             if ("Expired Coupon".equals(dto.couponResponseDto().name())) {
+                 expiredCoupon = dto;
+             } else if ("Used Coupon".equals(dto.couponResponseDto().name())) {
+                 usedCoupon = dto;
+             }
+
+             // 두 쿠폰을 모두 찾으면 루프 종료
+             if (expiredCoupon != null && usedCoupon != null) {
+                 break;
+             }
+         }
+         assertThat(expiredCoupon).isNotNull();
+         assertThat(expiredCoupon.invalidTime()).isBefore(LocalDateTime.now());
+
+         assertThat(usedCoupon).isNotNull();
+         assertThat(usedCoupon.isUsed()).isTrue();
+     }
+ }

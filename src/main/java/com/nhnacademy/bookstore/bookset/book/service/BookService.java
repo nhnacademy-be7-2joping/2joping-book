@@ -21,7 +21,7 @@ import java.util.Map;
 
 public interface BookService {
     BookCreateResponseDto createBook(BookCreateRequestDto bookCreateRequestDto);
-    List<BookCreateAPIResponseDto> createBooks();
+    List<BookCreateAPIResponseDto> createBooks(String query);
     List<ContributorResponseDto> getContributorListForAPI(String text);
     List<ContributorResponseDto> getContributorList(String contributorListJson);
     Page<BookSimpleResponseDto> getAllBooks(Pageable pageable);

@@ -163,6 +163,12 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>**/Q*</exclude>
+                        <exclude>**/generated-sources/**</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
 
             <plugin>

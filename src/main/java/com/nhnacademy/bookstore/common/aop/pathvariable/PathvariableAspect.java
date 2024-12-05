@@ -63,23 +63,24 @@ public class PathvariableAspect {
      * @param <T>   타입 매개변수
      * @throws InvalidPathVariableException 음수 값이 전달될 경우 발생하는 예외
      */
-    private <T> void checkValue(T value) {
-        if (value != null) {
-            Class<?> valueType = value.getClass();
+    public <T> void checkValue(T value) {
 
-            if (valueType == Long.class) {
-                long pathVarValue = (Long) value;
-                if (pathVarValue <= 0) {
-                    throw new InvalidPathVariableException("0 또는 음수 값은 허용되지 않습니다.");
-                }
-            } else if (valueType == Integer.class) {
-                int pathVarValue = (Integer) value;
-                if (pathVarValue <= 0) {
-                    throw new InvalidPathVariableException("0 또는 음수 값은 허용되지 않습니다.");
-                }
-            }
-        } else {
+        if (value == null) {
             throw new InvalidPathVariableException("값이 null입니다.");
+        }
+
+        Class<?> valueType = value.getClass();
+
+        if (valueType == Long.class) {
+            long pathVarValue = (Long) value;
+            if (pathVarValue <= 0) {
+                throw new InvalidPathVariableException("0 또는 음수 값은 허용되지 않습니다.");
+            }
+        } else if (valueType == Integer.class) {
+            int pathVarValue = (Integer) value;
+            if (pathVarValue <= 0) {
+                throw new InvalidPathVariableException("0 또는 음수 값은 허용되지 않습니다.");
+            }
         }
     }
 }

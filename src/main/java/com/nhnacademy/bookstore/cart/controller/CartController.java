@@ -63,7 +63,7 @@ public class CartController {
         } else {
             if (customerId == 0) {
                 // 비회원 로직
-                if (cartSessionId.isEmpty()) { // 비회원이 처음 장바구니에 상품을 담을 때 (세션이 없을때)
+                if (cartSessionId == null || cartSessionId.isEmpty()) { // 비회원이 처음 장바구니에 상품을 담을 때 (세션이 없을때)
                     newCartSessionId = "cart:" + UUID.randomUUID();
                     redisTemplate.opsForHash().put(newCartSessionId, String.valueOf(cartRequestDto.bookId()), cartRequestDto.title() + "/" + cartRequestDto.sellingPrice() + "/" + cartRequestDto.quantity());
                     return ResponseEntity.status(HttpStatus.CREATED).body(newCartSessionId);

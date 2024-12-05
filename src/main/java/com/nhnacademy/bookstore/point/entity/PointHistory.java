@@ -19,16 +19,16 @@ public class PointHistory {
     private Long pointTypeHistoryId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "point_type_id")
+    @JoinColumn(name = "point_type_id", nullable = true)
     private PointType pointType;
 
-    @Column(name = "order_detail_id")
+    @Column(name = "order_detail_id", nullable = true)
     private Long orderDetailId;
 
-    @Column(name = "refund_history_id")
+    @Column(name = "refund_history_id", nullable = true)
     private Long refundHistoryId;
 
-    @Column(name = "order_id")
+    @Column(name = "order_id", nullable = true)
     private Long orderId;
 
     @Column(name = "customer_id")
@@ -47,7 +47,8 @@ public class PointHistory {
             Long refundHistoryId,
             Long orderId,
             Long customerId,
-            Integer pointVal
+            Integer pointVal,
+            LocalDateTime localDateTime
     ) {
         this.pointType = pointType;
         this.orderDetailId = orderDetailId;
@@ -55,6 +56,6 @@ public class PointHistory {
         this.orderId = orderId;
         this.customerId = customerId;
         this.pointVal = pointVal;
-        this.registerDate = LocalDateTime.now();
+        this.registerDate = localDateTime;
     }
 }

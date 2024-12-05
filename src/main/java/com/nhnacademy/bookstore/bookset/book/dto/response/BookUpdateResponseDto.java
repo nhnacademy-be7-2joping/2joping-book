@@ -1,7 +1,5 @@
 package com.nhnacademy.bookstore.bookset.book.dto.response;
 
-import com.nhnacademy.bookstore.bookset.tag.dto.TagResponseDto;
-
 import java.time.LocalDate;
 import java.util.List;
 

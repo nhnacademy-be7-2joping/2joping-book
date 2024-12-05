@@ -1,20 +1,23 @@
 package com.nhnacademy.bookstore.coupon.respository;
 
 
+import com.nhnacademy.bookstore.common.config.QuerydslConfig;
 import com.nhnacademy.bookstore.coupon.dto.response.CouponPolicyResponseDto;
 import com.nhnacademy.bookstore.coupon.entity.CouponPolicy;
 import com.nhnacademy.bookstore.coupon.enums.DiscountType;
 import com.nhnacademy.bookstore.coupon.repository.policy.CouponPolicyRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 /**
  * CouponPolicyRepositoryImplTest
@@ -24,40 +27,53 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since 1.0
  * author Luha
  */
-@ActiveProfiles("dev")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@DataJpaTest
+@Import(QuerydslConfig.class) // QueryDSL 설정 추가
+@ActiveProfiles("test") // 테스트 환경 적용
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class CouponPolicyRepositoryImplTest {
-
 
     @Autowired
     private CouponPolicyRepository couponPolicyRepository;
 
+    /**
+     * 데이터 초기화
+     * 활성/비활성 쿠폰 정책 데이터를 데이터베이스에 저장합니다.
+     */
     @BeforeEach
-    @Transactional
     void setUp() {
-        // 활성 쿠폰 정책 데이터 준비
-        CouponPolicy activePolicy = new CouponPolicy(null, "Active Policy", DiscountType.ACTUAL, 20, 5, 30, "Test active policy", 50, true);
-        CouponPolicy inactivePolicy = new CouponPolicy(null, "Inactive Policy", DiscountType.ACTUAL, 10, 10, 60, "Test inactive policy", 100, false);
+        // Given: 데이터 초기화
+        CouponPolicy activePolicy = new CouponPolicy(
+                null, "Active Policy", DiscountType.ACTUAL, 20, 5, 30,
+                "Test active policy", 50, true
+        );
+        CouponPolicy inactivePolicy = new CouponPolicy(
+                null, "Inactive Policy", DiscountType.ACTUAL, 10, 10, 60,
+                "Test inactive policy", 100, false
+        );
 
         couponPolicyRepository.save(activePolicy);
         couponPolicyRepository.save(inactivePolicy);
     }
 
     /**
-     * findActivePolicy 메서드 테스트.
-     * Given: 활성화된 쿠폰 정책을 저장.
-     * When: findActivePolicy 메서드를 사용하여 정책 목록을 조회.
-     * Then: 조회된 정책 목록이 올바른지 확인.
+     * 테스트: 활성화된 쿠폰 정책 조회
+     * Given: 활성화된 정책이 데이터베이스에 저장되어 있음.
+     * When: findActivePolicy 메서드를 호출하여 활성화된 정책을 조회.
+     * Then: 반환된 목록에 활성화된 정책만 포함되었는지 검증.
+     * @since 1.0
+     * author Luha
      */
     @Test
-    @Transactional
+    @DisplayName("활성화된 쿠폰 정책 조회 - 성공")
     void testFindActivePolicy() {
-        // When: findActivePolicy 호출
+        // When
         List<CouponPolicyResponseDto> activePolicies = couponPolicyRepository.findActivePolicy();
 
-        // Then: 조회된 데이터 검증
-        assertFalse(activePolicies.isEmpty());
-        assertEquals("생일 쿠폰 정책", activePolicies.getFirst().name());
-        assertEquals("생일 쿠폰입니다.", activePolicies.getFirst().detail());
+        // Then
+        assertThat(activePolicies).isNotEmpty();
+        assertThat(activePolicies).hasSize(1);
+        assertThat(activePolicies.getFirst().name()).isEqualTo("Active Policy");
+        assertThat(activePolicies.getFirst().detail()).isEqualTo("Test active policy");
     }
 }
