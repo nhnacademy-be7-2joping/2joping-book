@@ -38,13 +38,14 @@ class LikeControllerTest {
 
     @Test
     void setBookLike_success() throws Exception {
-        LikeRequestDto requestDto = new LikeRequestDto(1L, 1L);
+        LikeRequestDto requestDto = new LikeRequestDto(1L);
         LikeResponseDto responseDto = new LikeResponseDto(1L, 1L, 1L, 10L);
 
-        when(likeService.setBookLike(any(LikeRequestDto.class))).thenReturn(responseDto);
+        when(likeService.setBookLike(any(LikeRequestDto.class),any())).thenReturn(responseDto);
 
         mockMvc.perform(post("/api/v1/likes")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Customer-Id", 1L)
                         .content("{\"memberId\": 1, \"bookId\": 1}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.likeId").value(1L))

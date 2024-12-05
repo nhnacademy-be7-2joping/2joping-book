@@ -12,6 +12,7 @@ import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ import java.util.Optional;
  */
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 
 public class LikeServiceImpl implements LikeService{
@@ -40,19 +42,20 @@ public class LikeServiceImpl implements LikeService{
      * @param request 책과 회원 정보가 아이디가 담긴 객체
      * @return LikeResponseDto
      */
-    public LikeResponseDto setBookLike(LikeRequestDto request) {
-
-        Member member = memberRepository.findById(request.memberId())
+    public LikeResponseDto setBookLike(LikeRequestDto request,Long customerId) {
+        log.debug("1");
+        Member member = memberRepository.findById(customerId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않은 회원입니다."));
-
+        log.debug("2");
         Book book = bookRepository.findById(request.bookId())
                 .orElseThrow(() -> new NotFoundException("책 정보가 없습니다."));
-
+        log.debug("좋아요 도서 get");
         Optional<Like> optionalBookLike =
 
                 likeRepository.findBookLike(member.getId(), book.getBookId());
-
+        log.debug("IF문 전");
         if (optionalBookLike.isEmpty()) {
+            log.debug("좋아요 새롭게 추가");
             Like bookLike = new Like(member, book);
 
             Like savedBookLike = likeRepository.save(bookLike);
@@ -65,13 +68,14 @@ public class LikeServiceImpl implements LikeService{
                     getLikeCount(book.getBookId())
             );
         } else {
+            log.debug("좋아요 삭제");
             Like bookLike = optionalBookLike.get();
             likeRepository.deleteById(bookLike.getLikeId());
 
             return new LikeResponseDto(
                     null,
                     request.bookId(),
-                    request.memberId(),
+                    customerId,
                     getLikeCount(book.getBookId())
             );
         }

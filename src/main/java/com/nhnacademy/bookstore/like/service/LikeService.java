@@ -15,7 +15,7 @@ public interface LikeService {
      * @param request 좋아요 요청 정보
      * @return LikeResponseDto
      */
-    LikeResponseDto setBookLike(LikeRequestDto request);
+    LikeResponseDto setBookLike(LikeRequestDto request, Long customerId);
 
     /**
      * 특정 책의 좋아요 개수를 조회하는 메서드
