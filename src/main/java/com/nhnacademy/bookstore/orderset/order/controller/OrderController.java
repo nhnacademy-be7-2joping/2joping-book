@@ -20,10 +20,13 @@ public class OrderController {
     private final CustomerService customerService;
 
     @PostMapping("/temp")
-    public ResponseEntity<OrderTempResponse> postOrderOnRedis(@RequestBody @Valid OrderRequest orderRequest) {
+    public ResponseEntity<OrderTempResponse> postOrderOnRedis(
+            @RequestBody @Valid OrderRequest orderRequest,
+            @RequestHeader(value = "X-Customer-Id", required = false) Long customerId) {
         // redis에 주문 정보 임시등록
-        orderService.registerOrderOnRedis(orderRequest);
-        OrderTempResponse tempResponse = new OrderTempResponse(orderRequest.totalCost());
+        OrderRequest satinizedOrderRequest = orderService.validateOrderRequest(orderRequest, customerId);
+        orderService.registerOrderOnRedis(satinizedOrderRequest);
+        OrderTempResponse tempResponse = new OrderTempResponse(satinizedOrderRequest.totalCost());
         return ResponseEntity.ok(tempResponse);
     }
 
@@ -32,19 +35,9 @@ public class OrderController {
                                        @RequestHeader(value = "X-Customer-Id", required = false) Long customerId) {
         Customer customer;
         OrderRequest orderRequest = orderService.getOrderOnRedis(orderPostRequest.orderId());
-        if (customerId == null) {
-            // 비회원 주문인 경우
-            CustomerRegisterRequest registerRequest = new CustomerRegisterRequest(
-                    orderRequest.deliveryInfo().name(),
-                    orderRequest.deliveryInfo().phone(),
-                    orderRequest.deliveryInfo().email()
-            );
-            customer = customerService.saveCustomer(registerRequest);
-        } else {
-            customer = customerService.getCustomer(customerId);
-        }
 
-        orderService.registerOrder(orderRequest, orderPostRequest, customer);
+
+        orderService.registerOrder(orderRequest, orderPostRequest, customer.getId());
         return ResponseEntity.ok().build();
     }
 }

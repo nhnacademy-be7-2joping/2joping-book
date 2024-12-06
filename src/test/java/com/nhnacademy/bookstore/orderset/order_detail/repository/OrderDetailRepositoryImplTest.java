@@ -1,16 +1,16 @@
 package com.nhnacademy.bookstore.orderset.order_detail.repository;
 
+import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.bookset.publisher.entity.Publisher;
 import com.nhnacademy.bookstore.common.config.MySqlConfig;
-import com.nhnacademy.bookstore.orderset.order_detail.dto.response.OrderDetailResponseDto;
+import com.nhnacademy.bookstore.common.config.QuerydslConfig;
 import com.nhnacademy.bookstore.orderset.order.entity.Order;
+import com.nhnacademy.bookstore.orderset.order_detail.dto.response.OrderDetailResponseDto;
 import com.nhnacademy.bookstore.orderset.order_detail.entity.OrderDetail;
 import com.nhnacademy.bookstore.orderset.order_state.entity.OrderState;
 import com.nhnacademy.bookstore.orderset.order_state.entity.vo.OrderStateType;
-import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.user.enums.Gender;
 import com.nhnacademy.bookstore.user.member.entity.Member;
-import com.nhnacademy.bookstore.common.config.QuerydslConfig;
 import com.nhnacademy.bookstore.user.memberstatus.entity.MemberStatus;
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.enums.Tier;
@@ -19,14 +19,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-
-import jakarta.persistence.EntityManager;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -45,7 +44,7 @@ class OrderDetailRepositoryImplTest {
     private OrderDetailRepositoryImpl orderDetailRepository;
 
     @Autowired
-    private EntityManager entityManager;
+    private TestEntityManager entityManager;
 
     private Member member;
     private Order order;
