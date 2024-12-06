@@ -8,10 +8,10 @@ import com.nhnacademy.bookstore.like.dto.LikeResponseDto;
 import com.nhnacademy.bookstore.like.dto.response.MemberLikeResponseDto;
 import com.nhnacademy.bookstore.like.entity.Like;
 import com.nhnacademy.bookstore.like.repository.LikeRepository;
-import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,8 +26,9 @@ import java.util.Optional;
  */
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
-
+@Transactional
 public class LikeServiceImpl implements LikeService{
 
     private final LikeRepository likeRepository;
@@ -40,23 +41,21 @@ public class LikeServiceImpl implements LikeService{
      * @param request 책과 회원 정보가 아이디가 담긴 객체
      * @return LikeResponseDto
      */
-    public LikeResponseDto setBookLike(LikeRequestDto request) {
-
-        Member member = memberRepository.findById(request.memberId())
+    public LikeResponseDto setBookLike(LikeRequestDto request,Long customerId) {
+        Member member = memberRepository.findById(customerId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않은 회원입니다."));
-
         Book book = bookRepository.findById(request.bookId())
                 .orElseThrow(() -> new NotFoundException("책 정보가 없습니다."));
-
         Optional<Like> optionalBookLike =
 
                 likeRepository.findBookLike(member.getId(), book.getBookId());
-
         if (optionalBookLike.isEmpty()) {
             Like bookLike = new Like(member, book);
 
             Like savedBookLike = likeRepository.save(bookLike);
 
+            book.setLikes(book.getLikes() + 1);
+            bookRepository.save(book);
 
             return new LikeResponseDto(
                     savedBookLike.getLikeId(),
@@ -66,12 +65,16 @@ public class LikeServiceImpl implements LikeService{
             );
         } else {
             Like bookLike = optionalBookLike.get();
+
+            book.setLikes(book.getLikes() - 1);
+            bookRepository.save(book);
+
             likeRepository.deleteById(bookLike.getLikeId());
 
             return new LikeResponseDto(
                     null,
                     request.bookId(),
-                    request.memberId(),
+                    customerId,
                     getLikeCount(book.getBookId())
             );
         }
