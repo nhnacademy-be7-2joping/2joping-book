@@ -1,7 +1,6 @@
 package com.nhnacademy.bookstore.point.repository.Impl;
 
-import com.nhnacademy.bookstore.point.dto.response.PointTypeDto;
-import com.nhnacademy.bookstore.point.dto.response.ReadPointTypeResponseDto;
+import com.nhnacademy.bookstore.point.dto.response.GetPointTypeResponse;
 import com.nhnacademy.bookstore.point.entity.QPointType;
 import com.nhnacademy.bookstore.point.repository.PointTypeRepositoryCustom;
 import com.querydsl.core.types.Projections;
@@ -16,11 +15,11 @@ public class PointTypeRepositoryImpl implements PointTypeRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<PointTypeDto> findAllActivePointTypes() {
+    public List<GetPointTypeResponse> findAllActivePointTypes() {
         QPointType pointType = QPointType.pointType;
 
         return queryFactory
-                .select(Projections.constructor(PointTypeDto.class,
+                .select(Projections.constructor(GetPointTypeResponse.class,
                         pointType.pointTypeId,
                         pointType.type,
                         pointType.accVal,
