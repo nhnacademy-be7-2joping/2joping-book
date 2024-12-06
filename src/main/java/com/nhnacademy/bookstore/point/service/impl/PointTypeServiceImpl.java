@@ -3,7 +3,7 @@ package com.nhnacademy.bookstore.point.service.impl;
 import com.nhnacademy.bookstore.common.error.exception.point.PointTypeNotFoundException;
 import com.nhnacademy.bookstore.point.dto.request.CreatePointTypeRequestDto;
 import com.nhnacademy.bookstore.point.dto.request.UpdatePointTypeRequestDto;
-import com.nhnacademy.bookstore.point.dto.response.PointTypeDto;
+import com.nhnacademy.bookstore.point.dto.response.GetPointTypeResponse;
 import com.nhnacademy.bookstore.point.dto.response.ReadPointTypeResponseDto;
 import com.nhnacademy.bookstore.point.dto.response.UpdatePointTypeResponseDto;
 import com.nhnacademy.bookstore.point.entity.PointType;
@@ -55,7 +55,7 @@ public class PointTypeServiceImpl implements PointTypeService {
 
     @Transactional
     @Override
-    public List<PointTypeDto> getAllActivePointTypes() {
+    public List<GetPointTypeResponse> getAllActivePointTypes() {
         return pointTypeRepository.findAllActivePointTypes();
     }
 

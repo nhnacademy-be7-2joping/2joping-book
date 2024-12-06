@@ -9,6 +9,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 public class PointType {
 
     @Id
@@ -45,6 +46,7 @@ public class PointType {
     public void deactivate() {
         this.isActive = false;
     }
+
     public void updatePointType(PointTypeEnum type, Integer accVal, String name, boolean isActive) {
         this.type = type;
         this.accVal = accVal;

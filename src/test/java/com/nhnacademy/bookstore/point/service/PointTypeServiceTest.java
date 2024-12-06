@@ -3,7 +3,7 @@
 //import com.nhnacademy.bookstore.common.error.exception.point.PointTypeNotFoundException;
 //import com.nhnacademy.bookstore.point.dto.request.CreatePointTypeRequestDto;
 //import com.nhnacademy.bookstore.point.dto.request.UpdatePointTypeRequestDto;
-//import com.nhnacademy.bookstore.point.dto.response.PointTypeDto;
+//import com.nhnacademy.bookstore.point.dto.response.GetPointTypeResponse;
 //import com.nhnacademy.bookstore.point.dto.response.ReadPointTypeResponseDto;
 //import com.nhnacademy.bookstore.point.dto.response.UpdatePointTypeResponseDto;
 //import com.nhnacademy.bookstore.point.entity.PointType;
@@ -85,12 +85,12 @@
 //    @Test
 //    @DisplayName("활성화된 포인트 타입 목록 조회 테스트")
 //    void getAllActivePointTypes() {
-//        PointTypeDto responseDto1 = new PointTypeDto(1L, PointTypeEnum.ACTUAL, 10, "포인트1", true);
-//        PointTypeDto responseDto2 = new PointTypeDto(2L, PointTypeEnum.PERCENT, 15, "포인트2", true);
+//        GetPointTypeResponse responseDto1 = new GetPointTypeResponse(1L, PointTypeEnum.ACTUAL, 10, "포인트1", true);
+//        GetPointTypeResponse responseDto2 = new GetPointTypeResponse(2L, PointTypeEnum.PERCENT, 15, "포인트2", true);
 //
 //        when(pointTypeRepository.findAllActivePointTypes()).thenReturn(List.of(responseDto1, responseDto2));
 //
-//        List<PointTypeDto> activePointTypes = pointTypeService.getAllActivePointTypes();
+//        List<GetPointTypeResponse> activePointTypes = pointTypeService.getAllActivePointTypes();
 //
 //        assertNotNull(activePointTypes);
 //        assertEquals(2, activePointTypes.size());

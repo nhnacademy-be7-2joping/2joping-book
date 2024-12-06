@@ -3,7 +3,7 @@
 //import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.nhnacademy.bookstore.point.dto.request.CreatePointTypeRequestDto;
 //import com.nhnacademy.bookstore.point.dto.request.UpdatePointTypeRequestDto;
-//import com.nhnacademy.bookstore.point.dto.response.PointTypeDto;
+//import com.nhnacademy.bookstore.point.dto.response.GetPointTypeResponse;
 //import com.nhnacademy.bookstore.point.dto.response.ReadPointTypeResponseDto;
 //import com.nhnacademy.bookstore.point.dto.response.UpdatePointTypeResponseDto;
 //import com.nhnacademy.bookstore.point.enums.PointTypeEnum;
@@ -88,8 +88,8 @@
 //    @Test
 //    @DisplayName("활성화된 포인트 타입 목록 조회 테스트")
 //    void getAllActivePointTypes() throws Exception {
-//        PointTypeDto activeResponseDto1 = new PointTypeDto(1L, PointTypeEnum.ACTUAL, 10, "리뷰 포인트1", true);
-//        PointTypeDto activeResponseDto2 = new PointTypeDto(2L, PointTypeEnum.PERCENT, 15, "리뷰 포인트2", true);
+//        GetPointTypeResponse activeResponseDto1 = new GetPointTypeResponse(1L, PointTypeEnum.ACTUAL, 10, "리뷰 포인트1", true);
+//        GetPointTypeResponse activeResponseDto2 = new GetPointTypeResponse(2L, PointTypeEnum.PERCENT, 15, "리뷰 포인트2", true);
 //
 //        Mockito.when(pointTypeServiceImpl.getAllActivePointTypes())
 //                .thenReturn(Arrays.asList(activeResponseDto1, activeResponseDto2));
