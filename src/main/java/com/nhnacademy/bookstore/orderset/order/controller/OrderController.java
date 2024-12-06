@@ -33,11 +33,9 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<?> postOrder(@RequestBody @Valid OrderPostRequest orderPostRequest,
                                        @RequestHeader(value = "X-Customer-Id", required = false) Long customerId) {
-        Customer customer;
         OrderRequest orderRequest = orderService.getOrderOnRedis(orderPostRequest.orderId());
 
-
-        orderService.registerOrder(orderRequest, orderPostRequest, customer.getId());
+        orderService.registerOrder(orderRequest, orderPostRequest, customerId);
         return ResponseEntity.ok().build();
     }
 }
