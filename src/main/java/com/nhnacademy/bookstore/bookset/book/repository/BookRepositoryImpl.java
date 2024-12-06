@@ -16,6 +16,7 @@ import com.nhnacademy.bookstore.bookset.contributor.entity.QContributorRole;
 import com.nhnacademy.bookstore.bookset.tag.entity.QBookTag;
 import com.nhnacademy.bookstore.bookset.tag.entity.QTag;
 import com.nhnacademy.bookstore.bookset.tag.entity.Tag;
+import com.nhnacademy.bookstore.common.error.exception.bookset.category.CategoryIdNullException;
 import com.nhnacademy.bookstore.imageset.entity.BookImage;
 import com.nhnacademy.bookstore.imageset.entity.QBookImage;
 import com.nhnacademy.bookstore.imageset.entity.QImage;
@@ -243,7 +244,6 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     @Override
     public Optional<BookResponseDto> findBookByBookId(Long bookId) {
 
-        // 도서 및 썸네일 URL을 조회
         Tuple bookTuple = from(qBook)
                 .leftJoin(qBookImage).on(qBook.bookId.eq(qBookImage.book.bookId).and(qBookImage.imageType.eq("썸네일")))
                 .leftJoin(qImage).on(qBookImage.image.imageId.eq(qImage.imageId))
@@ -286,7 +286,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     /**
      * 특정 도서의 기여자 정보를 조회하여 반환
      */
-    private List<BookContributorResponseDto> getContributorsByBook(Long bookId) {
+    public List<BookContributorResponseDto> getContributorsByBook(Long bookId) {
         return from(qBookContributor)
                 .leftJoin(qContributor).on(qBookContributor.contributor.contributorId.eq(qContributor.contributorId))
                 .leftJoin(qContributorRole).on(qContributor.contributorRole.contributorRoleId.eq(qContributorRole.contributorRoleId))
@@ -302,7 +302,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     /**
      * 특정 도서의 카테고리 정보를 조회하여 반환
      */
-    private List<String> getCategoriesByBook(Long bookId) {
+    public List<String> getCategoriesByBook(Long bookId) {
         return from(qBookCategory)
                 .leftJoin(qCategory).on(qBookCategory.category.categoryId.eq(qCategory.categoryId))
                 .where(qBookCategory.book.bookId.eq(bookId))
@@ -313,7 +313,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     /**
      * 특정 도서의 태그 정보를 조회하여 반환
      */
-    private List<BookTagResponseDto> getTagsByBook(Long bookId) {
+    public List<BookTagResponseDto> getTagsByBook(Long bookId) {
         return from(qBookTag)
                 .leftJoin(qTag).on(qBookTag.tag.tagId.eq(qTag.tagId))
                 .where(qBookTag.book.bookId.eq(bookId))
@@ -324,86 +324,14 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     }
 
     /**
-     * 도서에 연결된 기여자 정보를 문자열 형식으로 변환
-     *
-     * @param contributors
-     * @return 기여자 정보가 포함된 문자열
-     */
-    private String convertContributorsToString(List<BookContributorResponseDto> contributors) {
-        StringBuilder result = new StringBuilder();
-
-        for (int i = 0; i < contributors.size(); i++) {
-            BookContributorResponseDto contributor = contributors.get(i);
-            result.append(contributor.contributorName())
-                    .append(" (")
-                    .append(contributor.roleName())
-                    .append(")");
-
-            if (i < contributors.size() - 1) {
-                result.append(", ");
-            }
-        }
-
-        return result.toString();
-    }
-
-    /**
-     * 도서에 연결된 카테고리 정보를 문자열 형식으로 변환
-     *
-     * @param categories
-     * @return 카테고리 정보가 포함된 문자열
-     */
-    private String convertCategoriesToString(List<String> categories) {
-        if (categories == null || categories.isEmpty()) {
-            return "";
-        }
-
-        StringBuilder result = new StringBuilder();
-
-        for (int i = 0; i < categories.size(); i++) {
-            result.append(categories.get(i));
-
-            if (i < categories.size() - 1) {
-                result.append(">");
-            }
-        }
-
-        return result.toString();
-    }
-
-    /**
-     * 도서에 연결된 태그 정보를 문자열 형식으로 변환
-     *
-     * @param tags
-     * @return 태그 정보가 포함된 문자열
-     */
-    private String convertTagsToString(List<BookTagResponseDto> tags) {
-        if (tags == null || tags.isEmpty()) {
-            return "";
-        }
-
-        StringBuilder result = new StringBuilder();
-
-        for (int i = 0; i < tags.size(); i++) {
-            result.append(tags.get(i).tagName());
-
-            if (i < tags.size() - 1) {
-                result.append(", ");
-            }
-        }
-
-        return result.toString();
-    }
-
-    /**
      *  최하위 카테고리 Id 기반으로 top, middle, bottom 카테고리 가져오기
      *
      * @param lowestCategoryId
      * @return topCategoryId, middleCategoryId, bottomCategoryId 맵
      */
-    private Map<String, Long> getCategoryHierarchy(Long lowestCategoryId) {
+    public Map<String, Long> getCategoryHierarchy(Long lowestCategoryId) {
         if (lowestCategoryId == null) {
-            throw new IllegalArgumentException("Category ID cannot be null");
+            throw new CategoryIdNullException();
         }
 
         Long bottomCategoryId = null;
@@ -425,15 +353,15 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
             }
 
             if (bottomCategoryId == null) {
-                bottomCategoryId = categoryTuple.get(qCategory.categoryId); 
+                bottomCategoryId = categoryTuple.get(qCategory.categoryId);
             } else if (middleCategoryId == null) {
-                middleCategoryId = categoryTuple.get(qCategory.categoryId); 
+                middleCategoryId = categoryTuple.get(qCategory.categoryId);
             } else {
-                topCategoryId = categoryTuple.get(qCategory.categoryId); 
+                topCategoryId = categoryTuple.get(qCategory.categoryId);
                 break;
             }
 
-            currentCategoryId = categoryTuple.get(qParentCategory.categoryId); 
+            currentCategoryId = categoryTuple.get(qParentCategory.categoryId);
         }
 
         if (middleCategoryId == null && bottomCategoryId != null) {
