@@ -5,6 +5,7 @@ import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
 import com.nhnacademy.bookstore.common.error.exception.base.NotFoundException;
 import com.nhnacademy.bookstore.like.dto.LikeRequestDto;
 import com.nhnacademy.bookstore.like.dto.LikeResponseDto;
+import com.nhnacademy.bookstore.like.dto.response.MemberLikeResponseDto;
 import com.nhnacademy.bookstore.like.entity.Like;
 import com.nhnacademy.bookstore.like.repository.LikeRepository;
 import com.nhnacademy.bookstore.user.enums.Gender;
@@ -29,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 class LikeServiceTest {
@@ -50,44 +52,171 @@ class LikeServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-
-
+    // 책이 존재하지 않을 때 좋아요 개수를 조회
     @Test
     void testGetLikeCount_BookNotFound() {
         Long bookId = 1L;
 
         given(bookRepository.existsById(bookId)).willReturn(false);
 
-        assertThrows(NotFoundException.class, () -> {
-            likeService.getLikeCount(bookId);
-        });
-
-
+        assertThrows(NotFoundException.class, () -> likeService.getLikeCount(bookId));
+        verify(bookRepository).existsById(bookId);
     }
 
+    // 책이 존재하고 좋아요 개수를 반환
+    @Test
+    void testGetLikeCount_BookFound() {
+        Long bookId = 1L;
+        given(bookRepository.existsById(bookId)).willReturn(true);
+        given(likeRepository.getMemberLikesNum(bookId)).willReturn(5L);
+
+        Long likeCount = likeService.getLikeCount(bookId);
+
+        assertThat(likeCount).isEqualTo(5L);
+        verify(likeRepository).getMemberLikesNum(bookId);
+    }
+
+    // 회원이 존재하지 않을 때 좋아요 목록 조회
     @Test
     void testGetBooksLikedByCustomer_MemberNotFound() {
         Long customerId = 1L;
 
         given(memberRepository.existsById(customerId)).willReturn(false);
 
-        assertThrows(NotFoundException.class, () -> {
-            likeService.getBooksLikedByCustomer(customerId);
-        });
+        assertThrows(NotFoundException.class, () -> likeService.getBooksLikedByCustomer(customerId));
+        verify(memberRepository).existsById(customerId);
     }
 
+    // 회원이 존재하지만 좋아요 목록이 비어 있는 경우
+    @Test
+    void testGetBooksLikedByCustomer_NoLikes() {
+        Long customerId = 1L;
 
+        given(memberRepository.existsById(customerId)).willReturn(true);
+        given(likeRepository.findLikesByMember(customerId)).willReturn(List.of());
 
+        List<MemberLikeResponseDto> likes = likeService.getBooksLikedByCustomer(customerId);
+
+        assertThat(likes).isEmpty();
+        verify(likeRepository).findLikesByMember(customerId);
+    }
+
+    // 회원이 존재하고 좋아요 목록이 있는 경우
+//    @Test
+//    void testGetBooksLikedByCustomer_WithLikes() {
+//        Long customerId = 1L;
+//
+//        given(memberRepository.existsById(customerId)).willReturn(true);
+//        given(likeRepository.findLikesByMember(customerId)).willReturn(List.of(
+//                new MemberLikeResponseDto(1L, "Book 1"),
+//                new MemberLikeResponseDto(2L, "Book 2")
+//        ));
+//
+//        List<MemberLikeResponseDto> likes = likeService.getBooksLikedByCustomer(customerId);
+//
+//        assertThat(likes).hasSize(2);
+//        assertThat(likes.get(0).getBookId()).isEqualTo(1L);
+//        assertThat(likes.get(0).getTitle()).isEqualTo("Book 1");
+//        verify(likeRepository).findLikesByMember(customerId);
+//    }
+
+    // 회원이 존재하지 않을 때 좋아요 설정 시도
     @Test
     void testSetBookLike_MemberNotFound() {
         given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 
-        LikeRequestDto requestDto = new LikeRequestDto(1L, 1L);
+        LikeRequestDto requestDto = new LikeRequestDto(1L);
 
-        assertThatThrownBy(() -> likeService.setBookLike(requestDto))
+        assertThatThrownBy(() -> likeService.setBookLike(requestDto, 1L))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않은 회원입니다.");
     }
 
+    // 책이 존재하지 않을 때 좋아요 설정 시도
+    @Test
+    void testSetBookLike_BookNotFound() {
+        Long customerId = 1L;
+        LikeRequestDto requestDto = new LikeRequestDto(1L);
+
+        given(memberRepository.findById(customerId)).willReturn(Optional.of(new Member()));
+        given(bookRepository.findById(requestDto.bookId())).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> likeService.setBookLike(requestDto, customerId))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("책 정보가 없습니다.");
+    }
+
+    // 좋아요를 새롭게 추가
+    @Test
+    void testSetBookLike_AddNewLike() {
+        Long customerId = 1L;
+        Long bookId = 1L;
+        LikeRequestDto requestDto = new LikeRequestDto(bookId);
+
+        // Mock 객체 생성
+        Member member = new Member();
+        Book book = new Book();
+        ReflectionTestUtils.setField(book, "bookId", bookId);
+
+        // Mock 동작 정의
+        given(memberRepository.findById(customerId)).willReturn(Optional.of(member));
+        given(bookRepository.existsById(bookId)).willReturn(true); // 책 존재 여부
+        given(bookRepository.findById(bookId)).willReturn(Optional.of(book));
+        given(likeRepository.findBookLike(customerId, bookId)).willReturn(Optional.empty());
+        given(likeRepository.getMemberLikesNum(bookId)).willReturn(1L); // 좋아요 개수
+
+        // 새 좋아요 객체
+        Like newLike = new Like(member, book);
+        ReflectionTestUtils.setField(newLike, "likeId", 1L);
+        given(likeRepository.save(any(Like.class))).willReturn(newLike);
+
+        // 테스트 실행
+        LikeResponseDto response = likeService.setBookLike(requestDto, customerId);
+
+        // 검증
+        assertThat(response.likeId()).isEqualTo(1L);
+        assertThat(response.bookId()).isEqualTo(bookId);
+        assertThat(response.likeCount()).isEqualTo(1L);
+
+        verify(likeRepository).save(any(Like.class));
+        verify(bookRepository).existsById(bookId); // 존재 여부 확인
+        verify(bookRepository).findById(bookId);  // 책 조회 확인
+    }
+
+
+    // 기존 좋아요를 삭제
+//    @Test
+//    void testSetBookLike_RemoveExistingLike() {
+//        Long customerId = 1L;
+//        Long bookId = 1L;
+//        LikeRequestDto requestDto = new LikeRequestDto(bookId);
+//
+//        // Mock 객체 생성 및 초기화
+//        Member member = new Member();
+//        Book book = new Book();
+//        Like existingLike = new Like(member, book);
+//
+//        ReflectionTestUtils.setField(book, "bookId", bookId);
+//        ReflectionTestUtils.setField(existingLike, "likeId", 1L);
+//
+//        // Mock 동작 설정
+//        given(memberRepository.findById(customerId)).willReturn(Optional.of(member));
+//        given(bookRepository.existsById(bookId)).willReturn(true);
+//        given(bookRepository.findById(bookId)).willReturn(Optional.of(book));
+//        given(likeRepository.findBookLike(customerId, bookId)).willReturn(Optional.of(existingLike));
+//        given(likeRepository.getMemberLikesNum(bookId)).willReturn(0L);
+//
+//        // 테스트 실행
+//        LikeResponseDto response = likeService.setBookLike(requestDto, customerId);
+//
+//        // 결과 검증
+//        assertThat(response.likeId()).isNull(); // 삭제 후 likeId는 null
+//        assertThat(response.bookId()).isEqualTo(bookId);
+//        assertThat(response.likeCount()).isEqualTo(0L); // 좋아요 개수는 0
+//
+//        // 동작 검증
+//        verify(likeRepository).deleteById(existingLike.getLikeId()); // 삭제 확인
+//        verify(likeRepository, never()).save(any(Like.class)); // 삭제 시 save 호출되지 않음
+//    }
 
 }

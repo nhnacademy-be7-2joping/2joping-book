@@ -1,6 +1,5 @@
 package com.nhnacademy.bookstore.bookset.category.service.impl;
 
-import com.nhnacademy.bookstore.bookset.category.service.impl.CategoryServiceImpl;
 import com.nhnacademy.bookstore.bookset.category.dto.request.CategoryRequestDto;
 import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryIsActiveResponseDto;
 import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
@@ -373,4 +372,25 @@ class CategoryServiceImplTest {
         assertThrows(CategoryNotFoundException.class, () -> categoryService.updateCategory(1L, requestDto));
     }
 
+    @Test
+    @DisplayName("카테고리 수정 성공 테스트 - 중복된 이름이 동일한 카테고리 ID일 때")
+    void updateCategoryWithSameNameAndId() {
+        // given
+        CategoryRequestDto requestDto = new CategoryRequestDto(null, "소설");
+        Category category = new Category(1L, null, "소설", true);
+
+        when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
+        when(categoryRepository.findByName("소설")).thenReturn(Optional.of(category));
+        when(categoryMapper.toCategoryResponseDto(any(Category.class)))
+                .thenReturn(new CategoryResponseDto(1L, "소설", null));
+
+        // when
+        CategoryResponseDto responseDto = categoryService.updateCategory(1L, requestDto);
+
+        // then
+        assertNotNull(responseDto);
+        assertEquals(1L, responseDto.categoryId());
+        assertEquals("소설", responseDto.name());
+    }
 }
+
