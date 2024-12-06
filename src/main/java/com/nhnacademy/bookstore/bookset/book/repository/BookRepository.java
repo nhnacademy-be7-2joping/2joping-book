@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * 도서 Repository
@@ -16,6 +17,8 @@ import java.util.Optional;
  */
 public interface BookRepository extends JpaRepository<Book, Long>, BookRepositoryCustom {
     List<Book> findByBookIdIn(List<Long> ids);
+
+    List<Book> findByBookIdIn(Set<Long> ids);
 
     @Query("SELECT b.remainQuantity FROM Book b WHERE b.bookId = :bookId")
     Optional<Integer> findRemainQuantityByBookId(@Param("bookId") Long bookId);
