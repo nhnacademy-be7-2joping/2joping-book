@@ -68,18 +68,19 @@ public class BookRepositoryImplTest {
         return entityManager.merge(book);
     }
 
-    private ContributorRole createTestContributorRole(){
-        ContributorRole contributorRole = new ContributorRole(1L,"지은이");
+    private ContributorRole createTestContributorRole() {
+        ContributorRole contributorRole = new ContributorRole(1L, "지은이");
         return entityManager.merge(contributorRole);
 
     }
+
     private Contributor createTestContributor() {
-        Contributor contributor = new Contributor(1L, createTestContributorRole(),"Contributor Name",true);
+        Contributor contributor = new Contributor(1L, createTestContributorRole(), "Contributor Name", true);
         return entityManager.merge(contributor);
     }
 
     private Category createTestCategory() {
-        Category category = new Category(1L, null,"Test Category",true);
+        Category category = new Category(1L, null, "Test Category", true);
         return entityManager.merge(category);
     }
 
