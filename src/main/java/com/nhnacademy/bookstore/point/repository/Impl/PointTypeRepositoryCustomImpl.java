@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class PointTypeRepositoryImpl implements PointTypeRepositoryCustom {
+public class PointTypeRepositoryCustomImpl implements PointTypeRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
