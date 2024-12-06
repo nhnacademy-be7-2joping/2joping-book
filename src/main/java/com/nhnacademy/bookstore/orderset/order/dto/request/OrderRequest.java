@@ -7,13 +7,14 @@ import java.util.List;
 
 public record OrderRequest(
         List<@Valid CartItemRequest> cartItemList,
+
         @NotNull
         DeliveryInfoRequest deliveryInfo,
 
         @Min(value = 0)
         Integer point,
 
-        @NotNull
+        @Min(value = -1)
         Long couponId,
 
         List<@Valid WrapItemRequest> wrapList,
@@ -32,12 +33,14 @@ public record OrderRequest(
 
         @Min(value = 0)
         Integer couponDiscount,
+        String nonMemberPassword,
 
         @NotBlank
         String orderCode
 ) {
     public record CartItemRequest(
             @NotNull
+            @Positive
             Long bookId,
 
             @NotNull
@@ -51,7 +54,7 @@ public record OrderRequest(
     }
 
     public record DeliveryInfoRequest(
-            @NotBlank
+            @NotBlank(message = "받는이를 비워둘 수 없습니다.")
             String receiver,
 
             @NotBlank
@@ -80,6 +83,7 @@ public record OrderRequest(
             String requirement,
 
             @NotNull
+            @Positive
             Long deliveryPolicyId
     ) {
 

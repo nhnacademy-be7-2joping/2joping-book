@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
@@ -21,8 +22,12 @@ import lombok.NoArgsConstructor;
 @PrimaryKeyJoinColumn(name = "customer_id")
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class NonMember extends Customer {
-
     @Column(nullable = false, length = 255)
     private String password;
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }
