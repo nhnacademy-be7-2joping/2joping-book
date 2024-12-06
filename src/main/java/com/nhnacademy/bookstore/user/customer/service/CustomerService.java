@@ -15,6 +15,21 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
 
     @Transactional
+    public Customer getCustomer(Long customerId, OrderRequest orderRequest) {
+        if (customerId == null) {
+            // 비회원 주문인 경우
+            CustomerRegisterRequest registerRequest = new CustomerRegisterRequest(
+                    orderRequest.deliveryInfo().name(),
+                    orderRequest.deliveryInfo().phone(),
+                    orderRequest.deliveryInfo().email()
+            );
+            return saveCustomer(registerRequest);
+        } else {
+            return getCustomer(customerId);
+        }
+    }
+
+    @Transactional
     public Customer saveCustomer(CustomerRegisterRequest customerRegisterRequest) {
         Customer customer = customerRepository.findByEmailAndPhone(
                 customerRegisterRequest.email(),

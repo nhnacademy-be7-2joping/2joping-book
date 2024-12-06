@@ -35,17 +35,7 @@ public class OrderController {
                                        @RequestHeader(value = "X-Customer-Id", required = false) Long customerId) {
         Customer customer;
         OrderRequest orderRequest = orderService.getOrderOnRedis(orderPostRequest.orderId());
-        if (customerId == null) {
-            // 비회원 주문인 경우
-            CustomerRegisterRequest registerRequest = new CustomerRegisterRequest(
-                    orderRequest.deliveryInfo().name(),
-                    orderRequest.deliveryInfo().phone(),
-                    orderRequest.deliveryInfo().email()
-            );
-            customer = customerService.saveCustomer(registerRequest);
-        } else {
-            customer = customerService.getCustomer(customerId);
-        }
+
 
         orderService.registerOrder(orderRequest, orderPostRequest, customer.getId());
         return ResponseEntity.ok().build();
