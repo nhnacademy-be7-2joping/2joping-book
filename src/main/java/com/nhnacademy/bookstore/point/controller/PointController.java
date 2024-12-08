@@ -2,7 +2,7 @@ package com.nhnacademy.bookstore.point.controller;
 
 import com.nhnacademy.bookstore.point.dto.response.GetMyPageDetailPointHistoriesResponse;
 import com.nhnacademy.bookstore.point.dto.response.GetMyPageSimplePointHistoriesResponse;
-import com.nhnacademy.bookstore.point.dto.response.PointTypeDto;
+import com.nhnacademy.bookstore.point.dto.response.GetPointTypeResponse;
 import com.nhnacademy.bookstore.point.service.impl.PointServiceImpl;
 import com.nhnacademy.bookstore.point.service.impl.PointTypeServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class PointController {
     }
 
     @GetMapping("/types")
-    public ResponseEntity<List<PointTypeDto>> getActivePointTypes() {
+    public ResponseEntity<List<GetPointTypeResponse>> getActivePointTypes() {
         return ResponseEntity.ok(pointTypeServiceImpl.getAllActivePointTypes());
     }
 }

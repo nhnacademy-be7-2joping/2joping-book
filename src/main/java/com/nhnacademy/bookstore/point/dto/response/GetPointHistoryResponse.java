@@ -4,15 +4,15 @@ import com.nhnacademy.bookstore.point.entity.PointHistory;
 
 import java.time.LocalDateTime;
 
-public record PointHistoryDto(
+public record GetPointHistoryResponse(
 
         String name,
         Integer accVal,
         Integer pointVal,
         LocalDateTime registerDate
 ) {
-    public static PointHistoryDto from(PointHistory entity) {
-        return new PointHistoryDto(
+    public static GetPointHistoryResponse from(PointHistory entity) {
+        return new GetPointHistoryResponse(
                 entity.getPointType().getName(),
                 entity.getPointType().getAccVal(),
                 entity.getPointVal(),

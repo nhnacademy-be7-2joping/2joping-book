@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstore.point.repository;
 
-import com.nhnacademy.bookstore.point.dto.response.PointTypeDto;
+import com.nhnacademy.bookstore.point.dto.response.GetPointTypeResponse;
 import com.nhnacademy.bookstore.point.entity.PointType;
 import com.nhnacademy.bookstore.point.enums.PointTypeEnum;
 import com.nhnacademy.bookstore.common.config.QuerydslConfig;
@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(QuerydslConfig.class) // QueryDSL 및 설정 클래스 포함
 @ActiveProfiles("test") // test 프로파일 활성화
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class PointTypeRepositoryImplTest {
+class PointTypeRepositoryTest {
 
     @Autowired
     private PointTypeRepositoryCustom pointTypeRepository;
@@ -73,7 +73,7 @@ class PointTypeRepositoryImplTest {
     @DisplayName("활성화된 PointType 조회 테스트")
     void testFindAllActivePointTypes() {
         // 메서드 호출
-        List<PointTypeDto> activePointTypes = pointTypeRepository.findAllActivePointTypes();
+        List<GetPointTypeResponse> activePointTypes = pointTypeRepository.findAllActivePointTypes();
 
         // 검증
         assertThat(activePointTypes).hasSize(2); // 활성화된 PointType만 조회됨
