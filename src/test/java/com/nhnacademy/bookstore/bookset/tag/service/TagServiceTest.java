@@ -23,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,6 +69,8 @@ public class TagServiceTest {
         Long tagId = 1L;
         Long bookId = 2L;
         Tag tag = new Tag(tagId, "Sample Tag");
+
+        // likedBy를 빈 리스트로 초기화
         List<Like> likedBy = new ArrayList<>();
 
         Book book = new Book(

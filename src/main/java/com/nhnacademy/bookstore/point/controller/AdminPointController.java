@@ -2,7 +2,7 @@ package com.nhnacademy.bookstore.point.controller;
 
 import com.nhnacademy.bookstore.point.dto.request.CreatePointTypeRequestDto;
 import com.nhnacademy.bookstore.point.dto.request.UpdatePointTypeRequestDto;
-import com.nhnacademy.bookstore.point.dto.response.PointTypeDto;
+import com.nhnacademy.bookstore.point.dto.response.GetPointTypeResponse;
 import com.nhnacademy.bookstore.point.dto.response.ReadPointTypeResponseDto;
 import com.nhnacademy.bookstore.point.dto.response.UpdatePointTypeResponseDto;
 import com.nhnacademy.bookstore.point.service.impl.PointTypeServiceImpl;
@@ -18,8 +18,9 @@ import java.util.List;
 
 /**
  * Admin Point Controller
-
+ * <p>
  * 포인트 타입 관리 API를 제공하는 컨트롤러로, 포인트 타입 생성, 수정, 활성화된 포인트 타입 목록 조회 기능을 포함합니다.
+ *
  * @author : 박채연
  * @date : 2024-11-18
  **/
@@ -60,7 +61,7 @@ public class AdminPointController {
      * 특정 포인트 타입의 정보를 수정합니다.
      * </p>
      *
-     * @param typeId 수정할 포인트 타입의 ID
+     * @param typeId  수정할 포인트 타입의 ID
      * @param request 포인트 타입 수정 요청 데이터
      * @return 수정된 포인트 타입 정보와 HTTP 200 OK 상태 코드
      */
@@ -72,7 +73,7 @@ public class AdminPointController {
     public ResponseEntity<UpdatePointTypeResponseDto> updatePointType(
             @PathVariable("type-id") Long typeId,
             @RequestBody @Valid UpdatePointTypeRequestDto request) {
-        UpdatePointTypeResponseDto responseDto= pointTypeServiceImpl.updatePointType(typeId, request);
+        UpdatePointTypeResponseDto responseDto = pointTypeServiceImpl.updatePointType(typeId, request);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -88,8 +89,8 @@ public class AdminPointController {
     @Operation(summary = "활성화된 포인트 타입 목록 조회", description = "활성화된 모든 포인트 타입 목록을 조회합니다.")
     @ApiResponse(responseCode = "200", description = "포인트 타입 목록 조회 성공")
     @GetMapping
-    public ResponseEntity<List<PointTypeDto>> readPointType() {
-        List<PointTypeDto> activePointTypes = pointTypeServiceImpl.getAllActivePointTypes();
+    public ResponseEntity<List<GetPointTypeResponse>> readPointType() {
+        List<GetPointTypeResponse> activePointTypes = pointTypeServiceImpl.getAllActivePointTypes();
         return ResponseEntity.ok(activePointTypes);
     }
 

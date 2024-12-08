@@ -8,9 +8,12 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface WrapRepository extends JpaRepository<Wrap, Long>, WrapRepositoryCustom {
-    Optional<Wrap> findByWrapIdIn(List<Long> wrapIds);
+    List<Wrap> findByWrapIdIn(List<Long> wrapIds);
+
+    List<Wrap> findByWrapIdIn(Set<Long> wrapIds);
 
     Optional<Wrap> findByName(String name);
 

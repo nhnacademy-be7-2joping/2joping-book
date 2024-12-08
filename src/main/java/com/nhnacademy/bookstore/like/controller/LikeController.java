@@ -43,8 +43,9 @@ public class LikeController {
     @ApiResponse(responseCode = "200", description = "좋아요 설정/취소 성공")
     @ApiResponse(responseCode = "404", description = "회원 또는 책을 찾을 수 없음")
     @PostMapping
-    public ResponseEntity<LikeResponseDto> setBookLike(@RequestBody @Valid LikeRequestDto request) {
-        LikeResponseDto responseDto = likeService.setBookLike(request);
+    public ResponseEntity<LikeResponseDto> setBookLike(@RequestBody @Valid LikeRequestDto request,
+                                                       @RequestHeader("X-Customer-Id") Long customerId) {
+        LikeResponseDto responseDto = likeService.setBookLike(request, customerId);
         return ResponseEntity.ok(responseDto);
     }
 

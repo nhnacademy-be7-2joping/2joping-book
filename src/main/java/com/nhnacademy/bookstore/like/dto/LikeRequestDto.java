@@ -8,9 +8,6 @@ import jakarta.validation.constraints.Positive;
     public record LikeRequestDto (
 
             @Positive
-            Long memberId,
-
-            @Positive
             Long bookId
     ) {}
 

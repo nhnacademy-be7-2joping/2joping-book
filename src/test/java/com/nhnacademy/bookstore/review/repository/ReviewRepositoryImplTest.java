@@ -16,12 +16,12 @@ import com.nhnacademy.bookstore.user.member.entity.Member;
 import com.nhnacademy.bookstore.user.memberstatus.entity.MemberStatus;
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import com.nhnacademy.bookstore.user.tier.enums.Tier;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -48,7 +48,7 @@ class ReviewRepositoryImplTest {
     private ReviewRepositoryImpl reviewRepository;
 
     @Autowired
-    private EntityManager entityManager;
+    private TestEntityManager entityManager;
 
     private Member member;
     private Book book;
@@ -193,5 +193,18 @@ class ReviewRepositoryImplTest {
         assertThat(reviewDto.get().reviewId()).isEqualTo(review.getReviewId());
         assertThat(reviewDto.get().title()).isEqualTo("Great Book!");
     }
+
+    @Test
+    void testGetReviewByReviewId_NotFound() {
+        // Given: 존재하지 않는 리뷰 ID 설정
+        Long nonExistentReviewId = 999L; // 실제 데이터베이스에 없는 ID로 설정
+
+        // When: getReviewByReviewId 호출
+        Optional<ReviewResponseDto> reviewDto = reviewRepository.getReviewByReviewId(nonExistentReviewId);
+
+        // Then: Optional.empty() 반환 확인
+        assertThat(reviewDto).isEmpty();
+    }
+
 }
 

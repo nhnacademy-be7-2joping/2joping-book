@@ -7,7 +7,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @NoRepositoryBean
@@ -17,5 +17,6 @@ public interface BookRepositoryCustom {
     Page<BookSimpleResponseDto> findBooksByContributorId(Pageable pageable, Long contributorId);
     Page<BookSimpleResponseDto> findBooksByCategoryId(Pageable pageable, Long categoryId);
     Optional<BookResponseDto> findBookByBookId(Long bookId);
+    Map<String, Long> getCategoryHierarchy(Long lowestCategoryId);
     Optional<BookUpdateResponseDto> findUpdateBookByBookId(Long bookId);
 }

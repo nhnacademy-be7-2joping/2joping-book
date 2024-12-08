@@ -8,10 +8,7 @@ import com.nhnacademy.bookstore.user.member.dto.request.MemberCreateRequestDto;
 import com.nhnacademy.bookstore.user.memberstatus.entity.MemberStatus;
 import com.nhnacademy.bookstore.user.tier.entity.MemberTier;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,6 +27,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Builder
 public class Member extends Customer {
 
 

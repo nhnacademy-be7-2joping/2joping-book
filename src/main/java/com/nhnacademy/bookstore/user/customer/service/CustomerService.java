@@ -1,6 +1,8 @@
 package com.nhnacademy.bookstore.user.customer.service;
 
+import com.nhnacademy.bookstore.orderset.order.dto.request.OrderRequest;
 import com.nhnacademy.bookstore.user.customer.dto.request.CustomerRegisterRequest;
+import com.nhnacademy.bookstore.user.customer.dto.response.CustomerWithMemberStatusResponse;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import com.nhnacademy.bookstore.user.customer.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,21 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CustomerService {
     private final CustomerRepository customerRepository;
+
+    @Transactional
+    public Customer getCustomer(Long customerId, OrderRequest orderRequest) {
+        if (customerId == null) {
+            // 비회원 주문인 경우
+            CustomerRegisterRequest registerRequest = new CustomerRegisterRequest(
+                    orderRequest.deliveryInfo().name(),
+                    orderRequest.deliveryInfo().phone(),
+                    orderRequest.deliveryInfo().email()
+            );
+            return saveCustomer(registerRequest);
+        } else {
+            return getCustomer(customerId);
+        }
+    }
 
     @Transactional
     public Customer saveCustomer(CustomerRegisterRequest customerRegisterRequest) {
@@ -36,5 +53,26 @@ public class CustomerService {
     @Transactional
     public Customer getCustomer(Long customerId) {
         return customerRepository.findById(customerId).orElse(null);
+    }
+
+    @Transactional
+    public CustomerWithMemberStatusResponse getOrCreateCustomerIfNonMember(Long customerId, OrderRequest orderRequest) {
+        Customer customer;
+        boolean isMember = false;
+
+        if (customerId == null) {
+            // 비회원 주문인 경우
+            CustomerRegisterRequest registerRequest = new CustomerRegisterRequest(
+                    orderRequest.deliveryInfo().name(),
+                    orderRequest.deliveryInfo().phone(),
+                    orderRequest.deliveryInfo().email()
+            );
+            customer = saveCustomer(registerRequest);
+        } else {
+            customer = customerRepository.findById(customerId).orElse(null);
+            isMember = true;
+        }
+
+        return new CustomerWithMemberStatusResponse(customer, isMember);
     }
 }
