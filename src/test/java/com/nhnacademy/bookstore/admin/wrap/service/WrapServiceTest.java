@@ -15,10 +15,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -75,6 +78,24 @@ class WrapServiceTest {
         assertEquals("http://image.com/image.jpg", response.wrapImage());
     }
 
+
+//    @Test
+//    void getWrap_Success() {
+//        Long wrapId = 1L;
+//        Wrap mockWrap = new Wrap("포장 상품", 1000, true);
+//
+//        ReflectionTestUtils.setField(mockWrap, "wrapId", wrapId);
+//
+//        when(wrapRepository.findByWrapIdIn(Set.of(wrapId))).thenReturn(List.of(mockWrap));
+//
+//        WrapUpdateResponseDto response = wrapService.getWrap(wrapId);
+//
+//        assertNotNull(response);
+//        assertEquals("포장 상품", response.name());
+//    }
+
+
+
     @Test
     void createWrap_ConflictException() {
         // Given
@@ -91,81 +112,6 @@ class WrapServiceTest {
         verify(wrapRepository, never()).save(any(Wrap.class)); // save() 메서드가 호출되지 않음을 확인
     }
 
-//    @Test
-//    void getWrap_Success1() {
-//        // Given
-//        Long wrapId = 1L;
-//        Wrap mockWrap = new Wrap("포장 상품", 1000, true);
-//        when(wrapRepository.findById(wrapId)).thenReturn(Optional.of(mockWrap));
-//
-//        Image mockImage = new Image("http://image.com/image.jpg");
-//        WrapImage mockWrapImage = new WrapImage(mockWrap, mockImage);
-//        when(wrapImageRepository.findFirstByWrap_WrapId(wrapId)).thenReturn(Optional.of(mockWrapImage));
-//
-//        // When
-//        WrapUpdateResponseDto response = wrapService.getWrap(wrapId);
-//
-//        // Then
-//        assertNotNull(response);
-//        assertEquals("포장 상품", response.name());
-//        assertEquals(1000, response.wrapPrice());
-//        assertTrue(response.isActive());
-//        assertEquals("http://image.com/image.jpg", response.wrapImage());
-//    }
-//
-//
-//    @Test
-//    void getWrap_Success2() {
-//        // Given
-//        Long wrapId = 1L;
-//
-//        // Mock Wrap Entity
-//        Wrap mockWrap = new Wrap("포장 상품", 1000, true);
-//        when(wrapRepository.findById(wrapId)).thenReturn(Optional.of(mockWrap));
-//
-//        // Mock WrapImage Entity
-//        WrapImage mockWrapImage = new WrapImage(mockWrap, new Image("http://image.com/image.jpg"));
-//        when(wrapImageRepository.findFirstByWrap_WrapId(wrapId)).thenReturn(Optional.of(mockWrapImage));
-//
-//        // Mock Image Entity
-//        Image mockImage = new Image("http://image.com/image.jpg");
-//        when(imageRepository.findById(mockWrapImage.getImage().getImageId())).thenReturn(Optional.of(mockImage));
-//
-//        // When
-//        WrapUpdateResponseDto response = wrapService.getWrap(wrapId);
-//
-//        // Then
-//        assertNotNull(response);
-//        assertEquals("포장 상품", response.name());
-//        assertEquals(1000, response.wrapPrice());
-//        assertTrue(response.isActive());
-//        assertEquals("http://image.com/image.jpg", response.wrapImage());
-//    }
-//
-//    @Test
-//    void getWrap_Success() {
-//        // Given
-//        Long wrapId = 1L;
-//
-//        Wrap mockWrap = new Wrap("포장 상품", 1000, true);
-//        when(wrapRepository.findById(wrapId)).thenReturn(Optional.of(mockWrap));
-//
-//        WrapImage mockWrapImage = new WrapImage(mockWrap, new Image("http://image.com/image.jpg"));
-//        when(wrapImageRepository.findFirstByWrap_WrapId(wrapId)).thenReturn(Optional.of(mockWrapImage));
-//
-//        Image mockImage = new Image("http://image.com/image.jpg");
-//        when(imageRepository.findById(mockWrapImage.getImage().getImageId())).thenReturn(Optional.of(mockImage));
-//
-//        // When
-//        WrapUpdateResponseDto response = wrapService.getWrap(wrapId);
-//
-//        // Then
-//        assertNotNull(response);
-//        assertEquals("포장 상품", response.name());
-//        assertEquals(1000, response.wrapPrice());
-//        assertTrue(response.isActive());
-//        assertEquals("http://image.com/image.jpg", response.wrapImage());
-//    }
 
     @Test
     void getWrap_WrapNotFound() {
@@ -312,35 +258,6 @@ class WrapServiceTest {
         verify(wrapImageRepository, times(1)).save(any(WrapImage.class));
     }
 
-
-//    @Test
-//    void updateWrap_NoImageUpdate() {
-//        // Given
-//        Long wrapId = 1L;
-//
-//        // Mock 요청 DTO (이미지 변경 없음)
-//        WrapUpdateDetailRequestDto detailDto = new WrapUpdateDetailRequestDto("수정된 포장 상품", 2000, true);
-//        WrapUpdateRequestDto requestDto = new WrapUpdateRequestDto(detailDto, null, false);
-//
-//        // Mock 기존 Wrap
-//        Wrap existingWrap = new Wrap("기존 포장 상품", 1000, true);
-//        when(wrapRepository.findById(wrapId)).thenReturn(Optional.of(existingWrap));
-//
-//        // When
-//        WrapUpdateResponseDto response = wrapService.updateWrap(wrapId, requestDto);
-//
-//        // Then
-//        assertNotNull(response);
-//        assertEquals("수정된 포장 상품", response.name());
-//        assertEquals(2000, response.wrapPrice());
-//        assertTrue(response.isActive());
-//        assertNull(response.wrapImage());
-//
-//        // Verify
-//        verify(wrapRepository, times(1)).save(existingWrap);
-//        verify(wrapImageRepository, never()).save(any(WrapImage.class));
-//        verify(wrapImageRepository, never()).deleteByWrap_WrapId(wrapId);
-//    }
 
     @Test
     void updateWrap_NotFoundException() {
