@@ -53,6 +53,7 @@ public class WrapController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터")
     })
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED) // 테스트코드 createwrap 때문에 추가
     public WrapCreateResponseDto createWrap(@Valid @RequestBody WrapRequestDto requestDto) {
         return wrapService.createWrap(requestDto);
     }
@@ -110,24 +111,5 @@ public class WrapController {
         return ResponseEntity.ok(wrapUpdateResponseDto);
     }
 
-//    /**
-//     * 포장상품 삭제
-//     *
-//     * 특정 포장상품을 삭제합니다.
-//     *
-//     * @param wrapId 삭제할 포장상품의 ID
-//     * @return 상태 204 (No Content)
-//     */
-//    @Operation(summary = "포장상품 삭제", description = "특정 포장상품을 삭제합니다.")
-//    @ApiResponses({
-//            @ApiResponse(responseCode = "200", description = "포장상품 삭제 후 목록 반환 성공"),
-//            @ApiResponse(responseCode = "404", description = "포장상품을 찾을 수 없음")
-//    })
-//
-//    @DeleteMapping("/{wrap-id}")
-//    public ResponseEntity<List<WrapResponseDto>> deleteWrap(@PathVariable("wrap-id") Long wrapId) {
-//        wrapService.deleteWrap(wrapId);
-//        List<WrapResponseDto> wrapList = wrapService.getAllWraps();
-//        return ResponseEntity.ok(wrapList);
-//    }
+
 }
