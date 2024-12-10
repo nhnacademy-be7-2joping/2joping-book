@@ -184,7 +184,7 @@ public class OrderService {
 
     @Transactional
     public int calculateCouponDiscount(OrderRequest orderRequest, Long customerId, int bookCost) {
-        if (!isMember(customerId)){
+        if (!isMember(customerId)) {
             return 0;
         }
 
@@ -241,7 +241,9 @@ public class OrderService {
         Order order = new Order();
         OrderState orderState = orderStateService.getWaitingState();
         MemberCoupon memberCoupon = null;
-        List<MemberCouponResponseDto> memberCoupons = memberCouponService.getAllMemberCoupons(customerId);
+        List<MemberCouponResponseDto> memberCoupons = memberCouponService.getAllMemberCoupons(
+                isMember(customerId) ? customerId : 0
+        );
 
         CustomerWithMemberStatusResponse customerWithMemberStatusResponse =
                 customerService.getOrCreateCustomerIfNonMember(customerId, orderRequest);
@@ -293,7 +295,6 @@ public class OrderService {
                         wrap -> wrap
                 ));
         List<WrapManage> wrapManages = validWrapRequests.stream()
-
                 .map(item -> {
                     OrderDetail orderDetail = orderDetailMap.get(item.bookId());
                     Wrap wrap = wrapMap.get(item.wrapId());

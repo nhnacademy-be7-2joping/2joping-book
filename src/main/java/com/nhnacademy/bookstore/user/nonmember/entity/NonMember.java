@@ -1,10 +1,7 @@
 package com.nhnacademy.bookstore.user.nonmember.entity;
 
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,11 +16,17 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Table(name = "non_member")
-@PrimaryKeyJoinColumn(name = "customer_id")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class NonMember extends Customer {
+public class NonMember {
+    @Id
+    private Long customerId;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+
     @Column(nullable = false, length = 255)
     private String password;
 
