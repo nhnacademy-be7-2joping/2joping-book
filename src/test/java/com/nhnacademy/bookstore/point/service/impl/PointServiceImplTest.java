@@ -136,7 +136,14 @@ class PointServiceImplTest {
                 .point(200) // 초기 포인트
                 .build();
 
+        PointType pointUseType = PointType.builder()
+                .name("포인트사용")
+                .isActive(true)
+                .build();
+
         when(memberRepository.findById(customerId)).thenReturn(Optional.of(member));
+        when(pointTypeRepository.findByNameAndIsActiveTrue("포인트사용"))
+                .thenReturn(Optional.of(pointUseType));
 
         PointUseRequest request = new PointUseRequest(customerId, 100); // 사용할 포인트 100
 
