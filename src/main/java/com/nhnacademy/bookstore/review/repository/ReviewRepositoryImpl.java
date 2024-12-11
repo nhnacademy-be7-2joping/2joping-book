@@ -4,7 +4,7 @@ import com.nhnacademy.bookstore.bookset.book.entity.QBook;
 import com.nhnacademy.bookstore.imageset.entity.QImage;
 import com.nhnacademy.bookstore.imageset.entity.QReviewImage;
 import com.nhnacademy.bookstore.orderset.order.entity.QOrder;
-import com.nhnacademy.bookstore.orderset.order_detail.entity.QOrderDetail;
+import com.nhnacademy.bookstore.orderset.orderdetail.entity.QOrderDetail;
 import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
 import com.nhnacademy.bookstore.review.dto.response.ReviewTotalResponseDto;
 import com.nhnacademy.bookstore.review.entity.QReview;

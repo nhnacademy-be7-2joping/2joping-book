@@ -2,7 +2,7 @@ package com.nhnacademy.bookstore.refund.repository.impl;
 
 import com.nhnacademy.bookstore.bookset.book.entity.QBook;
 import com.nhnacademy.bookstore.orderset.order.entity.QOrder;
-import com.nhnacademy.bookstore.orderset.order_detail.entity.QOrderDetail;
+import com.nhnacademy.bookstore.orderset.orderdetail.entity.QOrderDetail;
 import com.nhnacademy.bookstore.refund.dto.response.RefundResponseDto;
 import com.nhnacademy.bookstore.refund.entity.QRefundHistory;
 import com.nhnacademy.bookstore.refund.entity.QRefundPolicy;
