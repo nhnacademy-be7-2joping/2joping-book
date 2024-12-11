@@ -4,6 +4,7 @@ package com.nhnacademy.bookstore.like.controller;
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.like.dto.LikeRequestDto;
 import com.nhnacademy.bookstore.like.dto.LikeResponseDto;
+import com.nhnacademy.bookstore.like.dto.response.MemberLikeResponseDto;
 import com.nhnacademy.bookstore.like.service.LikeService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,7 +42,7 @@ class LikeControllerTest {
         LikeRequestDto requestDto = new LikeRequestDto(1L);
         LikeResponseDto responseDto = new LikeResponseDto(1L, 1L, 1L, 10L);
 
-        when(likeService.setBookLike(any(LikeRequestDto.class),any())).thenReturn(responseDto);
+        when(likeService.setBookLike(any(LikeRequestDto.class), any())).thenReturn(responseDto);
 
         mockMvc.perform(post("/api/v1/likes")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -63,5 +64,18 @@ class LikeControllerTest {
                 .andExpect(content().string("10"));
     }
 
+    @Test
+    void getBooksLikedByMember_success() throws Exception {
+        MemberLikeResponseDto responseDto = new MemberLikeResponseDto(1L, 1L, "thumbnail.jpg", "Test Book");
+        Mockito.when(likeService.getBooksLikedByCustomer(anyLong())).thenReturn(List.of(responseDto));
+
+        mockMvc.perform(get("/api/v1/likes/members")
+                        .header("X-Customer-Id", "1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].likeId").value(1L))
+                .andExpect(jsonPath("$[0].bookId").value(1L))
+                .andExpect(jsonPath("$[0].url").value("thumbnail.jpg"))
+                .andExpect(jsonPath("$[0].title").value("Test Book"));
+    }
 
 }
