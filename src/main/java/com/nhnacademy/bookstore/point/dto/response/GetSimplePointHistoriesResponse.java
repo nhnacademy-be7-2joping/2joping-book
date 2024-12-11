@@ -10,7 +10,9 @@ public record GetSimplePointHistoriesResponse(
         @Nullable
         String name,
 
+        @Nullable
         Integer accVal,
+
         LocalDateTime registerDate
 ) {
     public static GetSimplePointHistoriesResponse from(PointHistory entity) {
