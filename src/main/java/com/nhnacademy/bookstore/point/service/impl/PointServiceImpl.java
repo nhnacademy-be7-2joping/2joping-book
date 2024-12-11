@@ -124,10 +124,13 @@ public class PointServiceImpl implements PointService {
             );
         }
 
+        PointType pointUseType = pointTypeRepository.findByNameAndIsActiveTrue("포인트사용")
+                .orElseThrow(() -> new EntityNotFoundException("포인트 사용 정책을 찾을 수 없습니다."));
+
         member.usePoint(usePointAmount);
         pointHistoryService.createPointUseHistory(
                 new CreatePointUseHistoryUseRequest(
-                        null,
+                        pointUseType,
                         null,
                         null,
                         null,
