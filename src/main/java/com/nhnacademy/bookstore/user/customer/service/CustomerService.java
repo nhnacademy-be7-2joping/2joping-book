@@ -5,14 +5,18 @@ import com.nhnacademy.bookstore.user.customer.dto.request.CustomerRegisterReques
 import com.nhnacademy.bookstore.user.customer.dto.response.CustomerWithMemberStatusResponse;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import com.nhnacademy.bookstore.user.customer.repository.CustomerRepository;
+import com.nhnacademy.bookstore.user.nonmember.service.NonMemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CustomerService {
     private final CustomerRepository customerRepository;
+    private final NonMemberService nonMemberService;
 
     @Transactional
     public Customer getCustomer(Long customerId, OrderRequest orderRequest) {
@@ -43,11 +47,11 @@ public class CustomerService {
                     customerRegisterRequest.phone(),
                     customerRegisterRequest.email()
             );
-
-            return customerRepository.save(customer);
-        } else {
-            return customer;
+            customer = customerRepository.save(customer);
+            nonMemberService.saveNonMemberWithCustomer(customer);
         }
+
+        return customer;
     }
 
     @Transactional
@@ -62,12 +66,23 @@ public class CustomerService {
 
         if (customerId == null) {
             // 비회원 주문인 경우
-            CustomerRegisterRequest registerRequest = new CustomerRegisterRequest(
-                    orderRequest.deliveryInfo().name(),
-                    orderRequest.deliveryInfo().phone(),
-                    orderRequest.deliveryInfo().email()
+
+            // 이미 동일 이메일과 전화번호가 존재하는지 확인
+            Optional<Customer> customerOptional = customerRepository.findByEmailAndPhone(
+                    orderRequest.deliveryInfo().email(),
+                    orderRequest.deliveryInfo().phone()
             );
-            customer = saveCustomer(registerRequest);
+
+            if (customerOptional.isPresent()) {
+                customer = customerOptional.get();
+            } else {
+                CustomerRegisterRequest registerRequest = new CustomerRegisterRequest(
+                        orderRequest.deliveryInfo().name(),
+                        orderRequest.deliveryInfo().phone(),
+                        orderRequest.deliveryInfo().email()
+                );
+                customer = saveCustomer(registerRequest);
+            }
         } else {
             customer = customerRepository.findById(customerId).orElse(null);
             isMember = true;
