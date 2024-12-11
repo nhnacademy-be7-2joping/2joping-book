@@ -188,7 +188,7 @@ public class PointServiceImpl implements PointService {
         return GetMyPageDetailPointHistoriesResponse.of(member, responses);
     }
 
-    private static int getPointAmount(Order order, String tierName, Member member) {
+    private int getPointAmount(Order order, String tierName, Member member) {
         int totalPrice = order.getTotalPrice();
 
         if (tierName.equals("일반")) {
