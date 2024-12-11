@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstore.common.error.exception.orderset.order_detail;
+package com.nhnacademy.bookstore.common.error.exception.orderset.orderdetail;
 
 public class OrderDetailNotFoundException extends RuntimeException {
     public OrderDetailNotFoundException(String message) {
