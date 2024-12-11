@@ -3,6 +3,7 @@ package com.nhnacademy.bookstore.user.customer.service;
 import com.nhnacademy.bookstore.user.customer.dto.request.CustomerRegisterRequest;
 import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import com.nhnacademy.bookstore.user.customer.repository.CustomerRepository;
+import com.nhnacademy.bookstore.user.nonmember.service.NonMemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,9 @@ class CustomerServiceTest {
 
     @Mock
     private CustomerRepository customerRepository;
+
+    @Mock
+    private NonMemberService nonMemberService;
 
     private CustomerRegisterRequest registerRequest;
 
