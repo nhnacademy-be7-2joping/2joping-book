@@ -16,12 +16,12 @@ public record GetPointHistoryResponse(
         Integer pointVal,
         LocalDateTime registerDate
 ) {
-    public static GetPointHistoryResponse from(PointHistory entity) {
+    public static GetPointHistoryResponse from(PointHistory pointHistory) {
         return new GetPointHistoryResponse(
-                entity.getPointType().getName(),
-                entity.getPointType().getAccVal(),
-                entity.getPointVal(),
-                entity.getRegisterDate()
+                pointHistory.getPointType().getName(),
+                pointHistory.getPointType().getAccVal(),
+                pointHistory.getPointVal(),
+                pointHistory.getRegisterDate()
         );
     }
 }
