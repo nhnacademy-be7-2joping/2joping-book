@@ -11,7 +11,9 @@ public record GetDetailPointHistoriesResponse(
         @Nullable
         String name,
 
+        @Nullable
         Integer accVal,
+
         PointTypeEnum type,
         boolean isActive,
         LocalDateTime registerDate
