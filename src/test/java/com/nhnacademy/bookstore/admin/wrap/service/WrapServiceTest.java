@@ -79,20 +79,46 @@ class WrapServiceTest {
     }
 
 
-//    @Test
-//    void getWrap_Success() {
-//        Long wrapId = 1L;
-//        Wrap mockWrap = new Wrap("포장 상품", 1000, true);
-//
-//        ReflectionTestUtils.setField(mockWrap, "wrapId", wrapId);
-//
-//        when(wrapRepository.findByWrapIdIn(Set.of(wrapId))).thenReturn(List.of(mockWrap));
-//
-//        WrapUpdateResponseDto response = wrapService.getWrap(wrapId);
-//
-//        assertNotNull(response);
-//        assertEquals("포장 상품", response.name());
-//    }
+    @Test
+    void getWrap_Success() {
+        // Given
+        Long wrapId = 1L;
+
+        // Mock Wrap entity
+        Wrap mockWrap = new Wrap("포장 상품", 1000, true);
+        // Set wrapId for mockWrap
+        ReflectionTestUtils.setField(mockWrap, "wrapId", wrapId);
+        when(wrapRepository.findById(wrapId)).thenReturn(Optional.of(mockWrap));
+
+        // Mock Image entity
+        Image mockImage = new Image("http://image.com/image.jpg");
+        // Set imageId for mockImage
+        ReflectionTestUtils.setField(mockImage, "imageId", 2L);
+
+        // Mock WrapImage entity
+        WrapImage mockWrapImage = new WrapImage(mockWrap, mockImage);
+        when(wrapImageRepository.findFirstByWrap_WrapId(wrapId)).thenReturn(Optional.of(mockWrapImage));
+        when(imageRepository.findById(mockImage.getImageId())).thenReturn(Optional.of(mockImage));
+
+        // When
+        WrapUpdateResponseDto response = wrapService.getWrap(wrapId);
+
+        // Then
+        assertNotNull(response);
+        assertEquals(wrapId, response.wrapId());
+        assertEquals("포장 상품", response.name());
+        assertEquals(1000, response.wrapPrice());
+        assertTrue(response.isActive());
+        assertEquals("http://image.com/image.jpg", response.wrapImage());
+
+        // Verify
+        verify(wrapRepository, times(1)).findById(wrapId);
+        verify(wrapImageRepository, times(1)).findFirstByWrap_WrapId(wrapId);
+        verify(imageRepository, times(1)).findById(mockImage.getImageId());
+    }
+
+
+
 
 
 
