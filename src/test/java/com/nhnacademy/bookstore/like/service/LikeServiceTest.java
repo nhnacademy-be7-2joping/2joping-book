@@ -189,58 +189,44 @@ class LikeServiceTest {
         verify(bookRepository).findById(bookId);  // 책 조회 확인
     }
 
+    @Test
+    void testSetBookLike_RemoveExistingLike() {
+        Long customerId = 1L;
+        Long bookId = 1L;
+        LikeRequestDto requestDto = new LikeRequestDto(bookId);
 
-//    @Test
-//    void testSetBookLike_RemoveExistingLike() {
-//        Long customerId = 1L;
-//        Long bookId = 1L;
-//        LikeRequestDto requestDto = new LikeRequestDto(bookId);
-//
-//        // Mock 객체 생성 및 초기화
-//        Member member = new Member();
-//        Book book = new Book();
-//        Like existingLike = new Like(member, book);
-//
-//        // 필드 설정
-//        ReflectionTestUtils.setField(book, "bookId", bookId);
-//        ReflectionTestUtils.setField(existingLike, "likeId", 1L);
-//        book.setLikes(5); // 현재 좋아요 개수를 설정
-//
-//        // Mock 동작 설정
-//        given(memberRepository.findById(customerId)).willReturn(Optional.of(member));
-//        given(bookRepository.existsById(bookId)).willReturn(true);
-//        given(bookRepository.findById(bookId)).willReturn(Optional.of(book));
-//        given(likeRepository.findBookLike(customerId, bookId)).willReturn(Optional.of(existingLike));
-//        given(likeRepository.getMemberLikesNum(bookId)).willReturn(4L); // 삭제 후 좋아요 수 설정
-//
-//        // Mock: 좋아요 삭제 처리
-//        doAnswer(invocation -> {
-//            Long likeId = invocation.getArgument(0);
-//            assertThat(likeId).isEqualTo(existingLike.getLikeId()); // 삭제되는 좋아요 ID 검증
-//            return null;
-//        }).when(likeRepository).deleteById(existingLike.getLikeId());
-//
-//        // Mock: 책의 좋아요 감소 로직 처리
-//        doAnswer(invocation -> {
-//            book.setLikes(book.getLikes() - 1); // 좋아요 감소 처리
-//            return null;
-//        }).when(bookRepository).save(book);
-//
-//        // 테스트 실행
-//        LikeResponseDto response = likeService.setBookLike(requestDto, customerId);
-//
-//        // 결과 검증
-//        assertThat(response.likeId()).isNull(); // 삭제 후 likeId는 null
-//        assertThat(response.bookId()).isEqualTo(bookId);
-//        assertThat(response.likeCount()).isEqualTo(4L); // 좋아요 개수는 4
-//
-//        // 동작 검증
-//        verify(likeRepository).deleteById(existingLike.getLikeId()); // 삭제 확인
-//        verify(bookRepository).save(book); // 책 업데이트 호출 확인
-//        verify(likeRepository, never()).save(any(Like.class)); // 삭제 시 save 호출되지 않음
-//    }
+        // Mock 객체 생성
+        Member member = new Member();
+        Book book = new Book();
+        Like existingLike = new Like(member, book);
 
+        // 초기 값 설정
+        ReflectionTestUtils.setField(member, "id", customerId); // Member ID 설정
+        ReflectionTestUtils.setField(existingLike, "likeId", 1L); // 기존 좋아요 ID 설정
+        ReflectionTestUtils.setField(book, "bookId", bookId); // Book ID 설정
+        ReflectionTestUtils.setField(book, "likes", 5); // 초기 좋아요 수
 
+        // Mock 동작 정의
+        given(memberRepository.findById(customerId)).willReturn(Optional.of(member));
+        given(bookRepository.findById(bookId)).willReturn(Optional.of(book));
+        given(bookRepository.existsById(bookId)).willReturn(true); // 책 존재 여부 확인
+        given(likeRepository.findBookLike(customerId, bookId)).willReturn(Optional.of(existingLike));
+        doNothing().when(likeRepository).deleteById(existingLike.getLikeId()); // 기존 좋아요 삭제 Mock
+        given(likeRepository.getMemberLikesNum(bookId)).willReturn(4L); // 삭제 후 좋아요 개수 Mock
+
+        // 테스트 실행
+        LikeResponseDto response = likeService.setBookLike(requestDto, customerId);
+
+        // 검증
+        assertThat(response.likeId()).isNull(); // 삭제된 경우 likeId는 null이어야 함
+        assertThat(response.bookId()).isEqualTo(bookId); // bookId 확인
+        assertThat(response.likeCount()).isEqualTo(4L); // 좋아요 개수 확인
+
+        // 동작 검증
+        verify(likeRepository).findBookLike(customerId, bookId); // 좋아요 조회 확인
+        verify(likeRepository).deleteById(existingLike.getLikeId()); // 기존 좋아요 삭제 확인
+        verify(bookRepository).save(book); // 좋아요 수 저장 확인
+    }
 
 
 
