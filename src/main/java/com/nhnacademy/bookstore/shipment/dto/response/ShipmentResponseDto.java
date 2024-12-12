@@ -17,4 +17,5 @@ public record ShipmentResponseDto(
         LocalDateTime shippingDate,
         LocalDateTime deliveryDate,
         String trackingNumber
-) {}
+) {
+}

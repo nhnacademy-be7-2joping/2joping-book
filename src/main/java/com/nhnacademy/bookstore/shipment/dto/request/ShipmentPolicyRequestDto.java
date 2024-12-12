@@ -14,4 +14,5 @@ public record ShipmentPolicyRequestDto(
         @NotNull(message = "최소 주문 금액 입력: ") Integer minOrderAmount,
         @NotNull Boolean isMemberOnly,
         @NotNull(message = "배송비 입력: ") Integer shippingFee
-) {}
+) {
+}

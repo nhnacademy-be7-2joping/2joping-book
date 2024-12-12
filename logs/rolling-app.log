@@ -994,3 +994,427 @@
 2024-12-12 15:46:55 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
 2024-12-12 15:46:55 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
 2024-12-12 15:46:55 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:21:48 - HV000001: Hibernate Validator 8.0.1.Final
+2024-12-12 16:21:48 - Starting AdminOrderControllerTest using Java 21.0.2 with PID 88256 (started by jsh14 in C:\Users\jsh14\Programming\NHN\book-project\2joping-book)
+2024-12-12 16:21:48 - Running with Spring Boot v3.3.4, Spring v6.1.13
+2024-12-12 16:21:48 - The following 1 profile is active: "dev"
+2024-12-12 16:22:00 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:22:00 - Initializing Servlet ''
+2024-12-12 16:22:00 - Completed initialization in 3 ms
+2024-12-12 16:22:00 - Started AdminOrderControllerTest in 12.648 seconds (process running for 17.36)
+2024-12-12 16:22:01 - Could not detect default configuration classes for test class [com.nhnacademy.bookstore.admin.wrap.controller.WrapControllerTest]: WrapControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2024-12-12 16:22:01 - Found @SpringBootConfiguration com.nhnacademy.bookstore.BookstoreApplication for test class com.nhnacademy.bookstore.admin.wrap.controller.WrapControllerTest
+2024-12-12 16:22:01 - Starting WrapControllerTest using Java 21.0.2 with PID 88256 (started by jsh14 in C:\Users\jsh14\Programming\NHN\book-project\2joping-book)
+2024-12-12 16:22:01 - Running with Spring Boot v3.3.4, Spring v6.1.13
+2024-12-12 16:22:01 - The following 1 profile is active: "dev"
+2024-12-12 16:22:04 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:22:04 - Initializing Servlet ''
+2024-12-12 16:22:04 - Completed initialization in 1 ms
+2024-12-12 16:22:04 - Started WrapControllerTest in 2.784 seconds (process running for 21.44)
+2024-12-12 16:22:05 - Could not detect default configuration classes for test class [com.nhnacademy.bookstore.admin.wrap.repository.WrapRepositoryImplTest]: WrapRepositoryImplTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2024-12-12 16:22:05 - Found @SpringBootConfiguration com.nhnacademy.bookstore.BookstoreApplication for test class com.nhnacademy.bookstore.admin.wrap.repository.WrapRepositoryImplTest
+2024-12-12 16:22:12 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:22:15 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:15 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:15 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:15 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:29 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:22:29 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:29 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:29 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:29 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:32 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:22:32 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:32 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:32 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:32 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:35 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:22:35 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:35 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:35 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:35 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:38 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:22:38 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:38 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:38 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:38 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:40 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:22:40 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:40 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:40 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:40 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:42 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:22:42 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:42 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:42 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:42 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:44 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:22:44 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:44 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:44 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:44 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:49 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:22:49 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:49 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:49 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:49 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:51 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:22:51 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:51 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:51 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:51 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:54 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:22:54 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:54 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:54 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:54 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:56 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:22:56 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:56 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:22:56 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:22:56 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:01 - Starting CategoryControllerTest using Java 21.0.2 with PID 88256 (started by jsh14 in C:\Users\jsh14\Programming\NHN\book-project\2joping-book)
+2024-12-12 16:23:01 - Running with Spring Boot v3.3.4, Spring v6.1.13
+2024-12-12 16:23:01 - The following 1 profile is active: "dev"
+2024-12-12 16:23:02 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:02 - Initializing Servlet ''
+2024-12-12 16:23:02 - Completed initialization in 0 ms
+2024-12-12 16:23:02 - Started CategoryControllerTest in 1.35 seconds (process running for 79.099)
+2024-12-12 16:23:02 - Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2024-12-12 16:23:02 - Could not detect default configuration classes for test class [com.nhnacademy.bookstore.bookset.contributor.controller.ContributorControllerTest]: ContributorControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2024-12-12 16:23:02 - Found @SpringBootConfiguration com.nhnacademy.bookstore.BookstoreApplication for test class com.nhnacademy.bookstore.bookset.contributor.controller.ContributorControllerTest
+2024-12-12 16:23:02 - Starting ContributorControllerTest using Java 21.0.2 with PID 88256 (started by jsh14 in C:\Users\jsh14\Programming\NHN\book-project\2joping-book)
+2024-12-12 16:23:02 - Running with Spring Boot v3.3.4, Spring v6.1.13
+2024-12-12 16:23:02 - The following 1 profile is active: "dev"
+2024-12-12 16:23:03 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:03 - Initializing Servlet ''
+2024-12-12 16:23:03 - Completed initialization in 0 ms
+2024-12-12 16:23:03 - Started ContributorControllerTest in 1.051 seconds (process running for 80.697)
+2024-12-12 16:23:03 - Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2024-12-12 16:23:04 - Could not detect default configuration classes for test class [com.nhnacademy.bookstore.bookset.contributor.controller.ContributorRoleControllerTest]: ContributorRoleControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2024-12-12 16:23:04 - Found @SpringBootConfiguration com.nhnacademy.bookstore.BookstoreApplication for test class com.nhnacademy.bookstore.bookset.contributor.controller.ContributorRoleControllerTest
+2024-12-12 16:23:04 - Starting ContributorRoleControllerTest using Java 21.0.2 with PID 88256 (started by jsh14 in C:\Users\jsh14\Programming\NHN\book-project\2joping-book)
+2024-12-12 16:23:04 - Running with Spring Boot v3.3.4, Spring v6.1.13
+2024-12-12 16:23:04 - The following 1 profile is active: "dev"
+2024-12-12 16:23:05 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:05 - Initializing Servlet ''
+2024-12-12 16:23:05 - Completed initialization in 0 ms
+2024-12-12 16:23:05 - Started ContributorRoleControllerTest in 1.018 seconds (process running for 81.828)
+2024-12-12 16:23:05 - Could not detect default configuration classes for test class [com.nhnacademy.bookstore.bookset.publisher.controller.PublisherControllerTest]: PublisherControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2024-12-12 16:23:05 - Found @SpringBootConfiguration com.nhnacademy.bookstore.BookstoreApplication for test class com.nhnacademy.bookstore.bookset.publisher.controller.PublisherControllerTest
+2024-12-12 16:23:05 - Starting PublisherControllerTest using Java 21.0.2 with PID 88256 (started by jsh14 in C:\Users\jsh14\Programming\NHN\book-project\2joping-book)
+2024-12-12 16:23:05 - Running with Spring Boot v3.3.4, Spring v6.1.13
+2024-12-12 16:23:05 - The following 1 profile is active: "dev"
+2024-12-12 16:23:06 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:06 - Initializing Servlet ''
+2024-12-12 16:23:06 - Completed initialization in 0 ms
+2024-12-12 16:23:06 - Started PublisherControllerTest in 1.238 seconds (process running for 83.617)
+2024-12-12 16:23:07 - Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2024-12-12 16:23:07 - Could not detect default configuration classes for test class [com.nhnacademy.bookstore.bookset.publisher.repository.PublisherRepositoryImplTest]: PublisherRepositoryImplTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2024-12-12 16:23:07 - Found @SpringBootConfiguration com.nhnacademy.bookstore.BookstoreApplication for test class com.nhnacademy.bookstore.bookset.publisher.repository.PublisherRepositoryImplTest
+2024-12-12 16:23:08 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:23:08 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:08 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:08 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:08 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:12 - Starting TagControllerTest using Java 21.0.2 with PID 88256 (started by jsh14 in C:\Users\jsh14\Programming\NHN\book-project\2joping-book)
+2024-12-12 16:23:12 - Running with Spring Boot v3.3.4, Spring v6.1.13
+2024-12-12 16:23:12 - The following 1 profile is active: "dev"
+2024-12-12 16:23:13 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:13 - Initializing Servlet ''
+2024-12-12 16:23:13 - Completed initialization in 1 ms
+2024-12-12 16:23:13 - Started TagControllerTest in 1.295 seconds (process running for 90.351)
+2024-12-12 16:23:13 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:13 - Initializing Servlet ''
+2024-12-12 16:23:13 - Completed initialization in 0 ms
+2024-12-12 16:23:13 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:13 - Initializing Servlet ''
+2024-12-12 16:23:13 - Completed initialization in 0 ms
+2024-12-12 16:23:13 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:13 - Initializing Servlet ''
+2024-12-12 16:23:13 - Completed initialization in 0 ms
+2024-12-12 16:23:13 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:13 - Initializing Servlet ''
+2024-12-12 16:23:13 - Completed initialization in 0 ms
+2024-12-12 16:23:13 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:13 - Initializing Servlet ''
+2024-12-12 16:23:13 - Completed initialization in 0 ms
+2024-12-12 16:23:13 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:13 - Initializing Servlet ''
+2024-12-12 16:23:13 - Completed initialization in 0 ms
+2024-12-12 16:23:13 - Could not detect default configuration classes for test class [com.nhnacademy.bookstore.cart.controller.CartControllerTest]: CartControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2024-12-12 16:23:13 - Found @SpringBootConfiguration com.nhnacademy.bookstore.BookstoreApplication for test class com.nhnacademy.bookstore.cart.controller.CartControllerTest
+2024-12-12 16:23:13 - Starting CartControllerTest using Java 21.0.2 with PID 88256 (started by jsh14 in C:\Users\jsh14\Programming\NHN\book-project\2joping-book)
+2024-12-12 16:23:13 - Running with Spring Boot v3.3.4, Spring v6.1.13
+2024-12-12 16:23:13 - The following 1 profile is active: "dev"
+2024-12-12 16:23:15 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:15 - Initializing Servlet ''
+2024-12-12 16:23:15 - Completed initialization in 1 ms
+2024-12-12 16:23:15 - Started CartControllerTest in 1.48 seconds (process running for 92.131)
+2024-12-12 16:23:19 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:19 - Initializing Servlet ''
+2024-12-12 16:23:19 - Completed initialization in 1 ms
+2024-12-12 16:23:19 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:19 - Initializing Servlet ''
+2024-12-12 16:23:19 - Completed initialization in 0 ms
+2024-12-12 16:23:19 - Resolved [org.springframework.web.bind.MethodArgumentNotValidException: Validation failed for argument [0] in public org.springframework.http.ResponseEntity<com.nhnacademy.bookstore.coupon.dto.response.CouponResponseDto> com.nhnacademy.bookstore.coupon.controller.CouponController.createCoupon(com.nhnacademy.bookstore.coupon.dto.request.CouponRequestDto) with 3 errors: [Field error in object 'couponRequestDto' on field 'couponPolicyId': rejected value [null]; codes [NotNull.couponRequestDto.couponPolicyId,NotNull.couponPolicyId,NotNull.java.lang.Long,NotNull]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [couponRequestDto.couponPolicyId,couponPolicyId]; arguments []; default message [couponPolicyId]]; default message [쿠폰 정책 ID는 필수입니다.]] [Field error in object 'couponRequestDto' on field 'expiredAt': rejected value [null]; codes [NotNull.couponRequestDto.expiredAt,NotNull.expiredAt,NotNull.java.time.LocalDate,NotNull]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [couponRequestDto.expiredAt,expiredAt]; arguments []; default message [expiredAt]]; default message [쿠폰 만료일은 필수입니다.]] [Field error in object 'couponRequestDto' on field 'name': rejected value []; codes [NotBlank.couponRequestDto.name,NotBlank.name,NotBlank.java.lang.String,NotBlank]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [couponRequestDto.name,name]; arguments []; default message [name]]; default message [쿠폰 이름은 필수입니다.]] ]
+2024-12-12 16:23:19 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:19 - Initializing Servlet ''
+2024-12-12 16:23:19 - Completed initialization in 0 ms
+2024-12-12 16:23:19 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:19 - Initializing Servlet ''
+2024-12-12 16:23:19 - Completed initialization in 1 ms
+2024-12-12 16:23:19 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:19 - Initializing Servlet ''
+2024-12-12 16:23:19 - Completed initialization in 0 ms
+2024-12-12 16:23:19 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:19 - Initializing Servlet ''
+2024-12-12 16:23:19 - Completed initialization in 1 ms
+2024-12-12 16:23:19 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:19 - Initializing Servlet ''
+2024-12-12 16:23:19 - Completed initialization in 0 ms
+2024-12-12 16:23:19 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:19 - Initializing Servlet ''
+2024-12-12 16:23:19 - Completed initialization in 0 ms
+2024-12-12 16:23:19 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:19 - Initializing Servlet ''
+2024-12-12 16:23:19 - Completed initialization in 0 ms
+2024-12-12 16:23:19 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:19 - Initializing Servlet ''
+2024-12-12 16:23:19 - Completed initialization in 1 ms
+2024-12-12 16:23:20 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:20 - Initializing Servlet ''
+2024-12-12 16:23:20 - Completed initialization in 0 ms
+2024-12-12 16:23:20 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:20 - Initializing Servlet ''
+2024-12-12 16:23:20 - Completed initialization in 0 ms
+2024-12-12 16:23:20 - Resolved [org.springframework.web.bind.MissingRequestHeaderException: Required request header 'X-Customer-Id' for method parameter type String is not present]
+2024-12-12 16:23:20 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:20 - Initializing Servlet ''
+2024-12-12 16:23:20 - Completed initialization in 0 ms
+2024-12-12 16:23:20 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:20 - Initializing Servlet ''
+2024-12-12 16:23:20 - Completed initialization in 2 ms
+2024-12-12 16:23:20 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:20 - Initializing Servlet ''
+2024-12-12 16:23:20 - Completed initialization in 1 ms
+2024-12-12 16:23:20 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:20 - Initializing Servlet ''
+2024-12-12 16:23:20 - Completed initialization in 0 ms
+2024-12-12 16:23:20 - Could not detect default configuration classes for test class [com.nhnacademy.bookstore.coupon.respository.CouponPolicyRepositoryImplTest]: CouponPolicyRepositoryImplTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2024-12-12 16:23:20 - Found @SpringBootConfiguration com.nhnacademy.bookstore.BookstoreApplication for test class com.nhnacademy.bookstore.coupon.respository.CouponPolicyRepositoryImplTest
+2024-12-12 16:23:22 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:23:22 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:22 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:22 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:22 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:26 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:23:27 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:27 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:27 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:27 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:30 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:23:30 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:30 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:30 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:30 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:33 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:23:33 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:33 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:33 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:33 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:37 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:23:37 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:37 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:37 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:37 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:39 - Starting LikeControllerTest using Java 21.0.2 with PID 88256 (started by jsh14 in C:\Users\jsh14\Programming\NHN\book-project\2joping-book)
+2024-12-12 16:23:39 - Running with Spring Boot v3.3.4, Spring v6.1.13
+2024-12-12 16:23:39 - The following 1 profile is active: "dev"
+2024-12-12 16:23:41 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:41 - Initializing Servlet ''
+2024-12-12 16:23:41 - Completed initialization in 0 ms
+2024-12-12 16:23:41 - Started LikeControllerTest in 2.459 seconds (process running for 118.329)
+2024-12-12 16:23:41 - Could not detect default configuration classes for test class [com.nhnacademy.bookstore.like.repository.LikeRepositoryTest]: LikeRepositoryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2024-12-12 16:23:41 - Found @SpringBootConfiguration com.nhnacademy.bookstore.BookstoreApplication for test class com.nhnacademy.bookstore.like.repository.LikeRepositoryTest
+2024-12-12 16:23:43 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:23:43 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:43 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:43 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:43 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:44 - Starting OrderDetailControllerTest using Java 21.0.2 with PID 88256 (started by jsh14 in C:\Users\jsh14\Programming\NHN\book-project\2joping-book)
+2024-12-12 16:23:44 - Running with Spring Boot v3.3.4, Spring v6.1.13
+2024-12-12 16:23:44 - The following 1 profile is active: "dev"
+2024-12-12 16:23:46 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:46 - Initializing Servlet ''
+2024-12-12 16:23:46 - Completed initialization in 1 ms
+2024-12-12 16:23:46 - Started OrderDetailControllerTest in 1.213 seconds (process running for 122.867)
+2024-12-12 16:23:46 - Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2024-12-12 16:23:46 - Could not detect default configuration classes for test class [com.nhnacademy.bookstore.orderset.orderdetail.repository.OrderDetailRepositoryImplTest]: OrderDetailRepositoryImplTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2024-12-12 16:23:46 - Found @SpringBootConfiguration com.nhnacademy.bookstore.BookstoreApplication for test class com.nhnacademy.bookstore.orderset.orderdetail.repository.OrderDetailRepositoryImplTest
+2024-12-12 16:23:47 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:23:47 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:47 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:47 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:47 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:50 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:23:50 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:50 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:50 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:50 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:52 - Starting AdminPointControllerTest using Java 21.0.2 with PID 88256 (started by jsh14 in C:\Users\jsh14\Programming\NHN\book-project\2joping-book)
+2024-12-12 16:23:52 - Running with Spring Boot v3.3.4, Spring v6.1.13
+2024-12-12 16:23:52 - The following 1 profile is active: "dev"
+2024-12-12 16:23:54 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:54 - Initializing Servlet ''
+2024-12-12 16:23:54 - Completed initialization in 0 ms
+2024-12-12 16:23:54 - Started AdminPointControllerTest in 2.063 seconds (process running for 131.189)
+2024-12-12 16:23:54 - Could not detect default configuration classes for test class [com.nhnacademy.bookstore.point.controller.PointControllerTest]: PointControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2024-12-12 16:23:54 - Found @SpringBootConfiguration com.nhnacademy.bookstore.BookstoreApplication for test class com.nhnacademy.bookstore.point.controller.PointControllerTest
+2024-12-12 16:23:54 - Starting PointControllerTest using Java 21.0.2 with PID 88256 (started by jsh14 in C:\Users\jsh14\Programming\NHN\book-project\2joping-book)
+2024-12-12 16:23:54 - Running with Spring Boot v3.3.4, Spring v6.1.13
+2024-12-12 16:23:54 - The following 1 profile is active: "dev"
+2024-12-12 16:23:55 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:23:55 - Initializing Servlet ''
+2024-12-12 16:23:55 - Completed initialization in 0 ms
+2024-12-12 16:23:55 - Started PointControllerTest in 1.418 seconds (process running for 132.682)
+2024-12-12 16:23:55 - Could not detect default configuration classes for test class [com.nhnacademy.bookstore.point.controller.PointTypeControllerTest]: PointTypeControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2024-12-12 16:23:55 - Found @SpringBootConfiguration com.nhnacademy.bookstore.BookstoreApplication for test class com.nhnacademy.bookstore.point.controller.PointTypeControllerTest
+2024-12-12 16:23:55 - Could not detect default configuration classes for test class [com.nhnacademy.bookstore.point.repository.PointTypeRepositoryTest]: PointTypeRepositoryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2024-12-12 16:23:56 - Found @SpringBootConfiguration com.nhnacademy.bookstore.BookstoreApplication for test class com.nhnacademy.bookstore.point.repository.PointTypeRepositoryTest
+2024-12-12 16:23:58 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:23:58 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:58 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:23:58 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:23:58 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:00 - Starting ReviewControllerTest using Java 21.0.2 with PID 88256 (started by jsh14 in C:\Users\jsh14\Programming\NHN\book-project\2joping-book)
+2024-12-12 16:24:00 - Running with Spring Boot v3.3.4, Spring v6.1.13
+2024-12-12 16:24:00 - The following 1 profile is active: "dev"
+2024-12-12 16:24:01 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:24:01 - Initializing Servlet ''
+2024-12-12 16:24:01 - Completed initialization in 1 ms
+2024-12-12 16:24:01 - Started ReviewControllerTest in 1.444 seconds (process running for 138.497)
+2024-12-12 16:24:01 - Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2024-12-12 16:24:01 - Could not detect default configuration classes for test class [com.nhnacademy.bookstore.review.repository.ReviewRepositoryImplTest]: ReviewRepositoryImplTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2024-12-12 16:24:01 - Found @SpringBootConfiguration com.nhnacademy.bookstore.BookstoreApplication for test class com.nhnacademy.bookstore.review.repository.ReviewRepositoryImplTest
+2024-12-12 16:24:03 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:24:03 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:03 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:03 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:03 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:04 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:24:04 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:04 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:04 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:04 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:06 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:24:06 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:06 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:06 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:06 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:08 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:24:08 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:08 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:08 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:08 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:10 - Starting CarrierControllerTest using Java 21.0.2 with PID 88256 (started by jsh14 in C:\Users\jsh14\Programming\NHN\book-project\2joping-book)
+2024-12-12 16:24:10 - Running with Spring Boot v3.3.4, Spring v6.1.13
+2024-12-12 16:24:10 - The following 1 profile is active: "dev"
+2024-12-12 16:24:11 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:24:11 - Initializing Servlet ''
+2024-12-12 16:24:11 - Completed initialization in 0 ms
+2024-12-12 16:24:11 - Started CarrierControllerTest in 1.02 seconds (process running for 147.98)
+2024-12-12 16:24:11 - Could not detect default configuration classes for test class [com.nhnacademy.bookstore.shipment.controller.ShipmentControllerTest]: ShipmentControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2024-12-12 16:24:11 - Found @SpringBootConfiguration com.nhnacademy.bookstore.BookstoreApplication for test class com.nhnacademy.bookstore.shipment.controller.ShipmentControllerTest
+2024-12-12 16:24:11 - Starting ShipmentControllerTest using Java 21.0.2 with PID 88256 (started by jsh14 in C:\Users\jsh14\Programming\NHN\book-project\2joping-book)
+2024-12-12 16:24:11 - Running with Spring Boot v3.3.4, Spring v6.1.13
+2024-12-12 16:24:11 - The following 1 profile is active: "dev"
+2024-12-12 16:24:12 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:24:12 - Initializing Servlet ''
+2024-12-12 16:24:12 - Completed initialization in 0 ms
+2024-12-12 16:24:12 - Started ShipmentControllerTest in 1.017 seconds (process running for 149.041)
+2024-12-12 16:24:12 - Could not detect default configuration classes for test class [com.nhnacademy.bookstore.shipment.controller.ShipmentPolicyControllerTest]: ShipmentPolicyControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2024-12-12 16:24:12 - Found @SpringBootConfiguration com.nhnacademy.bookstore.BookstoreApplication for test class com.nhnacademy.bookstore.shipment.controller.ShipmentPolicyControllerTest
+2024-12-12 16:24:12 - Starting ShipmentPolicyControllerTest using Java 21.0.2 with PID 88256 (started by jsh14 in C:\Users\jsh14\Programming\NHN\book-project\2joping-book)
+2024-12-12 16:24:12 - Running with Spring Boot v3.3.4, Spring v6.1.13
+2024-12-12 16:24:12 - The following 1 profile is active: "dev"
+2024-12-12 16:24:13 - Initializing Spring TestDispatcherServlet ''
+2024-12-12 16:24:13 - Initializing Servlet ''
+2024-12-12 16:24:13 - Completed initialization in 1 ms
+2024-12-12 16:24:13 - Started ShipmentPolicyControllerTest in 0.924 seconds (process running for 150.028)
+2024-12-12 16:24:13 - Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2024-12-12 16:24:13 - Could not detect default configuration classes for test class [com.nhnacademy.bookstore.shipment.repository.impl.ShipmentPolicyRepositoryImplTest]: ShipmentPolicyRepositoryImplTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2024-12-12 16:24:13 - Found @SpringBootConfiguration com.nhnacademy.bookstore.BookstoreApplication for test class com.nhnacademy.bookstore.shipment.repository.impl.ShipmentPolicyRepositoryImplTest
+2024-12-12 16:24:14 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:24:14 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:14 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:14 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:14 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:16 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:24:16 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:16 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:16 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:16 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:18 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:24:19 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:19 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:19 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:19 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:21 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:24:22 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:22 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:22 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:22 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:23 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:24:23 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:23 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:23 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:23 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:26 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:24:26 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:26 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:26 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:26 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:30 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:24:31 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:31 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:31 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:31 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:34 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:24:34 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:34 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:34 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:34 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:37 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:24:37 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:37 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:37 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:37 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:40 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:24:40 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:40 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:40 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:40 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:44 - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-12 16:24:44 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:44 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookContributor$BookContributorId
+2024-12-12 16:24:44 - HHH000038: Composite-id class does not override equals(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
+2024-12-12 16:24:44 - HHH000039: Composite-id class does not override hashCode(): com.nhnacademy.bookstore.bookset.book.entity.BookCategory$BookCategoryId
