@@ -3,26 +3,20 @@ package com.nhnacademy.bookstore.bookset.tag.service;
 
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
-import com.nhnacademy.bookstore.bookset.contributor.entity.ContributorRole;
 import com.nhnacademy.bookstore.bookset.tag.dto.TagRequestDto;
 import com.nhnacademy.bookstore.bookset.tag.dto.TagResponseDto;
 import com.nhnacademy.bookstore.bookset.tag.entity.BookTag;
 import com.nhnacademy.bookstore.bookset.tag.entity.Tag;
-import com.nhnacademy.bookstore.bookset.tag.repository.TagRepository;
 import com.nhnacademy.bookstore.bookset.tag.repository.BookTagRepository;
-
-import com.nhnacademy.bookstore.common.error.exception.base.ConflictException;
+import com.nhnacademy.bookstore.bookset.tag.repository.TagRepository;
 import com.nhnacademy.bookstore.common.error.exception.base.NotFoundException;
-import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.tag.TagAlreadyAssignedBookException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.tag.TagNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * tag service
@@ -57,10 +51,9 @@ public class TagServiceImpl implements TagService {
     /**
      * 특정 책에 태그를 할당합니다.
      *
-     * @param tagId 태그 ID
+     * @param tagId  태그 ID
      * @param bookId 책 ID
      * @return 할당된 태그 정보
-
      */
     @Override
     public TagResponseDto assignedTagToBook(Long tagId, Long bookId) {
@@ -94,7 +87,6 @@ public class TagServiceImpl implements TagService {
     }
 
 
-
     /**
      * 모든 태그를 조회합니다.
      *
@@ -112,7 +104,7 @@ public class TagServiceImpl implements TagService {
      * 특정 태그를 업데이트합니다.
      *
      * @param tagId 태그 ID
-     * @param dto 업데이트할 태그 데이터
+     * @param dto   업데이트할 태그 데이터
      * @return 업데이트된 태그 정보
      */
     @Override

@@ -17,11 +17,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -116,10 +114,6 @@ class WrapServiceTest {
         verify(wrapImageRepository, times(1)).findFirstByWrap_WrapId(wrapId);
         verify(imageRepository, times(1)).findById(mockImage.getImageId());
     }
-
-
-
-
 
 
     @Test
@@ -295,6 +289,7 @@ class WrapServiceTest {
         // When & Then
         assertThrows(WrapNotFoundException.class, () -> wrapService.updateWrap(wrapId, updateRequestDto));
     }
+
     @Test
     void deleteWrap_Success() {
         // Given
@@ -319,7 +314,6 @@ class WrapServiceTest {
         // When & Then
         assertThrows(WrapNotFoundException.class, () -> wrapService.deleteWrap(wrapId));
     }
-
 
 
     @Test
@@ -349,7 +343,6 @@ class WrapServiceTest {
         // When & Then
         assertThrows(NoSuchElementException.class, () -> wrapService.getWrap(wrapId));
     }
-
 
 
 }

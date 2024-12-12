@@ -1,39 +1,29 @@
 package com.nhnacademy.bookstore.bookset.book.repository;
 
 import com.nhnacademy.bookstore.bookset.book.dto.response.*;
-
-
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
-import com.nhnacademy.bookstore.bookset.book.entity.BookCategory;
 import com.nhnacademy.bookstore.bookset.book.entity.QBook;
 import com.nhnacademy.bookstore.bookset.book.entity.QBookCategory;
 import com.nhnacademy.bookstore.bookset.book.entity.QBookContributor;
-import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import com.nhnacademy.bookstore.bookset.category.entity.QCategory;
-import com.nhnacademy.bookstore.bookset.contributor.entity.Contributor;
 import com.nhnacademy.bookstore.bookset.contributor.entity.QContributor;
 import com.nhnacademy.bookstore.bookset.contributor.entity.QContributorRole;
 import com.nhnacademy.bookstore.bookset.tag.entity.QBookTag;
 import com.nhnacademy.bookstore.bookset.tag.entity.QTag;
-import com.nhnacademy.bookstore.bookset.tag.entity.Tag;
 import com.nhnacademy.bookstore.common.error.exception.bookset.category.CategoryIdNullException;
-import com.nhnacademy.bookstore.imageset.entity.BookImage;
 import com.nhnacademy.bookstore.imageset.entity.QBookImage;
 import com.nhnacademy.bookstore.imageset.entity.QImage;
 import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
 import com.nhnacademy.bookstore.review.entity.QReview;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.impl.JPAQuery;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
-import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -59,7 +49,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     QBookImage qBookImageDetail = new QBookImage("detail");
     QImage qImageThumbnail = new QImage("thumbnailImage");
     QImage qImageDetail = new QImage("detailImage");
-  
+
     /**
      * 전체 도서를 페이지 단위로 조회
      *
@@ -134,7 +124,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     /**
      * 특정 기여자가 참여한 도서를 페이지 단위로 조회
      *
-     * @param pageable 페이징 정보를 담고 있는 객체
+     * @param pageable      페이징 정보를 담고 있는 객체
      * @param contributorId 조회할 기여자의 ID
      * @return 기여자가 참여한 도서 목록과 페이징 정보를 담은 Page 객체
      */
@@ -187,7 +177,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     /**
      * 특정 카테고리에 속하는 도서를 페이지 단위로 조회
      *
-     * @param pageable 페이징 정보를 담고 있는 객체
+     * @param pageable   페이징 정보를 담고 있는 객체
      * @param categoryId 조회할 카테고리의 ID
      * @return 카테고리별 도서 목록과 페이징 정보를 담은 Page 객체
      */
@@ -324,7 +314,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     }
 
     /**
-     *  최하위 카테고리 Id 기반으로 top, middle, bottom 카테고리 가져오기
+     * 최하위 카테고리 Id 기반으로 top, middle, bottom 카테고리 가져오기
      *
      * @param lowestCategoryId
      * @return topCategoryId, middleCategoryId, bottomCategoryId 맵
@@ -452,7 +442,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
 
         return Optional.of(bookUpdateResponseDto);
     }
-  
+
     /**
      * 특정 도서의 리뷰 정보를 조회하여 반환
      */
@@ -470,7 +460,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                         qReview.imageUrl,
                         qReview.createdAt,
                         qReview.updatedAt
-                        ))
+                ))
                 .fetch();
     }
 }

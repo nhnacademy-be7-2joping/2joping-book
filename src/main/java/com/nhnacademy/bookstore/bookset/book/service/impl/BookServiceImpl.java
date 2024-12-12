@@ -4,24 +4,18 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateHtmlRequestDto;
-import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateRequestDto;
-import com.nhnacademy.bookstore.bookset.book.dto.request.ImageUrlRequestDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookCreateAPIResponseDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookCreateResponseDto;
-import com.nhnacademy.bookstore.bookset.book.dto.request.BookUpdateHtmlRequestDto;
-import com.nhnacademy.bookstore.bookset.book.dto.request.BookUpdateRequestDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
+import com.nhnacademy.bookstore.bookset.book.dto.request.*;
+import com.nhnacademy.bookstore.bookset.book.dto.response.*;
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.bookset.book.entity.BookCategory;
 import com.nhnacademy.bookstore.bookset.book.entity.BookContributor;
 import com.nhnacademy.bookstore.bookset.book.repository.BookCategoryRepository;
 import com.nhnacademy.bookstore.bookset.book.repository.BookContributorRepository;
+import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
+import com.nhnacademy.bookstore.bookset.book.service.BookService;
 import com.nhnacademy.bookstore.bookset.category.dto.response.CategoryResponseDto;
 import com.nhnacademy.bookstore.bookset.category.entity.Category;
 import com.nhnacademy.bookstore.bookset.category.repository.CategoryRepository;
-import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRequestDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.request.ContributorRoleRequestDto;
 import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.bookset.contributor.entity.Contributor;
@@ -35,16 +29,12 @@ import com.nhnacademy.bookstore.bookset.tag.entity.BookTag;
 import com.nhnacademy.bookstore.bookset.tag.entity.Tag;
 import com.nhnacademy.bookstore.bookset.tag.repository.BookTagRepository;
 import com.nhnacademy.bookstore.bookset.tag.repository.TagRepository;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookUpdateResponseDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookUpdateResultResponseDto;
-import com.nhnacademy.bookstore.common.error.exception.bookset.publisher.PublisherNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.book.BookNotFoundException;
-import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
-import com.nhnacademy.bookstore.bookset.book.service.BookService;
+import com.nhnacademy.bookstore.common.error.exception.bookset.category.CategoryNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorRoleNotFoundException;
+import com.nhnacademy.bookstore.common.error.exception.bookset.publisher.PublisherNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.tag.TagNotFoundException;
-import com.nhnacademy.bookstore.common.error.exception.bookset.category.CategoryNotFoundException;
 import com.nhnacademy.bookstore.imageset.entity.BookImage;
 import com.nhnacademy.bookstore.imageset.entity.Image;
 import com.nhnacademy.bookstore.imageset.repository.BookImageRepository;
@@ -169,7 +159,7 @@ public class BookServiceImpl implements BookService {
     /**
      * 도서와 태그를 연관짓는 메서드
      *
-     * @param book 태그를 연관시킬 도서 객체
+     * @param book    태그를 연관시킬 도서 객체
      * @param tagList 태그 목록 텍스트
      * @return 태그 리스트 객체 (TagResponseDto)
      */
@@ -298,7 +288,7 @@ public class BookServiceImpl implements BookService {
                 bookCreateHtmlRequestDto.isActive(),
                 bookCreateHtmlRequestDto.remainQuantity(),
                 0,
-                0,null
+                0, null
         );
 
         List<ContributorResponseDto> contributorResponseDtos = getContributorList(bookCreateHtmlRequestDto.contributorList());
@@ -481,6 +471,7 @@ public class BookServiceImpl implements BookService {
 
     /**
      * 전체 도서를 조회하는 메서드
+     *
      * @return 도서 객체
      */
     @Transactional(readOnly = true)
@@ -492,6 +483,7 @@ public class BookServiceImpl implements BookService {
 
     /**
      * 카테고리로 도서를 조회하는 메서드
+     *
      * @param categoryId
      * @return 도서 객체
      */
@@ -504,6 +496,7 @@ public class BookServiceImpl implements BookService {
 
     /**
      * 기여자로 도서를 조회하는 메서드
+     *
      * @param contributorId
      * @return 도서 객체
      */
@@ -516,6 +509,7 @@ public class BookServiceImpl implements BookService {
 
     /**
      * 특정 도서를 조회하는 메서드
+     *
      * @param bookId
      * @return 도서 객체
      */
@@ -523,7 +517,7 @@ public class BookServiceImpl implements BookService {
     @Transactional(readOnly = true)
     @Override
     public BookResponseDto getBookById(Long bookId) {
-        BookResponseDto book = bookRepository.findBookByBookId(bookId).orElseThrow(()-> new BookNotFoundException("도서를 찾을 수 없습니다."));
+        BookResponseDto book = bookRepository.findBookByBookId(bookId).orElseThrow(() -> new BookNotFoundException("도서를 찾을 수 없습니다."));
         return book;
     }
 
@@ -546,7 +540,7 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     public BookUpdateResponseDto getUpdateBookByBookId(Long bookId) {
-        BookUpdateResponseDto book = bookRepository.findUpdateBookByBookId(bookId).orElseThrow(()-> new BookNotFoundException("도서를 찾을 수 없습니다."));
+        BookUpdateResponseDto book = bookRepository.findUpdateBookByBookId(bookId).orElseThrow(() -> new BookNotFoundException("도서를 찾을 수 없습니다."));
         return book;
     }
 
@@ -554,7 +548,7 @@ public class BookServiceImpl implements BookService {
      * 특정 도서를 업데이트하는 메서드
      *
      * @param bookId
-     * @param bookUpdateRequestDto   도서 업데이트 요청 데이터가 담긴 DTO
+     * @param bookUpdateRequestDto 도서 업데이트 요청 데이터가 담긴 DTO
      * @return 업데이트된 도서의 결과 정보가 담긴 DTO
      */
     @Transactional
@@ -682,10 +676,8 @@ public class BookServiceImpl implements BookService {
      * 특정 도서에 연결된 기존 이미지를 제거하는 메서드
      *
      * @param book
-     * @param imageType
-     *
-     * 이미지 유형에 해당하는 도서의 기존 이미지를 모두 삭제합니다.
-     * 이미지가 더 이상 다른 도서와 연결되어 있지 않을 경우 이미지 데이터를 완전히 삭제합니다.
+     * @param imageType 이미지 유형에 해당하는 도서의 기존 이미지를 모두 삭제합니다.
+     *                  이미지가 더 이상 다른 도서와 연결되어 있지 않을 경우 이미지 데이터를 완전히 삭제합니다.
      */
     public void removeExistingImages(Book book, String imageType) {
         bookImageRepository.findByBookAndImageType(book, imageType)

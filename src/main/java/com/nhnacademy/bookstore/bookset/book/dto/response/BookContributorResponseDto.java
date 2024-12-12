@@ -1,7 +1,6 @@
 package com.nhnacademy.bookstore.bookset.book.dto.response;
 
 import jakarta.validation.constraints.Positive;
-import lombok.*;
 
 /**
  * 도서 기여자 Response DTO
@@ -11,9 +10,10 @@ import lombok.*;
  */
 
 
-public record BookContributorResponseDto (
-    @Positive Long contributorId,
-     String contributorName,
-     Long roleId,
-     String roleName
-) {}
+public record BookContributorResponseDto(
+        @Positive Long contributorId,
+        String contributorName,
+        Long roleId,
+        String roleName
+) {
+}

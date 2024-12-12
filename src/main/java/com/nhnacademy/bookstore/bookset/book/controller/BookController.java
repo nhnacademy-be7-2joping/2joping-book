@@ -1,20 +1,14 @@
 package com.nhnacademy.bookstore.bookset.book.controller;
 
 import com.nhnacademy.bookstore.bookset.book.dto.request.BookCreateRequestDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookCreateAPIResponseDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookCreateResponseDto;
 import com.nhnacademy.bookstore.bookset.book.dto.request.BookUpdateRequestDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookResponseDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookSimpleResponseDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookUpdateResponseDto;
-import com.nhnacademy.bookstore.bookset.book.dto.response.BookUpdateResultResponseDto;
+import com.nhnacademy.bookstore.bookset.book.dto.response.*;
 import com.nhnacademy.bookstore.bookset.book.service.BookService;
 import com.nhnacademy.bookstore.bookset.publisher.exception.PublisherNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.category.CategoryNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.bookset.contributor.ContributorNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -44,6 +38,7 @@ public class BookController {
 
     /**
      * 도서를 단독으로 등록하는 controller
+     *
      * @return 등록한 도서와 상태 코드를 담은 응답
      */
     @Operation(summary = "도서 단독 등록", description = "새로운 도서를 등록합니다.")
@@ -62,6 +57,7 @@ public class BookController {
 
     /**
      * 알라딘 API 이용해 도서 등록하는 controller
+     *
      * @return 등록한 도서와 상태 코드를 담은 응답
      */
     @Operation(summary = "알라딘 API 활용 도서 등록", description = "알라딘 API를 활용해 새로운 도서를 등록합니다.")
@@ -83,6 +79,7 @@ public class BookController {
 
     /**
      * 전체 도서를 조회하는 controller
+     *
      * @return 전체 도서와 상태 코드를 담은 응답
      */
     @Operation(summary = "전체 도서 조회", description = "등록된 모든 도서를 조회합니다.")
@@ -95,6 +92,7 @@ public class BookController {
 
     /**
      * 카테고리별 도서를 조회하는 controller
+     *
      * @param categoryId 조회하려는 카테고리 id
      * @return 카테고리로 조회한 도서와 상태 코드를 담은 응답
      */
@@ -103,12 +101,13 @@ public class BookController {
     public ResponseEntity<Page<BookSimpleResponseDto>> getBooksByCategoryId(@PathVariable("category-id") Long categoryId,
                                                                             @PageableDefault(size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
         log.info("카테고리별 도서를 조회하는 컨트롤러 !!");
-        Page<BookSimpleResponseDto> books = bookService.getBooksByCategoryId(pageable,categoryId);
+        Page<BookSimpleResponseDto> books = bookService.getBooksByCategoryId(pageable, categoryId);
         return ResponseEntity.status(HttpStatus.OK).body(books);
     }
 
     /**
      * 기여자별 도서를 조회하는 controller
+     *
      * @param contributorId 조회하려는 기여자 id
      * @return 기여자로 조회한 상태 코드를 담은 응답
      */
@@ -122,6 +121,7 @@ public class BookController {
 
     /**
      * 특정 도서의 상세 정보를 조회하는 controller
+     *
      * @param bookId 조회하려는 도서 id
      * @return 특정 도서와 상태 코드를 담은 응답
      */
@@ -134,6 +134,7 @@ public class BookController {
 
     /**
      * 특정 도서 수정 controller
+     *
      * @param bookId 조회하려는 도서 id
      * @return 특정 도서와 상태 코드를 담은 응답
      */
@@ -146,6 +147,7 @@ public class BookController {
 
     /**
      * 특정 도서 수정 controller
+     *
      * @param bookId 조회하려는 도서 id
      * @return 특정 도서와 상태 코드를 담은 응답
      */
@@ -158,6 +160,7 @@ public class BookController {
 
     /**
      * 특정 도서를 삭제하는 controller
+     *
      * @param bookId 삭제하려는 도서 id
      * @return 삭제된 도서 ID와 상태 코드를 담은 응답
      */

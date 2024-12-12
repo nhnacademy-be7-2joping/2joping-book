@@ -2,7 +2,6 @@ package com.nhnacademy.bookstore.bookset.book.dto.request;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 public record BookCreateHtmlRequestDto(
         String title,
@@ -22,4 +21,5 @@ public record BookCreateHtmlRequestDto(
         Long middleCategoryId,     // 중위 카테고리
         Long bottomCategoryId,
         List<String> tagList
-) {}
+) {
+}

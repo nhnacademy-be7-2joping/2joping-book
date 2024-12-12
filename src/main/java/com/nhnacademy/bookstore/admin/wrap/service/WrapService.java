@@ -10,11 +10,11 @@ import java.util.List;
 public interface WrapService {
     WrapCreateResponseDto createWrap(WrapRequestDto requestDto);
 
-    WrapUpdateResponseDto getWrap(Long WrapId);
+    WrapUpdateResponseDto getWrap(Long wrapId);
 
     List<WrapUpdateResponseDto> findAllByIsActiveTrue();
 
-    WrapUpdateResponseDto updateWrap(Long WrapId, WrapUpdateRequestDto wrapUpdateRequestDto);
+    WrapUpdateResponseDto updateWrap(Long wrapId, WrapUpdateRequestDto wrapUpdateRequestDto);
 
     void deleteWrap(Long wrapId);
 }
