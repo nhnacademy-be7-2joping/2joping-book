@@ -19,13 +19,13 @@ public record GetDetailPointHistoriesResponse(
         LocalDateTime registerDate
 
 ) {
-    public static GetDetailPointHistoriesResponse from(PointHistory entity) {
+    public static GetDetailPointHistoriesResponse from(PointHistory pointHistory) {
         return new GetDetailPointHistoriesResponse(
-                entity.getPointType().getName(),
-                entity.getPointType().getAccVal(),
-                entity.getPointType().getType(),
-                entity.getPointType().isActive(),
-                entity.getRegisterDate()
+                pointHistory.getPointType().getName(),
+                pointHistory.getPointType().getAccVal(),
+                pointHistory.getPointType().getType(),
+                pointHistory.getPointType().isActive(),
+                pointHistory.getRegisterDate()
         );
     }
 }

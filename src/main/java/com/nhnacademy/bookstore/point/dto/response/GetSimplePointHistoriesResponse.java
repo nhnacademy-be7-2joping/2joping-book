@@ -15,11 +15,11 @@ public record GetSimplePointHistoriesResponse(
 
         LocalDateTime registerDate
 ) {
-    public static GetSimplePointHistoriesResponse from(PointHistory entity) {
+    public static GetSimplePointHistoriesResponse from(PointHistory pointHistory) {
         return new GetSimplePointHistoriesResponse(
-                entity.getPointType().getName(),
-                entity.getPointType().getAccVal(),
-                entity.getRegisterDate()
+                pointHistory.getPointType().getName(),
+                pointHistory.getPointType().getAccVal(),
+                pointHistory.getRegisterDate()
         );
     }
 }
