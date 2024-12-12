@@ -2,22 +2,12 @@ package com.nhnacademy.bookstore.like.entity;
 
 
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
-import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import com.nhnacademy.bookstore.user.member.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.*;
-/**
- * 태그 Entity
- *
- * @author : 박채연
- * @date : 2024-10-31
- */
-import jakarta.persistence.*;
-
 
 
 @Getter

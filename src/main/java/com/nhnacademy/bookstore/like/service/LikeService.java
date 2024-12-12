@@ -1,6 +1,5 @@
 package com.nhnacademy.bookstore.like.service;
 
-import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.like.dto.LikeRequestDto;
 import com.nhnacademy.bookstore.like.dto.LikeResponseDto;
 import com.nhnacademy.bookstore.like.dto.response.MemberLikeResponseDto;
