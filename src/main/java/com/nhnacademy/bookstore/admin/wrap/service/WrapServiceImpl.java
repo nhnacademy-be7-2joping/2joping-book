@@ -2,31 +2,20 @@ package com.nhnacademy.bookstore.admin.wrap.service;
 
 import com.nhnacademy.bookstore.admin.wrap.dto.request.*;
 import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapCreateResponseDto;
-import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapResponseDto;
 import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapUpdateResponseDto;
 import com.nhnacademy.bookstore.admin.wrap.entity.Wrap;
 import com.nhnacademy.bookstore.admin.wrap.repository.WrapRepository;
-import com.nhnacademy.bookstore.common.error.exception.review.RatingValueNotValidException;
-import com.nhnacademy.bookstore.common.error.exception.review.ReviewNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.wrap.WrapAlreadyExistException;
 import com.nhnacademy.bookstore.common.error.exception.wrap.WrapNotFoundException;
-import com.nhnacademy.bookstore.imageset.entity.BookImage;
 import com.nhnacademy.bookstore.imageset.entity.Image;
-import com.nhnacademy.bookstore.imageset.entity.ReviewImage;
 import com.nhnacademy.bookstore.imageset.entity.WrapImage;
 import com.nhnacademy.bookstore.imageset.repository.ImageRepository;
 import com.nhnacademy.bookstore.imageset.repository.WrapImageRepository;
-import com.nhnacademy.bookstore.review.dto.request.ReviewModifyRequestDto;
-import com.nhnacademy.bookstore.review.dto.response.ReviewModifyResponseDto;
-import com.nhnacademy.bookstore.review.entity.Review;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -144,21 +133,21 @@ public class WrapServiceImpl implements WrapService {
                 updatedUrl = newImage.getUrl();
                 wrapImageRepository.save(new WrapImage(wrap, newImage));
             }
-            }
-            wrapRepository.save(wrap);
-            return new WrapUpdateResponseDto(wrap.getWrapId(), wrap.getName(), wrap.getWrapPrice(), wrap.isActive(), updatedUrl);
+        }
+        wrapRepository.save(wrap);
+        return new WrapUpdateResponseDto(wrap.getWrapId(), wrap.getName(), wrap.getWrapPrice(), wrap.isActive(), updatedUrl);
     }
 
-        /**
-         * 포장 상품을 ID로 삭제합니다.
-         *
-         * @param wrapId 삭제할 포장 상품의 ID
-         * @throws WrapNotFoundException 포장 상품을 찾을 수 없는 경우
-         */
-        @Override
-        public void deleteWrap (Long wrapId){
-            wrapRepository.findById(wrapId)
-                    .orElseThrow(WrapNotFoundException::new);
-            wrapRepository.deleteById(wrapId);
-        }
+    /**
+     * 포장 상품을 ID로 삭제합니다.
+     *
+     * @param wrapId 삭제할 포장 상품의 ID
+     * @throws WrapNotFoundException 포장 상품을 찾을 수 없는 경우
+     */
+    @Override
+    public void deleteWrap(Long wrapId) {
+        wrapRepository.findById(wrapId)
+                .orElseThrow(WrapNotFoundException::new);
+        wrapRepository.deleteById(wrapId);
     }
+}
