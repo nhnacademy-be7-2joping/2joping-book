@@ -1,7 +1,6 @@
-package com.nhnacademy.bookstore.paymentset.payment_method.exception;
+package com.nhnacademy.bookstore.paymentset.paymentmethod.exception;
 
 import com.nhnacademy.bookstore.common.error.exception.base.NotFoundException;
-import com.nhnacademy.bookstore.paymentset.payment_method.enums.PaymentMethodType;
 
 public class PaymentMethodNotFoundException extends NotFoundException {
     public PaymentMethodNotFoundException(String method) {

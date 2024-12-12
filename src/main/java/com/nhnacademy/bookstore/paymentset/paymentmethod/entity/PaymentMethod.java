@@ -1,7 +1,7 @@
-package com.nhnacademy.bookstore.paymentset.payment_method.entity;
+package com.nhnacademy.bookstore.paymentset.paymentmethod.entity;
 
-import com.nhnacademy.bookstore.paymentset.payment_method.converter.PaymentMethodTypeConverter;
-import com.nhnacademy.bookstore.paymentset.payment_method.enums.PaymentMethodType;
+import com.nhnacademy.bookstore.paymentset.paymentmethod.converter.PaymentMethodTypeConverter;
+import com.nhnacademy.bookstore.paymentset.paymentmethod.enums.PaymentMethodType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

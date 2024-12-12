@@ -1,7 +1,7 @@
-package com.nhnacademy.bookstore.paymentset.payment_history.entity;
+package com.nhnacademy.bookstore.paymentset.paymenthistory.entity;
 
 import com.nhnacademy.bookstore.orderset.order.entity.Order;
-import com.nhnacademy.bookstore.paymentset.payment_method.entity.PaymentMethod;
+import com.nhnacademy.bookstore.paymentset.paymentmethod.entity.PaymentMethod;
 import com.nhnacademy.bookstore.paymentset.status.entity.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -39,7 +39,7 @@ public class PaymentHistory {
     private PaymentMethod paymentMethod;
 
     public void apply(PaymentStatus paymentStatus, PaymentMethod paymentMethod, Order order, String paymentCode,
-               int amountPaid) {
+                      int amountPaid) {
         this.paymentStatus = paymentStatus;
         this.paymentMethod = paymentMethod;
         this.order = order;
