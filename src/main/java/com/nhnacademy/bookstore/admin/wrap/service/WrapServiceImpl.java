@@ -72,8 +72,8 @@ public class WrapServiceImpl implements WrapService {
     public WrapUpdateResponseDto getWrap(Long wrapId) {
         Wrap wrap = wrapRepository.findById(wrapId)
                 .orElseThrow(WrapNotFoundException::new);
-        WrapImage wrapImage = wrapImageRepository.findFirstByWrap_WrapId(wrap.getWrapId()).get();
-        Image image = imageRepository.findById(wrapImage.getImage().getImageId()).get();
+        WrapImage wrapImage = wrapImageRepository.findFirstByWrap_WrapId(wrap.getWrapId()).orElseThrow();
+        Image image = imageRepository.findById(wrapImage.getImage().getImageId()).orElseThrow();
         String wrapImageUrl = image.getUrl();
 
         return new WrapUpdateResponseDto(
