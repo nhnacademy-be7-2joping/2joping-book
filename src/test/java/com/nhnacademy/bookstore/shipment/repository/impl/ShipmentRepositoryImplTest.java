@@ -2,9 +2,9 @@ package com.nhnacademy.bookstore.shipment.repository.impl;
 
 import com.nhnacademy.bookstore.common.config.QuerydslConfig;
 import com.nhnacademy.bookstore.orderset.order.repository.OrderRepository;
-import com.nhnacademy.bookstore.orderset.order_state.entity.OrderState;
-import com.nhnacademy.bookstore.orderset.order_state.entity.vo.OrderStateType;
-import com.nhnacademy.bookstore.orderset.order_state.repository.OrderStateRepository;
+import com.nhnacademy.bookstore.orderset.orderstate.entity.OrderState;
+import com.nhnacademy.bookstore.orderset.orderstate.entity.vo.OrderStateType;
+import com.nhnacademy.bookstore.orderset.orderstate.repository.OrderStateRepository;
 import com.nhnacademy.bookstore.shipment.dto.response.ShipmentResponseDto;
 import com.nhnacademy.bookstore.shipment.entity.Shipment;
 import com.nhnacademy.bookstore.shipment.entity.Carrier;
