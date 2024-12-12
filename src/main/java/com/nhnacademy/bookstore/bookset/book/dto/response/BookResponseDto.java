@@ -1,6 +1,5 @@
 package com.nhnacademy.bookstore.bookset.book.dto.response;
 
-import com.nhnacademy.bookstore.bookset.contributor.dto.response.ContributorResponseDto;
 import com.nhnacademy.bookstore.review.dto.response.ReviewResponseDto;
 import jakarta.validation.constraints.Positive;
 
@@ -15,7 +14,7 @@ import java.util.List;
  */
 
 
-public record BookResponseDto (
+public record BookResponseDto(
         @Positive Long bookId,
         String publisherName,
         String title,
@@ -34,4 +33,5 @@ public record BookResponseDto (
         List<BookTagResponseDto> tagList,
         String thumbnail,
         List<ReviewResponseDto> reviewList
-) {}
+) {
+}

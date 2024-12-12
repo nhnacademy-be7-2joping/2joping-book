@@ -3,7 +3,6 @@ package com.nhnacademy.bookstore.bookset.publisher.repository;
 import com.nhnacademy.bookstore.bookset.publisher.dto.response.PublisherResponseDto;
 import com.nhnacademy.bookstore.bookset.publisher.entity.Publisher;
 import com.nhnacademy.bookstore.bookset.publisher.entity.QPublisher;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import jakarta.persistence.EntityManager;
@@ -14,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import java.util.List;
-
 
 
 public class PublisherRepositoryImpl extends QuerydslRepositorySupport implements PublisherRepositoryCustom {

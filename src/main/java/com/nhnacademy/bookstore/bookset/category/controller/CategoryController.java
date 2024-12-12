@@ -7,7 +7,6 @@ import com.nhnacademy.bookstore.bookset.category.service.CategoryService;
 import com.nhnacademy.bookstore.common.annotation.ValidPathVariable;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -106,9 +105,9 @@ public class CategoryController {
     }
 
     @Operation(summary = "카테고리 수정", description = "특정 카테고리를 수정합니다.")
-            @ApiResponse(responseCode = "200", description = "카테고리 수정 성공")
-            @ApiResponse(responseCode = "404", description = "카테고리를 찾을 수 없음")
-            @ApiResponse(responseCode = "400", description = "유효하지 않은 요청 데이터")
+    @ApiResponse(responseCode = "200", description = "카테고리 수정 성공")
+    @ApiResponse(responseCode = "404", description = "카테고리를 찾을 수 없음")
+    @ApiResponse(responseCode = "400", description = "유효하지 않은 요청 데이터")
     @PutMapping("/categories/{categoryId}")
     public ResponseEntity<CategoryResponseDto> updateCategory(
             @ValidPathVariable @PathVariable Long categoryId,
