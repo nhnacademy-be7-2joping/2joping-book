@@ -3,6 +3,7 @@ package com.nhnacademy.bookstore.bookset.tag.entity;
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,6 +39,7 @@ public class BookTag {
     @NoArgsConstructor
     @AllArgsConstructor
     @Embeddable
+    @EqualsAndHashCode
     public static class BookTagId implements Serializable {
         private Long bookId;
         private Long tagId;
