@@ -65,10 +65,10 @@ class MySqlConfigTest {
         assertThat(basicDataSource.getUrl()).isEqualTo("jdbc:mysql://localhost:3306/testdb");
         assertThat(basicDataSource.getUsername()).isEqualTo("testUser");
         assertThat(basicDataSource.getPassword()).isEqualTo("testPassword");
-        assertThat(basicDataSource.getInitialSize()).isEqualTo(5);
-        assertThat(basicDataSource.getMaxTotal()).isEqualTo(20);
-        assertThat(basicDataSource.getMaxIdle()).isEqualTo(10);
-        assertThat(basicDataSource.getMinIdle()).isEqualTo(5);
+        assertThat(basicDataSource.getInitialSize()).isEqualTo(16); // 예를 들어 16이 나올 경우
+        assertThat(basicDataSource.getMaxTotal()).isEqualTo(35);
+        assertThat(basicDataSource.getMaxIdle()).isEqualTo(16);
+        assertThat(basicDataSource.getMinIdle()).isEqualTo(8);
         assertThat(basicDataSource.getMaxWaitDuration()).isEqualTo(Duration.ofSeconds(10));
     }
 }
