@@ -46,6 +46,8 @@ class MySqlConfigTest {
     @Test
     @DisplayName("DataSource Bean 생성 테스트")
     void testDataSourceBeanCreation() {
+        int coreCount = Runtime.getRuntime().availableProcessors();
+
         // given
         MysqlKeyResponseDto mockResponse = new MysqlKeyResponseDto(
                 "jdbc:mysql://localhost:3306/testdb",
@@ -65,10 +67,10 @@ class MySqlConfigTest {
         assertThat(basicDataSource.getUrl()).isEqualTo("jdbc:mysql://localhost:3306/testdb");
         assertThat(basicDataSource.getUsername()).isEqualTo("testUser");
         assertThat(basicDataSource.getPassword()).isEqualTo("testPassword");
-        assertThat(basicDataSource.getInitialSize()).isEqualTo(16); // 예를 들어 16이 나올 경우
-        assertThat(basicDataSource.getMaxTotal()).isEqualTo(35);
-        assertThat(basicDataSource.getMaxIdle()).isEqualTo(16);
-        assertThat(basicDataSource.getMinIdle()).isEqualTo(8);
+        assertThat(basicDataSource.getInitialSize()).isEqualTo(coreCount * 2); // 예를 들어 16이 나올 경우
+        assertThat(basicDataSource.getMaxTotal()).isEqualTo((coreCount * 4) + 1);
+        assertThat(basicDataSource.getMaxIdle()).isEqualTo(coreCount * 2);
+        assertThat(basicDataSource.getMinIdle()).isEqualTo(coreCount);
         assertThat(basicDataSource.getMaxWaitDuration()).isEqualTo(Duration.ofSeconds(10));
     }
 }
