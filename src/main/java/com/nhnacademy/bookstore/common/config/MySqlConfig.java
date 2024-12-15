@@ -16,6 +16,7 @@ public class MySqlConfig {
 
     private final KeyManagerService keyManagerService;
     private static final int CORE_COUNT = Runtime.getRuntime().availableProcessors();
+    private static final int MAX_THREADS = 200;
 
     @Bean
     public DataSource dataSource() {
@@ -38,9 +39,9 @@ public class MySqlConfig {
 
     private void configureConnectionPool(BasicDataSource dataSource) {
         dataSource.setInitialSize(CORE_COUNT * 2);
-        dataSource.setMaxTotal(calculateOptimalMaxConnections());
-        dataSource.setMaxIdle(CORE_COUNT * 2);
-        dataSource.setMinIdle(CORE_COUNT);
+        dataSource.setMaxTotal(MAX_THREADS);
+        dataSource.setMaxIdle(MAX_THREADS);
+        dataSource.setMinIdle(MAX_THREADS / 10);
     }
 
     private void configureConnectionValidation(BasicDataSource dataSource) {
