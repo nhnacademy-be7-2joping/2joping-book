@@ -68,7 +68,7 @@ class MySqlConfigTest {
         assertThat(basicDataSource.getUsername()).isEqualTo("testUser");
         assertThat(basicDataSource.getPassword()).isEqualTo("testPassword");
         assertThat(basicDataSource.getInitialSize()).isEqualTo(coreCount * 2); // 예를 들어 16이 나올 경우
-        assertThat(basicDataSource.getMaxTotal()).isEqualTo((coreCount * 4) + 1);
+        assertThat(basicDataSource.getMaxTotal()).isEqualTo((coreCount * 4) + 3);
         assertThat(basicDataSource.getMaxIdle()).isEqualTo(coreCount * 2);
         assertThat(basicDataSource.getMinIdle()).isEqualTo(coreCount);
         assertThat(basicDataSource.getMaxWaitDuration()).isEqualTo(Duration.ofSeconds(10));
