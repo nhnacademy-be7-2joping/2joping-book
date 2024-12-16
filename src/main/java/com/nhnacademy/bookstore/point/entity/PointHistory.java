@@ -22,9 +22,6 @@ public class PointHistory {
     @JoinColumn(name = "point_type_id", nullable = true)
     private PointType pointType;
 
-    @Column(name = "order_detail_id", nullable = true)
-    private Long orderDetailId;
-
     @Column(name = "refund_history_id", nullable = true)
     private Long refundHistoryId;
 
@@ -43,7 +40,6 @@ public class PointHistory {
     @Builder
     public PointHistory(
             PointType pointType,
-            Long orderDetailId,
             Long refundHistoryId,
             Long orderId,
             Long customerId,
@@ -51,7 +47,6 @@ public class PointHistory {
             LocalDateTime localDateTime
     ) {
         this.pointType = pointType;
-        this.orderDetailId = orderDetailId;
         this.refundHistoryId = refundHistoryId;
         this.orderId = orderId;
         this.customerId = customerId;

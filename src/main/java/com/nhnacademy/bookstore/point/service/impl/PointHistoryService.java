@@ -21,7 +21,6 @@ public class PointHistoryService {
     public Long createReviewPointHistory(CreateReviewPointHistoryRequest request) {
         PointHistory pointHistory = PointHistory.builder()
                 .pointType(request.pointType())
-                .orderDetailId(request.orderDetailId())
                 .refundHistoryId(request.refundHistoryId())
                 .orderId(request.orderId())
                 .customerId(request.customerId())
@@ -36,7 +35,6 @@ public class PointHistoryService {
     public Long createOrderPointHistory(CreateOrderPointHistoryRequest request) {
         PointHistory pointHistory = PointHistory.builder()
                 .pointType(request.pointType())
-                .orderDetailId(request.orderDetailId())
                 .refundHistoryId(request.refundHistoryId())
                 .orderId(request.orderId())
                 .customerId(request.customerId())
@@ -51,7 +49,6 @@ public class PointHistoryService {
     public Long createPointUseHistory(CreatePointUseHistoryUseRequest request) {
         PointHistory pointHistory = PointHistory.builder()
                 .pointType(request.pointType())
-                .orderDetailId(request.orderDetailId())
                 .refundHistoryId(request.refundHistoryId())
                 .orderId(request.orderId())
                 .customerId(request.customerId())

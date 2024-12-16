@@ -2,7 +2,6 @@ package com.nhnacademy.bookstore.bookset.tag.service;
 
 import com.nhnacademy.bookstore.bookset.book.entity.Book;
 import com.nhnacademy.bookstore.bookset.book.repository.BookRepository;
-import com.nhnacademy.bookstore.bookset.publisher.entity.Publisher;
 import com.nhnacademy.bookstore.bookset.tag.dto.TagRequestDto;
 import com.nhnacademy.bookstore.bookset.tag.dto.TagResponseDto;
 import com.nhnacademy.bookstore.bookset.tag.entity.Tag;
@@ -15,22 +14,19 @@ import com.nhnacademy.bookstore.common.error.exception.bookset.tag.TagNotFoundEx
 import com.nhnacademy.bookstore.like.entity.Like;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 public class TagServiceTest {
@@ -65,7 +61,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void testAssignedTagToBook_Success() {
+    void testAssignedTagToBook_Success() {
         Long tagId = 1L;
         Long bookId = 2L;
         Tag tag = new Tag(tagId, "Sample Tag");
@@ -89,7 +85,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void testAssignedTagToBook_TagAlreadyAssigned() {
+    void testAssignedTagToBook_TagAlreadyAssigned() {
         Long tagId = 1L;
         Long bookId = 2L;
 
@@ -100,7 +96,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void testCreateTag_TagAlreadyExists() {
+    void testCreateTag_TagAlreadyExists() {
         TagRequestDto requestDto = new TagRequestDto("Existing Tag");
         Tag existingTag = new Tag(1L, "Existing Tag");
 
@@ -108,8 +104,9 @@ public class TagServiceTest {
         assertThatThrownBy(() -> tagService.createTag(requestDto))
                 .isInstanceOf(ConflictException.class);
     }
+
     @Test
-    public void testGetTag_TagExists() {
+    void testGetTag_TagExists() {
         Tag tag = new Tag(2L, "Test Tag");
         when(tagRepository.findById(anyLong())).thenReturn(Optional.of(tag));
 
@@ -120,7 +117,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void testGetTag_TagNotFound() {
+    void testGetTag_TagNotFound() {
         when(tagRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> tagService.getTag(1L))
@@ -128,7 +125,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void testGetAllTags_ReturnTagList() {
+    void testGetAllTags_ReturnTagList() {
         List<Tag> tags = List.of(new Tag(1L, "Tag1"), new Tag(2L, "Tag2"));
         when(tagRepository.findAll()).thenReturn(tags);
 
@@ -140,7 +137,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void testUpdateTag_Success() {
+    void testUpdateTag_Success() {
         Tag tag = new Tag(3L, "Tag");
         TagRequestDto requestDto = new TagRequestDto("Updated Tag");
 
@@ -154,7 +151,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void testUpdateTag_TagNotFound() {
+    void testUpdateTag_TagNotFound() {
         TagRequestDto requestDto = new TagRequestDto("Updated Tag");
         when(tagRepository.findById(anyLong())).thenReturn(Optional.empty()); // 이것만 필요
 
@@ -165,7 +162,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void TestDeleteTag_Success() {
+    void TestDeleteTag_Success() {
         Tag tag = new Tag(4L, "Delete Tag");
         when(tagRepository.findById(4L)).thenReturn(Optional.of(tag));
         doNothing().when(tagRepository).delete(tag);
@@ -176,7 +173,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void testDeleteTag_TagNotFound() {
+    void testDeleteTag_TagNotFound() {
         when(tagRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> tagService.deleteById(1L))

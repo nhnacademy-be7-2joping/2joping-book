@@ -11,9 +11,6 @@ public record CreatePointUseHistoryUseRequest(
         PointType pointType,
 
         @Nullable
-        Long orderDetailId,
-
-        @Nullable
         Long refundHistoryId,
 
         @Nullable
