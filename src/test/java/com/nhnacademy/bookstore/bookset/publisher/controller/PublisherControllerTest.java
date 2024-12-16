@@ -1,10 +1,5 @@
 package com.nhnacademy.bookstore.bookset.publisher.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 import com.nhnacademy.bookstore.bookset.publisher.dto.request.PublisherRequestDto;
 import com.nhnacademy.bookstore.bookset.publisher.dto.response.PublisherCreateResponseDto;
 import com.nhnacademy.bookstore.bookset.publisher.dto.response.PublisherResponseDto;
@@ -25,6 +20,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @WebMvcTest(PublisherController.class)
 @TestPropertySource(properties = "keymanager.url=http://localhost:8084")
 public class PublisherControllerTest {
@@ -38,24 +39,24 @@ public class PublisherControllerTest {
 
     @Test
     @DisplayName("출판사 등록")
-    public void testRegisterPublisher_Success() throws Exception {
+    void testRegisterPublisher_Success() throws Exception {
         //given
-        PublisherCreateResponseDto createResponseDto = new PublisherCreateResponseDto(1L,"출판사 1");
+        PublisherCreateResponseDto createResponseDto = new PublisherCreateResponseDto(1L, "출판사 1");
 
         when(publisherService.registerPublisher(any(PublisherRequestDto.class))).thenReturn(createResponseDto);
         //when
         ResultActions resultActions = mockMvc.perform(post("/api/v1/bookstore/publishers")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"출판사 1\"}"));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"출판사 1\"}"));
         //then
-        resultActions.andExpect(status().isCreated  ())
+        resultActions.andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.name").value("출판사 1"));
     }
 
     @Test
     @DisplayName("출판사 등록 실패 - 유효성 검증 실패")
-    public void testRegisterPublisher_BindingResultHasErrors() throws Exception {
+    void testRegisterPublisher_BindingResultHasErrors() throws Exception {
         // given: 유효하지 않은 요청 데이터
         String invalidRequestContent = "{\"name\": \"\"}"; // 이름이 빈 문자열로 유효성 검증 실패
 
@@ -71,7 +72,7 @@ public class PublisherControllerTest {
 
     @Test
     @DisplayName("전체 출판사 조회")
-    public void testGetAllPublishers() throws Exception {
+    void testGetAllPublishers() throws Exception {
         // given
         List<PublisherResponseDto> responseList = Arrays.asList(
                 new PublisherResponseDto(1L, "출판사1"),
@@ -94,7 +95,7 @@ public class PublisherControllerTest {
 
     @Test
     @DisplayName("특정 출판사 조회")
-    public void testGetPublisher_Success() throws Exception {
+    void testGetPublisher_Success() throws Exception {
         // given
         PublisherResponseDto responseDto = new PublisherResponseDto(1L, "출판사 이름");
 
@@ -112,7 +113,7 @@ public class PublisherControllerTest {
 
     @Test
     @DisplayName("출판사 삭제")
-    public void testDeletePublisher_Success() throws Exception {
+    void testDeletePublisher_Success() throws Exception {
         // given
         doNothing().when(publisherService).deletePublisher(1L);
 
@@ -126,7 +127,7 @@ public class PublisherControllerTest {
 
     @Test
     @DisplayName("출판사 수정")
-    public void testUpdatePublisher_Success() throws Exception {
+    void testUpdatePublisher_Success() throws Exception {
         // given
         PublisherRequestDto requestDto = new PublisherRequestDto("업데이트된 출판사 이름");
         PublisherResponseDto responseDto = new PublisherResponseDto(1L, "업데이트된 출판사 이름");
@@ -146,7 +147,7 @@ public class PublisherControllerTest {
 
     @Test
     @DisplayName("출판사 수정 실패 - 유효성 검증 실패")
-    public void testUpdatePublisher_BindingResultHasErrors() throws Exception {
+    void testUpdatePublisher_BindingResultHasErrors() throws Exception {
         // given: 유효하지 않은 요청 데이터
         String invalidRequestContent = "{\"name\": \"\"}"; // 이름이 빈 문자열로 유효성 검증 실패
 
@@ -159,10 +160,9 @@ public class PublisherControllerTest {
         resultActions.andExpect(status().isBadRequest());
     }
 
-
     @Test
     @DisplayName("전체 출판사 등록용 조회 - 성공")
-    public void testGetAllPublishersForRegister_Success() throws Exception {
+    void testGetAllPublishersForRegister_Success() throws Exception {
         // given
         List<PublisherResponseDto> responseList = Arrays.asList(
                 new PublisherResponseDto(1L, "출판사1"),
@@ -181,5 +181,4 @@ public class PublisherControllerTest {
                 .andExpect(jsonPath("$[1].id").value(2L))
                 .andExpect(jsonPath("$[1].name").value("출판사2"));
     }
-
 }

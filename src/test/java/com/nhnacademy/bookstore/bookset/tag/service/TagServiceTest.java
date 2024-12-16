@@ -49,7 +49,7 @@ public class TagServiceTest {
     }
 
     @Test
-    public void testCreateTag_Success() {
+    void testCreateTag_Success() {
         TagRequestDto requestDto = new TagRequestDto("New Tag");
         Tag savedTag = new Tag(1L, "New Tag");
 
