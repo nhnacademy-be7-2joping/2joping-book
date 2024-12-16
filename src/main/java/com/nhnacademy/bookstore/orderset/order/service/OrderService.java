@@ -189,6 +189,10 @@ public class OrderService {
         }
 
         List<MemberCouponResponseDto> memberCoupons = memberCouponService.getAllMemberCoupons(customerId);
+        if (memberCoupons.isEmpty()) {
+            return 0;
+        }
+
         Optional<MemberCouponResponseDto> coupon = memberCoupons.stream()
                 .filter(c -> c.couponUsageId().equals(orderRequest.couponId()))
                 .findFirst();
