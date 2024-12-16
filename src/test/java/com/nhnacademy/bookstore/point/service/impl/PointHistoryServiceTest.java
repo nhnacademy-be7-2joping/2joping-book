@@ -37,14 +37,12 @@ class PointHistoryServiceTest {
                 1L,
                 null,
                 1L,
-                123L,
-                100,
+                123,
                 LocalDateTime.now()
         );
 
         PointHistory savedPointHistory = PointHistory.builder()
                 .pointType(request.pointType())
-                .orderDetailId(request.orderDetailId())
                 .refundHistoryId(request.refundHistoryId())
                 .orderId(request.orderId())
                 .customerId(request.customerId())
@@ -56,7 +54,6 @@ class PointHistoryServiceTest {
         savedPointHistory = PointHistory.builder()
                 .pointTypeHistoryId(1L) // ID를 빌더에서 직접 설정
                 .pointType(savedPointHistory.getPointType())
-                .orderDetailId(savedPointHistory.getOrderDetailId())
                 .refundHistoryId(savedPointHistory.getRefundHistoryId())
                 .orderId(savedPointHistory.getOrderId())
                 .customerId(savedPointHistory.getCustomerId())
@@ -75,17 +72,15 @@ class PointHistoryServiceTest {
     void createOrderPointHistory() {
         CreateOrderPointHistoryRequest request = new CreateOrderPointHistoryRequest(
                 null,
-                2L,
+                null,
                 null,
                 2L,
-                456L,
-                200,
+                456,
                 LocalDateTime.now()
         );
 
         PointHistory savedPointHistory = PointHistory.builder()
                 .pointType(request.pointType())
-                .orderDetailId(request.orderDetailId())
                 .refundHistoryId(request.refundHistoryId())
                 .orderId(request.orderId())
                 .customerId(request.customerId())
@@ -97,7 +92,6 @@ class PointHistoryServiceTest {
         savedPointHistory = PointHistory.builder()
                 .pointTypeHistoryId(2L) // ID를 빌더에서 직접 설정
                 .pointType(savedPointHistory.getPointType())
-                .orderDetailId(savedPointHistory.getOrderDetailId())
                 .refundHistoryId(savedPointHistory.getRefundHistoryId())
                 .orderId(savedPointHistory.getOrderId())
                 .customerId(savedPointHistory.getCustomerId())
@@ -119,14 +113,12 @@ class PointHistoryServiceTest {
                 3L,
                 null,
                 3L,
-                789L,
-                150,
+                789,
                 LocalDateTime.now()
         );
 
         PointHistory savedPointHistory = PointHistory.builder()
                 .pointType(request.pointType())
-                .orderDetailId(request.orderDetailId())
                 .refundHistoryId(request.refundHistoryId())
                 .orderId(request.orderId())
                 .customerId(request.customerId())
@@ -138,7 +130,6 @@ class PointHistoryServiceTest {
         savedPointHistory = PointHistory.builder()
                 .pointTypeHistoryId(3L) // ID를 빌더에서 직접 설정
                 .pointType(savedPointHistory.getPointType())
-                .orderDetailId(savedPointHistory.getOrderDetailId())
                 .refundHistoryId(savedPointHistory.getRefundHistoryId())
                 .orderId(savedPointHistory.getOrderId())
                 .customerId(savedPointHistory.getCustomerId())

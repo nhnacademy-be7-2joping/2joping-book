@@ -5,7 +5,9 @@ import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapCreateResponseDto;
 import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapUpdateResponseDto;
 import com.nhnacademy.bookstore.admin.wrap.entity.Wrap;
 import com.nhnacademy.bookstore.admin.wrap.repository.WrapRepository;
+import com.nhnacademy.bookstore.common.error.exception.imageset.ImageNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.wrap.WrapAlreadyExistException;
+import com.nhnacademy.bookstore.common.error.exception.wrap.WrapImageNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.wrap.WrapNotFoundException;
 import com.nhnacademy.bookstore.imageset.entity.Image;
 import com.nhnacademy.bookstore.imageset.entity.WrapImage;
@@ -72,8 +74,10 @@ public class WrapServiceImpl implements WrapService {
     public WrapUpdateResponseDto getWrap(Long wrapId) {
         Wrap wrap = wrapRepository.findById(wrapId)
                 .orElseThrow(WrapNotFoundException::new);
-        WrapImage wrapImage = wrapImageRepository.findFirstByWrap_WrapId(wrap.getWrapId()).orElseThrow();
-        Image image = imageRepository.findById(wrapImage.getImage().getImageId()).orElseThrow();
+        WrapImage wrapImage = wrapImageRepository.findFirstByWrap_WrapId(wrap.getWrapId())
+                .orElseThrow(() -> new WrapImageNotFoundException("포장 이미지를 찾을 수 없습니다."));
+        Image image = imageRepository.findById(wrapImage.getImage().getImageId())
+                .orElseThrow(() -> new ImageNotFoundException("이미지를 찾을 수 없습니다."));
         String wrapImageUrl = image.getUrl();
 
         return new WrapUpdateResponseDto(
