@@ -60,7 +60,6 @@ public class PointServiceImpl implements PointService {
                         reviewPointType,
                         null,
                         null,
-                        null,
                         member.getId(),
                         pointAmount,
                         LocalDateTime.now()
@@ -94,7 +93,6 @@ public class PointServiceImpl implements PointService {
         Long orderPointHistoryId = pointHistoryService.createOrderPointHistory(
                 new CreateOrderPointHistoryRequest(
                         orderPointType,
-                        order.getOrderId(),
                         null,
                         order.getOrderId(),
                         member.getId(),
@@ -131,7 +129,6 @@ public class PointServiceImpl implements PointService {
         pointHistoryService.createPointUseHistory(
                 new CreatePointUseHistoryUseRequest(
                         pointUseType,
-                        null,
                         null,
                         null,
                         member.getId(),

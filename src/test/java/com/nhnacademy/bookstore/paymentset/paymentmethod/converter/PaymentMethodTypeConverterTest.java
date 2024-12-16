@@ -1,6 +1,6 @@
-package com.nhnacademy.bookstore.paymentset.payment_method.converter;
+package com.nhnacademy.bookstore.paymentset.paymentmethod.converter;
 
-import com.nhnacademy.bookstore.paymentset.payment_method.enums.PaymentMethodType;
+import com.nhnacademy.bookstore.paymentset.paymentmethod.enums.PaymentMethodType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class KeyManagerService {
+
     private final SecretDataClient secretDataClient;
     private final MysqlKeyManagerConfig mysqlKeyManagerConfig;
 
@@ -24,20 +25,29 @@ public class KeyManagerService {
     private String secretAccessKey;
 
     public MysqlKeyResponseDto getDbConnectionInfo() {
-        SecretResponseDto urlResponse = secretDataClient.getSecret(appKey, mysqlKeyManagerConfig.getUrl(), accessKeyId,
-                                                                   secretAccessKey
+        SecretResponseDto urlResponse = secretDataClient.getSecret(
+                appKey,
+                mysqlKeyManagerConfig.getUrl(),
+                accessKeyId,
+                secretAccessKey
         );
-        SecretResponseDto usernameResponse = secretDataClient.getSecret(appKey, mysqlKeyManagerConfig.getUsername(),
-                                                                        accessKeyId,
-                                                                        secretAccessKey
+        SecretResponseDto usernameResponse = secretDataClient.getSecret(
+                appKey,
+                mysqlKeyManagerConfig.getUsername(),
+                accessKeyId,
+                secretAccessKey
         );
-        SecretResponseDto passwordResponse = secretDataClient.getSecret(appKey, mysqlKeyManagerConfig.getPassword(),
-                                                                        accessKeyId,
-                                                                        secretAccessKey
+        SecretResponseDto passwordResponse = secretDataClient.getSecret(
+                appKey,
+                mysqlKeyManagerConfig.getPassword(),
+                accessKeyId,
+                secretAccessKey
         );
 
-        return new MysqlKeyResponseDto(urlResponse.body().secret(), usernameResponse.body().secret(),
-                                       passwordResponse.body().secret()
+        return new MysqlKeyResponseDto(
+                urlResponse.body().secret(),
+                usernameResponse.body().secret(),
+                passwordResponse.body().secret()
         );
     }
 }

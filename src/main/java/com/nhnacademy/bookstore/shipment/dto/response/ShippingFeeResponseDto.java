@@ -4,4 +4,5 @@ public record ShippingFeeResponseDto(
         Long shipmentPolicyId,
         Integer minOrderAmount,
         Integer shippingFee
-) {}
+) {
+}

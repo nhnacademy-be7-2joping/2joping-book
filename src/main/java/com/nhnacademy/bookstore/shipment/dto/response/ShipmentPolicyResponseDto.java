@@ -17,4 +17,5 @@ public record ShipmentPolicyResponseDto(
         LocalDateTime updatedAt,
         Integer shippingFee,
         Boolean isActive
-) {}
+) {
+}

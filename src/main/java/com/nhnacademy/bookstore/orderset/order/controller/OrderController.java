@@ -4,8 +4,6 @@ import com.nhnacademy.bookstore.orderset.order.dto.request.OrderPostRequest;
 import com.nhnacademy.bookstore.orderset.order.dto.request.OrderRequest;
 import com.nhnacademy.bookstore.orderset.order.dto.response.OrderTempResponse;
 import com.nhnacademy.bookstore.orderset.order.service.OrderService;
-import com.nhnacademy.bookstore.user.customer.dto.request.CustomerRegisterRequest;
-import com.nhnacademy.bookstore.user.customer.entity.Customer;
 import com.nhnacademy.bookstore.user.customer.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

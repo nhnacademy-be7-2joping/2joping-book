@@ -37,7 +37,7 @@ class PathvariableAspectTest {
      * AOP 객체와 JoinPoint를 초기화합니다.
      */
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         pathvariableAspect = new PathvariableAspect();
         joinPoint = Mockito.mock(JoinPoint.class);
     }
@@ -182,6 +182,7 @@ class PathvariableAspectTest {
         });
         assertEquals("값이 null입니다.", exception.getMessage());
     }
+
     @Test
     @DisplayName("Integer가 아닌 타입 처리 테스트")
     void testNonIntegerTypeValue() {
@@ -239,6 +240,7 @@ class PathvariableAspectTest {
             // 현재 구현 필요 없음. PathvariableAspect가 이 메서드의 호출을 가로챕니다.
 
         }
+
         public void noAnnotationMethod(Long memberId) {
             // ValidPathVariable 어노테이션이 없는 메서드
         }
