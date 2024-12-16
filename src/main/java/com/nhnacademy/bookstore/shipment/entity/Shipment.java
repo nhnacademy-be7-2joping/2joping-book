@@ -61,5 +61,3 @@ public class Shipment {
         this.trackingNumber = requestDto.trackingNumber();
     }
 }
-
-

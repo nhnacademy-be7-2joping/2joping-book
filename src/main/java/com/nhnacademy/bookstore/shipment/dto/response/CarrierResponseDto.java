@@ -12,5 +12,6 @@ public record CarrierResponseDto(
         String contactNumber,
         String contactEmail,
         String websiteUrl
-) {}
+) {
+}
 

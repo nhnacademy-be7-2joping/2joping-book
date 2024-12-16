@@ -5,11 +5,13 @@ package com.nhnacademy.bookstore.shipment.entity;
  * @author : 이유현
  * @date : 2024-10-22
  */
+
 import com.nhnacademy.bookstore.shipment.dto.request.ShipmentPolicyRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 @Getter

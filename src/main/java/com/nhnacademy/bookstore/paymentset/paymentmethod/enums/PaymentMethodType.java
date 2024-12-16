@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstore.paymentset.payment_method.enums;
+package com.nhnacademy.bookstore.paymentset.paymentmethod.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

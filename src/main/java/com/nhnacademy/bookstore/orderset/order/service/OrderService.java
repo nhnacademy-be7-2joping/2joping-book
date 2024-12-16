@@ -28,12 +28,12 @@ import com.nhnacademy.bookstore.orderset.orderdetail.entity.OrderDetail;
 import com.nhnacademy.bookstore.orderset.orderdetail.repository.OrderDetailRepository;
 import com.nhnacademy.bookstore.orderset.orderstate.entity.OrderState;
 import com.nhnacademy.bookstore.orderset.orderstate.service.OrderStateService;
-import com.nhnacademy.bookstore.paymentset.payment_history.entity.PaymentHistory;
-import com.nhnacademy.bookstore.paymentset.payment_history.repository.PaymentHistoryRepository;
-import com.nhnacademy.bookstore.paymentset.payment_method.entity.PaymentMethod;
-import com.nhnacademy.bookstore.paymentset.payment_method.enums.PaymentMethodType;
-import com.nhnacademy.bookstore.paymentset.payment_method.exception.PaymentMethodNotFoundException;
-import com.nhnacademy.bookstore.paymentset.payment_method.repository.PaymentMethodRepository;
+import com.nhnacademy.bookstore.paymentset.paymenthistory.entity.PaymentHistory;
+import com.nhnacademy.bookstore.paymentset.paymenthistory.repository.PaymentHistoryRepository;
+import com.nhnacademy.bookstore.paymentset.paymentmethod.entity.PaymentMethod;
+import com.nhnacademy.bookstore.paymentset.paymentmethod.enums.PaymentMethodType;
+import com.nhnacademy.bookstore.paymentset.paymentmethod.exception.PaymentMethodNotFoundException;
+import com.nhnacademy.bookstore.paymentset.paymentmethod.repository.PaymentMethodRepository;
 import com.nhnacademy.bookstore.paymentset.status.entity.PaymentStatus;
 import com.nhnacademy.bookstore.paymentset.status.enums.PaymentStatusType;
 import com.nhnacademy.bookstore.paymentset.status.exception.PaymentStatusNotFoundException;
@@ -189,6 +189,10 @@ public class OrderService {
         }
 
         List<MemberCouponResponseDto> memberCoupons = memberCouponService.getAllMemberCoupons(customerId);
+        if (memberCoupons.isEmpty()) {
+            return 0;
+        }
+
         Optional<MemberCouponResponseDto> coupon = memberCoupons.stream()
                 .filter(c -> c.couponUsageId().equals(orderRequest.couponId()))
                 .findFirst();

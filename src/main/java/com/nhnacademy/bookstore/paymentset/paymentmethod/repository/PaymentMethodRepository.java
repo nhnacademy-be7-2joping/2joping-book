@@ -1,7 +1,7 @@
-package com.nhnacademy.bookstore.paymentset.payment_method.repository;
+package com.nhnacademy.bookstore.paymentset.paymentmethod.repository;
 
-import com.nhnacademy.bookstore.paymentset.payment_method.entity.PaymentMethod;
-import com.nhnacademy.bookstore.paymentset.payment_method.enums.PaymentMethodType;
+import com.nhnacademy.bookstore.paymentset.paymentmethod.entity.PaymentMethod;
+import com.nhnacademy.bookstore.paymentset.paymentmethod.enums.PaymentMethodType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

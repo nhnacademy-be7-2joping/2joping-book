@@ -6,6 +6,7 @@ import com.nhnacademy.bookstore.admin.wrap.dto.response.WrapUpdateResponseDto;
 import com.nhnacademy.bookstore.admin.wrap.entity.Wrap;
 import com.nhnacademy.bookstore.admin.wrap.repository.WrapRepository;
 import com.nhnacademy.bookstore.common.error.exception.wrap.WrapAlreadyExistException;
+import com.nhnacademy.bookstore.common.error.exception.wrap.WrapImageNotFoundException;
 import com.nhnacademy.bookstore.common.error.exception.wrap.WrapNotFoundException;
 import com.nhnacademy.bookstore.imageset.entity.Image;
 import com.nhnacademy.bookstore.imageset.entity.WrapImage;
@@ -18,7 +19,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -325,7 +325,8 @@ class WrapServiceTest {
         when(wrapImageRepository.findFirstByWrap_WrapId(wrapId)).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(NoSuchElementException.class, () -> wrapService.getWrap(wrapId));
+        // NoSuchElementException 대신 WrapImageNotFoundException으로 변경
+        assertThrows(WrapImageNotFoundException.class, () -> wrapService.getWrap(wrapId));
     }
 
     @Test
@@ -341,8 +342,7 @@ class WrapServiceTest {
         when(imageRepository.findById(mockWrapImage.getImage().getImageId())).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(NoSuchElementException.class, () -> wrapService.getWrap(wrapId));
+        // NoSuchElementException 대신 WrapImageNotFoundException으로 변경
+        assertThrows(WrapImageNotFoundException.class, () -> wrapService.getWrap(wrapId));
     }
-
-
 }
