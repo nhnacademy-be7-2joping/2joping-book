@@ -11,13 +11,10 @@ public class CustomHealthIndicator implements HealthIndicator {
 
     private final ApplicationStatus applicationStatus;
 
-    /**
-     * @return
-     */
     @Override
     public Health health() {
         if (!applicationStatus.isStatus()) {
-            return Health.down().build();
+            return Health.down().withDetail("service", "stopped").build();
         }
 
         return Health.up().withDetail("service", "start").build();
