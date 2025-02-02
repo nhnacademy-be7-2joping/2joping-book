@@ -14,9 +14,10 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class MySqlConfig {
 
-    private final KeyManagerService keyManagerService;
     private static final int CORE_COUNT = Runtime.getRuntime().availableProcessors();
     private static final int MAX_THREADS = 200;
+
+    private final KeyManagerService keyManagerService;
 
     @Bean
     public DataSource dataSource() {
