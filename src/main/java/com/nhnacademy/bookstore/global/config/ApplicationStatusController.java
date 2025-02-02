@@ -11,17 +11,26 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/actuator/status")
+@RequestMapping("/actuator")
 @RequiredArgsConstructor
 public class ApplicationStatusController {
 
     private final ApplicationInfoManager applicationInfoManager;
     private final ApplicationStatus applicationStatus;
 
-    @PostMapping
+    @PostMapping("/shutdown")
     @ResponseStatus(value = HttpStatus.OK)
     public void stopStatus() {
         applicationInfoManager.setInstanceStatus(InstanceInfo.InstanceStatus.DOWN);
         applicationStatus.stopStatus();
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+                System.exit(0);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }).start();
     }
 }
